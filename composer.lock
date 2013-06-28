@@ -1,0 +1,120 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "5d288dbeadab4cd65d2ce53680989767",
+    "packages": [
+        {
+            "name": "2amigos/yiistrap",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/2amigos/yiistrap.git",
+                "reference": "c87f8050f8d4b181c440f78eb5e0cf795e5fa9b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/2amigos/yiistrap/zipball/c87f8050f8d4b181c440f78eb5e0cf795e5fa9b3",
+                "reference": "c87f8050f8d4b181c440f78eb5e0cf795e5fa9b3",
+                "shasum": ""
+            },
+            "type": "yii-extension",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Christoffer Niska",
+                    "email": "christoffer.niska@gmail.com",
+                    "homepage": "http://www.cniska.net/"
+                },
+                {
+                    "name": "Antonio Ramirez",
+                    "email": "ramirez.cobos@gmail.com",
+                    "homepage": "http://www.ramirezcobos.com/"
+                }
+            ],
+            "description": "Twitter Bootstrap for the Yii PHP framework. Own maintained version.",
+            "keywords": [
+                "bootstrap",
+                "yii"
+            ],
+            "time": "2013-05-14 17:49:15"
+        },
+        {
+            "name": "2amigos/yiiwheels",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/2amigos/yiiwheels.git",
+                "reference": "d03bec6e021580c54748c81fab4ea38178bfc1d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/2amigos/yiiwheels/zipball/d03bec6e021580c54748c81fab4ea38178bfc1d4",
+                "reference": "d03bec6e021580c54748c81fab4ea38178bfc1d4",
+                "shasum": ""
+            },
+            "require": {
+                "2amigos/yiistrap": "dev-master"
+            },
+            "type": "yii-extension",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Antonio Ramirez",
+                    "email": "ramirez.cobos@gmail.com",
+                    "homepage": "http://www.ramirezcobos.com/"
+                }
+            ],
+            "description": "Extension library for Yiistrap, Yii Twitter's Bootstrap.",
+            "keywords": [
+                "bootstrap"
+            ],
+            "support": {
+                "source": "https://github.com/2amigos/yiiwheels/tree/master",
+                "issues": "https://github.com/2amigos/yiiwheels/issues"
+            },
+            "time": "2013-06-03 17:29:18"
+        },
+        {
+            "name": "yiisoft/yii",
+            "version": "1.1.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yiisoft/yii.git",
+                "reference": "e9e4a0d5be901d8bd48e516a2d9afe33d6fd05a6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/yiisoft/yii/archive/e9e4a0d5be901d8bd48e516a2d9afe33d6fd05a6.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "type": "library",
+            "description": "Yii PHP Framework",
+            "homepage": "https://github.com/yiisoft/yii"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "2amigos/yiistrap": 20,
+        "2amigos/yiiwheels": 20
+    },
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}
