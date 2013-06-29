@@ -1,5 +1,14 @@
-YIInitializr-intermediate
+Automated election system
 =======
+Automated election system ( AES ) is the new approach for consolidation of democracy. This system allows to run elections cleaner, cheaper and more comfortable for electorate as well as for candidates. Furthermore the system organizes more efficient process of interaction between deputies and citizens.
+
+#Technical information for developers
+Information about installation you can find in the /docs folder.
+
+Below is the information about project structure
+
+##YIInitializr-intermediate
+
 The following is a proposed project structure for basic to intermediate applications that works in conjunction with YIInitializr components. 
 
 YIInitializr vanilla projects make extensive use of Composer. We found at [2amigos.us](http://2amigos.us) that is easier to your extensions bundle outside of your application scope - thanks to [Phundament](http://phundament.com) and Tobias Munk for his knowledge and shares. Composer is your dependency package best friend. 
