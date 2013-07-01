@@ -26,10 +26,9 @@ return array(
 		'application.extensions.*',
 		'application.helpers.*',
 		'application.models.*',
-		'vendor.2amigos.yiistrap.helpers.*',
-		'vendor.2amigos.yiiwheels.helpers.*',
 	),
 	'components' => array(
+	    
 		'db'=>array(
 		    'connectionString' => 'mysql:host=localhost;dbname=aes',
 		    'emulatePrepare' => true,
@@ -39,6 +38,7 @@ return array(
 		    'tablePrefix' => '',
 		    'initSQLs' => array('SET time_zone = "Europe/Kiev";')
 		),
+	    
 		'errorHandler' => array(
 			'errorAction' => 'site/error',
 		),
@@ -61,6 +61,7 @@ return array(
 		// php configuration
 		'php.defaultCharset' => 'utf-8',
 		'php.timezone'       => 'Europe/Kiev',
+//		'php.error_reporting' => 22519,
 	    
 	    'yii.handleErrors' => true,
 		'yii.debug' => true,

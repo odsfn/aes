@@ -15,12 +15,16 @@ defined('APP_CONFIG_NAME') or define('APP_CONFIG_NAME', 'frontend');
 return array(
 	'name' => 'Automated Election System',
 	'basePath' => realPath(__DIR__ . '/..'),
+    
+	'preload'=>array(
+	    'bootstrap',
+	),
 	// path aliases
 	'aliases' => array(
-		'bootstrap' => dirname(__FILE__) . '/../..' . '/common/lib/vendor/2amigos/yiistrap',
-		'yiiwheels' =>  dirname(__FILE__) . '/../..' . '/common/lib/vendor/2amigos/yiiwheels'
+//		'bootstrap' => dirname(__FILE__) . '/../..' . '/common/extensions/bootstrap',
+		'bootstrap' => dirname(__FILE__) . '/../..' . '/common/lib/vendor/vasiliy-pdk/YiiBooster/src',
 	),
-
+    
 	// application behaviors
 	'behaviors' => array(),
 
@@ -34,16 +38,10 @@ return array(
 	'components' => array(
 
 		'bootstrap' => array(
-			'class' => 'bootstrap.components.TbApi',
+		        'class' => 'bootstrap.components.Bootstrap',
+			'responsiveCss' => false,
 		),
-
-		'clientScript' => array(
-			'scriptMap' => array(
-				'bootstrap.min.css' => false,
-				'bootstrap.min.js' => false,
-				'bootstrap-yii.css' => false
-			)
-		),
+	    
 		'urlManager' => array(
 			// uncomment the following if you have enabled Apache's Rewrite module.
 			'urlFormat' => 'path',
@@ -56,11 +54,21 @@ return array(
 				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 			),
 		),
+	    
 		'user' => array(
 			'allowAutoLogin' => true,
 		),
+	    
 		'errorHandler' => array(
 			'errorAction' => 'site/error',
 		)
 	),
+    
+	'modules' => array(
+	    'userAccount',
+	    
+	    'gii' => array(
+		'generatorPaths' => array('bootstrap.gii'),
+	    ),
+	)
 );

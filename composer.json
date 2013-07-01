@@ -20,12 +20,15 @@
         {
             "type": "composer",
             "url": "http://packages.phundament.com"
-        }
+        },
+	{
+	    "type": "vcs",
+	    "url": "https://github.com/vasiliy-pdk/YiiBooster.git"
+	}
     ],
     "require": {
         "yiisoft/yii":"1.1.13",
-        "2amigos/yiistrap": "dev-master",
-        "2amigos/yiiwheels": "dev-master"
+	"vasiliy-pdk/YiiBooster": "dev-master"
     },
     "autoload": {
         "psr-0": {

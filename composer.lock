@@ -3,83 +3,34 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5d288dbeadab4cd65d2ce53680989767",
+    "hash": "00b93c651fecfa56c0c2c17ca78f400f",
     "packages": [
         {
-            "name": "2amigos/yiistrap",
+            "name": "vasiliy-pdk/YiiBooster",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/2amigos/yiistrap.git",
-                "reference": "c87f8050f8d4b181c440f78eb5e0cf795e5fa9b3"
+                "url": "https://github.com/vasiliy-pdk/YiiBooster.git",
+                "reference": "109f46e91c9b7598be8858abdd99aac1f5b8f59d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/2amigos/yiistrap/zipball/c87f8050f8d4b181c440f78eb5e0cf795e5fa9b3",
-                "reference": "c87f8050f8d4b181c440f78eb5e0cf795e5fa9b3",
+                "url": "https://api.github.com/repos/vasiliy-pdk/YiiBooster/zipball/109f46e91c9b7598be8858abdd99aac1f5b8f59d",
+                "reference": "109f46e91c9b7598be8858abdd99aac1f5b8f59d",
                 "shasum": ""
             },
             "type": "yii-extension",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Christoffer Niska",
-                    "email": "christoffer.niska@gmail.com",
-                    "homepage": "http://www.cniska.net/"
-                },
-                {
-                    "name": "Antonio Ramirez",
-                    "email": "ramirez.cobos@gmail.com",
-                    "homepage": "http://www.ramirezcobos.com/"
-                }
-            ],
-            "description": "Twitter Bootstrap for the Yii PHP framework. Own maintained version.",
+            "description": "YiiBooster is a widget toolkit for Yii web framework. Its main purpose is to ease building UI in Yii-based web applications utilizing the beauty of Twitter Bootstrap and several other great UI plugins developed over time by the community.",
+            "homepage": "http://yii-booster.clevertech.biz/",
             "keywords": [
+                "YiiBooster",
                 "bootstrap",
                 "yii"
             ],
-            "time": "2013-05-14 17:49:15"
-        },
-        {
-            "name": "2amigos/yiiwheels",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/2amigos/yiiwheels.git",
-                "reference": "d03bec6e021580c54748c81fab4ea38178bfc1d4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/2amigos/yiiwheels/zipball/d03bec6e021580c54748c81fab4ea38178bfc1d4",
-                "reference": "d03bec6e021580c54748c81fab4ea38178bfc1d4",
-                "shasum": ""
-            },
-            "require": {
-                "2amigos/yiistrap": "dev-master"
-            },
-            "type": "yii-extension",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Antonio Ramirez",
-                    "email": "ramirez.cobos@gmail.com",
-                    "homepage": "http://www.ramirezcobos.com/"
-                }
-            ],
-            "description": "Extension library for Yiistrap, Yii Twitter's Bootstrap.",
-            "keywords": [
-                "bootstrap"
-            ],
             "support": {
-                "source": "https://github.com/2amigos/yiiwheels/tree/master",
-                "issues": "https://github.com/2amigos/yiiwheels/issues"
+                "source": "https://github.com/vasiliy-pdk/YiiBooster/tree/master"
             },
-            "time": "2013-06-03 17:29:18"
+            "time": "2013-07-01 15:45:54"
         },
         {
             "name": "yiisoft/yii",
@@ -108,8 +59,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "2amigos/yiistrap": 20,
-        "2amigos/yiiwheels": 20
+        "vasiliy-pdk/yiibooster": 20
     },
     "platform": [
 

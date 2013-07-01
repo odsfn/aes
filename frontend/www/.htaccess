@@ -547,4 +547,5 @@ AddCharset utf-8 .atom .css .js .json .rss .vtt .xml
 # Increase cookie security
 <IfModule php5_module>
   php_value session.cookie_httponly true
+  php_value error_reporting 22519
 </IfModule>
