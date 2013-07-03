@@ -21,8 +21,8 @@ return array(
 	),
 	// path aliases
 	'aliases' => array(
-//		'bootstrap' => dirname(__FILE__) . '/../..' . '/common/extensions/bootstrap',
 		'bootstrap' => dirname(__FILE__) . '/../..' . '/common/lib/vendor/vasiliy-pdk/YiiBooster/src',
+		'userAccount' => dirname(__FILE__) . '/../modules/userAccount/'
 	),
     
 	// application behaviors
@@ -30,9 +30,6 @@ return array(
 
 	// controllers mappings
 	'controllerMap' => array(),
-
-	// application modules
-	'modules' => array(),
 
 	// application components
 	'components' => array(
@@ -70,5 +67,5 @@ return array(
 	    'gii' => array(
 		'generatorPaths' => array('bootstrap.gii'),
 	    ),
-	)
+	),
 );

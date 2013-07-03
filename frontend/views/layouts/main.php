@@ -23,6 +23,16 @@
 		body > div.navbar li.divider-vertical{
 		    margin: 0px;
 		}
+		
+		div.flash-messages{
+		    z-index: 9999;
+		}
+
+		div.flash-messages div.alert{
+		    -moz-box-shadow: 0 2px 11px rgba(0, 0, 0, 0.25); 
+		    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+		    box-shadow: 0 2px 11px rgba(0, 0, 0, 0.25) 
+		}
 	</style>
 
 	<!--<script src="<?php echo Yii::app()->getBaseUrl(true); ?>/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>-->
@@ -62,17 +72,17 @@
 				    <li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= Yii::app()->user->username; ?><b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#">Profile</a></li>
+							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->profileUrl); ?>">Profile</a></li>
 							<li class="divider"></li>
 <!--							<li class="nav-header">Nav header</li>-->
-							<li><a href="#">Log out</a></li>
+							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->logoutUrl); ?>">Log out</a></li>
 						</ul>
 				    </li>
 				</ul>
 				<?php else: ?>
 				    <div class="navbar-form pull-right"> 
-					<a href="#" class="btn">Sign in</a>
-					<a href="#" class="btn btn-success">Registration</a>
+					<a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->loginUrl); ?>" class="btn">Sign in</a>
+					<a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->registrationUrl); ?>" class="btn btn-success">Registration</a>
 				    </div>
 				<?php endif; ?>
 			</div>
@@ -81,6 +91,18 @@
 	</div>
 </div>
 
+<div class="container">
+    <div class="flash-messages affix span4 offset8">
+    <?php
+    $this->widget('bootstrap.widgets.TbAlert', array(
+	'block'=>true, // display a larger alert block?
+	'fade'=>true, // use transitions?
+	'closeText'=>'×', // close link text - if set to false, no close link is displayed
+    ));
+    ?>
+    </div>
+</div>
+    
 <?php echo $content; ?>
 
 </body>

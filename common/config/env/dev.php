@@ -25,5 +25,14 @@ return array(
 		'yii.handleErrors' => true,
 		'yii.debug' => true,
 		'yii.traceLevel' => 3,
+	    
+		'YiiMailer'=>array(
+		    'Mailer'=>'smtp',
+		    'Host'=>'smtp.mail.ru',
+		    'Port'=>'2525',
+		    'Username'=>'vptester@mail.ru',
+		    'Password'=>'vptester_qwerty',
+		    'SMTPAuth'=>true,
+		)
 	)
 );
