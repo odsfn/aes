@@ -33,6 +33,11 @@
 		    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
 		    box-shadow: 0 2px 11px rgba(0, 0, 0, 0.25) 
 		}
+		
+		form.center{
+		    margin-left: auto;
+		    margin-right: auto;
+		}
 	</style>
 
 	<!--<script src="<?php echo Yii::app()->getBaseUrl(true); ?>/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>-->

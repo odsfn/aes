@@ -2,11 +2,13 @@
 	'id'=>'RegistrationForm',
 	'enableAjaxValidation'=>true,
 	'enableClientValidation'=>false,
-	'type'=>'horizontal',
+	'type'=>'vertical',
 	'htmlOptions'=>array(
-	    'class'=>'well'
+	    'class'=>'well span5 offset2'
 	)
 )); ?>
+
+<h3>Registration</h3>
 
 <p class="help-block">Fields with <span class="required">*</span> are required.</p>
 <p></p>

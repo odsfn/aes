@@ -62,7 +62,7 @@ class UserAccount extends CActiveRecord {
 	// NOTE: you may need to adjust the relation name and the related
 	// class name for the relations automatically generated below.
 	return array(
-	    'identity' => array(self::HAS_ONE, 'Identity', 'user_id'),
+	    'identities' => array(self::HAS_MANY, 'Identity', 'user_id'),
 	    'profile' => array(self::HAS_ONE, 'Profile', 'user_id'),
 	);
     }
@@ -132,5 +132,18 @@ class UserAccount extends CActiveRecord {
      */
     public function encryptPassword($password){
 	return md5($password);
+    }
+    
+    /**
+     * @returns string Active email
+     */
+    public function getActiveEmail(){
+	$identity = Identity::model()->findByAttributes(array(
+	   'status'=>Identity::STATUS_CONFIRMED,
+	   'type'=>Identity::TYPE_EMAIL,
+	   'user_id'=>$this->id
+	));
+	
+	return (!$identity) ? null : $identity->identity;
     }
 }

@@ -17,8 +17,8 @@ class m130701_160911_userAccount extends CDbMigration
 		'id'=>'pk',
 		'login'=>'varchar(64) null',
 		"password" => "varchar(128) NOT NULL DEFAULT ''",
-		"created_ts" => "timestamp NOT NULL DEFAULT '0000-00-00'",
-		"last_visit_ts" => "timestamp DEFAULT CURRENT_TIMESTAMP",
+		"created_ts" => "timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'",
+		"last_visit_ts" => "timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'",
 		"superuser" => "int(1) NOT NULL DEFAULT 0",
 		"status" => "int(1) NOT NULL DEFAULT 0"
 	    ));
@@ -45,7 +45,7 @@ class m130701_160911_userAccount extends CDbMigration
 	    $this->addForeignKey("fk_user_profile_user_id", "user_profile", "user_id", "user", "id", "CASCADE", "NO ACTION");
 	    $this->createIndex("i_first_name", "user_profile", "first_name");
 	    $this->createIndex("i_last_name", "user_profile", "last_name");
-	    $this->createIndex("i_mobile_phone", "user_profile", "mobile_phone", true);
+	    $this->createIndex("i_mobile_phone", "user_profile", "mobile_phone");
 	    
 	    $this->createTable('user_identity_confirmation', array(
 		"user_identity_id"=>"pk",

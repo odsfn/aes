@@ -2,12 +2,12 @@
 	'id'=>'LoginForm',
 	'enableAjaxValidation'=>false,
 	'enableClientValidation'=>true,
-	'type'=>'horizontal',
+	'type'=>'vertical',
 	'htmlOptions'=>array(
-	    'class'=>'well'
+	    'class'=>'well span5 offset2'
 	)
 )); ?>
-
+<h3>Log in</h3>
 <p class="help-block">Fields with <span class="required">*</span> are required.</p>
 <p></p>
 
@@ -20,7 +20,6 @@
 	    
 	    echo $form->checkboxRow($model, 'rememberMe'); 
 	?>
-
 <div class="form-actions">
 	<?php $this->widget('bootstrap.widgets.TbButton', array(
 			'buttonType'=>'submit',
@@ -28,6 +27,8 @@
 			'size'=>'large',
 			'label'=>'Log in',
 		)); ?>
+    <a href="<?= Yii::app()->getModule('userAccount')->recoveryUrl; ?>" class="pull-right">Lost password?</a>
 </div>
 
 <?php $this->endWidget(); ?>
+<div class="clearfix"></div>

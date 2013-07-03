@@ -15,7 +15,7 @@ class UserAccountModule extends CWebModule {
     
     public $activationUrl = "/userAccount/registration/activate";
     
-    public $recoveryUrl = "/userAccount/recovery/recovery";
+    public $recoveryUrl = "/userAccount/recovery";
     
     public $loginUrl = "/userAccount/login";
     
@@ -48,56 +48,48 @@ class UserAccountModule extends CWebModule {
 	else
 	    return false;
     }
-
-    public function registrate(RegistrationProfile $registrationProfile){
-	$transaction = Yii::app()->db->beginTransaction();
+    
+    /**
+     * Resets user's password and send it to email
+     * @param UserAccount $user
+     */
+    public function resetPassword(UserAccount $user){
+	if($user->status != UserAccount::STATUS_ACTIVE)
+	    throw new CException('Can\'t reset password for inactive users.');
 	
-	try {
-	    if($registrationProfile->form->validate()){
-	    
-		$user = new UserAccount;
-		$user->password = $this->encryptPassword($registrationProfile->password);
-		$user->status = UserAccount::NEED_ACTIVATION;
-		$user->registered = time();
-		$user_id = $user->save();
-
-		if(!$user_id){
-		    throw new Exception("User registration failed. Cant save User row");
-		}
-
-		$userIdentity = new Identity;
-		$userIdentity->user_id = $user_id;
-		$userIdentity->type = Identity::TYPE_EMAIL;
-		$userIdentity->status = Identity::STATUS_NEED_CONFIRMATION;
-		$userIdentity->value = $registrationProfile->email;
-		$userIdentityId = $userIdentity->save();
-		
-		if(!$userIdentityId){
-		    throw new Exception("User registration failed. Can't save Identity");
-		}
-	    
-		$profile = new Profile;
-		$profile->attributes = $registrationProfile->getAttributes($profile->attributeNames());
-		$profileId = $profile->save();
-		
-		if(!$profileId){
-		    throw new Exception("User registration failed. Can't save Profile");
-		}
-		
-	    }else{
-		throw new Exception("Invalid registration profile");
-	    }
-	    
-	} catch (Exception $exc) {
-	    $transaction->rollback();
-	    throw $exc;
+	$emailAddr = $user->getActiveEmail();
+	
+	$newPassword = $this->randomPassword();
+	$user->setPassword($newPassword);
+	$user->save();
+	
+	$email = new YiiMailer('resetPassword', $data = array(
+	    'newPassword' => $newPassword,
+	    'description' => $description = 'Password reset'
+	));
+	
+	$email->setSubject($description);
+	$email->setTo($emailAddr);
+	$email->setFrom(Yii::app()->params['noreplyAddress'], Yii::app()->name, FALSE);
+	
+	Yii::log('Sendign reset password mail to ' . $emailAddr);
+	
+	if($email->send())
+	    Yii::log('Ok');
+	else{
+	    Yii::log('Failed');
+	    throw new CException('Failed to send the email');
 	}
-	
-	$transaction->commit();
-	$registrationProfile->afterRegistrate($user, $profile, $userIdentity);
     }
     
-    protected function encryptPassword($password){
-	return md5($password . microtime());
+    function randomPassword() {
+	$alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+	$pass = array(); //remember to declare $pass as an array
+	$alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+	for ($i = 0; $i < 8; $i++) {
+	    $n = rand(0, $alphaLength);
+	    $pass[] = $alphabet[$n];
+	}
+	return implode($pass); //turn the array into a string
     }
 }

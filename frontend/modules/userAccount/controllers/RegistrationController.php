@@ -6,7 +6,6 @@
  * 
  * @author Vasiliy Pedak truvazia@gmail.com
  */
-
 class RegistrationController extends UAccController {
 
     public $defaultAction = 'registration';
@@ -60,7 +59,13 @@ class RegistrationController extends UAccController {
 	$registrationFormClass = $this->module->registrationFormClass; 
 	return new $registrationFormClass;
     }
-
+    /**
+     * Runs after user's records were created in the database. Contains logic
+     * for sending activation mail. 
+     * 
+     * @param СEvent $event
+     * @throws CException
+     */
     protected function afterRecordsCreated($event){
 	$identity = $event->params['identity'];
 	$confirmation = $identity->startConfirmation();
