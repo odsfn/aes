@@ -4,7 +4,6 @@
  * 
  * @var CController $this	
  */
-$this->layout = 'application.views.layouts.column1';
 
 Yii::app()->clientScript->registerCss('recovery', "div.captcha img {display: block; margin-bottom: 5px;}");
 

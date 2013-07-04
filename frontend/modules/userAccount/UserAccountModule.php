@@ -2,12 +2,10 @@
 
 class UserAccountModule extends CWebModule {
     /**
-     * Put your registration profile class here to implement custom registration
-     * logic. This class should extend RegistrationProfile
-     * 
-     * @var string class name
+     * @todo Provide basic layout which can be used in other projects
+     * @var string Alias to layout using in module's controllers by default 
      */
-    public $registrationProfileClass = 'RegistrationProfile';
+    public $layout = 'application.views.layouts.column1';
 
     public $registrationFormClass = 'RegistrationForm';
 
