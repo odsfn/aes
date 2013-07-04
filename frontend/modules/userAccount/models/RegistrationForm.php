@@ -5,7 +5,7 @@
  * 
  * @author Vasiliy Pedak truvazia@gmail.com
  */
-class RegistrationForm extends ProfileModel{
+class RegistrationForm extends Profile{
 
     public $password;
     

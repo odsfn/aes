@@ -43,16 +43,25 @@ class Identity extends CActiveRecord {
      * @return array validation rules for model attributes.
      */
     public function rules() {
-	// NOTE: you should only define rules for those attributes that
-	// will receive user inputs.
-	return array(
+	$rules = array(
 	    array('identity, type', 'required'),
 	    array('status', 'numerical', 'integerOnly' => true),
 	    array('identity, type', 'length', 'max' => 128),
+	    
+	    array('identity', 'unique'),
 	    // The following rule is used by search().
 	    // Please remove those attributes that should not be searched.
 	    array('user_id, identity, type, status', 'safe', 'on' => 'search'),
 	);
+	
+	//Additional rules for particular types. Can do this also by creating subclass
+	if($this->type == self::TYPE_EMAIL){
+	    $rules = array_merge($rules, array(
+		array('identity', 'email'),
+	    ));
+	}
+	
+	return $rules;
     }
 
     /**
@@ -71,12 +80,19 @@ class Identity extends CActiveRecord {
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels() {
-	return array(
+	$attributeLabels = array(
 	    'user_id' => 'User',
 	    'identity' => 'Identity',
 	    'type' => 'Type',
 	    'status' => 'Status',
 	);
+	
+	//Additional rules for particular types. Can do this also by creating subclass
+	if($this->type == self::TYPE_EMAIL){
+	    $attributeLabels['identity'] = 'Email';
+	}
+	
+	return $attributeLabels;
     }
 
     /**
@@ -103,11 +119,11 @@ class Identity extends CActiveRecord {
      * Updates status, generates confirmation row
      * @return IdentityConfirmation 
      */
-    public function startConfirmation(){
+    public function startConfirmation($type = IdentityConfirmation::TYPE_ACTIVATION_EMAIL){
 	$identityConfirmation = new IdentityConfirmation;
-	$identityConfirmation->user_identity_id = $this->user_id;
+	$identityConfirmation->user_identity_id = $this->id;
 	$identityConfirmation->sent_ts = date('Y-m-d H:i:s');
-	$identityConfirmation->type = IdentityConfirmation::TYPE_ACTIVATION_EMAIL;
+	$identityConfirmation->type = $type;
 	$identityConfirmation->key = md5($identityConfirmation->type . $this->identity . microtime());
 	$identityConfirmation->save();
 	return $identityConfirmation;

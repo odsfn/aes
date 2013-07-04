@@ -57,7 +57,7 @@ class RegistrationController extends UAccController {
     
     protected function createRegistrationForm(){
 	$registrationFormClass = $this->module->registrationFormClass; 
-	return new $registrationFormClass;
+	return new $registrationFormClass('registration');
     }
     /**
      * Runs after user's records were created in the database. Contains logic

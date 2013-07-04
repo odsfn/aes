@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @todo 
+ * - add Notification component which will encapsulate logic of messages sending
+ * @author Vasiliy Pedak <truvazia@gmail.com>
+ */
 class UserAccountModule extends CWebModule {
     /**
      * @todo Provide basic layout which can be used in other projects
@@ -10,9 +14,16 @@ class UserAccountModule extends CWebModule {
     public $registrationFormClass = 'RegistrationForm';
 
     public $registrationUrl = "/userAccount/registration";
-    
+    /**
+     * This one for user's account activation. 
+     * @TODO: 
+     * - remove it, use confirmationUrl instead
+     * @var string 
+     */
     public $activationUrl = "/userAccount/registration/activate";
     
+    public $confirmationUrl = "/userAccount/identity/confirm";
+
     public $recoveryUrl = "/userAccount/recovery";
     
     public $loginUrl = "/userAccount/login";
@@ -24,6 +35,11 @@ class UserAccountModule extends CWebModule {
     public $returnUrl = "/";
     
     public $returnLogoutUrl = "/userAccount/login";    
+    
+    public $editIdentityUrl = "/userAccount/identity/edit";
+    
+//    public $afterIdentityEditedUrl = "/userAccount/profile";
+    public $afterIdentityEditedUrl = "/userAccount/identity/edit";
     
     public $rememberMeTime = 3600;
     

@@ -9,8 +9,10 @@ class UserIdentity extends CUserIdentity{
     public function authenticate() {
 	$identityRow = Identity::model()->findByAttributes(array(
 	    'identity'=> $this->username,
-	    'type'=> Identity::TYPE_EMAIL
+	    'type'=> Identity::TYPE_EMAIL,
+	    'status'=> Identity::STATUS_CONFIRMED
 	));
+	
 	if($identityRow){
 	    $user = $identityRow->userAccount;
 	} 

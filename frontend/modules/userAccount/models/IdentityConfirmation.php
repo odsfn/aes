@@ -18,6 +18,11 @@ class IdentityConfirmation extends CActiveRecord {
     const TYPE_ACTIVATION_EMAIL = 1;
     
     const TYPE_ACTIVATION_PHONE = 2;
+    
+    /**
+     * Confirmation for replacing activated email by new one
+     */
+    const TYPE_EMAIL_REPLACE_CONFIRMATION = 3;
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -72,14 +77,63 @@ class IdentityConfirmation extends CActiveRecord {
 	);
     }
     
-    public function confirm(){
-	$this->identity->status = Identity::STATUS_CONFIRMED;
-	$this->identity->save();
-	
+    /**
+     * Calls before changing status of the confirmation
+     * @return boolean	Whether to proceed confirmation
+     */
+    protected function beforeConfirm(){
+	return true;
+    }
+
+    /**
+     * @todo Move code of this method to RegistrationConfirmation
+     */
+    protected function afterConfirm(){
 	$userAccount = $this->identity->userAccount; 
 	$userAccount->status = UserAccount::STATUS_ACTIVE;
 	$userAccount->save();
+    }
+
+    public function confirm(){
+	
+	$this->beforeConfirm();
+	
+	$this->identity->status = Identity::STATUS_CONFIRMED;
+	$this->identity->save();
+	
+	$this->afterConfirm();
 	
 	$this->delete();
+	
+	return true;
+    }
+    
+    /**
+     * Instantiates particular subclass of IdentityConfirmation based on it's type
+     * @todo:
+     * - Replace this method by overriding afterFind method, where we can attach corresponding behaviour
+     * @param type $id
+     */
+    public static function create($id){
+	
+	$particularConfirmation = null;
+	
+	if(is_string($id)){ //creating by key
+	    
+	    $confirmation = IdentityConfirmation::model()->findByAttributes(array('key'=>$id));
+	    if(!$confirmation){
+		return null;
+	    }
+	    
+	    if($confirmation->type == IdentityConfirmation::TYPE_EMAIL_REPLACE_CONFIRMATION){
+		$particularConfirmation = new ReplaceEmailConfirmation;
+		$particularConfirmation->setAttributes($confirmation->attributes, false);
+		$particularConfirmation->isNewRecord = false;
+	    }else{
+		$particularConfirmation = $confirmation;
+	    }
+	}
+	
+	return $particularConfirmation;
     }
 }

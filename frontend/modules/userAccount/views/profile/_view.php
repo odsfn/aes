@@ -28,11 +28,10 @@
 	<?php echo CHtml::encode($data->mobile_phone); ?>
 	<br />
 
-	<?php /*
 	<b><?php echo CHtml::encode($data->getAttributeLabel('email')); ?>:</b>
 	<?php echo CHtml::encode($data->email); ?>
 	<br />
 
-	*/ ?>
+	
 
 </div>

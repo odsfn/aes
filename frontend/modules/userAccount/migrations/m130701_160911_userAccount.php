@@ -25,7 +25,8 @@ class m130701_160911_userAccount extends CDbMigration
 	    $this->createIndex("i_user_login", "user", "login");
 	    
 	    $this->createTable('user_identity', array(
-		"user_id"=>"pk",
+		"id"=>'pk',
+		"user_id"=>"int(11) NOT NULL",
 		"identity"=>"varchar(128) NOT NULL",
 		"type"=>"varchar(128) NOT NULL",
 		"status" => "int(1) NOT NULL DEFAULT 0"
@@ -33,7 +34,7 @@ class m130701_160911_userAccount extends CDbMigration
 	    $this->addForeignKey("fk_user_identity_user_id", "user_identity", "user_id", "user", "id", "CASCADE", "NO ACTION");
 	    
 	    $this->createTable('user_profile', array(
-		"user_id"=>"pk",
+		"user_id"=>"int(11) NOT NULL PRIMARY KEY",
 		"first_name"=>"varchar(128) NOT NULL DEFAULT ''",
 		"last_name"=>"varchar(128) NOT NULL DEFAULT ''",
 		"birth_place"=>"varchar(128) NOT NULL DEFAULT ''",
@@ -48,13 +49,13 @@ class m130701_160911_userAccount extends CDbMigration
 	    $this->createIndex("i_mobile_phone", "user_profile", "mobile_phone");
 	    
 	    $this->createTable('user_identity_confirmation', array(
-		"user_identity_id"=>"pk",
+		"user_identity_id"=>"int(11) NOT NULL PRIMARY KEY",
 		"type"=>"int(1) NOT NULL DEFAULT 0",	//i.e. (email|phone)_(confirmation|password_reset), secure_authentication (by phone) etc...
 		"key"=>"varchar(128) NOT NULL",
 		"sent_ts"=>"timestamp NOT NULL DEFAULT '0000-00-00'",
 		"status" => "int(1) NOT NULL DEFAULT 0"
 	    ));
-	    $this->addForeignKey("fk_uic_u_identity_id", "user_identity_confirmation", "user_identity_id", "user_identity", "user_id", "CASCADE", "NO ACTION");
+	    $this->addForeignKey("fk_uic_u_identity_id", "user_identity_confirmation", "user_identity_id", "user_identity", "id", "CASCADE", "NO ACTION");
 	    $this->createIndex("i_user_identity_confirmation_key", "user_identity_confirmation", "key", true);
 	}
 

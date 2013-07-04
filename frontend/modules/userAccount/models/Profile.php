@@ -24,8 +24,7 @@ class Profile extends CActiveRecord {
      * @return Profile the static model class
      */
     public static function model($className = __CLASS__) {
-//	return parent::model($className);
-	return parent::model('ProfileModel');
+	return parent::model($className);
     }
 
     /**
@@ -38,23 +37,25 @@ class Profile extends CActiveRecord {
     /**
      * @return array validation rules for model attributes.
      */
-//    public function rules() {
-//	// NOTE: you should only define rules for those attributes that
-//	// will receive user inputs.
-//	return array(
-//	    array('email, gender, first_name, last_name, birth_place, birth_day', 'required'),
-//	    array('first_name, last_name', 'match', 'pattern'=>'/^[[:alpha:]]{2,}$/u'),
-//	    array('email', 'email'),
-//	    array('gender', 'numerical', 'integerOnly' => true),
-//	    array('first_name, last_name, birth_place, email', 'length', 'max' => 128),
-//	    array('mobile_phone', 'length', 'max' => 18),
-//	    array('birth_day', 'date'),
-//	    
-//	    // The following rule is used by search().
-//	    // Please remove those attributes that should not be searched.
-//	    array('user_id, first_name, last_name, birth_place, birth_day, gender, mobile_phone, email', 'safe', 'on' => 'search'),
-//	);
-//    }
+    public function rules() {
+	// NOTE: you should only define rules for those attributes that
+	// will receive user inputs.
+	return array(
+	    array('email, gender, first_name, last_name, birth_place, birth_day', 'required'),
+	    array('first_name, last_name', 'match', 'pattern'=>'/^[[:alpha:]]{2,}$/u'),
+	    array('email', 'email'),
+	    array('gender', 'numerical', 'integerOnly' => true),
+	    array('first_name, last_name, birth_place, email', 'length', 'max' => 128),
+	    array('mobile_phone', 'length', 'max' => 18),
+	    array('birth_day', 'date', 'format'=>array('MM/dd/yyyy', 'yyyy-MM-dd')),
+	    
+	    array('email', 'unique', 'attributeName'=>'identity', 'className'=>'Identity', 'on'=>'registration'),
+	    array('mobile_phone', 'unique', 'attributeName'=>'mobile_phone', 'className'=>'Profile', 'allowEmpty'=>true, 'on'=>'registration'),
+	    // The following rule is used by search().
+	    // Please remove those attributes that should not be searched.
+	    array('user_id, first_name, last_name, birth_place, birth_day, gender, mobile_phone, email', 'safe', 'on' => 'search'),
+	);
+    }
 
     /**
      * @return array relational rules.
@@ -70,18 +71,18 @@ class Profile extends CActiveRecord {
     /**
      * @return array customized attribute labels (name=>label)
      */
-//    public function attributeLabels() {
-//	return array(
-//	    'user_id' => 'User',
-//	    'first_name' => 'First Name',
-//	    'last_name' => 'Last Name',
-//	    'birth_place' => 'Birth Place',
-//	    'birth_day' => 'Birth Day',
-//	    'gender' => 'Gender',
-//	    'mobile_phone' => 'Mobile Phone',
-//	    'email' => 'Email',
-//	);
-//    }
+    public function attributeLabels() {
+	return array(
+	    'user_id' => 'User',
+	    'first_name' => 'First Name',
+	    'last_name' => 'Last Name',
+	    'birth_place' => 'Birth Place',
+	    'birth_day' => 'Birth Day',
+	    'gender' => 'Gender',
+	    'mobile_phone' => 'Mobile Phone',
+	    'email' => 'Email',
+	);
+    }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
@@ -108,8 +109,11 @@ class Profile extends CActiveRecord {
     }
 
     protected function beforeSave() {
-	$date = new DateTime($this->birth_day);
-	$this->birth_day = $date->format('Y-m-d');
+	if($this->isNewRecord){
+	    //format date
+	    $date = new DateTime($this->birth_day);
+	    $this->birth_day = $date->format('Y-m-d');
+	}
 	return parent::beforeSave();
     }
     

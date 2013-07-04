@@ -79,6 +79,13 @@
 						<ul class="dropdown-menu">
 							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->profileUrl); ?>">Profile</a></li>
 							<li class="divider"></li>
+							<li class="dropdown-submenu">
+							    <a href="#">Settings</a>
+							    <ul class="dropdown-menu">
+								<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->editIdentityUrl); ?>">Identity</a></li>
+							    </ul>
+							</li>
+							<li class="divider"></li>
 <!--							<li class="nav-header">Nav header</li>-->
 							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->logoutUrl); ?>">Log out</a></li>
 						</ul>
