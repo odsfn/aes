@@ -16,6 +16,13 @@ class IdentityController extends UAccController{
 	//identity data to be changed from other persone
     }
     
+    /**
+     * Provides ability to change password and email address.
+     * If user want to change email it will be changed after confirmation of
+     * new email address.
+     * 
+     * @throws CException
+     */
     public function actionEdit(){
 	$identity = Identity::model()->findByAttributes(array('user_id'=>Yii::app()->user->id));
 	
@@ -93,6 +100,9 @@ class IdentityController extends UAccController{
      * @throws CHttpException
      */
     public function actionConfirm($key){
+	if(!$key){
+	    throw new CHttpException(404, "Confirmation key should be specified");
+	}
 	
 	$confirmation = IdentityConfirmation::create($key);
 	
@@ -106,6 +116,25 @@ class IdentityController extends UAccController{
 	    Yii::app()->user->setFlash('error', $confirmation->errorMessage);
 	}
 	
-	$this->redirect(array($this->module->profileUrl));
+	$this->redirect(Yii::app()->user->isGuest ? array($this->module->loginUrl) : array($this->module->profileUrl) );
+    }
+    
+    public function filters(){
+	return array(
+	    'accessControl'
+	);
+    }
+    
+    public function accessRules() {
+	return array(
+	    array('allow', 
+		'actions' => array('edit'), 
+		'users'=>array('@')
+	    ),
+	    array('deny', 
+		'actions'=>array('edit'),
+		'users'=>array('*')
+	    )
+	);
     }
 }

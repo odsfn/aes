@@ -53,7 +53,8 @@ return array(
 		),
 	    
 		'user' => array(
-			'allowAutoLogin' => true,
+		    'allowAutoLogin' => true,
+		    'loginUrl' => array('userAccount/login')
 		),
 	    
 		'errorHandler' => array(

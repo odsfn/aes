@@ -22,4 +22,27 @@ class LoginController extends UAccController{
 	Yii::app()->user->logout();
 	$this->redirect(Yii::app()->controller->module->returnLogoutUrl);
     }
+
+    public function filters(){
+	return array(
+	    'accessControl'
+	);
+    }
+    
+    public function accessRules() {
+	return array(
+	    array('allow', 
+		'actions' => array('out'), 
+		'users'=>array('@')
+	    ),
+	    array('allow', 
+		'actions'=>array('login'),
+		'users'=>array('?')
+	    ),
+	    array('deny', 
+		'actions'=>array('out', 'login'),
+		'users'=>array('*')
+	    )
+	);
+    }
 }

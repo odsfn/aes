@@ -16,4 +16,23 @@ class ProfileController extends UAccController{
 	
 	$this->render('_view', array('data'=>$profile));
     }
+    
+    public function filters(){
+	return array(
+	    'accessControl'
+	);
+    }
+    
+    public function accessRules() {
+	return array(
+	    array('allow', 
+		'actions' => array('edit', 'view'), 
+		'users'=>array('@')
+	    ),
+	    array('deny', 
+		'actions'=>array('edit', 'view'),
+		'users'=>array('*')
+	    )
+	);
+    }
 }

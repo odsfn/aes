@@ -45,6 +45,10 @@ class RegistrationController extends UAccController {
     }
 
     public function actionActivate($key){
+	if(!$key){
+	    throw new CHttpException(404, "Activation key should be specified");
+	}
+	
 	$confirmation = IdentityConfirmation::model()->findByAttributes(array('key'=>$key));
 	if(!$confirmation){
 	    throw new CHttpException(404, "Specified confirmation was not found");
@@ -87,5 +91,24 @@ class RegistrationController extends UAccController {
 	    Yii::log('Failed');
 	    throw new CException('Failed to send the email');
 	}
+    }
+    
+    public function filters(){
+	return array(
+	    'accessControl'
+	);
+    }
+    
+    public function accessRules() {
+	return array(
+	    array('allow', 
+		'actions' => array('registration', 'activate'), 
+		'users'=>array('?')
+	    ),
+	    array('deny', 
+		'actions'=>array('registration', 'activate'),
+		'users'=>array('*')
+	    )
+	);
     }
 }
