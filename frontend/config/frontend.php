@@ -36,7 +36,9 @@ return array(
 
 		'bootstrap' => array(
 		        'class' => 'bootstrap.components.Bootstrap',
-			'responsiveCss' => false,
+			'responsiveCss' => true,
+			'yiiCss' => false,
+			'fontAwesomeCss' => true
 		),
 	    
 		'urlManager' => array(

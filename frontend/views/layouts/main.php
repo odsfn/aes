@@ -52,7 +52,7 @@
 <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
-		<div class="container">
+		<div class="container-fluid">
 			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
@@ -103,7 +103,7 @@
 	</div>
 </div>
 
-<div class="container">
+<div class="container-fluid">
     <div class="flash-messages affix span4 offset8">
     <?php
     $this->widget('bootstrap.widgets.TbAlert', array(

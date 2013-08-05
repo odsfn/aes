@@ -32,10 +32,10 @@
 	<?php echo $form->textFieldRow($model,'birth_place',array('class'=>'span5','maxlength'=>128)); ?>
 
         <?php echo $form->datepickerRow($model, 'birth_day',
-	    array('prepend'=>'<i class="icon-calendar"></i>')); ?>
+	    array('prepend'=>'<i class="icon-calendar"></i>','class'=>'span4')); ?>
 
 	<?php echo $form->dropDownListRow($model, 'gender',
-	    array('', '1' => 'Male', '2' => 'Famale')); 
+	    array('', '1' => 'Male', '2' => 'Famale'), array('class'=>'span5')); 
 	?>
 
 <div class="form-actions">

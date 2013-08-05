@@ -1,0 +1,68 @@
+#photo {
+    margin-bottom: 15px;
+}
+
+#title {
+    margin-bottom: 15px;
+}
+
+#navigation .nav-pills > li > a {
+    background-color: #f9f9f9;
+}
+
+#navigation .nav-pills > li.active > a, 
+#navigation .nav-pills > li.active > a:hover {
+    background-color: #0088cc;
+}
+
+#navigation .nav-pills > li > a:hover {
+    background-color: #DDD;
+}
+
+#user-info table th {
+    width: 25%;
+}
+
+.bootstrap-widget-header.smooth {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.post .post-rate, .post .media-heading .controls {
+    margin-right: 7px;
+}
+
+.post .post-rate span {
+    margin-left: 7px;
+}
+
+.post .media-body .post-after {
+    height: 20px;
+}
+
+.post .comments > .media:first-child {
+    margin-top: 15px;
+}
+
+.records .get-more > div {
+    text-align: center;
+/*    border: 1px solid black;*/
+    margin-top: 15px;
+    
+    line-height: 14px;
+    
+    padding-top: 8px;
+    padding-bottom: 8px;
+    
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    
+    background-color: #f9f9f9;
+}
+
+.records .get-more > div:hover {
+    background-color: #DDD;
+    cursor: pointer;
+}
