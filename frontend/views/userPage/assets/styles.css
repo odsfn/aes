@@ -41,7 +41,8 @@
     height: 20px;
 }
 
-.post .comments > .media:first-child {
+.post .comments > .media:first-child, 
+.post .comments .new-post {
     margin-top: 15px;
 }
 

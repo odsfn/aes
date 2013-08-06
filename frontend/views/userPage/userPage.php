@@ -191,6 +191,15 @@ Yii::app()->clientScript->registerCssFile(
 						<div class="comments"></div>
 					    </div>
 					</div>
+					
+					<div class="new-post row-fluid">
+					    <div class="well span12">
+						<input type="text" name="new-post" placeholder="<?= Yii::t('userPage', 'Comment');?>" value="" class="span12">
+						<div class="controls">
+						    <button class="btn btn-primary pull-right"><?= Yii::t('userPage', 'Post'); ?></button>
+						</div>
+					    </div>
+					</div>
 				    </div>
 				</div>
 			    </div>
@@ -207,3 +216,18 @@ Yii::app()->clientScript->registerCssFile(
 	</div>
     </div>
 </div>
+<script type="text/javascript">
+    $(function(){
+	$('.new-post > div').removeClass('well');
+	$('.new-post .controls').hide();
+	
+	$('input[name="new-post"]').focusin(function(){
+	    var $el = $(this).parent('div');
+	    
+	    if(!$el.hasClass('well')) {
+		$el.addClass('well');
+		$('.controls', $el).show();
+	    }
+	});
+    });
+</script>
