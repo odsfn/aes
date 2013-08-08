@@ -10,6 +10,7 @@
 			    'htmlOptions' => array(
 				'id' => 'personal-info'
 			    ),
+			    'type'  => 'condensed',
 			    'data'  => $profile,
 			    'attributes'=>array(
 				'first_name', 'last_name', 'birth_place', 'birthDayFormated',
@@ -23,6 +24,7 @@
 			    'htmlOptions' => array(
 				'id' => 'contacts'
 			    ),
+			    'type'  => 'condensed',
 			    'data'=>$profile,
 			    'attributes'=>array(
 				'email', 'mobile_phone'
