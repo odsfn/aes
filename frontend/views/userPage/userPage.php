@@ -1,82 +1,32 @@
-<?php
-$this->layout = '//layouts/column1';
-Yii::app()->bootstrap->registerAssetCss('bootstrap-box.css');
-Yii::app()->clientScript->registerCssFile(
-	Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.views.userPage.assets') . '/styles.css')
-);
-/*
- * @author Vasiliy Pedak truvazia@gmail.com
- */
-?>
-
-<div class="row-fluid">
-    <div class="span10 offset1">
-	
-	<div class="bootstrap-widget" id="title">
-	    <div class="bootstrap-widget-header smooth">
-		<i class="icon-user"></i><h3>Jhon Lenon</h3>
-		<h3 class="pull-right">Online</h3>
-	    </div>
-	</div>
-	
-	<div class="row-fluid">
-	    
-	    <div class="span3" id="column-left">
-		
-		<div id="photo">
-		    <img src="http://placehold.it/237x300" />
-		</div>
-		
-		<div id="navigation">
-		    <?php
-			$this->widget('bootstrap.widgets.TbTabs', array(
-				'type'=>'pills',
-				'stacked'=>true,
-				'tabs'=>array(
-					array('label'=> Yii::t('userPage', 'My page'), 'active'=>true),
-					array('label'=> Yii::t('userPage', 'My messages'), 'url' => '#'),
-					array('label'=> Yii::t('userPage', 'My votes')),
-					array('label'=> Yii::t('userPage', 'My nominations')),
-					array('label'=> Yii::t('userPage', 'My mandates')),
-					array('label'=> Yii::t('userPage', 'My photos')),
-					array('label'=> Yii::t('userPage', 'My videos')),
-				),
-			));
-		    ?>
-		</div>
-		
-	    </div><!-- #column-left -->
-	    
-	    <div class="span9" id="column-right">
-		
+<?php 
+    $this->layout = '//layouts/user';
+    $profile = Yii::app()->user->profile;
+?>		
 		<div id="user-info" class="row-fluid">
 		    <div class="span12">
 		    
-			<h5 data-toggle="#personal-info"><?= Yii::t('userPage', 'Personal info'); ?>&nbsp;<small><a href="#"><?= Yii::t('userPage', 'Change'); ?></a></small></h5>
+			<h5 data-toggle="#personal-info"><?= Yii::t('userPage', 'Personal info'); ?>&nbsp;<small><a href="/userAccount/profile/edit#personal-info"><?= Yii::t('userPage', 'Change'); ?></a></small></h5>
 
 			<?php $this->widget('bootstrap.widgets.TbDetailView', array(
 			    'htmlOptions' => array(
 				'id' => 'personal-info'
 			    ),
-			    'data'=>array('id'=>1, 'firstName'=>'Mark', 'lastName'=>'Otto', 'language'=>'CSS'),
+			    'data'  => $profile,
 			    'attributes'=>array(
-				    array('name'=>'firstName', 'label'=>'First name'),
-				    array('name'=>'lastName', 'label'=>'Last name'),
-				    array('name'=>'language', 'label'=>'Language'),
-			    ),
+				'first_name', 'last_name', 'birth_place', 'birthDayFormated',
+				'displayGender'
+			    )
 			)); ?>
 
-			<h5 data-toggle="#contacts"><?= Yii::t('userPage', 'Contacts'); ?>&nbsp;<small><a href="#"><?= Yii::t('userPage', 'Change'); ?></a></small></h5>
+			<h5 data-toggle="#contacts"><?= Yii::t('userPage', 'Contacts'); ?>&nbsp;<small><a href="/userAccount/profile/edit#contacts"><?= Yii::t('userPage', 'Change'); ?></a></small></h5>
 
 			<?php $this->widget('bootstrap.widgets.TbDetailView', array(
 			    'htmlOptions' => array(
 				'id' => 'contacts'
 			    ),
-			    'data'=>array('id'=>1, 'firstName'=>'Mark', 'lastName'=>'Otto', 'language'=>'CSS'),
+			    'data'=>$profile,
 			    'attributes'=>array(
-				    array('name'=>'firstName', 'label'=>'First name'),
-				    array('name'=>'lastName', 'label'=>'Last name'),
-				    array('name'=>'language', 'label'=>'Language'),
+				'email', 'mobile_phone'
 			    ),
 			)); ?>
 			
@@ -211,11 +161,7 @@ Yii::app()->clientScript->registerCssFile(
 
 		    </div>
 		</div>
-	    </div><!-- #column-right -->
-	    
-	</div>
-    </div>
-</div>
+
 <script type="text/javascript">
     $(function(){
 	$('.new-post > div').removeClass('well');

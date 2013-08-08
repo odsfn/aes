@@ -63,13 +63,19 @@
 
 			<div class="nav-collapse collapse">
 				<ul class="nav">
+					<?php if(!Yii::app()->user->isGuest): ?>
 					<li class="divider-vertical"></li>
-					<li class="active"><a href="#">About</a></li>
+					<li><a href="/userPage">Your page</a></li>
+					<?php endif; ?>
+
 					<li class="divider-vertical"></li>
 					<li><a href="#">Elections</a></li>
+					
 					<li class="divider-vertical"></li>
 					<li><a href="#">People</a></li>
+					
 					<li class="divider-vertical"></li>
+					<li <?php if(false): ?>class="active"<?php endif; ?>><a href="#">About</a></li>
 				</ul>
 				
 				<?php if(!Yii::app()->user->isGuest) :?>
@@ -77,16 +83,10 @@
 				    <li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= Yii::app()->user->username; ?><b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->profileUrl); ?>">Profile</a></li>
+							<li class="nav-header">Settings</li>
+							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->profileUrl); ?>"><?= Yii::t('frontend', 'Profile'); ?></a></li>
+							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->editIdentityUrl); ?>"><?= Yii::t('frontend', 'Identity'); ?></a></li>
 							<li class="divider"></li>
-							<li class="dropdown-submenu">
-							    <a href="#">Settings</a>
-							    <ul class="dropdown-menu">
-								<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->editIdentityUrl); ?>">Identity</a></li>
-							    </ul>
-							</li>
-							<li class="divider"></li>
-<!--							<li class="nav-header">Nav header</li>-->
 							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->logoutUrl); ?>">Log out</a></li>
 						</ul>
 				    </li>

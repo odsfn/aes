@@ -31,7 +31,7 @@
 
 	<?php echo $form->textFieldRow($model,'birth_place',array('class'=>'span5','maxlength'=>128)); ?>
 
-        <?php echo $form->datepickerRow($model, 'birth_day',
+        <?php echo $form->datepickerRow($model, 'birthDayFormated',
 	    array('prepend'=>'<i class="icon-calendar"></i>','class'=>'span4')); ?>
 
 	<?php echo $form->dropDownListRow($model, 'gender',

@@ -30,7 +30,7 @@ class UserAccountModule extends CWebModule {
     
     public $logoutUrl = "/userAccount/login/out";
     
-    public $profileUrl = "/userAccount/profile";
+    public $profileUrl = "/userAccount/profile/edit";
     
     public $returnUrl = "/";
     
@@ -42,6 +42,8 @@ class UserAccountModule extends CWebModule {
     public $afterIdentityEditedUrl = "/userAccount/identity/edit";
     
     public $rememberMeTime = 3600;
+    
+    public $userModelConfig = 'UserAccount';
     
     public function init() {
 	// this method is called when the module is being created
@@ -106,4 +108,33 @@ class UserAccountModule extends CWebModule {
 	}
 	return implode($pass); //turn the array into a string
     }
+    
+    public function __call($name, $parameters) {
+        
+        // magic for create
+        if(preg_match('/^create(.+)$/', $name)) {
+           return $this->_instantiateByConfig($name, $parameters);
+        }
+        
+        return parent::__call($name, $parameters);
+    }
+    
+    /**
+     * Создает экземпляр класса по свойству данного модуля, которое содержит 
+     * конфигурацию компонента Yii. 
+     * 
+     * Вызов $module->createProfileForm(), вернет компонент, конфигурация которого
+     * находится в свойстве profileFormConfig
+     * 
+     * @param type $name    Имя метода
+     * @param type $parameters  Параметры
+     * @return type mixed
+     */
+    protected function _instantiateByConfig($name, $parameters) {
+        $config = str_replace('create', '', $name, $replacements = 1);
+        $config = lcfirst($config) . 'Config';
+        $config = $this->$config; 
+
+        return Yii::createComponent($config);        
+    }    
 }

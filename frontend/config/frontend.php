@@ -55,6 +55,7 @@ return array(
 		),
 	    
 		'user' => array(
+		    'class' =>	'application.modules.userAccount.components.UAccWebUser',
 		    'allowAutoLogin' => true,
 		    'loginUrl' => array('userAccount/login')
 		),
@@ -65,7 +66,9 @@ return array(
 	),
     
 	'modules' => array(
-	    'userAccount',
+	    'userAccount' => array(
+		'returnUrl' => '/userPage'
+	    ),
 	    
 	    'gii' => array(
 		'generatorPaths' => array('bootstrap.gii'),

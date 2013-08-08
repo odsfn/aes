@@ -13,8 +13,8 @@
  * @property integer $status
  *
  * The followings are the available model relations:
- * @property UserIdentity $userIdentity
- * @property UserProfile $userProfile
+ * @property Identity $userIdentity
+ * @property Profile $userProfile
  */
 class UserAccount extends CActiveRecord {
 
