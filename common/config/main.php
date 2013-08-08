@@ -23,6 +23,7 @@ return array(
 		'common.helpers.*',
 		'common.models.*',
 		'application.controllers.*',
+		'application.components.*',
 		'application.extensions.*',
 		'application.helpers.*',
 		'application.models.*',
