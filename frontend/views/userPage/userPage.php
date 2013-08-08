@@ -1,6 +1,5 @@
 <?php 
     $this->layout = '//layouts/user';
-    $profile = Yii::app()->user->profile;
 ?>		
 		<div id="user-info" class="row-fluid">
 		    <div class="span12">

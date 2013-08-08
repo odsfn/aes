@@ -45,6 +45,14 @@ class UserAccountModule extends CWebModule {
     
     public $userModelConfig = 'UserAccount';
     
+    public $photosDir = '/uploads/photos';
+    
+    public $defaultPhoto = '237x300.gif';
+    
+    public $photoExtensions = array('png', 'jpg');
+    
+    public $photoMaxSize = 3000000;
+    
     public function init() {
 	// this method is called when the module is being created
 	// you may place code here to customize the module or the application

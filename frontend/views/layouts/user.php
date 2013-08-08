@@ -24,7 +24,7 @@ Yii::app()->clientScript->registerCssFile(
 	    <div class="span3" id="column-left">
 		
 		<div id="photo">
-		    <img src="http://placehold.it/237x300" />
+		    <img src="<?php echo $this->profile->getPhoto(237, 300); ?>" />
 		</div>
 		
 		<div id="navigation">

@@ -23,6 +23,8 @@ class Profile extends CActiveRecord {
     const GENDER_MALE = 1;
     const GENDER_FEMALE = 2;
     
+    public $uploadingPhoto;
+    
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -43,6 +45,8 @@ class Profile extends CActiveRecord {
      * @return array validation rules for model attributes.
      */
     public function rules() {
+	$module = Yii::app()->getModule('userAccount');
+	
 	// NOTE: you should only define rules for those attributes that
 	// will receive user inputs.
 	return array(
@@ -55,10 +59,12 @@ class Profile extends CActiveRecord {
 	    
 	    array('birth_day', 'date', 'format'=>'yyyy-MM-dd'),
 	    
-	    array('birthDayFormated', 'safe'),
+	    array('birthDayFormated', 'safe', 'on' => 'edit, registration'),
 	    // @TODO: брать значение формата из настроек локали ( CLocale ), формат
 	    // должен соответствовать формату виртуального атрибуты birthDayFormated 
 	    array('birthDayFormated', 'date', 'format'=>'MM/dd/yyyy'),
+	    
+	    array('uploadingPhoto', 'file', 'types' => implode(',', $module->photoExtensions), 'safe' => true, 'maxSize' => $module->photoMaxSize, 'allowEmpty'=>true),
 	    
 	    array('email', 'unique', 'attributeName'=>'identity', 'className'=>'Identity', 'on'=>'registration'),
 	    array('mobile_phone', 'unique', 'attributeName'=>'mobile_phone', 'className'=>'Profile', 'allowEmpty'=>true),
@@ -93,7 +99,8 @@ class Profile extends CActiveRecord {
 	    'gender' => 'Gender',
 	    'mobile_phone' => 'Mobile Phone',
 	    'email' => 'Email',
-	    'displayGender' => 'Gender'
+	    'displayGender' => 'Gender',
+	    'uploadingPhoto' => 'Your photo'
 	);
     }
 
@@ -119,6 +126,16 @@ class Profile extends CActiveRecord {
 	return new CActiveDataProvider($this, array(
 	    'criteria' => $criteria,
 	));
+    }
+    
+    public function beforeSave() {
+	$uploadingPhoto = CUploadedFile::getInstance($this, 'uploadingPhoto');
+	
+	if($uploadingPhoto) {
+	    $this->changePhoto($uploadingPhoto);
+	}
+	
+	return parent::beforeSave();
     }
     
     public function getUsername(){
@@ -151,5 +168,84 @@ class Profile extends CActiveRecord {
 	);
 	
 	return Yii::t('common', $genders[$this->gender]);
+    }
+    
+    /**
+     * Provides link to the user's photo with specified size. Makes resizing if
+     * needed
+     * @param int $size
+     * @return string	Path to the user's photo
+     * @throws CException
+     */
+    public function getPhoto($width = 64, $height = null)
+    {
+        $width = intval($width);
+        $width || ($width = 32);
+
+	if(!$height) {
+	    $height = $width;
+	}
+	
+	$photosDir = Yii::app()->getModule('userAccount')->photosDir;
+	$basePath   = Yii::app()->basePath . '/www' . $photosDir . '/';
+	
+        if ($this->photo)
+        {
+            $sizedFile  = str_replace('.', '_' . $width . 'x' . $height . '.', $this->photo);
+
+            // Checks whather photo with specified size already exists
+            if (file_exists($basePath . $sizedFile))
+                return Yii::app()->createAbsoluteUrl('/') . '/' . $photosDir . "/" . $sizedFile;
+
+            if (file_exists($basePath . $this->photo))
+            {
+                $image = Yii::app()->image->load($basePath . $this->photo);
+                if ($image->ext != 'gif' || $image->config['driver'] == "ImageMagick")
+                    $image->resize($width, $height, CImage::WIDTH)
+                          ->crop($width, $height)
+                          ->quality(85)
+                          ->sharpen(15)
+                          ->save($basePath . $sizedFile);
+                else
+                    @copy($basePath . $this->photo, $basePath . $sizedFile);
+
+                return Yii::app()->createAbsoluteUrl('/') . '/' . $photosDir . "/" . $sizedFile;
+            }
+        }
+        
+        return Yii::app()->createAbsoluteUrl('/') . '/' . $photosDir . "/" . Yii::app()->getModule('userAccount')->defaultPhoto;
+    }
+    
+    /**
+     * Sets up new photo
+     * @param CUploadedFile $uploadedFile
+     */
+    public function changePhoto(CUploadedFile $uploadedFile) {
+        $photosDir = Yii::app()->getModule('userAccount')->photosDir;
+
+        $basePath   = Yii::app()->basePath . '/www' . $photosDir ;
+
+        //создаем каталог, если не существует
+        if(!file_exists($basePath)) {
+            mkdir($basePath);
+        }
+
+        $basePath .= '/';
+
+        $filename = $this->user_id . '_' . str_replace( array('.', ' '), '_', microtime() ) . '.' . $uploadedFile->extensionName;
+
+        if($this->photo) {
+            //remove old resized photos
+            if(file_exists($basePath . $this->photo))
+                unlink($basePath . $this->photo);
+
+            foreach (glob($basePath . $this->user_id . '_*.*') as $oldThumbnail) {
+                unlink($oldThumbnail);
+            }
+        }
+
+        $uploadedFile->saveAs($basePath . $filename);
+
+        $this->photo = $filename;
     }
 }

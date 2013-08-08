@@ -56,7 +56,12 @@ return array(
 			    ),
 		    ),
 		),
-	    
+
+		'image' => array(
+		    'class'  => 'common.extensions.image.CImageComponent',
+		    'driver' => 'GD',                               // если ImageMagick, надо указать к нему путь ниже
+		    'params' => array( 'directory' => '/usr/bin' ), // в этой директории должен быть convert
+		),
 	),
     
 	'params' => array(

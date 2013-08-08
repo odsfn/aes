@@ -7,8 +7,12 @@ class ProfileController extends UAccController{
     
     public $defaultAction = 'view';
     
+    public $profile;
+    
     public function actionEdit(){
-	$profile = Profile::model()->findByPk(Yii::app()->user->id);
+	$this->profile = $profile = Profile::model()->findByPk(Yii::app()->user->id);
+	
+	$profile->scenario = 'edit';
 	
 	if ($this->request->isPostRequest) { 
 	    if(!isset($_POST['Profile'])) {

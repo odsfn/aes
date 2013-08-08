@@ -6,6 +6,9 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 	'enableAjaxValidation'=>false,
 	'enableClientValidation'=>true,
 	'type'=>'horizontal',
+	'htmlOptions' => array(
+	    'enctype' => 'multipart/form-data',
+	)
 )); ?>
 
 <h3><?= Yii::t('profile', 'Profile settings'); ?></h3>
@@ -16,7 +19,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 
 	<h5><?= Yii::t('userPage', 'Personal information'); ?><a href="#personal-info"></a></h5><hr>
 
-	<?php // echo $form->textFieldRow($model,'photo',array('class'=>'span6')); ?>
+	<?php echo $form->fileFieldRow($model,'uploadingPhoto',array('class'=>'span6')); ?>
 	
 	<?php echo $form->textFieldRow($model,'first_name',array('class'=>'span6')); ?>
 
