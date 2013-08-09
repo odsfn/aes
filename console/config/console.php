@@ -35,7 +35,7 @@ return array(
 			//'admin', 'anOtherModule', // ...
 		),
 		// the name of the application component that should be used to connect to the database
-		'connectionID'=>'db',
+		// 'connectionID'=>'db',
 		// alias of the template file used to create new migrations
 		// 'templateFile'=>'application.db.migration_template',
 	    ),

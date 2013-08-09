@@ -17,6 +17,8 @@ return array(
 	),
 	'yiinitializr' => array(
 		'config' => array(
+			// Settings from this file will be used to configurate Yii application that
+			// instantiates in the Yiinitializr/Composer/Callback.php
 			'console' => $dirname . '/console.php'
 		),
 		'app' => array(

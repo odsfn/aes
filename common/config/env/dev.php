@@ -14,11 +14,6 @@ return array(
 			'password' => 'yii',
 			'ipFilters' => array('127.0.0.1','::1'),
 		),
-		
-		'db' => array(
-			'enableProfiling' => true,
-			'enableParamLogging' => true,
-		),
 	),
     
 	'params' => array(

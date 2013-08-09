@@ -33,13 +33,16 @@ return array(
 	'components' => array(
 	    
 		'db'=>array(
-		    'connectionString' => 'mysql:host=localhost;dbname=aes',
+//		    Provide this setting in the config/local.php or config/env/dev.php or config/env/prod.php
+//		    
+//		    'connectionString' => 'mysql:host=localhost;dbname=_yourDBName_',
+//		    'username' => 'root',
+//		    'password' => 'root',
+//		    'initSQLs' => array('SET time_zone = "Europe/Kiev";'),
+		    
 		    'emulatePrepare' => true,
-		    'username' => 'root',
-		    'password' => 'root',
 		    'charset' => 'utf8',
 		    'tablePrefix' => '',
-		    'initSQLs' => array('SET time_zone = "Europe/Kiev";')
 		),
 	    
 		'errorHandler' => array(

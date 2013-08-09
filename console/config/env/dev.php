@@ -17,17 +17,7 @@ return array(
 			'ipFilters' => array('127.0.0.1','::1'),
 		),
 	),
-	'components' => array(
-//		'db' => array(
-//			// setup to suit your needs
-//			'connectionString' => '{DB_CONNECTION}',
-//			'username' => '{DB_USER}',
-//			'password' => '{DB_PASSWORD}',
-//			'enableProfiling' => true,
-//			'enableParamLogging' => true,
-//			'charset' => 'utf8',
-//		),
-	),
+
 	'params' => array(
 		'yii.handleErrors' => true,
 		'yii.debug' => true,
