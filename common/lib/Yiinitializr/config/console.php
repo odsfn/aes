@@ -25,8 +25,10 @@ return Yiinitializr\Helpers\ArrayX::merge(
 	array(
 		'params' => array(
 			'composer.callbacks' => array(
-				'post-update' => array('yiic', 'migrate'),
-				'post-install' => array('yiic', 'migrate'),
+				//--interactive=0 forces to run migrations without any questions
+				//you may remove this argument, on development environment
+				'post-update' => array('yiic', 'migrate', '--interactive=0'),
+				'post-install' => array('yiic', 'migrate', '--interactive=0'),
 			)
 		),
 	)

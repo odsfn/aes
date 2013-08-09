@@ -28,9 +28,7 @@ OR ( id you did not install composer into the system ):
 
 All dependencies will be fetched, and installation process will start. It will ask you in which environment you want to deploy.
 
-5. Run 
-
-/var/www/aes$ ./yiic migrate up --migrationPath=webroot.frontend.modules.userAccount.migrations
+At the last step it will updates all migrations.
 
 ##Examples
 
