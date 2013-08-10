@@ -3,10 +3,14 @@
  * @author Vasiliy Pedak truvazia@gmail.com
  */
 $this->beginContent('//layouts/column1');
+
 Yii::app()->bootstrap->registerAssetCss('bootstrap-box.css');
-Yii::app()->clientScript->registerCssFile(
-	Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.views.userPage.assets') . '/styles.css')
-);
+Yii::app()->clientScript->registerCssFile(Yii::app()->getBaseUrl(true) . '/css/user.css');
+
+$username = Yii::app()->user->username;
+$userPageUrl = '/userPage';
+
+$this->breadcrumbs->add($username, $userPageUrl);
 ?>
 
 <div class="row-fluid">
@@ -14,7 +18,13 @@ Yii::app()->clientScript->registerCssFile(
 	
 	<div class="bootstrap-widget" id="title">
 	    <div class="bootstrap-widget-header smooth">
-		<i class="icon-user"></i><h3><?= Yii::app()->user->username; ?></h3>
+		<i class="icon-user"></i>
+                <h3>
+                    <?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
+                            'homeLink' => false,
+                            'links'=> $this->breadcrumbs->breadcrumbs 
+                    )); ?>
+                </h3>
 		<h3 class="pull-right">Online</h3>
 	    </div>
 	</div>

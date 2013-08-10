@@ -9,7 +9,11 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 	'htmlOptions' => array(
 	    'enctype' => 'multipart/form-data',
 	)
-)); ?>
+)); 
+
+$this->breadcrumbs->add(Yii::t('userPage.profile', 'Profile settings'));
+
+?>
 
 <h3><?= Yii::t('profile', 'Profile settings'); ?></h3>
 

@@ -1,6 +1,5 @@
 /**
  * Styles for the layouts/user.php
- * @TODO: Should be moved to the toppest level
  */
 
 #photo {
@@ -28,4 +27,28 @@
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
+}
+
+#title h3 {
+    top: 0px;
+    bottom: 0px;
+}
+
+#title .breadcrumbs {
+    width: auto;
+    display: inline-block;
+    border: none;
+    background: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+#title .breadcrumbs a {
+    color: inherit;
+}
+
+#title .breadcrumbs .divider {
+    position: relative;
+    bottom: -2px;
+    font-size: 16px;
 }

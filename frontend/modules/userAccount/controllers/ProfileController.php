@@ -9,6 +9,14 @@ class ProfileController extends UAccController{
     
     public $profile;
     
+    public function init() {
+        
+        $this->attachBehavior('breadcrumbs', new CrumbsBehaviour);
+        $this->breadcrumbs->setEnabled(true);
+        
+        parent::init();
+    }
+    
     public function actionEdit(){
 	$this->profile = $profile = Profile::model()->findByPk(Yii::app()->user->id);
 	

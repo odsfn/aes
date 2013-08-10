@@ -2,9 +2,10 @@
 /*
  * @author Vasiliy Pedak truvazia@gmail.com
  */
-class UserPageController extends FrontController {
+class UserPageController extends SocialController {
 
     public $profile;
+    
     /**
      * Authenticated user's page
      */
