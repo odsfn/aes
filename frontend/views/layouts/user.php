@@ -39,19 +39,19 @@ $this->breadcrumbs->add($username, $userPageUrl);
 		
 		<div id="navigation">
 		    <?php
-			$this->widget('bootstrap.widgets.TbTabs', array(
-				'type'=>'pills',
-				'stacked'=>true,
-				'tabs'=>array(
-					array('label'=> Yii::t('userPage', 'My page'), 'active'=>true),
-					array('label'=> Yii::t('userPage', 'My messages'), 'url' => '#'),
-					array('label'=> Yii::t('userPage', 'My votes')),
-					array('label'=> Yii::t('userPage', 'My nominations')),
-					array('label'=> Yii::t('userPage', 'My mandates')),
-					array('label'=> Yii::t('userPage', 'My photos')),
-					array('label'=> Yii::t('userPage', 'My videos')),
-				),
-			));
+                    $this->widget('bootstrap.widgets.TbMenu', array(
+                        'type'=>'pills',
+                        'stacked' => 'true',
+                        'items' => array(
+                            array('label'=> Yii::t('userPage', 'My page'), 'url'=> array('userPage/index')),
+                            array('label'=> Yii::t('userPage', 'My messages'), 'url'=> array('userPage/messages')),
+                            array('label'=> Yii::t('userPage', 'My votes'), 'url'=> array('userPage/votes')),
+                            array('label'=> Yii::t('userPage', 'My nominations'), 'url'=> array('userPage/nominations')),
+                            array('label'=> Yii::t('userPage', 'My mandates'), 'url'=> array('userPage/mandates')),
+                            array('label'=> Yii::t('userPage', 'My photos'), 'url'=> array('userPage/photos')),
+                            array('label'=> Yii::t('userPage', 'My videos'), 'url'=> array('userPage/videos')),
+                        )
+                    ));
 		    ?>
 		</div>
 		

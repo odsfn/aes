@@ -14,7 +14,7 @@ class UserPageController extends SocialController {
 	$user = Yii::app()->user;
 	
 	if($user->isGuest) 
-	    $this->redirect ('/');
+	    $this->redirect('/');
 	
 	$this->profile = $user->profile;
 	
