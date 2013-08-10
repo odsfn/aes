@@ -7,7 +7,12 @@ class ProfileController extends UAccController{
     
     public $defaultAction = 'view';
     
+    /**
+     * @TODO: Ingect this attributes by external behaviour 
+     */
     public $profile;
+    
+    public $self = true;
     
     public function init() {
         

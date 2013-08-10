@@ -7,7 +7,7 @@ $this->beginContent('//layouts/column1');
 Yii::app()->bootstrap->registerAssetCss('bootstrap-box.css');
 Yii::app()->clientScript->registerCssFile(Yii::app()->getBaseUrl(true) . '/css/user.css');
 
-$username = Yii::app()->user->username;
+$username = $this->profile->username;
 $userPageUrl = '/userPage';
 
 $this->breadcrumbs->add($username, $userPageUrl);
@@ -43,13 +43,14 @@ $this->breadcrumbs->add($username, $userPageUrl);
                         'type'=>'pills',
                         'stacked' => 'true',
                         'items' => array(
-                            array('label'=> Yii::t('userPage', 'My page'), 'url'=> array('userPage/index')),
-                            array('label'=> Yii::t('userPage', 'My messages'), 'url'=> array('userPage/messages')),
-                            array('label'=> Yii::t('userPage', 'My votes'), 'url'=> array('userPage/votes')),
-                            array('label'=> Yii::t('userPage', 'My nominations'), 'url'=> array('userPage/nominations')),
-                            array('label'=> Yii::t('userPage', 'My mandates'), 'url'=> array('userPage/mandates')),
-                            array('label'=> Yii::t('userPage', 'My photos'), 'url'=> array('userPage/photos')),
-                            array('label'=> Yii::t('userPage', 'My videos'), 'url'=> array('userPage/videos')),
+                            array('label'=> Yii::t('userPage', ($this->self) ? 'My page' : 'Page'), 'url'=> array('/userPage/index')),
+                            array('label'=> Yii::t('userPage', 'My messages'), 'url'=> array('/userPage/messages'), 'visible' => $this->self),
+                            array('label'=> Yii::t('userPage', 'Write message'), 'url'=> array('/userPage/writeMessage', array('userId'=> $this->profile->user_id)), 'visible' => !$this->self),
+                            array('label'=> Yii::t('userPage', ($this->self) ? 'My votes' : 'Votes'), 'url'=> array('/userPage/votes')),
+                            array('label'=> Yii::t('userPage', ($this->self) ? 'My nominations' : 'Nominations'), 'url'=> array('/userPage/nominations')),
+                            array('label'=> Yii::t('userPage', ($this->self) ? 'My mandates' : 'Mandates'), 'url'=> array('/userPage/mandates')),
+                            array('label'=> Yii::t('userPage', ($this->self) ? 'My photos' : 'Photos'), 'url'=> array('/userPage/photos')),
+                            array('label'=> Yii::t('userPage', ($this->self) ? 'My videos' : 'Videos'), 'url'=> array('/userPage/videos')),
                         )
                     ));
 		    ?>

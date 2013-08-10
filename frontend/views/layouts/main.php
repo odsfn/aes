@@ -65,7 +65,7 @@
 				<ul class="nav">
 					<?php if(!Yii::app()->user->isGuest): ?>
 					<li class="divider-vertical"></li>
-					<li><a href="/userPage">Your page</a></li>
+                                        <li <?php if(isset($this->self) && $this->self): ?>class="active"<?  endif; ?>><a href="/userPage">Your page</a></li>
 					<?php endif; ?>
 
 					<li class="divider-vertical"></li>

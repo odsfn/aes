@@ -4,7 +4,11 @@
 		<div id="user-info" class="row-fluid">
 		    <div class="span12">
 		    
-			<h5 data-toggle="#personal-info"><?= Yii::t('userPage', 'Personal info'); ?>&nbsp;<small><a href="/userAccount/profile/edit#personal-info"><?= Yii::t('userPage', 'Change'); ?></a></small></h5>
+			<h5 data-toggle="#personal-info"><?= Yii::t('userPage', 'Personal info'); ?>
+                            <?php if($this->self): ?>
+                            &nbsp;<small><a href="/userAccount/profile/edit#personal-info"><?= Yii::t('userPage', 'Change'); ?></a></small>
+                            <?php endif; ?>
+                        </h5>
 
 			<?php $this->widget('bootstrap.widgets.TbDetailView', array(
 			    'htmlOptions' => array(
@@ -18,7 +22,11 @@
 			    )
 			)); ?>
 
-			<h5 data-toggle="#contacts"><?= Yii::t('userPage', 'Contacts'); ?>&nbsp;<small><a href="/userAccount/profile/edit#contacts"><?= Yii::t('userPage', 'Change'); ?></a></small></h5>
+			<h5 data-toggle="#contacts"><?= Yii::t('userPage', 'Contacts'); ?>
+                            <?php if($this->self): ?>
+                            &nbsp;<small><a href="/userAccount/profile/edit#contacts"><?= Yii::t('userPage', 'Change'); ?></a></small>
+                            <?php endif; ?>
+                        </h5>
 
 			<?php $this->widget('bootstrap.widgets.TbDetailView', array(
 			    'htmlOptions' => array(

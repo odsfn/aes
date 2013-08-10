@@ -22,12 +22,14 @@ return array(
 		'common.components.*',
 		'common.helpers.*',
 		'common.models.*',
+            
 		'application.controllers.*',
 		'application.components.*',
 		'application.extensions.*',
 		'application.helpers.*',
 		'application.models.*',
-	    
+                'application.modules.userAccount.models.UserAccount',
+            
 		'common.extensions.YiiMailer.YiiMailer'
 	),
 	'components' => array(
