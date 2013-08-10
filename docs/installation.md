@@ -3,7 +3,10 @@ Installation
 
 #For development
 
-0. Get AES from repository
+0. 
+
+Get AES from repository
+Check that you have installed mysql timezones, if not follow this instructions http://dev.mysql.com/doc/refman/5.1/en/mysql-tzinfo-to-sql.html
 
 1. Install Composer [http://getcomposer.org/]. You may skip this step, but on the 4 step you shuld run: 
 
