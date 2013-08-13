@@ -3,4 +3,5 @@
  */
 $(function(){
     console.log('In app.js');
+    PostsApp.start();
 });

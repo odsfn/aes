@@ -1,6 +1,9 @@
 <?php
 /*
- * This widget assembles specified client application
+ * This widget assembles specified client application accordingly with system conventions
+ * 
+ * Application is located in the subdirectory of the current action. 
+ * For instanse frontend.views.[currentControllerId].assets.[currentActionId].js.[applicationName]
  */
 class ClientApp extends CWidget {
     /**
@@ -16,7 +19,9 @@ class ClientApp extends CWidget {
      */
     public $appName;
     /**
-     * List of the required .js files 
+     * List of the required files. See the Yii Packages configuration format.
+     * 
+     * To this array will be added several paths automatically.  
      * @var array 
      */
     public $requires = array();
@@ -32,9 +37,15 @@ class ClientApp extends CWidget {
         //Registering backbone + marionete
         $this->clientScript->registerPackage('marionette');
 
-        $appMain = ($this->isolated) ? 'dev/app.dev.js' : 'app.js';
+        if($this->isolated) {
+            $appMain = 'dev/app.dev.js';
+            $this->clientScript->registerScriptFile('js/libs/backbone-faux-server.js');
+        }else{
+            $appMain = 'app.js';    
+        }
 
         $this->requires['basePath'] = 'application.views.' . $this->controller->id . '.assets.' . $this->controller->action->id . '.js.' . $this->appName;
+        $this->requires['js'][] = ucfirst($this->appName) . 'App.js';
         $this->requires['js'][] = $appMain;
 
         $this->clientScript->packages = array_merge(

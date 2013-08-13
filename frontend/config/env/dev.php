@@ -28,6 +28,10 @@ return array(
 			'enabled'=>false
 		    ),
 		),
-	    )
+	    ), 
+            
+            'assetManager' => array(
+                'forceCopy' => true
+            )
 	)
 );

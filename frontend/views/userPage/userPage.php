@@ -45,28 +45,36 @@
 
                 <?php $this->widget('application.widgets.ClientApp', array(
                     'isolated' => true,
-                    'appName' => 'posts'
+                    'appName' => 'posts',
+                    'requires' => array(
+                        'js' => array(
+                            'models/Post.js',
+                            'collections/Posts.js',
+                            'views/PostsTitleView.js',
+                            'views/EditBoxView.js'
+                         )
+                    )
                 )); ?>
 
 		<div id="posts row-fluid">
-		    <div class="span12">
+		    <div class="span12" id="posts-app-container">
 			
 			<div class="bootstrap-widget" id="title">
 			    <div class="bootstrap-widget-header smooth">
-				<h3><?= Yii::t('userPage', '{count} records', array('{count}'=>150)); ?></h3>
+				<h3><?= Yii::t('userPage', '{count} records', array('{count}'=>'<span class="posts-count">0</span>')); ?></h3>
 				<h3 class="pull-right"><small><a href="#"><?= Yii::t('userPage', 'Show users\' records only');?></a></small></h3>
 			    </div>
 			</div>		    
 
-			<div class="new-post row-fluid">
-			    <div class="well span12">
+			<div class="new-post row-fluid" id="add-post-top">
+			    <div class="well span12 body">
 				<input type="text" name="new-post" placeholder="<?= Yii::t('userPage', 'What\'s new?');?>" value="" class="span12">
 				<div class="controls">
 				    <button class="btn btn-primary pull-right"><?= Yii::t('userPage', 'Post'); ?></button>
 				</div>
 			    </div>
 			</div>
-
+                        
 			<div class="records row-fluid">
 
 			    <div class="media post">
@@ -177,18 +185,52 @@
 		    </div>
 		</div>
 
-<script type="text/javascript">
-    $(function(){
-	$('.new-post > div').removeClass('well');
-	$('.new-post .controls').hide();
-	
-	$('input[name="new-post"]').focusin(function(){
-	    var $el = $(this).parent('div');
-	    
-	    if(!$el.hasClass('well')) {
-		$el.addClass('well');
-		$('.controls', $el).show();
-	    }
-	});
-    });
+<script type="text/template" id="posts-title-tpl">
+    <div class="bootstrap-widget" id="title">
+        <div class="bootstrap-widget-header smooth">
+            <h3 id="posts-counter-cont"><%= count %></h3>
+            <h3 class="pull-right"><small id="author-switcher-cont"><a href="#">Show users' records only</a></small></h3>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="edit-box-tpl">
+    <div class="new-post row-fluid">
+        <div class="body span12">
+            <input type="text" name="new-post" placeholder="<%= placeholderText %>" value="<%= value %>" class="span12">
+            <div class="controls">
+                <button class="btn btn-primary pull-right"><%= buttonText %></button>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="post-tpl">
+    <a class="pull-left" href="#">
+        <img class="media-object" src="http://placehold.it/64x64">
+    </a>
+    <div class="media-body">
+
+        <h5 class="media-heading">
+            <span class="user"><%= userName %></span> 
+            <small><a href="#"><%= date %></a></small> 
+            <span class="controls pull-right">
+                <i class="icon-pencil"></i>&nbsp;
+                <i class="icon-remove"></i>
+            </span>
+        </h5>
+
+        <div class="post-content">
+            <%= postContent %>
+        </div>
+
+        <div class="post-after">
+            <div class="post-rate pull-right">
+                <span class="icon-thumbs-up"><%= likes %></span>
+                <span class="icon-thumbs-down"><%= dislikes %></span>
+            </div>
+        </div>
+
+        <div class="comments"><%= comments %></div>
+    </div>
 </script>
