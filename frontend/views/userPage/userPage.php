@@ -42,6 +42,12 @@
 		    </div>
 		</div>
 		
+
+                <?php $this->widget('application.widgets.ClientApp', array(
+                    'isolated' => true,
+                    'appName' => 'posts'
+                )); ?>
+
 		<div id="posts row-fluid">
 		    <div class="span12">
 			

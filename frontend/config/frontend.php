@@ -62,7 +62,33 @@ return array(
 	    
 		'errorHandler' => array(
 			'errorAction' => 'site/error',
-		)
+		),
+            
+                'clientScript' => array(
+                    'class' => 'CClientScript',
+                    'packages' => array(
+                        'marionette' => array(
+                            'depends' => array(
+                                'backbone'
+                            ),
+                            
+                            'baseUrl' => 'js/libs/backbone.marionette',
+                            'js' => array(
+                                'backbone.marionette.js'
+                            )
+                        ), 
+                        
+                        'backbone' => array(
+                            'depends' => array('jquery.ui'),
+                            'baseUrl' => 'js/libs/backbone.marionette',
+                            'js' => array(
+                                'json2.js',
+                                'underscore.js',
+                                'backbone.js'
+                            )
+                        )
+                    )
+                )
 	),
     
 	'modules' => array(
