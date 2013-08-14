@@ -36,7 +36,8 @@ class ClientApp extends CWidget {
 
         //Registering backbone + marionete
         $this->clientScript->registerPackage('marionette');
-
+        $this->clientScript->registerScriptFile('js/libs/aes/i18n.js');
+        
         if($this->isolated) {
             $appMain = 'dev/app.dev.js';
             $this->clientScript->registerScriptFile('js/libs/backbone-faux-server.js');

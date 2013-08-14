@@ -50,3 +50,7 @@
     background-color: #DDD;
     cursor: pointer;
 }
+
+.new-post .controls {
+    display: none;
+}

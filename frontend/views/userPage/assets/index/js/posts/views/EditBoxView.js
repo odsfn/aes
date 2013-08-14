@@ -3,15 +3,15 @@
  */
 var EditBoxView = Marionette.ItemView.extend({
     
-    placeholderText: 'What\'s new?',
+    placeholderText: 'What\'s  new?',
     
     buttonText: 'Post',
     
     template: '#edit-box-tpl',
     
-    initialize: function() {
-        this.bindUIElements();
-        this.simplify();
+    initialize: function(options) {
+        console.log(JSON.stringify(options));
+        _.extend(this, _.pick(options, 'placeholderText', 'buttonText'));
     },
     
     ui: {
@@ -47,6 +47,15 @@ var EditBoxView = Marionette.ItemView.extend({
     onFocusOut: function() {
         if(this.ui.input.val() === '')
             this.simplify();
+    },
+            
+    serializeData: function() {
+        return _.extend(Marionette.ItemView.prototype.serializeData.call(this), {
+            view: {
+                placeholderText: this.placeholderText,
+                buttonText: this.buttonText
+            }
+        });
     }
     
 });

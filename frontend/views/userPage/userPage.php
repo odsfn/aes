@@ -66,13 +66,7 @@
 			    </div>
 			</div>		    
 
-			<div class="new-post row-fluid" id="add-post-top">
-			    <div class="well span12 body">
-				<input type="text" name="new-post" placeholder="<?= Yii::t('userPage', 'What\'s new?');?>" value="" class="span12">
-				<div class="controls">
-				    <button class="btn btn-primary pull-right"><?= Yii::t('userPage', 'Post'); ?></button>
-				</div>
-			    </div>
+			<div id="add-post-top">
 			</div>
                         
 			<div class="records row-fluid">
@@ -165,14 +159,9 @@
 					    </div>
 					</div>
 					
-					<div class="new-post row-fluid">
-					    <div class="well span12">
-						<input type="text" name="new-post" placeholder="<?= Yii::t('userPage', 'Comment');?>" value="" class="span12">
-						<div class="controls">
-						    <button class="btn btn-primary pull-right"><?= Yii::t('userPage', 'Post'); ?></button>
-						</div>
-					    </div>
+					<div id="comment-to-comment">
 					</div>
+                                        
 				    </div>
 				</div>
 			    </div>
@@ -189,7 +178,7 @@
     <div class="bootstrap-widget" id="title">
         <div class="bootstrap-widget-header smooth">
             <h3 id="posts-counter-cont"><%= count %></h3>
-            <h3 class="pull-right"><small id="author-switcher-cont"><a href="#">Show users' records only</a></small></h3>
+            <h3 class="pull-right"><small id="author-switcher-cont"><a href="#"><%= t("Show users' records only") %></a></small></h3>
         </div>
     </div>
 </script>
@@ -197,9 +186,9 @@
 <script type="text/template" id="edit-box-tpl">
     <div class="new-post row-fluid">
         <div class="body span12">
-            <input type="text" name="new-post" placeholder="<%= placeholderText %>" value="<%= value %>" class="span12">
+            <input type="text" name="new-post" placeholder="<%= t(view.placeholderText) %>" value="<%= content %>" class="span12">
             <div class="controls">
-                <button class="btn btn-primary pull-right"><%= buttonText %></button>
+                <button class="btn btn-primary pull-right"><%= t(view.buttonText) %></button>
             </div>
         </div>
     </div>
