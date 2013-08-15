@@ -98,8 +98,6 @@ $(function(){
        var time = new Date(),
            ts = Math.round(time.getTime() / 1000);
        
-       console.log(ts);
-       
        context.data.id = _.uniqueId();
        context.data = _.extend(context.data, { 
            authorId: 1,
@@ -109,6 +107,11 @@ $(function(){
            createdTs: ts,
        });
        fixturePosts.push(context.data);
+       return context.data;
+    });
+    
+    fauxServer.addRoute('deletePost', 'api/posts/:id', 'DELETE', function(context) {
+       fixturePosts.remove(context.data);
        return context.data;
     });
     

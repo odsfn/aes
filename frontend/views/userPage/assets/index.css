@@ -13,6 +13,10 @@
     line-height: 14px;
 }
 
+.post .post-content {
+    min-height: 40px;
+}
+
 .post .post-rate, .post .media-heading .controls {
     margin-right: 7px;
 }
@@ -23,6 +27,26 @@
 
 .post .media-body .post-after {
     height: 20px;
+}
+
+.post .controls i, .post .post-rate span {
+    cursor: pointer;
+}
+
+.post .controls {
+    display: none;
+}
+
+.post .post-rate {
+    opacity: 0.25;
+}
+
+.post .media-body.hovered .controls{
+    display: inline;
+}
+
+.post .media-body.hovered .post-rate{
+    opacity: 1;
 }
 
 .post .comments > .media:first-child, 

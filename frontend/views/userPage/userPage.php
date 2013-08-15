@@ -205,7 +205,7 @@
 
             <h5 class="media-heading">
                 <span class="user"><%= authorDisplayName %></span> 
-                <small><a href="#"><%= displayTime %></a></small> 
+                <small><a href="#<%= id %>"><%= displayTime %></a></small> 
                 <span class="controls pull-right">
                     <i class="icon-pencil"></i>&nbsp;
                     <i class="icon-remove"></i>
