@@ -37,6 +37,19 @@ class ClientApp extends CWidget {
         //Registering backbone + marionete
         $this->clientScript->registerPackage('marionette');
         $this->clientScript->registerScriptFile('js/libs/aes/i18n.js');
+        $this->clientScript->registerScriptFile('js/libs/jquery.dateFormat-1.0.js');
+        
+        /**
+         * Resolving conflict with jquery.ui.button and bootstrap.button plugins
+         * Bootstrap.button will be available by $().bButton
+         * 
+         * NOTE: You should update js/libs/bootstrap.button.js with the same version
+         * of bootstrap if you are updating bootstrap.js
+         */
+        $this->clientScript->registerScriptFile('js/libs/bootstrap.button.js', CClientScript::POS_END);
+        $this->clientScript->registerScript('resolveBtnConflict', 
+           '$(function(){ var btn = $.fn.button.noConflict();
+            $.fn.bButton = btn; });', CClientScript::POS_END);
         
         if($this->isolated) {
             $appMain = 'dev/app.dev.js';

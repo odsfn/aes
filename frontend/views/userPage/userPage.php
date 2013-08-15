@@ -51,7 +51,8 @@
                             'models/Post.js',
                             'collections/Posts.js',
                             'views/PostsTitleView.js',
-                            'views/EditBoxView.js'
+                            'views/EditBoxView.js',
+                            'views/PostsView.js'
                          )
                     )
                 )); ?>
@@ -69,9 +70,9 @@
 			<div id="add-post-top">
 			</div>
                         
-			<div class="records row-fluid">
+			<div class="records row-fluid" id="posts-feed">
 
-			    <div class="media post">
+<!--			    <div class="media post">
 				<a class="pull-left" href="#">
 				    <img class="media-object" src="http://placehold.it/64x64">
 				</a>
@@ -168,7 +169,7 @@
 
 			    <div class="row-fluid get-more">
 				<div class="span12"><a href="#">More</a></div>
-			    </div>
+			    </div>-->
 			</div><!-- .records -->
 
 		    </div>
@@ -186,40 +187,42 @@
 <script type="text/template" id="edit-box-tpl">
     <div class="new-post row-fluid">
         <div class="body span12">
-            <input type="text" name="new-post" placeholder="<%= t(view.placeholderText) %>" value="<%= content %>" class="span12">
-            <div class="controls">
-                <button class="btn btn-primary pull-right"><%= t(view.buttonText) %></button>
+            <input type="text" name="new-post" placeholder="<%= t(view.placeholderText) %>" value="" class="span12">
+            <textarea class="span12"><%= content %></textarea>
+            <div class="controls pull-right">
+                <button type="button" class="btn btn-primary post" data-loading-text="<%= t("Saving...") %>"><%= t(view.buttonText) %></button>
+                <button type="button" class="btn cancel"><%= t("Cancel") %></button>
             </div>
         </div>
     </div>
 </script>
 
 <script type="text/template" id="post-tpl">
-    <a class="pull-left" href="#">
-        <img class="media-object" src="http://placehold.it/64x64">
-    </a>
-    <div class="media-body">
+        <a class="pull-left" href="#">
+            <img class="media-object" src="<%= authorPhoto %>">
+        </a>
+        <div class="media-body">
 
-        <h5 class="media-heading">
-            <span class="user"><%= userName %></span> 
-            <small><a href="#"><%= date %></a></small> 
-            <span class="controls pull-right">
-                <i class="icon-pencil"></i>&nbsp;
-                <i class="icon-remove"></i>
-            </span>
-        </h5>
+            <h5 class="media-heading">
+                <span class="user"><%= authorDisplayName %></span> 
+                <small><a href="#"><%= displayTime %></a></small> 
+                <span class="controls pull-right">
+                    <i class="icon-pencil"></i>&nbsp;
+                    <i class="icon-remove"></i>
+                </span>
+            </h5>
 
-        <div class="post-content">
-            <%= postContent %>
-        </div>
-
-        <div class="post-after">
-            <div class="post-rate pull-right">
-                <span class="icon-thumbs-up"><%= likes %></span>
-                <span class="icon-thumbs-down"><%= dislikes %></span>
+            <div class="post-content">
+                <%= content %>
             </div>
-        </div>
 
-        <div class="comments"><%= comments %></div>
-    </div>
+            <div class="post-after">
+                <div class="post-rate pull-right">
+                    <span class="icon-thumbs-up"><%= likes %></span>
+                    <span class="icon-thumbs-down"><%= dislikes %></span>
+                </div>
+            </div>
+
+            <div class="comments"></div>
+        </div>
 </script>

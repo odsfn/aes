@@ -54,3 +54,8 @@
 .new-post .controls {
     display: none;
 }
+
+.new-post > .body > textarea {
+    display: none;
+    min-height: 100px;
+}
