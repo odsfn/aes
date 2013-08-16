@@ -1,16 +1,29 @@
 /* 
  * Basic class for adding, editing posts and comments.
+ * 
+ * To edit existing model you should provide editiongView property during 
+ * instantiation of the new EditBoxView. This view should contain model property.
  */
 var EditBoxView = Marionette.ItemView.extend({
     
     placeholderText: 'What\'s  new?',
     
-    buttonText: 'Post',
+    buttonTextCreate: 'Post',
+    
+    buttonTextUpdate: 'Update',
     
     template: '#edit-box-tpl',
     
+    editingView: null,
+    
     initialize: function(options) {
-        _.extend(this, _.pick(options, 'placeholderText', 'buttonText'));
+        _.extend(this, _.pick(options, 
+            'placeholderText', 'buttonTextCreate', 'buttonTextUpdate', 'editingView'
+        ));
+        
+        if(this.editingView) {
+            this.model = this.editingView.model;
+        }
     },
     
     ui: {
@@ -30,6 +43,12 @@ var EditBoxView = Marionette.ItemView.extend({
     },
     
     open: function() {
+        if(this.editingView) {
+            this.render();
+            this.editingView.$el.hide();
+            this.editingView.$el.after(this.el);
+        }
+    
         var body = this.ui.body;
         
         if(!body.hasClass('well')) {
@@ -53,22 +72,27 @@ var EditBoxView = Marionette.ItemView.extend({
     },
             
     onFocusOut: function() {
-        if(this.ui.input.val() === '')
+        if(!this.editingView && this.ui.input.val() === '')
             this.simplify();
     },
             
     serializeData: function() {
+        var buttonText = this.buttonTextCreate;
+        if(this.editingView) {
+            buttonText = this.buttonTextUpdate;
+        }
+        
         return _.extend(Marionette.ItemView.prototype.serializeData.call(this), {
             view: {
                 placeholderText: this.placeholderText,
-                buttonText: this.buttonText
+                buttonText: buttonText
             }
         });
     },
             
     onPost: function() {
         var value = this.ui.input.val();
-        if(value !== '') {
+        if(value !== '' && value !== this.model.get('content')) {
             this.ui.postBtn.bButton().bButton('loading');
             this.ui.input.attr('disabled', 'disabled');
             this.model.set('content', value);
@@ -78,11 +102,24 @@ var EditBoxView = Marionette.ItemView.extend({
             
     onCancel: function() {
         var value = this.ui.input.val();
-        if(value !== '' && !confirm(i18n.t('All entered text will be lost. Are you sure that you want to cancel?'))) {
-            return;
-        }
+
+        if(value !== '' 
+            && ( (!this.editingView && !confirm(i18n.t('All entered text will be lost. Are you sure that you want to cancel?')))
+                || (this.editingView && this.model.get('content') !== value 
+                && !confirm(i18n.t('All changes will be lost. Are you sure that you want to cancel?')))
+               )
+        ) return;
         
-        this.reset();
+        if(!this.editingView)
+            this.reset();
+        else{
+            this.close();
+        }
+    },
+    
+    onBeforeClose: function() {
+        if(this.editingView)
+            this.editingView.$el.show();
     },
             
     reset: function() {

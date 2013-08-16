@@ -87,7 +87,7 @@ $(function(){
             dislikes: 0,
             
             comments: []
-        },
+        }
     ]);
     
     fauxServer.get('api/posts', function(context) {
@@ -100,11 +100,11 @@ $(function(){
        
        context.data.id = _.uniqueId();
        context.data = _.extend(context.data, { 
-           authorId: 1,
-           authorDisplayName: 'Vasiliy Pedak',
+           authorId: webUser.id,
+           authorDisplayName: webUser.displayName,
            authorPhoto: 'http://placehold.it/64x64',
            displayTime: $.format.date(time, 'hh:mm a dd MMMM, yyyy'),
-           createdTs: ts,
+           createdTs: ts
        });
        fixturePosts.push(context.data);
        return context.data;
@@ -112,6 +112,15 @@ $(function(){
     
     fauxServer.addRoute('deletePost', 'api/posts/:id', 'DELETE', function(context) {
        fixturePosts.remove(context.data);
+       return context.data;
+    });
+    
+    fauxServer.addRoute('updatePost', 'api/posts/:id', 'PUT', function(context) {
+       var time = new Date(),
+           ts = Math.round(time.getTime() / 1000);
+           
+       context.data.editedTs = ts;
+       fixturePosts.set(context.data);
        return context.data;
     });
     

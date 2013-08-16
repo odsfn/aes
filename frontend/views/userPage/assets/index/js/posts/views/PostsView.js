@@ -9,6 +9,7 @@ var PostView = Marionette.ItemView.extend({
     
     ui: {
         topControls: 'span.controls',
+        editBtn: 'span.controls i.icon-pencil',
         rates: '.post-rate',
         body: '.media-body'
     },
@@ -16,7 +17,8 @@ var PostView = Marionette.ItemView.extend({
     events: {
         'mouseenter div.media-body': 'onMouseEnter',
         'mouseleave div.media-body': 'onMouseLeave',
-        'click span.controls i.icon-remove': 'onRemoveClicked'
+        'click span.controls i.icon-remove': 'onRemoveClicked',
+        'click span.controls i.icon-pencil': 'onEditBtnClicked'
     },
     
     onMouseEnter: function() {
@@ -33,8 +35,44 @@ var PostView = Marionette.ItemView.extend({
         }
     },
             
+    onEditBtnClicked: function() {
+        var editBox = new EditBoxView({
+            editingView: this
+        });
+        
+        editBox.open();
+        
+        this.listenToOnce(editBox, 'edited', function() {
+            editBox.model.save({}, {
+                success: _.bind(function() {
+                    editBox.close();
+                    this.render();
+                }, this),
+                wait: true
+            });
+        });
+    },
+            
     delete: function() {
         this.model.destroy();
+    },
+            
+    onRender: function() {
+        //Checking for available actions for current user
+        if(webUser.isGuest()) {
+            
+            //Not authenticated
+            this.ui.topControls.remove();
+        
+        //Authenticated but post made by other user
+        } else if(webUser.id != this.model.get('authorId')) {
+            //on the current user's page
+            if(webUser.id == PostsApp.pageUserId)
+               //current user can't edit posts made by others
+               this.ui.editBtn.remove();
+            else    //on page of another user
+               this.ui.topControls.remove(); 
+        }
     }
 });
 

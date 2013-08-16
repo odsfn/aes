@@ -54,6 +54,9 @@
                             'views/EditBoxView.js',
                             'views/PostsView.js'
                          )
+                    ),
+                    'initializers' => array(
+                        'this.pageUserId = ' . $this->profile->user_id . ';'
                     )
                 )); ?>
 
