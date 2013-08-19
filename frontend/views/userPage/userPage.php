@@ -201,9 +201,12 @@
 </script>
 
 <script type="text/template" id="post-tpl">
-        <a class="pull-left" href="#">
-            <img class="media-object" src="<%= authorPhoto %>">
-        </a>
+        <div class="pull-left">
+            <div class="img-wrapper-tocenter users-photo users-photo-1">
+                <span></span>
+                <img alt="<%= authorDisplayName %>" src="<?php echo ($this->profile) ? $this->profile->photoThmbnl64 : ''; // Will be replaced soon to the <%= authorPhotoThumbnail %> ?>">
+            </div>
+        </div>
         <div class="media-body">
 
             <h5 class="media-heading">

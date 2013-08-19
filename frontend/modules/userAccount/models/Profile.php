@@ -12,6 +12,7 @@
  * @property string $mobile_phone
  * @property string $email
  * @property string $birthDayFormated Representation of birth_day cell in current time format
+ * @property string $photo_thmbnl_64 Filename with photo thumbnail
  * 
  * The followings are the available model relations:
  * @property UserAccount $user
@@ -196,24 +197,24 @@ class Profile extends CActiveRecord {
             // Checks whather photo with specified size already exists
             if (file_exists($basePath . $sizedFile))
                 return Yii::app()->createAbsoluteUrl('/') . '/' . $photosDir . "/" . $sizedFile;
-
-            if (file_exists($basePath . $this->photo))
-            {
-                $image = Yii::app()->image->load($basePath . $this->photo);
-                if ($image->ext != 'gif' || $image->config['driver'] == "ImageMagick")
-                    $image->resize($width, $height, CImage::WIDTH)
-                          ->crop($width, $height)
-                          ->quality(85)
-                          ->sharpen(15)
-                          ->save($basePath . $sizedFile);
-                else
-                    @copy($basePath . $this->photo, $basePath . $sizedFile);
-
+            
+            if($this->resizePhoto($basePath . $this->photo, $basePath . $sizedFile, $width, $height))
                 return Yii::app()->createAbsoluteUrl('/') . '/' . $photosDir . "/" . $sizedFile;
-            }
         }
         
         return Yii::app()->createAbsoluteUrl('/') . '/' . $photosDir . "/" . Yii::app()->getModule('userAccount')->defaultPhoto;
+    }
+    
+    public function getPhotoThmbnl64() {
+        if(!$this->photo)
+            return '';
+        
+        if(!$this->photo_thmbnl_64) {
+            $this->createPhotoThumbnail(64);
+            $this->save(false, array('photo_thmbnl_64'));
+        }
+                
+        return Yii::app()->createAbsoluteUrl('/') . '/' . Yii::app()->getModule('userAccount')->photosDir . "/" . $this->photo_thmbnl_64;
     }
     
     /**
@@ -247,5 +248,52 @@ class Profile extends CActiveRecord {
         $uploadedFile->saveAs($basePath . $filename);
 
         $this->photo = $filename;
+        
+        $this->createPhotoThumbnail(64);
+    }
+    
+    public function createPhotoThumbnail($size) {
+        $photosDir = Yii::app()->getModule('userAccount')->photosDir;
+	$basePath   = Yii::app()->basePath . '/www' . $photosDir . '/';
+	
+        $width = $height = $size;
+        
+        if ($this->photo)
+        {
+            $sizedFile  = str_replace('.', '_' . $width . 'x' . $height . '.', $this->photo);
+
+            if($this->resizePhoto($basePath . $this->photo, $basePath . $sizedFile, $width, $height))
+                $this->photo_thmbnl_64 = $sizedFile;
+        }
+    }
+    
+    /**
+     * Helper function for resizing photos
+     * 
+     * @TODO: replace it to some image helper
+     * 
+     * @param string $inputFile Path to the source image
+     * @param string $outputFile Path to the destination image
+     * @param int $width
+     * @param int $height
+     * @return boolean
+     */
+    protected function resizePhoto($inputFile, $outputFile, $width, $height) {
+        if (file_exists($inputFile))
+        {
+            $image = Yii::app()->image->load($inputFile);
+            if ($image->ext != 'gif' || $image->config['driver'] == "ImageMagick")
+                $image->resize($width, $height, CImage::WIDTH)
+                      ->crop($width, $height)
+                      ->quality(85)
+                      ->sharpen(15)
+                      ->save($outputFile);
+            else
+                @copy($inputFile, $outputFile);
+            
+            return true;
+        }
+        
+        return false;
     }
 }

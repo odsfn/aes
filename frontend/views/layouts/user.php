@@ -34,7 +34,13 @@ $this->breadcrumbs->add($username, $userPageUrl);
 	    <div class="span3" id="column-left">
 		
 		<div id="photo">
-		    <img src="<?php echo $this->profile->getPhoto(237, 300); ?>" />
+                    <?php $this->widget('application.widgets.UsersPhoto', array(
+                        'user' => $this->profile,
+                        'imgWidth' => 237,
+                        'imgHeight'=> 300,
+                        'containerWidth' => '20%',
+                        'containerHeight' => '300px'
+                    )); ?>
 		</div>
 		
 		<div id="navigation">
