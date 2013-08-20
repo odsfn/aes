@@ -1,17 +1,19 @@
 /**
  * Renders single post item with like, dislike, edit, delete buttons.
  */
-var PostView = Marionette.CompositeView.extend({
+var PostView = Marionette.ItemView.extend({
         
     className: 'media post',
     
     template: '#post-tpl',
     
-    itemViewContainer: 'div.comments',
-    
     initialize: function() {
-        this.collection = new Comments();
-        this.collection.reset(this.model.get('comments'));
+
+        if(!this.model.get('reply')) {
+            this.commentsView = new CommentsView({
+                model: new Backbone.Model({post: this.model})
+            });
+        }
         
         this.strategies = {
             editable: new EditableView({view: this})
@@ -20,7 +22,8 @@ var PostView = Marionette.CompositeView.extend({
             
     ui: {
         rates: '.post-rate',
-        body: '.post-body'
+        body: '.post-body',
+        comments: 'div.comments'
     },
             
     events: {
@@ -34,6 +37,12 @@ var PostView = Marionette.CompositeView.extend({
             
     onMouseLeave: function() {
         this.ui.body.removeClass('hovered');
+    },
+            
+    onRender: function() {
+        if(this.commentsView) {
+            this.ui.comments.append(this.commentsView.render().$el);
+        }
     }
 });
 

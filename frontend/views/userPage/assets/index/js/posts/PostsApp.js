@@ -51,7 +51,7 @@ PostsApp.module('Feed', function(Feed, PostsApp, Backbone, Marionette, $, _) {
         
         Feed.posts.fetch({
             success: function(collection , response, options) {
-                console.log(JSON.stringify(collection));
+//                console.log(JSON.stringify(collection));
                 PostsApp.postsRegion.show(Feed.postsView);
             }
         });

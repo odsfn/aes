@@ -54,6 +54,7 @@
                             'views/PostsTitleView.js',
                             'views/EditBoxView.js',
                             'views/PostsView.js',
+                            'views/CommentsView.js',
                             'views/EditableView.js'
                          )
                     ),
@@ -235,4 +236,10 @@
 <script type="text/template" id="editable-tpl">
         <i class="icon-pencil"></i>&nbsp;
         <i class="icon-remove"></i>
+</script>
+
+<script type="text/template" id="comments-tpl">
+    <div class="comments-feed"></div>
+    <div class="comment-to-comment">
+    </div>
 </script>
