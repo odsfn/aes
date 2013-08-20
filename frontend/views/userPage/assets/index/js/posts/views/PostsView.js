@@ -34,7 +34,7 @@ var PostView = Marionette.ItemView.extend({
     onMouseEnter: function() {
         this.ui.body.addClass('hovered');
     },
-            
+
     onMouseLeave: function() {
         this.ui.body.removeClass('hovered');
     },

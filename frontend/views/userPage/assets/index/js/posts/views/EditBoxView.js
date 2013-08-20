@@ -1,5 +1,5 @@
 /* 
- * Basic class for adding, editing posts and comments.
+ * Basic class for adding, editing posts, comments, etc.
  * 
  * To edit existing model you should provide editiongView property during 
  * instantiation of the new EditBoxView. This view should contain model property.
@@ -13,12 +13,18 @@ var EditBoxView = Marionette.ItemView.extend({
     buttonTextUpdate: 'Update',
     
     template: '#edit-box-tpl',
+    /**
+     * Model's attribute which will be edited by EditBox
+     * 
+     * @type String 
+     */
+    editingAttr: 'content',
     
     editingView: null,
     
     initialize: function(options) {
         _.extend(this, _.pick(options, 
-            'placeholderText', 'buttonTextCreate', 'buttonTextUpdate', 'editingView'
+            'placeholderText', 'buttonTextCreate', 'buttonTextUpdate', 'editingView', 'editingAttr'
         ));
         
         if(this.editingView) {
@@ -92,10 +98,10 @@ var EditBoxView = Marionette.ItemView.extend({
             
     onPost: function() {
         var value = this.ui.input.val();
-        if(value !== '' && value !== this.model.get('content')) {
+        if(value !== '' && value !== this.model.get(this.editingAttr)) {
             this.ui.postBtn.bButton().bButton('loading');
             this.ui.input.attr('disabled', 'disabled');
-            this.model.set('content', value);
+            this.model.set(this.editingAttr, value);
             this.trigger('edited', this.model);
         }
     },
@@ -105,7 +111,7 @@ var EditBoxView = Marionette.ItemView.extend({
 
         if(value !== '' 
             && ( (!this.editingView && !confirm(i18n.t('All entered text will be lost. Are you sure that you want to cancel?')))
-                || (this.editingView && this.model.get('content') !== value 
+                || (this.editingView && this.model.get(this.editingAttr) !== value 
                 && !confirm(i18n.t('All changes will be lost. Are you sure that you want to cancel?')))
                )
         ) return;
@@ -125,6 +131,12 @@ var EditBoxView = Marionette.ItemView.extend({
     reset: function() {
         this.ui.input.val('');
         this.simplify();
+    },
+            
+    onRender: function() {
+        //Don't show for unauthenticated
+        if(webUser.isGuest())
+            this.$el.hide();
     }
 });
 

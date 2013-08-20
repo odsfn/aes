@@ -1,5 +1,5 @@
 /* 
- * Comments list with ablity to add new comments for any post
+ * Comments list with ability to add new comments for any post
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
