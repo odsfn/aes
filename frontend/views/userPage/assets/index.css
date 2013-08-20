@@ -52,11 +52,11 @@
     opacity: 0.25;
 }
 
-.post .media-body.hovered .controls{
+.post .post-body.hovered .controls{
     display: inline;
 }
 
-.post .media-body.hovered .post-rate{
+.post .post-body.hovered .post-rate{
     opacity: 1;
 }
 

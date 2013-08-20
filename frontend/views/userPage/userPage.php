@@ -50,9 +50,11 @@
                         'js' => array(
                             'models/Post.js',
                             'collections/Posts.js',
+                            'collections/Comments.js',
                             'views/PostsTitleView.js',
                             'views/EditBoxView.js',
-                            'views/PostsView.js'
+                            'views/PostsView.js',
+                            'views/EditableView.js'
                          )
                     ),
                     'initializers' => array(
@@ -208,27 +210,29 @@
             </div>
         </div>
         <div class="media-body">
+            <div class="post-body">
+                <h5 class="media-heading">
+                    <span class="user"><%= authorDisplayName %></span> 
+                    <small><a href="#<%= id %>"><%= displayTime %></a></small> 
+                </h5>
 
-            <h5 class="media-heading">
-                <span class="user"><%= authorDisplayName %></span> 
-                <small><a href="#<%= id %>"><%= displayTime %></a></small> 
-                <span class="controls pull-right">
-                    <i class="icon-pencil"></i>&nbsp;
-                    <i class="icon-remove"></i>
-                </span>
-            </h5>
+                <div class="post-content">
+                    <%= content %>
+                </div>
 
-            <div class="post-content">
-                <%= content %>
-            </div>
-
-            <div class="post-after">
-                <div class="post-rate pull-right">
-                    <span class="icon-thumbs-up"><%= likes %></span>
-                    <span class="icon-thumbs-down"><%= dislikes %></span>
+                <div class="post-after">
+                    <div class="post-rate pull-right">
+                        <span class="icon-thumbs-up"><%= likes %></span>
+                        <span class="icon-thumbs-down"><%= dislikes %></span>
+                    </div>
                 </div>
             </div>
-
+            
             <div class="comments"></div>
         </div>
+</script>
+
+<script type="text/template" id="editable-tpl">
+        <i class="icon-pencil"></i>&nbsp;
+        <i class="icon-remove"></i>
 </script>
