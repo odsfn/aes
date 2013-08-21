@@ -16,9 +16,9 @@ return array(
 	'commandMap' => array(
 	    'migrate' => array(
 		// alias of the path where you extracted the zip file
-		'class' => 'application.extensions.yiiext.commands.migrate.EMigrateCommand',
+		'class' => 'console.extensions.yiiext.commands.migrate.EMigrateCommand',
 		// this is the path where you want your core application migrations to be created
-		'migrationPath' => 'application.migrations',
+		'migrationPath' => 'console.migrations',
 		// the name of the table created in your database to save versioning information
 		'migrationTable' => 'tbl_migration',
 		// the application migrations are in a pseudo-module called "core" by default

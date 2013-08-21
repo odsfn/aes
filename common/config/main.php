@@ -15,6 +15,7 @@ return array(
 		'frontend' => dirname(__FILE__) . '/../..' . '/frontend',
 		'common' => dirname(__FILE__) . '/../..' . '/common',
 		'backend' => dirname(__FILE__) . '/../..' . '/backend',
+                'console' => dirname(__FILE__) . '/../..' . '/console',
 		'vendor' => dirname(__FILE__) . '/../..' . '/common/lib/vendor',
 	),
 	'import' => array(
