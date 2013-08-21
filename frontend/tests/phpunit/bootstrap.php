@@ -22,7 +22,7 @@ $config = Yiinitializr\Helpers\Initializer::config('frontend', array(
 	__DIR__ .'/../../../common/config/env.php',
 	__DIR__ .'/../../../common/config/local.php',
 	'main',
-	'env',
+	'test',
 	'local-test'
 ));
 

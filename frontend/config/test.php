@@ -30,6 +30,12 @@ return array(
 		),
 	),
         'components'=>array(
+            
+            'fixture'=>array(
+                'class'=>'system.test.CDbFixtureManager',
+                'basePath'=>__DIR__.'/../tests/phpunit/fixtures'
+            ),
+            
 	    'log'=>array(
 		'routes'=>array(
 		    'web_log' => array(
@@ -57,5 +63,6 @@ return array(
 //                            '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 //                    ),
             ),
+            
 	)
 );
