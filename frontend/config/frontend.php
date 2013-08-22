@@ -93,7 +93,7 @@ return array(
     
 	'modules' => array(
 	    'userAccount' => array(
-		'returnUrl' => '/userPage'
+		'returnUrl' => '/userPage/index'
 	    ),
 	    
 	    'gii' => array(

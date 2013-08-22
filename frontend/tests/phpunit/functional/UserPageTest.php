@@ -22,7 +22,6 @@ class UserPageTest extends WebTestCase {
     
     protected function openOwnPage() {
         $this->login();
-        $this->open('userPage');
         $this->waitForElementPresent('css=div.media.post');
     }
             

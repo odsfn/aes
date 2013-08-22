@@ -27,7 +27,7 @@
 			'size'=>'large',
 			'label'=>'Log in',
 		)); ?>
-    <a href="<?= Yii::app()->getModule('userAccount')->recoveryUrl; ?>" class="pull-right">Lost password?</a>
+    <a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->recoveryUrl); ?>" class="pull-right">Lost password?</a>
 </div>
 
 <?php $this->endWidget(); ?>

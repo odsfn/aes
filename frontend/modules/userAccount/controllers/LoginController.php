@@ -11,7 +11,7 @@ class LoginController extends UAccController{
 	if($this->request->isPostRequest){
 	    $form->attributes = $_POST['LoginForm'];
 	    if($form->validate()){
-		$this->redirect($this->module->returnUrl);
+		$this->redirect(array($this->module->returnUrl));
 	    }
 	}
 	
@@ -20,7 +20,7 @@ class LoginController extends UAccController{
     
     public function actionOut(){
 	Yii::app()->user->logout();
-	$this->redirect(Yii::app()->controller->module->returnLogoutUrl);
+	$this->redirect(array(Yii::app()->controller->module->returnLogoutUrl));
     }
 
     public function filters(){
