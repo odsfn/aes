@@ -52,12 +52,21 @@ var PostView = Marionette.ItemView.extend({
 var PostsView = Marionette.CollectionView.extend({
    itemView: PostView,
    
+   initialize: function() {
+       this.strategies = {
+           feed: new MoreView({
+               view: this,
+               appendTo: '#posts-load-btn'
+           })
+       };
+   },
+   
    appendHtml: function(collectionView, itemView, index){
        if(index == 0) {
            collectionView.$el.prepend(itemView.el);
        }else{
            collectionView.$el.append(itemView.el);    
        }
-   }
+   },
 });
 

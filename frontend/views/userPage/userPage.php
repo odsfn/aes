@@ -49,13 +49,15 @@
                     'requires' => array(
                         'js' => array(
                             'models/Post.js',
+                            'collections/FeedCollection.js',
                             'collections/Posts.js',
                             'collections/Comments.js',
                             'views/PostsTitleView.js',
                             'views/EditBoxView.js',
                             'views/PostsView.js',
                             'views/CommentsView.js',
-                            'views/EditableView.js'
+                            'views/EditableView.js',
+                            'views/MoreView.js'
                          )
                     ),
                     'initializers' => array(
@@ -77,107 +79,9 @@
 			</div>
                         
 			<div class="records row-fluid" id="posts-feed">
+			</div>
 
-<!--			    <div class="media post">
-				<a class="pull-left" href="#">
-				    <img class="media-object" src="http://placehold.it/64x64">
-				</a>
-				<div class="media-body">
-				    
-				    <h5 class="media-heading">
-					<span class="user">Jhon Lenon</span> 
-					<small><a href="#">8 August, 2013</a></small> 
-					<span class="controls pull-right">
-					    <i class="icon-pencil"></i>&nbsp;
-					    <i class="icon-remove"></i>
-					</span>
-				    </h5>
-
-				    <div class="post-content">
-					Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-				    </div>
-				    
-				    <div class="post-after">
-					<div class="post-rate pull-right">
-					    <span class="icon-thumbs-up">162</span>
-					    <span class="icon-thumbs-down">38</span>
-					</div>
-				    </div>
-				    
-				    <div class="comments"></div>
-				</div>
-			    </div>
-
-			    <div class="media post">
-				<a class="pull-left" href="#">
-				    <img class="media-object" src="http://placehold.it/64x64">
-				</a>
-				<div class="media-body">
-				    
-				    <h5 class="media-heading">
-					<span class="user">Jhon Lenon</span> 
-					<small><a href="#">5 August, 2013</a></small> 
-					<span class="controls pull-right">
-					    <i class="icon-pencil"></i>&nbsp;
-					    <i class="icon-remove"></i>
-					</span>
-				    </h5>
-
-				    <div class="post-content">
-					Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-				    </div>
-				    
-				    <div class="post-after">
-					<div class="post-rate pull-right">
-					    <span class="icon-thumbs-up">2</span>
-					    <span class="icon-thumbs-down">13</span>
-					</div>
-				    </div>
-				    
-				    <div class="comments">
-					
-					<div class="media post">
-					    <a class="pull-left" href="#">
-						<img class="media-object" src="http://placehold.it/64x64">
-					    </a>
-					    <div class="media-body">
-
-						<h5 class="media-heading">
-						    <span class="user">Jhon Lenon</span> 
-						    <small><a href="#">8 August, 2013</a></small> 
-						    <span class="controls pull-right">
-							<i class="icon-pencil"></i>&nbsp;
-							<i class="icon-remove"></i>
-						    </span>
-						</h5>
-
-						<div class="post-content">
-						    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-						</div>
-
-						<div class="post-after">
-						    <div class="post-rate pull-right">
-							<span class="icon-thumbs-up">162</span>
-							<span class="icon-thumbs-down">38</span>
-						    </div>
-						</div>
-						
-						<div class="comments"></div>
-					    </div>
-					</div>
-					
-					<div id="comment-to-comment">
-					</div>
-                                        
-				    </div>
-				</div>
-			    </div>
-
-			    <div class="row-fluid get-more">
-				<div class="span12"><a href="#">More</a></div>
-			    </div>-->
-			</div><!-- .records -->
-
+                        <div id="posts-load-btn"></div>
 		    </div>
 		</div>
 
@@ -241,5 +145,11 @@
 <script type="text/template" id="comments-tpl">
     <div class="comments-feed"></div>
     <div class="comment-to-comment">
+    </div>
+</script>
+
+<script type="text/template" id="more-btn-tpl">
+    <div class="row-fluid get-more">
+	<div class="span12"><a><%= t(view.moreMsg) %></a><span>Loading...</span></div>
     </div>
 </script>

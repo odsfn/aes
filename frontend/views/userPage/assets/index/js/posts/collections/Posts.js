@@ -1,8 +1,6 @@
-var Posts = Backbone.Collection.extend({
+var Posts = FeedCollection.extend({
     model: Post,
     url: 'api/posts',
-    comparator: function(model) {
-        return -model.get('createdTs');
-    }
+    root: 'posts'
 });
 

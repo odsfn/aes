@@ -9,7 +9,14 @@ $(function(){
     
     fauxServer.setLatency(300, 2000);
     
-    var fixturePosts = new Backbone.Collection([
+    var 
+        FxPosts = Backbone.Collection.extend({
+            comparator: function(model) {
+                return -model.get('createdTs');
+            }
+        }),
+        
+        fixturePosts = new FxPosts([
         {
             id: _.uniqueId(),
             reply: null,
@@ -87,11 +94,85 @@ $(function(){
             dislikes: 0,
             
             comments: []
+        },
+        
+        {
+            id: _.uniqueId(),
+            reply: null,
+            authorId: 4,
+            authorDisplayName: 'Yetanother User',
+            authorPhoto: 'http://placehold.it/64x64',
+            content: "Post 4. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
+            displayTime: "10:12 AM 7 August, 2013",
+            createdTs: 1376577750,
+            likes: 0,
+            
+            dislikes: 0,
+            
+            comments: []           
+        },
+        
+        {
+            id: _.uniqueId(),
+            reply: null,
+            authorId: 4,
+            authorDisplayName: 'Yetanother User',
+            authorPhoto: 'http://placehold.it/64x64',
+            content: "Post 5. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
+            displayTime: "10:08 AM 7 August, 2013",
+            createdTs: 1376577740,
+            likes: 0,
+            
+            dislikes: 0,
+            
+            comments: []           
+        },
+        
+        {
+            id: _.uniqueId(),
+            reply: null,
+            authorId: 4,
+            authorDisplayName: 'Yetanother User',
+            authorPhoto: 'http://placehold.it/64x64',
+            content: "Post 6. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
+            displayTime: "10:05 AM 7 August, 2013",
+            createdTs: 1376577730,
+            likes: 0,
+            
+            dislikes: 0,
+            
+            comments: []           
+        },
+        
+        {
+            id: _.uniqueId(),
+            reply: null,
+            authorId: 4,
+            authorDisplayName: 'Yetanother User',
+            authorPhoto: 'http://placehold.it/64x64',
+            content: "Post 7. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
+            displayTime: "10:00 AM 7 August, 2013",
+            createdTs: 1376577720,
+            likes: 0,
+            
+            dislikes: 0,
+            
+            comments: []           
         }
     ]);
     
     fauxServer.get('api/posts', function(context) {
-        return fixturePosts.toJSON();
+        var responseObj,
+            postsToReturn;
+        
+        postsToReturn = new Backbone.Collection(fixturePosts.slice(context.data.offset, context.data.offset + context.data.limit));
+        
+        responseObj = {
+            posts: postsToReturn.toJSON(),
+            totalCount: fixturePosts.length
+        };
+        
+        return responseObj;
     });
     
     fauxServer.addRoute('createPost', 'api/posts', 'POST', function(context) {
@@ -123,6 +204,8 @@ $(function(){
        fixturePosts.set(context.data);
        return context.data;
     });
+    
+    PostsApp.Feed.posts.limit = 3;
     
     PostsApp.start();
 });

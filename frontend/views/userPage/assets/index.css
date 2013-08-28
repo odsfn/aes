@@ -65,7 +65,7 @@
     margin-top: 15px;
 }
 
-.records .get-more > div {
+#posts-load-btn .get-more > div {
     text-align: center;
     margin-top: 15px;
     
@@ -81,9 +81,25 @@
     background-color: #f9f9f9;
 }
 
-.records .get-more > div:hover {
+#posts-load-btn .get-more > div:hover {
     background-color: #DDD;
     cursor: pointer;
+}
+
+#posts-load-btn .get-more > div.loading:hover {
+    cursor: default;
+}
+
+#posts-load-btn .get-more > div > span {
+    display: none;
+}
+
+#posts-load-btn .get-more > div.loading > span {
+    display: inline;
+}
+
+#posts-load-btn .get-more > div.loading > a {
+    display: none;
 }
 
 .new-post .controls {

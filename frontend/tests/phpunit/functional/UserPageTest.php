@@ -331,4 +331,40 @@ class UserPageTest extends WebTestCase {
         $this->assertNotVisible('css=span.controls');
         
     }
+
+    function testPressOnMoreButtonAppendsPosts() {
+        $this->openOwnPage();
+        $this->waitForElementPresent('css=div.media.post');
+        $this->assertCssCount('css=#posts-feed > div > div.media.post', 3);
+        
+        $this->assertTextNotPresent('Post (4|5|6|7)');
+        
+        $this->assertVisible('css=div.get-more');
+        $this->click("css=div.get-more > div");
+        $this->waitForNotVisible('css=div.get-more a');
+        $this->waitForVisible('css=div.get-more span');
+        $this->waitForCssCount('css=#posts-feed > div > div.media.post', 6);
+        
+        $this->assertVisible('css=div.get-more');
+        $this->assertVisible('css=div.get-more a');
+        $this->assertNotVisible('css=div.get-more span');
+        
+        $this->assertTextPresent('Post 4');
+        $this->assertTextPresent('Post 5');
+        $this->assertTextPresent('Post 6');
+        
+        $this->assertTextNotPresent('Post 7');
+        
+        $this->click("css=div.get-more > div");
+        $this->waitForCssCount('css=#posts-feed > div > div.media.post', 7);
+        
+        //will be hidden when we got to the end
+        $this->click("css=div.get-more > div");
+        $this->waitForNotVisible('css=div.get-more');
+        
+        $this->assertTextPresent('Post 4');
+        $this->assertTextPresent('Post 5');
+        $this->assertTextPresent('Post 6');
+        $this->assertTextPresent('Post 7');
+    }
 }
