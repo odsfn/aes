@@ -1,6 +1,7 @@
 var PostsApp = new Backbone.Marionette.Application();
 
 PostsApp.addRegions({
+    feedTitleRegion: '#feed-title',
     newPostRegion: '#add-post-top',
     postsRegion: '#posts-feed'
 });
@@ -43,16 +44,17 @@ PostsApp.module('Feed', function(Feed, PostsApp, Backbone, Marionette, $, _) {
     PostsApp.on('start', function() {
         console.log('In Feed on start');
 
-        Feed.titleView = new PostsTitleView({
-            el: $('#title')
-        });
+        Feed.titleView = new PostsTitleView();
         
-        Feed.resetNewPostRegion();
+        Feed.listenTo(Feed.posts, 'sync', _.bind(function(collection) {
+            Feed.titleView.setRecordsCount(collection.totalCount);
+        }, this));
         
         Feed.posts.fetch({
             success: function(collection , response, options) {
-//              console.log(JSON.stringify(collection));
+                PostsApp.feedTitleRegion.show(Feed.titleView);
                 PostsApp.postsRegion.show(Feed.postsView);
+                Feed.resetNewPostRegion();
             }
         });
     });

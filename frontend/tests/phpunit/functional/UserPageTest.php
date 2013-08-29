@@ -335,6 +335,9 @@ class UserPageTest extends WebTestCase {
     function testPressOnMoreButtonAppendsPosts() {
         $this->openOwnPage();
         $this->waitForElementPresent('css=div.media.post');
+        
+        $this->assertElementContainsText('css=span.posts-count', '7');
+        
         $this->assertCssCount('css=#posts-feed > div > div.media.post', 3);
         
         $this->assertTextNotPresent('Post (4|5|6|7)');

@@ -163,13 +163,19 @@ $(function(){
     
     fauxServer.get('api/posts', function(context) {
         var responseObj,
-            postsToReturn;
+            postsToReturn,
+            filterUserId = context.data.filters.usersRecordsOnly || false,
+            filteredPosts = fixturePosts;
         
-        postsToReturn = new Backbone.Collection(fixturePosts.slice(context.data.offset, context.data.offset + context.data.limit));
+        if(filterUserId) {
+            filteredPosts = fixturePosts.where({authorId: filterUserId});
+        }
+        
+        postsToReturn = new Backbone.Collection(filteredPosts.slice(context.data.offset, context.data.offset + context.data.limit));
         
         responseObj = {
             posts: postsToReturn.toJSON(),
-            totalCount: fixturePosts.length
+            totalCount: filteredPosts.length
         };
         
         return responseObj;

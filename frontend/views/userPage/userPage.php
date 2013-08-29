@@ -67,19 +67,12 @@
 
 		<div id="posts row-fluid">
 		    <div class="span12" id="posts-app-container">
-			
-			<div class="bootstrap-widget" id="title">
-			    <div class="bootstrap-widget-header smooth">
-				<h3><?= Yii::t('userPage', '{count} records', array('{count}'=>'<span class="posts-count">0</span>')); ?></h3>
-				<h3 class="pull-right"><small><a href="#"><?= Yii::t('userPage', 'Show users\' records only');?></a></small></h3>
-			    </div>
-			</div>		    
-
-			<div id="add-post-top">
-			</div>
                         
-			<div class="records row-fluid" id="posts-feed">
-			</div>
+                        <div id="feed-title"></div>
+
+			<div id="add-post-top"></div>
+                        
+			<div class="records row-fluid" id="posts-feed"></div>
 
                         <div id="posts-load-btn"></div>
 		    </div>
@@ -88,8 +81,8 @@
 <script type="text/template" id="posts-title-tpl">
     <div class="bootstrap-widget" id="title">
         <div class="bootstrap-widget-header smooth">
-            <h3 id="posts-counter-cont"><%= count %></h3>
-            <h3 class="pull-right"><small id="author-switcher-cont"><a href="#"><%= t("Show users' records only") %></a></small></h3>
+            <h3 id="posts-counter-cont"><span class="posts-count"><%= count %></span> records</h3>
+            <h3 class="pull-right"><small class="author-switcher"><a href="#"><%= t(switcherText) %></a></small></h3>
         </div>
     </div>
 </script>

@@ -38,7 +38,7 @@ var MoreView = Marionette.ItemView.extend({
             
             $(this.appendTo).append(this.$el);
             
-        }, this));        
+        }, this));
     },
     
     serializeData: function() {
@@ -56,10 +56,14 @@ var MoreView = Marionette.ItemView.extend({
         this.startLoader();
         this.base.collection.fetchNext({
             success: _.bind(function(collection) {
-                if(collection.currentPatchCount == 0)
+                if(collection.currentPatchCount == 0) {
                     this.$el.hide();
-                else
-                    this.stopLoader();
+                    this.listenTo(this.base.collection, 'reset', _.bind(function() {
+                        this.$el.show();
+                    }, this));
+                }
+                
+                this.stopLoader();
                 
             }, this)
         });

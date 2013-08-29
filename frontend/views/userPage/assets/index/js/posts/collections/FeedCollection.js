@@ -45,6 +45,8 @@ var FeedCollection = Backbone.Collection.extend({
      */
     currentPatchCount: 0,
     
+    filters: {},
+    
     comparator: function(model) {
         return -model.get('createdTs');
     },
@@ -58,23 +60,41 @@ var FeedCollection = Backbone.Collection.extend({
         
         return fetchedModels;
     },
-
+            
+    /**
+     * Loads next part of data
+     */
     fetchNext: function(options) {
         this.offset += this.currentPatchCount;
         _.extend(options, {remove: false});
         this.fetch(options);
     },        
+    
+    /**
+     * Sets the filter value and fetches first page. All loaded results will be 
+     * throwed out, navigation will be reset to the begining
+     */
+    setFilter: function(name, value) {
+        this.filters[name] = value;
+        this.sinceTs = null;
+        this.offset = 0;
+        
+        this.reset();
+        this.fetch();
+    },
             
-    updateNavigation: function(response, fetchedModels) {
+    updateNavigation: function(response) {
         this.totalCount = response[this.totalCountAttr];
     },
             
     fetch: function(options) {
+        var options = options || {};
+        
         if(!this.sinceTs) {
             this.sinceTs = this.getTimestamp();
         }
         
-        _.extend(options, { data: _.pick(this, 'offset', 'sinceTs', 'limit')});
+        _.extend(options, { data: _.pick(this, 'offset', 'sinceTs', 'limit', 'filters')});
         
         Backbone.Collection.prototype.fetch.apply(this, [options]);
     },
