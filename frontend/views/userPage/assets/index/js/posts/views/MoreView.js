@@ -32,7 +32,6 @@ var MoreView = Marionette.ItemView.extend({
         this.model = new Backbone.Model({});
         
         this.listenTo(this.base, 'render', _.bind(function() {
-            console.log('Base view rendered. Adding More button');
             this.render();
             this.delegateEvents();
             

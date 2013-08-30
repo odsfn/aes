@@ -47,6 +47,7 @@
                     'isolated' => true,
                     'appName' => 'posts',
                     'requires' => array(
+                        'depends' => array('loadmask'),
                         'js' => array(
                             'models/Post.js',
                             'collections/FeedCollection.js',

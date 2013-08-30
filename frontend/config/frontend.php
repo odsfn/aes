@@ -86,6 +86,17 @@ return array(
                                 'underscore.js',
                                 'backbone.js'
                             )
+                        ),
+                        
+                        'loadmask' => array(
+                            'depends' => array('jquery'),
+                            'baseUrl' => 'js/libs/loadmask',
+                            'js' => array(
+                                'loadmask.js'
+                            ),
+                            'css' => array(
+                                'loadmask.css'
+                            )
                         )
                     )
                 )
