@@ -370,4 +370,37 @@ class UserPageTest extends WebTestCase {
         $this->assertTextPresent('Post 6');
         $this->assertTextPresent('Post 7');
     }
+    
+    function testPressUsersFilter() {
+        $this->openOwnPage();
+        $this->waitForElementPresent('css=div.media.post');
+        
+        $this->assertElementContainsText('css=span.posts-count', '7');
+        
+        $this->assertTextPresent('Jhon Lenon');
+        $this->assertTextPresent('Vasiliy Pedak');
+        $this->assertElementContainsText('css=small.author-switcher a', "Show users' records only");
+        
+        $this->click('css=small.author-switcher a');
+        
+        $this->assertElementPresent('css=div.loadmask');
+        $this->waitForElementNotPresent('css=div.loadmask');
+        
+        $this->assertElementContainsText('css=span.posts-count', '2');
+        
+        $this->assertTextNotPresent('Jhon Lenon');
+        $this->assertTextPresent('Vasiliy Pedak');
+        
+        $this->assertElementContainsText('css=small.author-switcher a', "Show all records");
+        
+        $this->click('css=small.author-switcher a');
+        $this->assertElementPresent('css=div.loadmask');
+        $this->waitForElementNotPresent('css=div.loadmask');
+        
+        $this->assertElementContainsText('css=span.posts-count', '7');
+        
+        $this->assertTextPresent('Jhon Lenon');
+        $this->assertTextPresent('Vasiliy Pedak');
+        $this->assertElementContainsText('css=small.author-switcher a', "Show users' records only");
+    }
 }
