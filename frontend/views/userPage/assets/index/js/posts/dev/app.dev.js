@@ -10,6 +10,10 @@ $(function(){
     fauxServer.setLatency(300, 2000);
     
     var 
+        timestamp = function(time) {
+            var time = time || new Date();
+            return Math.round(time.getTime() / 1000);
+        },
         FxPosts = Backbone.Collection.extend({
             comparator: function(model) {
                 return -model.get('createdTs');
@@ -18,7 +22,7 @@ $(function(){
         
         fixturePosts = new FxPosts([
         {
-            id: _.uniqueId(),
+            id: curId = _.uniqueId(),
             reply: null,
             authorId: 1,
             authorDisplayName: 'Vasiliy Pedak',
@@ -29,9 +33,22 @@ $(function(){
             displayTime: "10:42 AM 8 August, 2013",
             createdTs: 1376577786,
             
-            likes: 165,
-            
-            dislikes: 32,
+            rates: [
+                {
+                    id: _.uniqueId(),
+                    userId: 1,
+                    postId: curId,
+                    score: 1,
+                    createdTs: 1376577886
+                },
+                {
+                    id: _.uniqueId(),
+                    userId: 2,
+                    postId: curId,
+                    score: 1,
+                    createdTs: 1376577886
+                },
+            ],
             
             comments: []
         },
@@ -47,9 +64,30 @@ $(function(){
             
             displayTime: "7:13 PM 8 August, 2013",
             createdTs: 1376577787,
-            likes: 165,
-            
-            dislikes: 32,
+
+            rates: [
+                {
+                    id: _.uniqueId(),
+                    userId: 1,
+                    postId: curId,
+                    score: 1,
+                    createdTs: 1376577887
+                },
+                {
+                    id: _.uniqueId(),
+                    userId: 3,
+                    postId: curId,
+                    score: -1,
+                    createdTs: 1376577888
+                },
+                {
+                    id: _.uniqueId(),
+                    userId: 4,
+                    postId: curId,
+                    score: -1,
+                    createdTs: 1376577889
+                },
+            ],
             
             comments: [
                 {
@@ -60,9 +98,7 @@ $(function(){
                     authorPhoto: "http://placehold.it/64x64",
                     content: "Lorem ipsum dolor sit amet, at debet dolores est.",
                     displayTime: "7:46PM 8 August, 2013",
-                    createdTs: 1376577788,
-                    likes: 5,
-                    dislikes: 2,                    
+                    createdTs: 1376577788,                
                 },
                 
                 {
@@ -73,9 +109,7 @@ $(function(){
                     authorPhoto: "http://placehold.it/64x64",
                     content: "At debet dolores est. Lorem ipsum dolor sit amet",
                     displayTime: "10:11PM 8 August, 2013",
-                    createdTs: 1376577789,
-                    likes: 0,
-                    dislikes: 0,                      
+                    createdTs: 1376577789,                   
                 }
             ]
         },
@@ -89,9 +123,6 @@ $(function(){
             content: "The collection's comparator may be included as an option. If you define an initialize function, it will be invoked when the collection is created.",
             displayTime: "11:42 AM 14 August, 2013",
             createdTs: 1376577790,
-            likes: 0,
-            
-            dislikes: 0,
             
             comments: []
         },
@@ -105,9 +136,6 @@ $(function(){
             content: "Post 4. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             displayTime: "10:12 AM 7 August, 2013",
             createdTs: 1376577750,
-            likes: 0,
-            
-            dislikes: 0,
             
             comments: []           
         },
@@ -121,9 +149,6 @@ $(function(){
             content: "Post 5. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             displayTime: "10:08 AM 7 August, 2013",
             createdTs: 1376577740,
-            likes: 0,
-            
-            dislikes: 0,
             
             comments: []           
         },
@@ -137,9 +162,6 @@ $(function(){
             content: "Post 6. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             displayTime: "10:05 AM 7 August, 2013",
             createdTs: 1376577730,
-            likes: 0,
-            
-            dislikes: 0,
             
             comments: []           
         },
@@ -153,9 +175,6 @@ $(function(){
             content: "Post 7. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             displayTime: "10:00 AM 7 August, 2013",
             createdTs: 1376577720,
-            likes: 0,
-            
-            dislikes: 0,
             
             comments: []           
         }
@@ -209,6 +228,17 @@ $(function(){
        context.data.editedTs = ts;
        fixturePosts.set(context.data);
        return context.data;
+    });
+    
+    fauxServer.addRoute('createPostRate', 'api/posts/:postId/rates', 'POST', function(context) {
+        context.data.createdTs = timestamp();
+        context.data.id = _.uniqueId();
+        
+        return context.data;
+    });
+    
+    fauxServer.addRoute('deletePostRate', 'api/posts/:postId/rates/:id', 'DELETE', function(context){
+        return context.data;
     });
     
     PostsApp.Feed.posts.limit = 3;

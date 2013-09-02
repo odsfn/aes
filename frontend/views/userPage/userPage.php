@@ -50,6 +50,7 @@
                         'depends' => array('loadmask'),
                         'js' => array(
                             'models/Post.js',
+                            'models/PostRate.js',
                             'collections/FeedCollection.js',
                             'collections/Posts.js',
                             'collections/Comments.js',

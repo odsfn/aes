@@ -40,7 +40,7 @@
     height: 20px;
 }
 
-.post .controls i, .post .post-rate span {
+.post .controls i {
     cursor: pointer;
 }
 
@@ -58,6 +58,14 @@
 
 .post .post-body.hovered .post-rate{
     opacity: 1;
+}
+
+.post-body.hovered .post-rate span {
+    cursor: pointer;
+}
+
+.post-rate span.chosen {
+    font-weight: bold;
 }
 
 .post .comments > .media:first-child, 

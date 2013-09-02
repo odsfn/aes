@@ -42,9 +42,8 @@ class UserPageTest extends WebTestCase {
 	$this->assertVisible('css=.comments div.media.post:nth-of-type(2)');
     }
     
-    function testOpacityOfRatesChangesWhenMousEnterersAndOuts() {
-        $this->open('userPage/1');
-        $this->waitForElementPresent('css=div.media.post');
+    function testOpacityOfRatesChangesWhenMouseEntersAndOuts() {
+        $this->openOwnPage();
         
         $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate').css('opacity')"));
         $this->mouseOver("css=div.media.post .post-body");
@@ -402,5 +401,41 @@ class UserPageTest extends WebTestCase {
         $this->assertTextPresent('Jhon Lenon');
         $this->assertTextPresent('Vasiliy Pedak');
         $this->assertElementContainsText('css=small.author-switcher a', "Show users' records only");
+    }
+    
+    function testNotAuthUsersCantRatePosts() {
+        $this->open('userPage/1');
+        $this->waitForElementPresent('css=div.media.post');
+        
+        $this->assertElementNotPresent('css=.post-rate span.chosen');
+        
+        $this->assertElementContainsText('css=span.icon-thumbs-up', '0');
+        
+        $this->click('css=span.icon-thumbs-up');
+        
+        $this->assertElementContainsText('css=span.icon-thumbs-up', '0');
+    }
+    
+    function testAuthUserCanRatePosts() {
+        $this->openOwnPage();
+
+        $this->assertElementContainsText('css=.post-rate:first span.icon-thumbs-up', '0');
+        
+        $this->click('css=.post-rate:first span.icon-thumbs-up');
+        $this->waitForElementPresent('css=.post-rate:first span.icon-thumbs-up.chosen');
+        $this->assertElementContainsText('css=.post-rate:first span.icon-thumbs-up', '1');
+        
+        
+        $this->assertElementContainsText('css=.post-rate:first span.icon-thumbs-down', '0');
+        
+        $this->click('css=.post-rate:first span.icon-thumbs-down');
+        $this->waitForElementPresent('css=.post-rate:first span.icon-thumbs-down.chosen');
+        $this->assertElementNotPresent('css=.post-rate:first span.icon-thumbs-up.chosen');
+        $this->assertElementContainsText('css=.post-rate:first span.icon-thumbs-up', '0');
+        $this->assertElementContainsText('css=.post-rate:first span.icon-thumbs-down', '1');
+        
+        $this->click('css=.post-rate:first span.icon-thumbs-down');
+        $this->waitForElementNotPresent('css=.post-rate:first span.icon-thumbs-down.chosen');
+        $this->assertElementContainsText('css=.post-rate:first span.icon-thumbs-down', '0');
     }
 }
