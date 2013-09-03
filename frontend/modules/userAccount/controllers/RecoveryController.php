@@ -31,7 +31,7 @@ class RecoveryController extends UAccController {
 		$this->module->resetPassword($user);
 
 		Yii::app()->user->setFlash('success', 'New password had been sent to your email address.');
-		$this->redirect($this->module->loginUrl);
+		$this->redirect(array($this->module->loginUrl));
 	    }
 	}
 

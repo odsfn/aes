@@ -87,7 +87,7 @@ class IdentityController extends UAccController{
 	    }
 	    
 	    if($isFormValid){
-		$this->redirect($this->module->afterIdentityEditedUrl);
+		$this->redirect(array($this->module->afterIdentityEditedUrl));
 	    }
 	}
 	

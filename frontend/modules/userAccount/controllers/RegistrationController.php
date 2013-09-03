@@ -13,7 +13,7 @@ class RegistrationController extends UAccController {
     public function actionRegistration() {
 	
 	if (Yii::app()->user->id) {
-	    $this->redirect($this->module->profileUrl);
+	    $this->redirect(array($this->module->profileUrl));
 	    return;
 	}
 	
@@ -33,7 +33,7 @@ class RegistrationController extends UAccController {
 		try {
 		    $registration->run();
 		    Yii::app()->user->setFlash('success', "We have created account especially for you! Please check your mail, and confirm registration");
-		    $this->redirect($this->module->loginUrl);
+		    $this->redirect(array($this->module->loginUrl));
 		} catch (Exception $exc) {
 		    throw $exc;
 //		    Yii::app()->user->setFlash('error', "Sorry, but something went wrong during registration process. Try later or contact with administrator");
