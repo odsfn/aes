@@ -72,7 +72,7 @@ class Identity extends CActiveRecord {
 	// class name for the relations automatically generated below.
 	return array(
 	    'userAccount' => array(self::BELONGS_TO, 'UserAccount', 'user_id'),
-	    'userIdentityConfirmation' => array(self::HAS_ONE, 'UserIdentityConfirmation', 'user_identity_id'),
+	    'userIdentityConfirmation' => array(self::HAS_ONE, 'IdentityConfirmation', 'user_identity_id'),
 	);
     }
 

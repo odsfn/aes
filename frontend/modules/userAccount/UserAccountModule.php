@@ -53,6 +53,8 @@ class UserAccountModule extends CWebModule {
     
     public $photoMaxSize = 3000000;
     
+    public $allowActivationOnPasswordReset = true;
+    
     public function init() {
 	// this method is called when the module is being created
 	// you may place code here to customize the module or the application
@@ -78,14 +80,25 @@ class UserAccountModule extends CWebModule {
      * @param UserAccount $user
      */
     public function resetPassword(UserAccount $user){
-	if($user->status != UserAccount::STATUS_ACTIVE)
-	    throw new CException('Can\'t reset password for inactive users.');
-	
+	if($user->status != UserAccount::STATUS_ACTIVE) {
+	    if(!$this->allowActivationOnPasswordReset)
+                throw new CException('Can\'t reset password for inactive users.');
+            else {
+                $identity = Identity::model()->findByAttributes(array(
+                    'user_id' => $user->id,
+                    'type' => Identity::TYPE_EMAIL,
+                    'status' => Identity::STATUS_NEED_CONFIRMATION    
+                ));
+                
+                $identity->userIdentityConfirmation->confirm();
+            }
+        }
+        
 	$emailAddr = $user->getActiveEmail();
 	
 	$newPassword = $this->randomPassword();
 	$user->setPassword($newPassword);
-	$user->save();
+	$user->save(false, array('password'));
 	
 	$email = new YiiMailer('resetPassword', $data = array(
 	    'newPassword' => $newPassword,

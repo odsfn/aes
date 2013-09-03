@@ -17,7 +17,7 @@ return array(
             'connectionString' => 'mysql:host=localhost;dbname=aes_test',
             'username' => 'root',
             'password' => 'root',
-            'initSQLs' => array('SET time_zone = "Europe/Kiev";'),
+            'initSQLs' => array('SET storage_engine=INNODB; SET time_zone = "Europe/Kiev"; SET time_zone = "Europe/Kiev";'),
         ),
         
     ),

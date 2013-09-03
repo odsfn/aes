@@ -105,8 +105,8 @@ class UserAccount extends CActiveRecord {
 	));
     }
 
-    public function beforeSave() {
-	if($this->isNewRecord && !$this->created_ts){
+    protected function beforeSave() {
+	if($this->isNewRecord){
 	    $this->created_ts = date('Y-m-d H:i:s');
 	    $this->last_visit_ts = '0000-00-00 00:00:00';
 	}
