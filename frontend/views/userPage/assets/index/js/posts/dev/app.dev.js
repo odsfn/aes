@@ -14,6 +14,29 @@ $(function(){
             var time = time || new Date();
             return Math.round(time.getTime() / 1000);
         },
+        
+        wrapResponse = function(result, success, message) {
+            var 
+                message = message || 'Ok',
+                success = success || true
+                result = result || {};
+            
+            if(result.hasOwnProperty('models') && result.hasOwnProperty('totalCount')) {
+                respData = result;
+            }else{
+                respData = {
+                    totalCount: 1,
+                    models: [result]
+                };
+            }
+            
+            return {
+                success: success,
+                message: message,
+                data: respData
+            };
+        },
+                
         FxPosts = Backbone.Collection.extend({
             comparator: function(model) {
                 return -model.get('createdTs');
@@ -180,7 +203,7 @@ $(function(){
         }
     ]);
     
-    fauxServer.get('api/posts', function(context) {
+    fauxServer.get('/index-test.php/api/post', function(context) {
         var responseObj,
             postsToReturn,
             filterUserId = context.data.filters.usersRecordsOnly || false,
@@ -193,14 +216,14 @@ $(function(){
         postsToReturn = new Backbone.Collection(filteredPosts.slice(context.data.offset, context.data.offset + context.data.limit));
         
         responseObj = {
-            posts: postsToReturn.toJSON(),
+            models: postsToReturn.toJSON(),
             totalCount: filteredPosts.length
         };
         
-        return responseObj;
+        return wrapResponse(responseObj);
     });
     
-    fauxServer.addRoute('createPost', 'api/posts', 'POST', function(context) {
+    fauxServer.addRoute('createPost', '/index-test.php/api/post', 'POST', function(context) {
        var time = new Date(),
            ts = Math.round(time.getTime() / 1000);
        
@@ -213,32 +236,32 @@ $(function(){
            createdTs: ts
        });
        fixturePosts.push(context.data);
-       return context.data;
+       return wrapResponse(context.data);
     });
     
-    fauxServer.addRoute('deletePost', 'api/posts/:id', 'DELETE', function(context) {
+    fauxServer.addRoute('deletePost', '/index-test.php/api/post/:id', 'DELETE', function(context) {
        fixturePosts.remove(context.data);
-       return context.data;
+       return wrapResponse(context.data);
     });
     
-    fauxServer.addRoute('updatePost', 'api/posts/:id', 'PUT', function(context) {
+    fauxServer.addRoute('updatePost', '/index-test.php/api/post/:id', 'PUT', function(context) {
        var time = new Date(),
            ts = Math.round(time.getTime() / 1000);
            
        context.data.editedTs = ts;
        fixturePosts.set(context.data);
-       return context.data;
+       return wrapResponse(context.data);
     });
     
-    fauxServer.addRoute('createPostRate', 'api/posts/:postId/rates', 'POST', function(context) {
+    fauxServer.addRoute('createPostRate', '/index-test.php/api/post/:postId/rates', 'POST', function(context) {
         context.data.createdTs = timestamp();
         context.data.id = _.uniqueId();
         
-        return context.data;
+        return wrapResponse(context.data);
     });
     
-    fauxServer.addRoute('deletePostRate', 'api/posts/:postId/rates/:id', 'DELETE', function(context){
-        return context.data;
+    fauxServer.addRoute('deletePostRate', '/index-test.php/api/post/:postId/rates/:id', 'DELETE', function(context){
+        return wrapResponse(context.data);
     });
     
     PostsApp.Feed.posts.limit = 3;

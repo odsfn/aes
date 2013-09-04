@@ -8,18 +8,7 @@
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
 var FeedCollection = Backbone.Collection.extend({
-    /**
-     * The models root in the response
-     * 
-     * @type String
-     */
-    root: 'models',
-    
-    /**
-     * Attribute of total count value in the response
-     */
-    totalCountAttr: 'totalCount',
-    
+
     /**
      * Offset value for the next fetch
      */
@@ -52,11 +41,13 @@ var FeedCollection = Backbone.Collection.extend({
     },
     
     parse: function(response) {
-        var fetchedModels = response[this.root];
+
+        var 
+            fetchedModels = Backbone.Collection.prototype.parse.apply(this, arguments);
         
         this.currentPatchCount = fetchedModels.length;
         
-        this.updateNavigation(response, fetchedModels);
+        this.totalCount = response.data.totalCount;
         
         return fetchedModels;
     },
@@ -81,10 +72,6 @@ var FeedCollection = Backbone.Collection.extend({
         
         this.reset();
         this.fetch();
-    },
-            
-    updateNavigation: function(response) {
-        this.totalCount = response[this.totalCountAttr];
     },
             
     fetch: function(options) {

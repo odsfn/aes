@@ -22,7 +22,8 @@ return array(
 	// path aliases
 	'aliases' => array(
 		'bootstrap' => dirname(__FILE__) . '/../..' . '/common/lib/vendor/vasiliy-pdk/YiiBooster/src',
-		'userAccount' => dirname(__FILE__) . '/../modules/userAccount/'
+		'userAccount' => dirname(__FILE__) . '/../modules/userAccount/',
+                'ext'   => __DIR__ . '/../../common/extensions/'
 	),
     
 	// application behaviors
@@ -30,7 +31,12 @@ return array(
 
 	// controllers mappings
 	'controllerMap' => array(),
-
+        
+        'import' => array(
+            'userAccount.models.UserAccount',
+            'userAccount.models.Profile'
+        ),
+    
 	// application components
 	'components' => array(
 
@@ -47,6 +53,23 @@ return array(
 			'showScriptName' => false,
 
 			'rules' => array(
+                                // Restfullyii routes
+                                'api/<controller:\w+>'=>array('api/<controller>/restList', 'verb'=>'GET'),
+                                'api/<controller:\w+>/<id:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),
+                                'api/<controller:\w+>/<id:\w*>/<var:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),
+                                'api/<controller:\w+>/<id:\w*>/<var:\w*>/<var2:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),
+
+                                array('api/<controller>/restUpdate', 'pattern'=>'api/<controller:\w+>/<id:\w*>', 'verb'=>'PUT'),
+                                array('api/<controller>/restUpdate', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<var:\w*>', 'verb'=>'PUT'),
+                                array('api/<controller>/restUpdate', 'pattern'=>'api/<controller:\w*>/<id:\w*>/<var:\w*>/<var2:\w*>', 'verb'=>'PUT'),   
+
+                                array('api/<controller>/restDelete', 'pattern'=>'api/<controller:\w+>/<id:\w*>', 'verb'=>'DELETE'),
+                                array('api/<controller>/restDelete', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<var:\w*>', 'verb'=>'DELETE'),
+                                array('api/<controller>/restDelete', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<var:\w*>/<var2:\w*>', 'verb'=>'DELETE'),
+
+                                array('api/<controller>/restCreate', 'pattern'=>'api/<controller:\w+>', 'verb'=>'POST'),
+                                array('api/<controller>/restCreate', 'pattern'=>'api/<controller:\w+>/<id:\w+>', 'verb'=>'POST'),                            
+                            
 				// default rules
 				'<controller:\w+>/<id:\d+>' => '<controller>',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
@@ -67,6 +90,17 @@ return array(
                 'clientScript' => array(
                     'class' => 'CClientScript',
                     'packages' => array(
+                        
+                        'aes-common' => array(
+                            'depends' => array('marionette'),
+                            'baseUrl' => 'js/libs/aes',
+                            'js' => array(
+                                'helpers.js',
+                                'WebUser.js',
+                                'i18n.js'
+                            )
+                        ),
+                        
                         'marionette' => array(
                             'depends' => array(
                                 'backbone'
@@ -110,5 +144,12 @@ return array(
 	    'gii' => array(
 		'generatorPaths' => array('bootstrap.gii'),
 	    ),
+            
+            'api'
 	),
+    
+        'params' => array(
+            'RESTusername' => 'admin@restuser',
+            'RESTpassword' => 'admin@Access',
+        )
 );

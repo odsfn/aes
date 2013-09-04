@@ -39,6 +39,14 @@ class ClientApp extends CWidget {
 
         $this->clientScript = Yii::app()->clientScript;
 
+        $this->clientScript->registerPackage('aes-common');
+        if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
+            $this->clientScript->registerScript('urlMangerInit', 
+                    'UrlManager.setBaseUrl("/index-test.php");',
+                    CClientScript::POS_HEAD
+            );
+        }
+        
         //Registering backbone + marionete
         $this->clientScript->registerPackage('marionette');
         $this->clientScript->registerScriptFile('/js/libs/aes/i18n.js');
@@ -73,7 +81,7 @@ class ClientApp extends CWidget {
         }else{
             $appMain = 'app.js';    
         }
-
+        
         $this->requires['basePath'] = 'application.views.' . $this->controller->id . '.assets.' . $this->controller->action->id . '.js.' . $this->appName;
         
         $fullAppName = ucfirst($this->appName) . 'App';

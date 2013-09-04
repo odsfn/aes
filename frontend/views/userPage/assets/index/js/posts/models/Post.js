@@ -13,7 +13,7 @@ var Post = Backbone.Model.extend({
         comments: []
     },
     
-    urlRoot: 'api/posts',
+    urlRoot: UrlManager.createUrlCallback('api/post'),
     
     initialize: function() {
         var ratesModels = this.get('rates');

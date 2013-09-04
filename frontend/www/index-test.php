@@ -2,6 +2,8 @@
 /**
  * Entry point for testing version of the frontend application
  */
+define('TEST_APP_INSTANCE', true);
+
 require('./../../common/lib/vendor/autoload.php');
 
 Yiinitializr\Helpers\Initializer::create('./../', 'frontend', array(

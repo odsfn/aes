@@ -5,6 +5,6 @@
  */
 var Comments = Backbone.Collection.extend({
    model: Post,
-   url: 'api/posts'
+   url: UrlManager.createUrlCallback('api/post')
 });
 

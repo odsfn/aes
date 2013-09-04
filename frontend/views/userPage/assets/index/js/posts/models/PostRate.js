@@ -35,7 +35,7 @@ var PostRates = Backbone.Collection.extend({
     },
             
     url: function() {
-        return 'api/posts/' + this.postId + '/rates';
+        return UrlManager.createUrl('api/post/' + this.postId + '/rates');
     },
             
     getLikes: function() {
