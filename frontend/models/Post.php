@@ -16,6 +16,7 @@
  * @property Post[] $posts
  * @property UserProfile $user
  * @property PostRate[] $postRates
+ * @property PostPlacement[] $placements
  */
 class Post extends CActiveRecord
 {
@@ -66,6 +67,7 @@ class Post extends CActiveRecord
             'comments' => array(self::HAS_MANY, 'Post', 'reply_to'),
             'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'postRates' => array(self::HAS_MANY, 'PostRate', 'post_id'),
+            'placements' => array(self::HAS_MANY, 'PostPlacement', 'post_id'),
         );
     }
 
@@ -110,11 +112,13 @@ class Post extends CActiveRecord
     protected function beforeSave() {
         if($this->isNewRecord) {
             $this->created_ts = date('Y-m-d H:i:s');
+        }else{
+            $this->last_update_ts = date('Y-m-d H:i:s');
         }
         
         return parent::beforeSave();
     }
-    
+
     public function getAttributes($names = true) {
         $result = parent::getAttributes($names);
         $result['displayTime'] = $this->displayTime;
@@ -132,13 +136,24 @@ class Post extends CActiveRecord
         return parent::afterFind();
     }
     
+    public function onUsersPage($userId) {
+        $this->getDbCriteria()->mergeWith(array(
+            'join' => 'INNER JOIN post_placement ON post_placement.post_id = t.id AND post_placement.target_id = '. intval($userId) . ' AND post_placement.target_type = ' . PostPlacement::TYPE_USER_PAGE
+        ));
+        
+        return $this;
+    }
+    
+    public function usersOnly($userId) {
+        $this->getDbCriteria()->mergeWith(array(
+            'condition' => 't.user_id = ' . (int)$userId
+        ));
+    }
+    
     public function scopes() {
         return array(
             'postOnly' => array(
                 'condition' => 't.reply_to IS NULL' 
-            ),
-            'activeUser' => array(
-                'condition' => 't.user_id = ' . Yii::app()->user->id
             )
         );
     }

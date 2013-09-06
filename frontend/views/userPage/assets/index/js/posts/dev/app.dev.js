@@ -55,7 +55,7 @@ $(function(){
             },
             content: "When creating a Collection, you may choose to pass in the initial array of models. The collection's comparator may be included as an option. Passing false as the comparator option will prevent sorting. If you define an initialize function, it will be invoked when the collection is created.",
             
-            displayTime: "10:42 AM 8 August, 2013",
+            displayTime: "Aug 8, 2013 10:42:00 AM",
             createdTs: 1376577786,
             
             rates: [
@@ -89,7 +89,7 @@ $(function(){
             },
             content: "Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             
-            displayTime: "7:13 PM 8 August, 2013",
+            displayTime: "Aug 8, 2013 7:13:00 PM",
             createdTs: 1376577787,
 
             rates: [
@@ -126,7 +126,7 @@ $(function(){
                         photo: "http://placehold.it/64x64"
                     },
                     content: "Lorem ipsum dolor sit amet, at debet dolores est.",
-                    displayTime: "7:46PM 8 August, 2013",
+                    displayTime: "Aug 8, 2013 7:46:00 PM",
                     createdTs: 1376577788,                
                 },
                 
@@ -139,7 +139,7 @@ $(function(){
                         photo: "http://placehold.it/64x64"
                     },
                     content: "At debet dolores est. Lorem ipsum dolor sit amet",
-                    displayTime: "10:11PM 8 August, 2013",
+                    displayTime: " Aug 8, 2013 10:11:00 PM",
                     createdTs: 1376577789,                   
                 }
             ]
@@ -154,7 +154,7 @@ $(function(){
                 photo: 'http://placehold.it/64x64'
             },
             content: "The collection's comparator may be included as an option. If you define an initialize function, it will be invoked when the collection is created.",
-            displayTime: "11:42 AM 14 August, 2013",
+            displayTime: "Aug 14, 2013 11:42:00 AM",
             createdTs: 1376577790,
             
             comments: []
@@ -169,7 +169,7 @@ $(function(){
                 photo: 'http://placehold.it/64x64'
             },
             content: "Post 4. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
-            displayTime: "10:12 AM 7 August, 2013",
+            displayTime: "Aug 7, 2013 10:12:00 AM",
             createdTs: 1376577750,
             
             comments: []           
@@ -184,7 +184,7 @@ $(function(){
                 photo: 'http://placehold.it/64x64'
             },
             content: "Post 5. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
-            displayTime: "10:08 AM 7 August, 2013",
+            displayTime: "Aug 7, 2013 10:08:00 AM",
             createdTs: 1376577740,
             
             comments: []           
@@ -199,7 +199,7 @@ $(function(){
                 photo: 'http://placehold.it/64x64',
             },
             content: "Post 6. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
-            displayTime: "10:05 AM 7 August, 2013",
+            displayTime: "Aug 7, 2013 10:05:00 AM",
             createdTs: 1376577730,
             
             comments: []           
@@ -214,7 +214,7 @@ $(function(){
                 photo: 'http://placehold.it/64x64'
             },
             content: "Post 7. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
-            displayTime: "10:00 AM 7 August, 2013",
+            displayTime: "Aug 7, 2013 10:00:00 AM",
             createdTs: 1376577720,
             
             comments: []           
@@ -224,7 +224,7 @@ $(function(){
     fauxServer.get('/index-test.php/api/post', function(context) {
         var responseObj,
             postsToReturn,
-            filterUserId = context.data.filters.usersRecordsOnly || false,
+            filterUserId = context.data.filter.usersRecordsOnly || false,
             filteredPosts = fixturePosts;
         
         if(filterUserId) {
@@ -252,7 +252,7 @@ $(function(){
                 displayName: webUser.displayName,
                 photo: 'http://placehold.it/64x64'
            },
-           displayTime: $.format.date(time, 'hh:mm a dd MMMM, yyyy'),
+           displayTime: $.format.date(time, 'MMM d, yyyy hh:mm:ss a'),
            createdTs: ts
        });
        fixturePosts.push(context.data);

@@ -34,7 +34,11 @@ var FeedCollection = Backbone.Collection.extend({
      */
     currentPatchCount: 0,
     
-    filters: {},
+    filter: {},
+    
+    getFilters: function() {
+       return {};
+    },
     
     comparator: function(model) {
         return -model.get('createdTs');
@@ -66,7 +70,7 @@ var FeedCollection = Backbone.Collection.extend({
      * throwed out, navigation will be reset to the begining
      */
     setFilter: function(name, value) {
-        this.filters[name] = value;
+        this.filter[name] = value;
         this.sinceTs = null;
         this.offset = 0;
         
@@ -75,13 +79,18 @@ var FeedCollection = Backbone.Collection.extend({
     },
             
     fetch: function(options) {
-        var options = options || {};
+        var options = options || {},
+            params = _.pick(this, 'offset', 'sinceTs', 'limit');
         
         if(!this.sinceTs) {
             this.sinceTs = this.getTimestamp();
         }
         
-        _.extend(options, { data: _.pick(this, 'offset', 'sinceTs', 'limit', 'filters')});
+        _.extend(params, {
+            filter: _.extend({}, this.filter, this.getFilters())
+        });
+        
+        _.extend(options, { data: params});
         
         Backbone.Collection.prototype.fetch.apply(this, [options]);
     },
@@ -106,14 +115,17 @@ var FeedCollection = Backbone.Collection.extend({
     },
     
     initialize: function() {
-        
         this.on('request', function() {
            //totalCount will be returned by server
            this.off('add', this.incrementCount);
         });
 
         this.on('sync', function() {
-           this.on('add', this.incrementCount);
+           // @TODO: move this "_.findWhere(this._events['add'], {callback: this.incrementCount})" to the method Backbobe.Events.hasHandler(eventName, callback, context) 
+           if(!_.findWhere(this._events['add'], {callback: this.incrementCount}))
+                this.on('add', this.incrementCount);
+           
+           this.sort();
         });
         
         this.on('remove', this.decrementCount);

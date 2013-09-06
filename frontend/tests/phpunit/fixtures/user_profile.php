@@ -14,6 +14,42 @@ return array(
       ),
   array(
       'user_id' => '2',
+      'first_name' => 'Another',
+      'last_name' => 'User',
+      'birth_place' => 'tester',
+      'birth_day' => '2013-08-01',
+      'gender' => '1',
+      'mobile_phone' => '+1(234)567-89-98',
+      'email' => 'vptester@mail.ru',
+      'photo' => NULL,
+      'photo_thmbnl_64' => NULL      
+  ),
+  array(
+      'user_id' => '3',
+      'first_name' => 'Jhon',
+      'last_name' => 'Lenon',
+      'birth_place' => 'tester',
+      'birth_day' => '2013-08-01',
+      'gender' => '1',
+      'mobile_phone' => '+1(234)567-89-98',
+      'email' => 'vptester@mail.ru',
+      'photo' => NULL,
+      'photo_thmbnl_64' => NULL
+  ),    
+  array(
+      'user_id' => '4',
+      'first_name' => 'Yetanother',
+      'last_name' => 'User',
+      'birth_place' => 'tester',
+      'birth_day' => '2013-08-01',
+      'gender' => '1',
+      'mobile_phone' => '+1(234)567-89-98',
+      'email' => 'vptester@mail.ru',
+      'photo' => NULL,
+      'photo_thmbnl_64' => NULL
+  ),    
+  array(
+      'user_id' => '5',
       'first_name' => 'tester',
       'last_name' => 'tester',
       'birth_place' => 'tester',

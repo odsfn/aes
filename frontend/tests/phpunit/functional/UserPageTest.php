@@ -8,7 +8,9 @@ class UserPageTest extends WebTestCase {
     public $fixtures = array(
         'user' => 'userAccount.models.UserAccount',
         'user_identity' => 'userAccount.models.Identity',
-        'user_profile' => 'userAccount.models.Profile'
+        'user_profile' => 'userAccount.models.Profile',
+        'post'         => 'Post',
+        'post_placement' => 'PostPlacement'
     );
     
     protected function login() {
@@ -90,14 +92,14 @@ class UserPageTest extends WebTestCase {
         $this->openOwnPage();
         
         $this->assertCssCount('css=div.media.post', 5);
-        $this->assertTextPresent('11:42 AM 14 August, 2013');
+        $this->assertTextPresent('Aug 14, 2013 11:42:00 AM');
         $this->assertElementContainsText('css=#posts-counter-cont' ,'7 records');
         
         $this->mouseOver("css=div.media.post .post-body");
         $this->click("css=i.icon-remove");
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
-        $this->waitForTextNotPresent('11:42 AM 14 August, 2013');
+        $this->waitForTextNotPresent('Aug 14, 2013 11:42:00 AM');
         $this->waitForElementNotPresent('css=div.loadmask');
         
         $this->assertCssCount('css=div.media.post', 4);
@@ -108,13 +110,13 @@ class UserPageTest extends WebTestCase {
         $this->openOwnPage();
         
         $this->assertCssCount('css=div.media.post', 5);
-        $this->assertTextPresent('7:46PM 8 August, 2013');
+        $this->assertTextPresent('Aug 8, 2013 7:46:00 PM');
         
         $this->mouseOver("css=.comments div.media.post:nth-of-type(1) .post-body");
         $this->click("css=.comments div.media.post:nth-of-type(1) i.icon-remove");
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
-        $this->waitForTextNotPresent('7:46PM 8 August, 2013');
+        $this->waitForTextNotPresent('Aug 8, 2013 7:46:00 PM');
         $this->assertCssCount('css=div.media.post', 4);        
     }
     
@@ -283,13 +285,13 @@ class UserPageTest extends WebTestCase {
         //Can Remove
         
         $this->assertCssCount('css=div.media.post', 5);
-        $this->assertTextPresent('7:13 PM 8 August, 2013');
+        $this->assertTextPresent('Aug 8, 2013 7:13:00 PM');
         
         $this->mouseOver("css=div.media.post:nth-child(2) .post-body");
         $this->click("css=div.media.post:nth-child(2) i.icon-remove");
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
-        $this->waitForTextNotPresent('7:13 PM 8 August, 2013');
+        $this->waitForTextNotPresent('Aug 8, 2013 7:13:00 PM');
         //Removed with comments
         $this->assertCssCount('css=div.media.post', 2);
     }
@@ -380,7 +382,6 @@ class UserPageTest extends WebTestCase {
     
     function testPressUsersFilter() {
         $this->openOwnPage();
-        $this->waitForElementPresent('css=div.media.post');
         
         $this->assertElementContainsText('css=span.posts-count', '7');
         
@@ -445,5 +446,48 @@ class UserPageTest extends WebTestCase {
         $this->click('css=.post-rate:first span.icon-thumbs-down');
         $this->waitForElementNotPresent('css=.post-rate:first span.icon-thumbs-down.chosen');
         $this->assertElementContainsText('css=.post-rate:first span.icon-thumbs-down', '0');
+    }
+    
+    function testOrder() {
+        $this->openOwnPage();
+        
+        $datesOrderAll = array(
+            'Aug 14, 2013 11:42:00 AM', 'Aug 8, 2013 7:13:00 PM', 'Aug 8, 2013 10:42:00 AM',
+            'Aug 7, 2013 10:12:00 AM', 'Aug 7, 2013 10:08:00 AM', 'Aug 7, 2013 10:05:00 AM',
+            'Aug 7, 2013 10:00:00 AM'
+        );
+        
+        $datesOrderUsersOnly = array(
+            'Aug 8, 2013 7:13:00 PM', 'Aug 8, 2013 10:42:00 AM'
+        );
+        
+        $this->loadMore();
+        $this->loadMore();
+        
+        $this->checkDatesOrder($datesOrderAll);
+        
+        $this->click('css=small.author-switcher a');
+        $this->waitForElementNotPresent('css=div.loadmask');
+        
+        $this->checkDatesOrder($datesOrderUsersOnly);
+        
+        $this->click('css=small.author-switcher a');
+        $this->waitForElementNotPresent('css=div.loadmask');
+        
+        $this->loadMore();
+        $this->loadMore();
+        
+        $this->checkDatesOrder($datesOrderAll);
+    }
+    
+    protected function checkDatesOrder($orderedDates) {
+        foreach ($orderedDates as $index => $value) {
+            $this->assertElementContainsText('css=#posts-feed > div > div.media.post:nth-child(' . ($index+1) . ') h5.media-heading', $value);
+        }
+    }
+    
+    protected function loadMore() {
+        $this->click("css=div.get-more > div");
+        $this->waitForElementNotPresent('css=div.loadmask');
     }
 }

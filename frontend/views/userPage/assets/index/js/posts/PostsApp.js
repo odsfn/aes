@@ -34,7 +34,9 @@ PostsApp.module('Feed', function(Feed, PostsApp, Backbone, Marionette, $, _) {
     
     this.initAddPostView = function() {
         this.addPostView = new EditBoxView({
-            model: new Post()
+            model: new Post({
+                targetId: PostsApp.pageUserId
+            })
         });
 
         this.listenTo(this.addPostView, 'edited', this.addPost);
@@ -53,17 +55,15 @@ PostsApp.module('Feed', function(Feed, PostsApp, Backbone, Marionette, $, _) {
             $('#posts-app-container').unmask();
         }, this));
         
+        Feed.listenTo(Feed.posts, 'sync', function() {
+            PostsApp.postsRegion.show(PostsApp.Feed.postsView);
+        });
+        
         Feed.listenTo(Feed.posts, 'totalCountChanged', _.bind(function(actualValue) {
             Feed.titleView.setRecordsCount(actualValue);
         }, this));
         
-        Feed.posts.fetch({
-            success: function(collection , response, options) {
-                
-                PostsApp.postsRegion.show(Feed.postsView);
-                
-            }
-        });
+        Feed.posts.fetch();
     });
 
 });

@@ -44,7 +44,7 @@
 		
 
                 <?php $this->widget('application.widgets.ClientApp', array(
-                    'isolated' => true,
+//                    'isolated' => true,
                     'appName' => 'posts',
                     'requires' => array(
                         'depends' => array('loadmask'),
@@ -61,11 +61,23 @@
                             'views/EditableView.js',
                             'views/MoreView.js'
                          )
-                    ),
-                    'initializers' => array(
-                        'this.pageUserId = ' . $this->profile->user_id . ';'
                     )
-                )); ?>
+                )); 
+                
+                Yii::app()->clientScript->registerScript('setUsersPageId', 
+                        'PostsApp.on("initialize:before", function() { PostsApp.pageUserId = ' . $this->profile->user_id . '; });', 
+                        CClientScript::POS_HEAD
+                );
+                
+                // @TODO: Replace this by setting system property
+                if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
+                    Yii::app()->clientScript->registerScript('setPostsLimitTest', 
+                            'PostsApp.on("initialize:before", function() { PostsApp.Feed.posts.limit = 3; });', 
+                            CClientScript::POS_HEAD
+                    );                    
+                }
+                
+                ?>
 
 		<div id="posts row-fluid">
 		    <div class="span12" id="posts-app-container">
