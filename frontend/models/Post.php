@@ -63,7 +63,7 @@ class Post extends CActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'replyTo' => array(self::BELONGS_TO, 'Post', 'reply_to'),
-            'posts' => array(self::HAS_MANY, 'Post', 'reply_to'),
+            'comments' => array(self::HAS_MANY, 'Post', 'reply_to'),
             'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'postRates' => array(self::HAS_MANY, 'PostRate', 'post_id'),
         );
@@ -105,5 +105,41 @@ class Post extends CActiveRecord
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
+    }
+    
+    protected function beforeSave() {
+        if($this->isNewRecord) {
+            $this->created_ts = date('Y-m-d H:i:s');
+        }
+        
+        return parent::beforeSave();
+    }
+    
+    public function getAttributes($names = true) {
+        $result = parent::getAttributes($names);
+        $result['displayTime'] = $this->displayTime;
+        $result['createdTs'] = $this->createdTs;
+        return $result;
+    }
+    
+    public $displayTime;
+    
+    public $createdTs;
+    
+    protected function afterFind() {
+        $this->displayTime = Yii::app()->dateFormatter->formatDateTime($this->created_ts, 'medium', 'medium');
+        $this->createdTs = strtotime($this->created_ts);
+        return parent::afterFind();
+    }
+    
+    public function scopes() {
+        return array(
+            'postOnly' => array(
+                'condition' => 't.reply_to IS NULL' 
+            ),
+            'activeUser' => array(
+                'condition' => 't.user_id = ' . Yii::app()->user->id
+            )
+        );
     }
 }

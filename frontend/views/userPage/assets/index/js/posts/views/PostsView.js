@@ -9,7 +9,7 @@ var PostView = Marionette.ItemView.extend({
     
     initialize: function() {
 
-        if(!this.model.get('reply')) {
+        if(!this.model.get('reply_to')) {
             this.commentsView = new CommentsView({
                 model: new Backbone.Model({post: this.model})
             });

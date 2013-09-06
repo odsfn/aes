@@ -46,11 +46,13 @@ $(function(){
         fixturePosts = new FxPosts([
         {
             id: curId = _.uniqueId(),
-            reply: null,
-            authorId: 1,
-            authorDisplayName: 'Vasiliy Pedak',
-            authorPhoto: 'http://placehold.it/64x64',
-            
+            reply_to: null,
+            user_id: 1,
+            user: {
+                id: 1,
+                displayName: 'Vasiliy Pedak',
+                photo: 'http://placehold.it/64x64',
+            },
             content: "When creating a Collection, you may choose to pass in the initial array of models. The collection's comparator may be included as an option. Passing false as the comparator option will prevent sorting. If you define an initialize function, it will be invoked when the collection is created.",
             
             displayTime: "10:42 AM 8 August, 2013",
@@ -78,11 +80,13 @@ $(function(){
         
         {
             id: curId = _.uniqueId(),
-            reply: null,
-            authorId: 1,
-            authorDisplayName: 'Vasiliy Pedak',
-            authorPhoto: 'http://placehold.it/64x64',
-            
+            reply_to: null,
+            user_id: 1,
+            user: {
+                id: 1,
+                displayName: 'Vasiliy Pedak',
+                photo: 'http://placehold.it/64x64',
+            },
             content: "Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             
             displayTime: "7:13 PM 8 August, 2013",
@@ -115,10 +119,12 @@ $(function(){
             comments: [
                 {
                     id: _.uniqueId(),
-                    reply: curId,
-                    authorId: 2,
-                    authorDisplayName: 'Another User',
-                    authorPhoto: "http://placehold.it/64x64",
+                    reply_to: curId,
+                    user_id: 2,
+                    user: {
+                        displayName: 'Another User',
+                        photo: "http://placehold.it/64x64"
+                    },
                     content: "Lorem ipsum dolor sit amet, at debet dolores est.",
                     displayTime: "7:46PM 8 August, 2013",
                     createdTs: 1376577788,                
@@ -126,10 +132,12 @@ $(function(){
                 
                 {
                     id: _.uniqueId(),
-                    reply: curId,
-                    authorId: 1,
-                    authorDisplayName: 'Vasiliy Pedak',
-                    authorPhoto: "http://placehold.it/64x64",
+                    reply_to: curId,
+                    user_id: 1,
+                    user: {
+                        displayName: 'Vasiliy Pedak',
+                        photo: "http://placehold.it/64x64"
+                    },
                     content: "At debet dolores est. Lorem ipsum dolor sit amet",
                     displayTime: "10:11PM 8 August, 2013",
                     createdTs: 1376577789,                   
@@ -139,10 +147,12 @@ $(function(){
         
         {
             id: _.uniqueId(),
-            reply: null,
-            authorId: 3,
-            authorDisplayName: 'Jhon Lenon',
-            authorPhoto: 'http://placehold.it/64x64',
+            reply_to: null,
+            user_id: 3,
+            user: {
+                displayName: 'Jhon Lenon',
+                photo: 'http://placehold.it/64x64'
+            },
             content: "The collection's comparator may be included as an option. If you define an initialize function, it will be invoked when the collection is created.",
             displayTime: "11:42 AM 14 August, 2013",
             createdTs: 1376577790,
@@ -152,10 +162,12 @@ $(function(){
         
         {
             id: _.uniqueId(),
-            reply: null,
-            authorId: 4,
-            authorDisplayName: 'Yetanother User',
-            authorPhoto: 'http://placehold.it/64x64',
+            reply_to: null,
+            user_id: 4,
+            user: {
+                displayName: 'Yetanother User',
+                photo: 'http://placehold.it/64x64'
+            },
             content: "Post 4. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             displayTime: "10:12 AM 7 August, 2013",
             createdTs: 1376577750,
@@ -165,10 +177,12 @@ $(function(){
         
         {
             id: _.uniqueId(),
-            reply: null,
-            authorId: 4,
-            authorDisplayName: 'Yetanother User',
-            authorPhoto: 'http://placehold.it/64x64',
+            reply_to: null,
+            user_id: 4,
+            user: {
+                displayName: 'Yetanother User',
+                photo: 'http://placehold.it/64x64'
+            },
             content: "Post 5. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             displayTime: "10:08 AM 7 August, 2013",
             createdTs: 1376577740,
@@ -178,10 +192,12 @@ $(function(){
         
         {
             id: _.uniqueId(),
-            reply: null,
-            authorId: 4,
-            authorDisplayName: 'Yetanother User',
-            authorPhoto: 'http://placehold.it/64x64',
+            reply_to: null,
+            user_id: 4,
+            user: {
+                displayName: 'Yetanother User',
+                photo: 'http://placehold.it/64x64',
+            },
             content: "Post 6. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             displayTime: "10:05 AM 7 August, 2013",
             createdTs: 1376577730,
@@ -191,10 +207,12 @@ $(function(){
         
         {
             id: _.uniqueId(),
-            reply: null,
-            authorId: 4,
-            authorDisplayName: 'Yetanother User',
-            authorPhoto: 'http://placehold.it/64x64',
+            reply_to: null,
+            user_id: 4,
+            user: {
+                displayName: 'Yetanother User',
+                photo: 'http://placehold.it/64x64'
+            },
             content: "Post 7. Lorem ipsum dolor sit amet, at debet dolores est, oratio omnium iisque ut vel. Eam stet reque nulla cu. Patrioque persecuti interpretaris ut usu, docendi senserit sea no. Vel tota interpretaris an.",
             displayTime: "10:00 AM 7 August, 2013",
             createdTs: 1376577720,
@@ -210,7 +228,7 @@ $(function(){
             filteredPosts = fixturePosts;
         
         if(filterUserId) {
-            filteredPosts = fixturePosts.where({authorId: filterUserId});
+            filteredPosts = fixturePosts.where({user_id :filterUserId});
         }
         
         postsToReturn = new Backbone.Collection(filteredPosts.slice(context.data.offset, context.data.offset + context.data.limit));
@@ -229,9 +247,11 @@ $(function(){
        
        context.data.id = _.uniqueId();
        context.data = _.extend(context.data, { 
-           authorId: webUser.id,
-           authorDisplayName: webUser.displayName,
-           authorPhoto: 'http://placehold.it/64x64',
+           user_id: webUser.id,
+           user: {
+                displayName: webUser.displayName,
+                photo: 'http://placehold.it/64x64'
+           },
            displayTime: $.format.date(time, 'hh:mm a dd MMMM, yyyy'),
            createdTs: ts
        });

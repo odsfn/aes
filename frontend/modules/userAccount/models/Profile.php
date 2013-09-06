@@ -296,4 +296,10 @@ class Profile extends CActiveRecord {
         
         return false;
     }
+    
+    public function getAttributes($names = true) {
+        $attrs = parent::getAttributes($names);
+        $attrs['displayName'] = $this->username;
+        return $attrs;
+    }
 }

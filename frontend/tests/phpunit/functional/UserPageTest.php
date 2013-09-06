@@ -91,13 +91,17 @@ class UserPageTest extends WebTestCase {
         
         $this->assertCssCount('css=div.media.post', 5);
         $this->assertTextPresent('11:42 AM 14 August, 2013');
+        $this->assertElementContainsText('css=#posts-counter-cont' ,'7 records');
         
         $this->mouseOver("css=div.media.post .post-body");
         $this->click("css=i.icon-remove");
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
         $this->waitForTextNotPresent('11:42 AM 14 August, 2013');
+        $this->waitForElementNotPresent('css=div.loadmask');
+        
         $this->assertCssCount('css=div.media.post', 4);
+        $this->assertElementContainsText('css=#posts-counter-cont' ,'6 records');
     }
     
     function testCommentRemoves(){
@@ -170,6 +174,8 @@ class UserPageTest extends WebTestCase {
         
         $this->assertCssCount('css=div.media.post', 5);
         
+        $this->assertElementContainsText('css=#posts-counter-cont' ,'7 records');
+        
         $this->click("css=#add-post-top .new-post input");
         $this->waitForVisible("css=#add-post-top textarea");
         $this->type("css=#add-post-top textarea", "Hello world!");
@@ -178,7 +184,9 @@ class UserPageTest extends WebTestCase {
         $this->waitForNotVisible("css=#add-post-top textarea");
         
         $this->assertCssCount('css=div.media.post', 6);
-        $this->assertElementContainsText('css=div.media.post:nth-of-type(1)', 'Hello world!');        
+        $this->assertElementContainsText('css=div.media.post:nth-of-type(1)', 'Hello world!');
+        
+        $this->assertElementContainsText('css=#posts-counter-cont' ,'8 records');
     }
     
     function testCommentAdds(){

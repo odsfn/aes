@@ -1,15 +1,16 @@
 var Post = Backbone.Model.extend({
     defaults: {
-        reply: null,
-        author: {
-            id: null,
+        reply_to: null,
+        user_id: null,
+        user: {
+            user_id: null,
             photo: '',
             displayName: '',
         },
         content: '',
-        likes: 0,
-        dislikes: 0,
-        displayTime: '',
+        likes: null,
+        dislikes: null,
+        displayTime: null,
         comments: []
     },
     

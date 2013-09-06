@@ -78,7 +78,7 @@ var EditableView = Marionette.ItemView.extend({
             this.$el.hide();
             
         //Authenticated but post made by other user
-        } else if(webUser.id != this.model.get('authorId')) {
+        } else if(webUser.id != this.model.get('user_id')) {
             //on the current user's page
             if(webUser.id == PostsApp.pageUserId)
                //current user can't edit posts made by others

@@ -49,9 +49,12 @@ PostsApp.module('Feed', function(Feed, PostsApp, Backbone, Marionette, $, _) {
             $('#posts-app-container').mask();
         });
         
-        Feed.listenTo(Feed.posts, 'sync', _.bind(function(collection) {
-            Feed.titleView.setRecordsCount(collection.totalCount);
+        Feed.listenTo(Feed.posts, 'sync remove add', _.bind(function(collection) {
             $('#posts-app-container').unmask();
+        }, this));
+        
+        Feed.listenTo(Feed.posts, 'totalCountChanged', _.bind(function(actualValue) {
+            Feed.titleView.setRecordsCount(actualValue);
         }, this));
         
         Feed.posts.fetch({

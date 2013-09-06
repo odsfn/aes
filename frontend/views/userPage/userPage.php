@@ -104,15 +104,15 @@
 
 <script type="text/template" id="post-tpl">
         <div class="pull-left">
-            <div class="img-wrapper-tocenter users-photo users-photo-1">
+            <div class="img-wrapper-tocenter users-photo users-photo-<%= user_id %>">
                 <span></span>
-                <img alt="<%= authorDisplayName %>" src="<?php echo ($this->profile) ? $this->profile->photoThmbnl64 : ''; // Will be replaced soon to the <%= authorPhotoThumbnail %> ?>">
+                <img alt="<%= user.displayName %>" src="<?php echo ($this->profile) ? $this->profile->photoThmbnl64 : ''; // Will be replaced soon to the <%= authorPhotoThumbnail %> ?>">
             </div>
         </div>
         <div class="media-body">
             <div class="post-body">
                 <h5 class="media-heading">
-                    <span class="user"><%= authorDisplayName %></span> 
+                    <span class="user"><%= user.displayName %></span> 
                     <small><a href="#<%= id %>"><%= displayTime %></a></small> 
                 </h5>
 
