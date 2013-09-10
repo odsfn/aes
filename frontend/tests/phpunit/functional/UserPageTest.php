@@ -10,7 +10,8 @@ class UserPageTest extends WebTestCase {
         'user_identity' => 'userAccount.models.Identity',
         'user_profile' => 'userAccount.models.Profile',
         'post'         => 'Post',
-        'post_placement' => 'PostPlacement'
+        'post_placement' => 'PostPlacement',
+        'post_rate'      => 'PostRate'
     );
     
     protected function login() {
@@ -497,6 +498,104 @@ class UserPageTest extends WebTestCase {
         
         $this->assertElementContainsText('css=#posts-feed > div > div.media.post:nth-child(1)', $addedText);
     }
+    
+    function testRateShows() {
+       $this->openOwnPage();
+       
+       $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(2) > .media-body > .post-body > .post-after';
+       
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "3");
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "2");
+       
+       $this->assertElementPresent("$elementSelector .icon-thumbs-up.chosen");
+       
+       $commentSelector ='css=#posts-feed > div > div.media.post:nth-child(2) .comments .media.post > .media-body > .post-body > .post-after';
+       
+       $this->assertElementContainsText("$commentSelector .icon-thumbs-up", "0");
+       $this->assertElementContainsText("$commentSelector .icon-thumbs-down", "2");
+       
+       $this->assertElementNotPresent("$commentSelector .icon-thumbs-up.chosen");
+    }
+    
+    function testRateAddPositive() {
+       $this->openOwnPage();
+       
+       $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(1) > .media-body > .post-body > .post-after';
+       
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "0");
+       $this->assertElementNotPresent("$elementSelector .icon-thumbs-up.chosen");
+       
+       $this->click("$elementSelector .icon-thumbs-up");
+       
+       $this->waitForElementPresent("$elementSelector .icon-thumbs-up.chosen");
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "1");
+    }
+    
+    function testRateAddNegative() {
+       $this->openOwnPage();
+       
+       $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(1) > .media-body > .post-body > .post-after';
+       
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "0");
+       $this->assertElementNotPresent("$elementSelector .icon-thumbs-down.chosen");
+       
+       $this->click("$elementSelector .icon-thumbs-down");
+       
+       $this->waitForElementPresent("$elementSelector .icon-thumbs-down.chosen");
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "1");
+    }
+    
+    function testRateRemovePositive() {
+       $this->openOwnPage();
+       
+       $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(2) > .media-body > .post-body > .post-after';
+       
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "3");
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "2");
+       
+       $this->assertElementPresent("$elementSelector .icon-thumbs-up.chosen");
+       
+       $this->click("$elementSelector .icon-thumbs-up");
+       
+       $this->waitForElementNotPresent("$elementSelector .chosen");
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "2");
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "2");
+    }
+    
+    function testRateChangesByClickingOnOposite() {
+       $this->openOwnPage();
+       
+       $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(2) > .media-body > .post-body > .post-after';
+       
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "3");
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "2");
+       
+       $this->assertElementPresent("$elementSelector .icon-thumbs-up.chosen");
+       
+       $this->click("$elementSelector .icon-thumbs-down");
+       
+       $this->waitForElementNotPresent("$elementSelector .icon-thumbs-up.chosen");
+       $this->waitForElementPresent("$elementSelector .icon-thumbs-down.chosen");
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "2");
+       $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "3");  
+    }
+    
+//    function testRateRemoveNegative() {}
+    
+    function testRateCantBeChangedByUnauthorized() {
+        $this->open('userPage/1');
+        $this->waitForElementPresent('css=div.media.post');
+
+        $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(1) > .media-body > .post-body > .post-after';
+        
+        $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "0");
+
+        $this->click("$elementSelector .icon-thumbs-down");
+        sleep(1);
+        $this->assertElementNotPresent("$elementSelector .icon-thumbs-down.chosen");
+        $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "0");
+    }
+
     
     protected function checkDatesOrder($orderedDates) {
         foreach ($orderedDates as $index => $value) {

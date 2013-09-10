@@ -15,14 +15,14 @@ return array(
     array(
         'id' => 3,
         'user_id' => 2,
-        'reply_to' => 2,
+        'reply_to' => 1,
         'content' => "Lorem ipsum dolor sit amet, at debet dolores est.",            
         'created_ts' => "2013-08-08 19:46:00",
     ),
     array(
         'id' => 4,
         'user_id' => 1,
-        'reply_to' => 2,
+        'reply_to' => 1,
         'content' => "At debet dolores est. Lorem ipsum dolor sit amet",
         'created_ts' => "2013-08-08 22:11:00"
     ),
