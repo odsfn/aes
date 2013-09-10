@@ -480,6 +480,24 @@ class UserPageTest extends WebTestCase {
         $this->checkDatesOrder($datesOrderAll);
     }
     
+    function testOrderAfterAdd(){
+        $this->openOwnPage();
+        
+        $this->click("css=#add-post-top .new-post input");
+        $this->waitForVisible("css=#add-post-top textarea");
+        $this->type("css=#add-post-top textarea", $addedText = "Hello world! " . time());
+        $this->click("css=#add-post-top button.post");
+        
+        $this->waitForNotVisible("css=#add-post-top textarea");
+        
+        $this->assertElementContainsText('css=#posts-feed > div > div.media.post:nth-child(1)', $addedText);
+        
+        $this->open('userPage/1');
+        $this->waitForElementPresent('css=div.media.post');
+        
+        $this->assertElementContainsText('css=#posts-feed > div > div.media.post:nth-child(1)', $addedText);
+    }
+    
     protected function checkDatesOrder($orderedDates) {
         foreach ($orderedDates as $index => $value) {
             $this->assertElementContainsText('css=#posts-feed > div > div.media.post:nth-child(' . ($index+1) . ') h5.media-heading', $value);

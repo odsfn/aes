@@ -5,6 +5,21 @@
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
 class RestController extends ERestController {
+    
+    /**
+     * Attributes which exists only on client side. Thay can't be saved as models'
+     * properties, so they should be removed, before model saving start.
+     * @var array 
+     */
+    public $virtualAttrs = array();
+    
+    /**
+     * Model's property name which contains value of the owner. Used during default
+     * access filters run.
+     * @var string 
+     */
+    public $modelsUserIdAttr = 'user_id';
+    
     /**
      * Override to ignore any access restrictions. 
      * @TODO: Implement it for security needs
@@ -57,6 +72,67 @@ class RestController extends ERestController {
         
         return parent::saveModel($model, $data);
     }
-
-    protected $virtualAttrs = array();
+    
+    public function doRestDelete($id) {
+        $model = $this->loadOneModel($id);
+        if (is_null($model)) {
+            $this->HTTPStatus = $this->getHttpStatus(404);
+            throw new CHttpException(404, 'Record Not Found');
+        } else {
+            if ($model->delete())
+                $this->outputHelper('Record(s) Deleted', array($model), 1);
+            else {
+                $this->HTTPStatus = $this->getHttpStatus(406);
+                throw new CHttpException(406, 'Could not delete model with ID: ' . $id);
+            }
+        }
+    }
+    
+    public function _filters(){
+	return array(
+	    'accessControl'
+	);
+    }
+    
+    public function accessRules() {
+	return array(
+	    array('allow', 
+		'actions' => array('restCreate'), 
+		'users'=>array('@')
+	    ),
+            array('allow',
+                'actions' => array('restDelete', 'restUpdate'),
+                'expression' => array($this, 'doesUserCanControlModel')
+            ),
+	    array('deny', 
+		'actions'=>array('restCreate', 'restDelete', 'restUpdate'),
+		'users'=>array('*')
+	    )
+	);
+    }
+    
+    public function doesUserCanControlModel($user, $rule) {
+        $id = $_GET['id'];
+        
+        $model = $this->loadOneModel($id);
+        
+        if($this->isUserOwnsModel($model, $user))
+            return true;
+        
+        return false;
+    }
+    
+    /**
+     * Checks whather the user has access to the model.
+     * 
+     * @param CActiveRecord $model
+     * @param CWebUser $user
+     * @return boolean
+     */
+    protected function isUserOwnsModel($model, $user = null) {
+        if(!$user)
+            $user = Yii::app()->user; 
+        
+        return $model->{$this->modelsUserIdAttr} == $user->id;
+    }
 }

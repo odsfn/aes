@@ -20,13 +20,21 @@ class PostController extends RestController {
         
         'comments.rates'
     );
+        
+    public $virtualAttrs = array(
+            'displayTime',
+            'user',
+            'likes',
+            'dislikes',
+            'comments',
+            'createdTs',
+            'targetId'
+    );
     
     public function doRestCreate($data) {
         $data['user_id'] = Yii::app()->user->id;
         
         $targetId = $data['targetId'];
-        
-        $data = $this->removeVirtualAttributes($data);
         
         $models = $this->saveModel($this->getModel(), $data);
         
@@ -47,28 +55,6 @@ class PostController extends RestController {
             $models,
             1
         );
-    }
-    
-    public function doRestUpdate($id, $data) {
-        
-        $data = $this->removeVirtualAttributes($data);
-        
-        parent::doRestUpdate($id, $data);
-    }
-    
-    public function doRestDelete($id) {
-        $model = $this->loadOneModel($id);
-        if (is_null($model)) {
-            $this->HTTPStatus = $this->getHttpStatus(404);
-            throw new CHttpException(404, 'Record Not Found');
-        } else {
-            if ($model->delete())
-                $this->outputHelper('Record(s) Deleted', array($model), 1);
-            else {
-                $this->HTTPStatus = $this->getHttpStatus(406);
-                throw new CHttpException(406, 'Could not delete model with ID: ' . $id);
-            }
-        }
     }
     
     public function doRestList() {
@@ -94,7 +80,8 @@ class PostController extends RestController {
             unset($this->restFilter['usersRecordsOnly']);
         }
         
-        $criteria->filter($this->restFilter);
+        $criteria->filter($this->restFilter)
+                ->orderBy('created_ts', 'DESC');
         
         $totalCount = $countCriteria->count();
         
@@ -107,15 +94,5 @@ class PostController extends RestController {
             (int)$totalCount
         );
     }
-    
-    protected $virtualAttrs = array(
-            'displayTime',
-            'user',
-            'likes',
-            'dislikes',
-            'comments',
-            'createdTs',
-            'targetId'
-    );
     
 }

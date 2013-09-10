@@ -1,18 +1,18 @@
 <?php
 return array(
     array(
-        'post_id'   => 1,
-        'target_id' => 1,
-        'target_type' => 0,
-        'placer_id' => 1,
-        'placed_ts' => "2013-08-08 10:42:00",
-    ),
-    array(
-        'post_id'   => 2,        
+        'post_id'   => 1,        
         'target_id' => 1,
         'target_type' => 0,
         'placer_id' => 1,
         'placed_ts' => "2013-08-08 19:13:00",
+    ),
+    array(
+        'post_id'   => 2,
+        'target_id' => 1,
+        'target_type' => 0,
+        'placer_id' => 1,
+        'placed_ts' => "2013-08-08 10:42:00",
     ),
     array(
         'post_id'   => 5,        
