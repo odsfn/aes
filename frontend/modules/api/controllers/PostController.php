@@ -6,9 +6,18 @@
 class PostController extends RestController {
     
     public $nestedModels = array(
-        'user' => array('alias' => 'post_author'),
-        'comments.user',
+        
+        'user' => array(
+            'alias' => 'post_author',
+            'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64'
+        ),
+        
+        'comments.user' => array(
+            'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64'
+        ),
+        
         'rates' => array('alias' => 'post_rate'),
+        
         'comments.rates'
     );
     
