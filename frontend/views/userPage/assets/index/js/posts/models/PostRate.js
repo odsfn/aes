@@ -5,8 +5,8 @@ var PostRate = Backbone.Model.extend({
     
     defaults: {
         score: null,
-        postId: null,
-        userId: null,
+        post_id: null,
+        user_id: null,
         createdTs: null
     }
     
@@ -14,28 +14,20 @@ var PostRate = Backbone.Model.extend({
 
 var PostRates = Backbone.Collection.extend({
     
-    postId: null,
+    post_id: null,
     
     model: PostRate,
     
-    parse: function(response) {
-        this.likes = response.likes;
-        this.dislikes = response.dislikes;
-        return response.rates;
-    }, 
+    url: UrlManager.createUrlCallback('api/postRate'),
             
     initialize: function(options) {
         var options = options || {};
         
         _.defaults(options, {
-            postId: null
+            post_id: null
         });
         
         _.extend(this, _.pick(_.keys(options)));
-    },
-            
-    url: function() {
-        return UrlManager.createUrl('api/post/' + this.postId + '/rates');
     },
             
     getLikes: function() {
@@ -46,15 +38,15 @@ var PostRates = Backbone.Collection.extend({
         return this.where({score: -1}).length;
     },
     
-    addRate: function(userId, score) {
+    addRate: function(user_id, score) {
         return this.create({
-           postId: this.postId,
-           userId: userId,
+           post_id: this.post_id,
+           user_id: user_id,
            score: score
         });
     },        
             
-    getRate: function(userId) {
-        return this.findWhere({userId: userId});
+    getRate: function(user_id) {
+        return this.findWhere({user_id: user_id});
     }
 });

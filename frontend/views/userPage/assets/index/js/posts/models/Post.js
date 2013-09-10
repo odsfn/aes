@@ -26,11 +26,11 @@ var Post = Backbone.Model.extend({
         }
         
         if(this.id) {
-            this.rates.postId = this.id;
+            this.rates.post_id = this.id;
         }
         
         this.on('change:id', _.bind(function(){
-            this.rates.postId = this.id;
+            this.rates.post_id = this.id;
         }, this));
     },
             

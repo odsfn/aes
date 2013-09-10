@@ -3,28 +3,14 @@
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
-class PostController extends ERestController {
+class PostController extends RestController {
     
     public $nestedModels = array(
         'user' => array('alias' => 'post_author'),
-        'comments.user'
+        'comments.user',
+        'rates' => array('alias' => 'post_rate'),
+        'comments.rates'
     );
-    
-    /**
-     * Override to ignore any access restrictions. 
-     * @TODO: Implement it for security needs
-     */
-    public function filterRestAccessRules($c) {
-        Yii::app()->clientScript->reset(); //Remove any scripts registered by Controller Class
-        $c->run();
-    }
-    
-    /**
-     * This output helper has been overriden for compability with Backbone.parse method
-     */
-    public function outputHelper($message, $results, $totalCount = 0, $model = null) {
-        parent::outputHelper($message, $results, $totalCount, $model = 'models');
-    }
     
     public function doRestCreate($data) {
         $data['user_id'] = Yii::app()->user->id;
@@ -113,30 +99,6 @@ class PostController extends ERestController {
         );
     }
     
-    protected function removeVirtualAttributes($data, $virtualAttrs = null) {
-         
-        if(!$virtualAttrs) 
-             $virtualAttrs = $this->virtualAttrs;
-         
-        foreach ($data as $key => $value) {
-             
-             if(empty($value)) {
-                 unset($data[$key]);
-                 continue;
-             }
-             
-             if(in_array($key, $virtualAttrs)) {
-                 if(is_array($virtualAttrs[$key]) && is_array($data[$key])) {
-                     $data[$key] = $this->removeVirtualAttributes($data[$key], $virtualAttrs[$key]);
-                 }else{
-                     unset($data[$key]);
-                 }
-             }
-         }
-         
-         return $data;
-    }
-    
     protected $virtualAttrs = array(
             'displayTime',
             'user',
@@ -146,4 +108,5 @@ class PostController extends ERestController {
             'createdTs',
             'targetId'
     );
+    
 }

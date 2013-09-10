@@ -196,13 +196,13 @@ class Profile extends CActiveRecord {
 
             // Checks whather photo with specified size already exists
             if (file_exists($basePath . $sizedFile))
-                return Yii::app()->createAbsoluteUrl('/') . '/' . $photosDir . "/" . $sizedFile;
+                return Yii::app()->getBaseUrl(true) . $photosDir . "/" . $sizedFile;
             
             if($this->resizePhoto($basePath . $this->photo, $basePath . $sizedFile, $width, $height))
-                return Yii::app()->createAbsoluteUrl('/') . '/' . $photosDir . "/" . $sizedFile;
+                return Yii::app()->getBaseUrl(true) . $photosDir . "/" . $sizedFile;
         }
         
-        return Yii::app()->createAbsoluteUrl('/') . '/' . $photosDir . "/" . Yii::app()->getModule('userAccount')->defaultPhoto;
+        return Yii::app()->getBaseUrl(true) . $photosDir . "/" . Yii::app()->getModule('userAccount')->defaultPhoto;
     }
     
     public function getPhotoThmbnl64() {
@@ -214,7 +214,11 @@ class Profile extends CActiveRecord {
             $this->save(false, array('photo_thmbnl_64'));
         }
                 
-        return Yii::app()->createAbsoluteUrl('/') . '/' . Yii::app()->getModule('userAccount')->photosDir . "/" . $this->photo_thmbnl_64;
+        return Yii::app()->getBaseUrl(true) . Yii::app()->getModule('userAccount')->photosDir . "/" . $this->photo_thmbnl_64;
+    }
+    
+    public function getPageUrl() {
+        return Yii::app()->createAbsoluteUrl('userPage', array('id'=>$this->user_id));
     }
     
     /**
@@ -300,6 +304,8 @@ class Profile extends CActiveRecord {
     public function getAttributes($names = true) {
         $attrs = parent::getAttributes($names);
         $attrs['displayName'] = $this->username;
+        $attrs['photoThmbnl64'] = $this->getPhotoThmbnl64();
+        $attrs['pageUrl'] = $this->pageUrl;
         return $attrs;
     }
 }

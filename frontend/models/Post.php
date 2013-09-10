@@ -15,7 +15,7 @@
  * @property Post $replyTo
  * @property Post[] $posts
  * @property UserProfile $user
- * @property PostRate[] $postRates
+ * @property PostRate[] $rates
  * @property PostPlacement[] $placements
  */
 class Post extends CActiveRecord
@@ -66,7 +66,7 @@ class Post extends CActiveRecord
             'replyTo' => array(self::BELONGS_TO, 'Post', 'reply_to'),
             'comments' => array(self::HAS_MANY, 'Post', 'reply_to'),
             'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
-            'postRates' => array(self::HAS_MANY, 'PostRate', 'post_id'),
+            'rates' => array(self::HAS_MANY, 'PostRate', 'post_id'),
             'placements' => array(self::HAS_MANY, 'PostPlacement', 'post_id'),
         );
     }
@@ -156,5 +156,18 @@ class Post extends CActiveRecord
                 'condition' => 't.reply_to IS NULL' 
             )
         );
+    }
+    
+    /**
+     * @TODO: Move it to a behaviour
+     */    
+    public function populateRecord($attributes,$callAfterFind=true)
+    {
+        if ( is_array($attributes))
+                foreach ($attributes as $name => &$value)
+                        if ($this->hasAttribute($name) and $value !== null)
+                                settype($value, $this->getMetaData()->columns[$name]->type);
+
+        return parent::populateRecord($attributes, $callAfterFind);
     }
 }

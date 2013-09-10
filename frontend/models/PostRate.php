@@ -60,7 +60,7 @@ class PostRate extends CActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'post' => array(self::BELONGS_TO, 'Post', 'post_id'),
-            'user' => array(self::BELONGS_TO, 'UserProfile', 'user_id'),
+            'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
         );
     }
 
@@ -98,5 +98,43 @@ class PostRate extends CActiveRecord
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
+    }
+    
+    protected function beforeSave() {
+        if($this->isNewRecord) {
+            $this->created_ts = date('Y-m-d H:i:s');
+            
+            $lastRate = PostRate::model()->find('user_id = ' . $this->user_id . ' AND post_id = ' . $this->post_id);
+            if($lastRate) 
+                $lastRate->delete();
+        }
+        
+        return parent::beforeSave();
+    }
+    
+    public $createdTs;
+    
+    public function getAttributes($names = true) {
+        $result = parent::getAttributes($names);
+        $result['createdTs'] = $this->createdTs;
+        return $result;
+    }
+    
+    protected function afterFind() {
+        $this->createdTs = strtotime($this->created_ts);
+        return parent::afterFind();
+    }
+    
+    /**
+     * @TODO: Move it to a behaviour
+     */  
+    public function populateRecord($attributes,$callAfterFind=true)
+    {
+        if ( is_array($attributes))
+                foreach ($attributes as $name => &$value)
+                        if ($this->hasAttribute($name) and $value !== null)
+                                settype($value, $this->getMetaData()->columns[$name]->type);
+
+        return parent::populateRecord($attributes, $callAfterFind);
     }
 }

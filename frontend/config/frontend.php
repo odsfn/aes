@@ -68,7 +68,7 @@ return array(
                                 array('api/<controller>/restDelete', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<var:\w*>/<var2:\w*>', 'verb'=>'DELETE'),
 
                                 array('api/<controller>/restCreate', 'pattern'=>'api/<controller:\w+>', 'verb'=>'POST'),
-                                array('api/<controller>/restCreate', 'pattern'=>'api/<controller:\w+>/<id:\w+>', 'verb'=>'POST'),                            
+                                array('api/<controller>/restCreate', 'pattern'=>'api/<controller:\w+>/<id:\w+>', 'verb'=>'POST'),
                             
 				// default rules
 				'<controller:\w+>/<id:\d+>' => '<controller>',

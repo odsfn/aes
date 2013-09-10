@@ -118,7 +118,7 @@
         <div class="pull-left">
             <div class="img-wrapper-tocenter users-photo users-photo-<%= user_id %>">
                 <span></span>
-                <img alt="<%= user.displayName %>" src="<?php echo ($this->profile) ? $this->profile->photoThmbnl64 : ''; // Will be replaced soon to the <%= authorPhotoThumbnail %> ?>">
+                <a href="<%= user.pageUrl %>" name="<%= id %>"><img alt="<%= user.displayName %>" src="<%= user.photoThmbnl64 %>"></a>
             </div>
         </div>
         <div class="media-body">

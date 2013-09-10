@@ -61,15 +61,15 @@ $(function(){
             rates: [
                 {
                     id: _.uniqueId(),
-                    userId: 1,
-                    postId: curId,
+                    user_id: 1,
+                    post_id: curId,
                     score: 1,
                     createdTs: 1376577886
                 },
                 {
                     id: _.uniqueId(),
-                    userId: 2,
-                    postId: curId,
+                    user_id: 2,
+                    post_id: curId,
                     score: 1,
                     createdTs: 1376577886
                 },
@@ -95,22 +95,22 @@ $(function(){
             rates: [
                 {
                     id: _.uniqueId(),
-                    userId: 1,
-                    postId: curId,
+                    user_id: 1,
+                    post_id: curId,
                     score: 1,
                     createdTs: 1376577887
                 },
                 {
                     id: _.uniqueId(),
-                    userId: 3,
-                    postId: curId,
+                    user_id: 3,
+                    post_id: curId,
                     score: -1,
                     createdTs: 1376577888
                 },
                 {
                     id: _.uniqueId(),
-                    userId: 4,
-                    postId: curId,
+                    user_id: 4,
+                    post_id: curId,
                     score: -1,
                     createdTs: 1376577889
                 },
@@ -273,14 +273,14 @@ $(function(){
        return wrapResponse(context.data);
     });
     
-    fauxServer.addRoute('createPostRate', '/index-test.php/api/post/:postId/rates', 'POST', function(context) {
+    fauxServer.addRoute('createPostRate', '/index-test.php/api/postRate', 'POST', function(context) {
         context.data.createdTs = timestamp();
         context.data.id = _.uniqueId();
         
         return wrapResponse(context.data);
     });
     
-    fauxServer.addRoute('deletePostRate', '/index-test.php/api/post/:postId/rates/:id', 'DELETE', function(context){
+    fauxServer.addRoute('deletePostRate', '/index-test.php/api/postRate/:id', 'DELETE', function(context){
         return wrapResponse(context.data);
     });
     

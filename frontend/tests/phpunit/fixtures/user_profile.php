@@ -19,7 +19,7 @@ return array(
       'birth_place' => 'tester',
       'birth_day' => '2013-08-01',
       'gender' => '1',
-      'mobile_phone' => '+1(234)567-89-98',
+      'mobile_phone' => '+1(234)567-89-99',
       'email' => 'vptester@mail.ru',
       'photo' => NULL,
       'photo_thmbnl_64' => NULL      
@@ -31,7 +31,7 @@ return array(
       'birth_place' => 'tester',
       'birth_day' => '2013-08-01',
       'gender' => '1',
-      'mobile_phone' => '+1(234)567-89-98',
+      'mobile_phone' => '+1(234)567-90-00',
       'email' => 'vptester@mail.ru',
       'photo' => NULL,
       'photo_thmbnl_64' => NULL
@@ -43,7 +43,7 @@ return array(
       'birth_place' => 'tester',
       'birth_day' => '2013-08-01',
       'gender' => '1',
-      'mobile_phone' => '+1(234)567-89-98',
+      'mobile_phone' => '+1(234)567-90-01',
       'email' => 'vptester@mail.ru',
       'photo' => NULL,
       'photo_thmbnl_64' => NULL
@@ -55,7 +55,7 @@ return array(
       'birth_place' => 'tester',
       'birth_day' => '2013-08-01',
       'gender' => '1',
-      'mobile_phone' => '+1(234)567-89-98',
+      'mobile_phone' => '+1(234)567-90-02',
       'email' => 'vptester@mail.ru',
       'photo' => NULL,
       'photo_thmbnl_64' => NULL

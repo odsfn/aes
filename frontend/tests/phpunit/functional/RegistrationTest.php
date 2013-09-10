@@ -2,9 +2,17 @@
 
 class RegistrationTest extends WebTestCase
 {
+    public $fixtures = array(
+        'user' => 'userAccount.models.UserAccount',
+        'user_identity' => 'userAccount.models.Identity',
+        'user_profile' => 'userAccount.models.Profile'
+    );
+    
     function testRegistration() {
         
         Yii::app()->db->createCommand('TRUNCATE user')->execute();
+        Yii::app()->db->createCommand('TRUNCATE user_identity')->execute();
+        Yii::app()->db->createCommand('TRUNCATE user_profile')->execute();
         
         $appLogger = Yii::app()->getComponent('log')->routes['info_log'];
         $logFilePath = $appLogger->logPath . '/' . $appLogger->logFile;

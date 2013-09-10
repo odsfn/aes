@@ -30,7 +30,7 @@ var
 // Overriding parsing to correctly connect with restfullyii response format
 Backbone.Model.prototype.parse = function(response, options) {
     
-    if(options.collection)  //Parsing response in context of collection's fetch 
+    if(!_.isObject(response.data))  //Parsing response in context of collection's fetch 
         return response;
     
     if(!response.success) {
@@ -40,16 +40,19 @@ Backbone.Model.prototype.parse = function(response, options) {
             alert('Error: Invalid response format');
     }
     
-    if(response.data.totalCount == 1)
+    if(response.data.totalCount === 1)
         return response.data.models[0];
-    else if(response.totalCount == 0)
+    else if(response.totalCount === 0)
         return {};
-}
+};
         
 Backbone.Collection.prototype.parse = function(response, options) {
     if(!response.success) {
-        alert('Error: ' + response.message);
+        if(response.message)
+            alert('Error: ' + response.message);
+        else
+            alert('Error: Invalid response format');
     }
     
     return response.data.models;
-}
+};
