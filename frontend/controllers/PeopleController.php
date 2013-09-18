@@ -9,10 +9,10 @@ class PeopleController extends FrontController
 {
 	public function actionIndex()
 	{   
-            $model=new Profile('search');
+            $model=new PeopleSearch('search');
             $model->unsetAttributes();  // clear any default values
-            if(isset($_GET['Profile']))
-                $model->attributes=$_GET['Profile'];
+            if(isset($_GET['PeopleSearch']))
+                $model->attributes=$_GET['PeopleSearch'];
 
             $this->render('index',array(
                 'model'=>$model,

@@ -20,16 +20,17 @@ $this->beginCLip('sidebar'); ?>
         'htmlOptions'=>array('class'=>'well'), 
     )); ?>
 
-            <?php echo $form->textFieldRow($model,'first_name',array('class'=>'span12','maxlength'=>128)); ?>
-
-            <?php echo $form->textFieldRow($model,'last_name',array('class'=>'span12','maxlength'=>128)); ?>
+            <?php echo $form->textFieldRow($model, 'name', array('class'=>'span12', 'maxlength'=>128)); ?>
 
             <?php echo $form->textFieldRow($model,'birth_place',array('class'=>'span12','maxlength'=>128)); ?>
 
-            <?php echo $form->textFieldRow($model,'birth_day',array('class'=>'span12')); ?>
+            <?php echo $form->textFieldRow($model,'ageFrom',array('class'=>'span12')); ?>
+        
+            <?php echo $form->textFieldRow($model,'ageTo',array('class'=>'span12')); ?>
 
-            <?php echo $form->textFieldRow($model,'gender',array('class'=>'span12')); ?>
-
+            <?php echo $form->dropDownListRow($model, 'gender',
+                array('' => 'Any', '1' => 'Male', '2' => 'Famale'), array('class'=>'span12')); 
+            ?>
 
             <?php $this->widget('bootstrap.widgets.TbButton', array(
                 'buttonType' => 'submit',
