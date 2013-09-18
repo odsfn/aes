@@ -1,4 +1,5 @@
 <?php 
+$this->pageTitle = 'Home | AES';
 $this->layout = '//layouts/column1';
 ?>
 

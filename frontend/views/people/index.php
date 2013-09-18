@@ -1,4 +1,6 @@
 <?php
+$this->pageTitle = 'People | AES';
+
 $this->layout = 'column2';
 
 Yii::app()->clientScript->registerScript('search', "    
@@ -19,7 +21,6 @@ Yii::app()->clientScript->registerScript('search', "
     });
     
     $(\"input[name='reset']\").click(function() {
-        console.log('Reset');
         $('.search-form form').children('input, select').val('');
         $('.search-form form button[type=\"submit\"]').click();
     });
@@ -38,7 +39,7 @@ $this->beginCLip('sidebar'); ?>
             <?php echo $form->textFieldRow($model, 'name', array('class'=>'span12', 'maxlength'=>128)); ?>
 
             <?php echo $form->datepickerRow($model, 'birth_day',
-                array('prepend'=>'<i class="icon-calendar"></i>','class'=>'span12')); ?>        
+                array('prepend'=>'<i class="icon-calendar"></i>','class'=>'span11')); ?>        
         
             <?php echo $form->textFieldRow($model,'birth_place',array('class'=>'span12','maxlength'=>128)); ?>
 
@@ -54,11 +55,10 @@ $this->beginCLip('sidebar'); ?>
                 <?php $this->widget('bootstrap.widgets.TbButton', array(
                     'buttonType' => 'submit',
                     'type'=>'primary',
-                    'size' => 'large',
                     'label'=>'Search',
                 )); ?>
 
-                <input type="button" class="btn btn-large" name="reset" value="Reset">
+                <input type="button" class="btn" name="reset" value="Reset">
             </div>    
     <?php $this->endWidget(); ?>
     </div><!-- search-form -->

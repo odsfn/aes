@@ -10,36 +10,11 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title></title>
+	<title><?= $this->pageTitle; ?></title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
 
-	<style>
-		body {
-			padding-top: 60px;
-			padding-bottom: 40px;
-		}
-		
-		body > div.navbar li.divider-vertical{
-		    margin: 0px;
-		}
-		
-		div.flash-messages{
-		    z-index: 9999;
-		}
-
-		div.flash-messages div.alert{
-		    -moz-box-shadow: 0 2px 11px rgba(0, 0, 0, 0.25); 
-		    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
-		    box-shadow: 0 2px 11px rgba(0, 0, 0, 0.25) 
-		}
-		
-		form.center{
-		    margin-left: auto;
-		    margin-right: auto;
-		}
-	</style>
-
+        <?php Yii::app()->clientScript->registerCssFile(Yii::app()->getBaseUrl(true) . '/css/main.css'); ?>
 	<!--<script src="<?php echo Yii::app()->getBaseUrl(true); ?>/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>-->
 </head>
 <body>
@@ -62,21 +37,18 @@
                     <a class="brand" href="<?= Yii::app()->createAbsoluteUrl('/'); ?>">AES</a>
 
 			<div class="nav-collapse collapse">
-				<ul class="nav">
-					<?php if(!Yii::app()->user->isGuest): ?>
-					<li class="divider-vertical"></li>
-                                        <li <?php if(isset($this->self) && $this->self): ?>class="active"<?  endif; ?>><a href="<?= Yii::app()->createUrl('/userPage'); ?>">Your page</a></li>
-					<?php endif; ?>
-
-					<li class="divider-vertical"></li>
-					<li><a href="#">Elections</a></li>
-					
-					<li class="divider-vertical"></li>
-					<li><a href="<?= Yii::app()->createUrl('/people'); ?>">People</a></li>
-					
-					<li class="divider-vertical"></li>
-					<li><a href="#">About</a></li>
-				</ul>
+                                <?php $this->widget('bootstrap.widgets.TbMenu', array(
+                                    'items'=>array(
+                                        array('divider'=>'', 'visible'=>!Yii::app()->user->isGuest),
+                                        array('label'=>'Your page', 'url'=>array('/userPage/index'), 'visible'=>!Yii::app()->user->isGuest),
+                                        array('divider'=>''),
+                                        array('label'=>'Elections', 'url'=>'#'),
+                                        array('divider'=>''),
+                                        array('label'=>'People', 'url'=>array('/people/index')),
+                                        array('divider'=>''),
+                                        array('label'=>'About', 'url'=>'#'),
+                                    ),
+                                )); ?>
 				
 				<?php if(!Yii::app()->user->isGuest) :?>
 				<ul class="nav pull-right">
