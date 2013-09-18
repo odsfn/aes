@@ -72,10 +72,10 @@
 					<li><a href="#">Elections</a></li>
 					
 					<li class="divider-vertical"></li>
-					<li><a href="#">People</a></li>
+					<li><a href="<?= Yii::app()->createUrl('/people'); ?>">People</a></li>
 					
 					<li class="divider-vertical"></li>
-					<li <?php if(false): ?>class="active"<?php endif; ?>><a href="#">About</a></li>
+					<li><a href="#">About</a></li>
 				</ul>
 				
 				<?php if(!Yii::app()->user->isGuest) :?>
@@ -114,8 +114,17 @@
     ?>
     </div>
 </div>
+
+<div class="container-fluid">    
     
-<?php echo $content; ?>
+    <?php echo $content; ?>
+    
+    <hr>
+
+    <footer>
+            <p>&copy; Open Digital Society Foundation 2013</p>
+    </footer>
+</div>
 
 </body>
 </html>
