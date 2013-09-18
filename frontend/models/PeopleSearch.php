@@ -16,15 +16,27 @@ class PeopleSearch extends CFormModel{
     
     public $birth_place;
     
+    public $birth_day;
+    
     public function rules() {
 	return array(
 //	    array('name', 'match', 'pattern'=>'/^[:alpha:]{2,}$/u'),
-	    array('gender, ageFrom, ageTo', 'numerical', 'integerOnly' => true),
+            
+	    array('gender', 'numerical', 'integerOnly' => true),
+            array('gender', 'in', 'range' => Profile::getAvailableGenders(), 'allowEmpty' => true),
+            
+            array('ageFrom', 'numerical', 'min' => 0, 'max' => 128,'integerOnly' => true),
+            
+            array('ageTo', 'numerical', 'min' => 1, 'max' => 128,'integerOnly' => true),
+            array('ageTo', 'compare', 'compareAttribute' => 'ageFrom', 'operator' => '>', 'allowEmpty' => true),
+            
 	    array('name, birth_place', 'length', 'max' => 128),
-	   
+	    
+	    array('birth_day', 'date', 'format'=>'MM/dd/yyyy'),
+            
 	    // The following rule is used by search().
 	    // Please remove those attributes that should not be searched.
-	    array('name, birth_place, ageFrom, ageTo, gender', 'safe', 'on' => 'search'),
+	    array('name, birth_place, ageFrom, ageTo, gender, birth_day', 'safe', 'on' => 'search'),
 	);
     }
     
@@ -37,7 +49,8 @@ class PeopleSearch extends CFormModel{
 	    'birth_place' => 'Birth Place',
 	    'ageFrom' => 'Age from',
 	    'ageTo' => 'Age to',
-	    'gender' => 'Gender'
+	    'gender' => 'Gender',
+            'birth_day' => 'Birth Day'
 	);
     }
     
@@ -67,12 +80,24 @@ class PeopleSearch extends CFormModel{
         
 	$criteria->compare('birth_place', $this->birth_place, true);
         
-        if($this->ageFrom) {
-            $criteria->compare('birth_day', '<=' . $this->calculateStartDate($this->ageFrom)->format('Y-m-d'));
-        }
-        
-        if($this->ageTo) {
-            $criteria->compare('birth_day', '>=' . $this->calculateStartDate($this->ageTo)->format('Y-m-d'));
+        if($this->birth_day) {
+            
+            $date = new DateTime($this->birth_day);
+            $criteria->compare('birth_day',$date->format('Y-m-d'));
+            
+            $this->ageFrom = null;
+            $this->ageTo = null;
+            
+        }else{
+
+            if($this->ageFrom) {
+                $criteria->compare('birth_day', '<=' . $this->calculateStartDate($this->ageFrom)->format('Y-m-d'));
+            }
+
+            if($this->ageTo) {
+                $criteria->compare('birth_day', '>=' . $this->calculateStartDate($this->ageTo)->format('Y-m-d'));
+            }
+            
         }
         
 	$criteria->compare('gender', $this->gender);

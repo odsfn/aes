@@ -311,4 +311,8 @@ class Profile extends CActiveRecord {
         $attrs['pageUrl'] = $this->pageUrl;
         return $attrs;
     }
+    
+    public static function getAvailableGenders() {
+        return array(self::GENDER_MALE, self::GENDER_FEMALE);
+    }
 }
