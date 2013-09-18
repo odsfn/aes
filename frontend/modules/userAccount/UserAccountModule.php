@@ -47,7 +47,7 @@ class UserAccountModule extends CWebModule {
     
     public $photosDir = '/uploads/photos';
     
-    public $defaultPhoto = '237x300.gif';
+    public $defaultPhoto = 'unknown_user.png';
     
     public $photoExtensions = array('png', 'jpg');
     

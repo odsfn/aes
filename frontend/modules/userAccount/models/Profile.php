@@ -190,19 +190,22 @@ class Profile extends CActiveRecord {
 	$photosDir = Yii::app()->getModule('userAccount')->photosDir;
 	$basePath   = Yii::app()->basePath . '/www' . $photosDir . '/';
 	
-        if ($this->photo)
+        if($this->photo)
+            $image = $this->photo;
+        else
+            $image = Yii::app()->getModule('userAccount')->defaultPhoto;
+        
+        if ($image)
         {
-            $sizedFile  = str_replace('.', '_' . $width . 'x' . $height . '.', $this->photo);
+            $sizedFile  = str_replace('.', '_' . $width . 'x' . $height . '.', $image);
 
             // Checks whather photo with specified size already exists
             if (file_exists($basePath . $sizedFile))
                 return Yii::app()->getBaseUrl(true) . $photosDir . "/" . $sizedFile;
             
-            if($this->resizePhoto($basePath . $this->photo, $basePath . $sizedFile, $width, $height))
+            if($this->resizePhoto($basePath . $image, $basePath . $sizedFile, $width, $height))
                 return Yii::app()->getBaseUrl(true) . $photosDir . "/" . $sizedFile;
         }
-        
-        return Yii::app()->getBaseUrl(true) . $photosDir . "/" . Yii::app()->getModule('userAccount')->defaultPhoto;
     }
     
     public function getPhotoThmbnl64() {
