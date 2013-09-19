@@ -62,7 +62,10 @@ class PeopleSearch extends CFormModel{
 	// Warning: Please modify the following code to remove attributes that
 	// should not be searched.
 
-	$criteria = new CDbCriteria;
+	$criteria = new CDbCriteria(array(
+            //Select only active
+            'join' => 'INNER JOIN user ON user.id = t.user_id AND user.status = ' . UserAccount::STATUS_ACTIVE
+        ));
         
         if(($pos = strpos($this->name, ' ')) !== FALSE && $pos > 0) {
             

@@ -20,7 +20,7 @@ return array(
       'birth_day' => '2013-08-01',
       'gender' => '1',
       'mobile_phone' => '+1(234)567-89-99',
-      'email' => 'vptester@mail.ru',
+      'email' => 'tester1@mail.ru',
       'photo' => NULL,
       'photo_thmbnl_64' => NULL      
   ),
@@ -41,10 +41,10 @@ return array(
       'first_name' => 'Yetanother',
       'last_name' => 'User',
       'birth_place' => 'tester',
-      'birth_day' => '2013-08-01',
+      'birth_day' => '2001-01-01',
       'gender' => '1',
       'mobile_phone' => '+1(234)567-90-01',
-      'email' => 'vptester@mail.ru',
+      'email' => 'tester2@mail.ru',
       'photo' => NULL,
       'photo_thmbnl_64' => NULL
   ),    
@@ -53,12 +53,24 @@ return array(
       'first_name' => 'tester',
       'last_name' => 'tester',
       'birth_place' => 'tester',
-      'birth_day' => '2013-08-01',
+      'birth_day' => '1993-10-13',
       'gender' => '1',
       'mobile_phone' => '+1(234)567-90-02',
-      'email' => 'vptester@mail.ru',
+      'email' => 'tester3@mail.ru',
       'photo' => NULL,
       'photo_thmbnl_64' => NULL
-      )
+  ),
+  array(
+      'user_id' => '6',
+      'first_name' => 'tester',
+      'last_name' => 'tester',
+      'birth_place' => 'tester',
+      'birth_day' => '1983-11-27',
+      'gender' => '1',
+      'mobile_phone' => '+1(234)567-90-02',
+      'email' => 'tester5@mail.ru',
+      'photo' => NULL,
+      'photo_thmbnl_64' => NULL
+  )    
 );
 
