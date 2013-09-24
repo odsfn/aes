@@ -53,7 +53,7 @@
 				<?php if(!Yii::app()->user->isGuest) :?>
 				<ul class="nav pull-right">
 				    <li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= Yii::app()->user->username; ?><b class="caret"></b></a>
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= Yii::app()->user->username; ?>&nbsp;<b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li class="nav-header">Settings</li>
 							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->profileUrl); ?>"><?= Yii::t('frontend', 'Profile'); ?></a></li>

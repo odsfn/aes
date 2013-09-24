@@ -32,7 +32,7 @@ class CrumbsBehaviour extends CBehavior {
             }
             
         }else{
-            $insert = array($label => $url);
+            $insert = array($label => array($url));
         }
         
         $this->breadcrumbs = array_merge($this->breadcrumbs, $insert);

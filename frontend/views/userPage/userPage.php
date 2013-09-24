@@ -1,6 +1,4 @@
-<?php 
-    $this->layout = '//layouts/user';
-?>		
+	
 		<div id="user-info" class="row-fluid">
 		    <div class="span12">
 		    
