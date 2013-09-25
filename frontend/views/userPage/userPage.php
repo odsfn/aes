@@ -49,7 +49,7 @@
                         'js' => array(
                             'models/Post.js',
                             'models/PostRate.js',
-                            'collections/FeedCollection.js',
+                            'aes:collections/FeedCollection.js',
                             'collections/Posts.js',
                             'collections/Comments.js',
                             'views/PostsTitleView.js',

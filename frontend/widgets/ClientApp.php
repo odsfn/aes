@@ -20,6 +20,8 @@ class ClientApp extends CWidget {
     public $appName;
     /**
      * List of the required files. See the Yii Packages configuration format.
+     * You also can specify aes:...some_path... to load some common collections
+     * models or other components
      * 
      * To this array will be added several paths automatically.  
      * @var array 
@@ -86,9 +88,11 @@ class ClientApp extends CWidget {
         
         $fullAppName = ucfirst($this->appName) . 'App';
         
-        $this->requires['js'][] = $fullAppName . '.js';
+        $this->requires['js'] = array_merge(array($fullAppName . '.js'), $this->requires['js']);
         $this->requires['js'][] = $appMain;
 
+        $this->requires = $this->filterCommonScripts($this->requires);
+        
         $this->clientScript->packages = array_merge(
                 $this->clientScript->packages, 
                 array($this->appName => $this->requires)
@@ -103,4 +107,25 @@ class ClientApp extends CWidget {
         }
     }
     
+    
+    protected function filterCommonScripts($requires) {
+        $commonPathes = array();
+        
+        foreach ($requires['js'] as $index => $path) {
+            if(preg_match('/^aes:(.*)$/', $path)) {
+                list($commonPack, $path) = explode(':', $path);
+                $commonPathes[] = $path;
+                unset($requires['js'][$index]);
+            }
+        }
+        
+        $this->clientScript->addPackage($commonPack, array(
+            'baseUrl' => 'js/libs/aes',
+            'js' => $commonPathes
+        ));
+        
+        $requires['depends'][] = $commonPack;
+        
+        return $requires;
+    }
 }

@@ -1,9 +1,24 @@
 <?php
-
 /*
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
 $this->breadcrumbs->add('Messages', '/messaging/index');
+
+$this->widget('application.widgets.ClientApp', array(
+    'isolated' => true,
+    'appName' => 'messaging',
+    'requires' => array(
+        'depends' => array('loadmask'),
+        'js' => array(
+            'models/Conversation.js',
+            'models/Message.js',
+            'aes:collections/FeedCollection.js',
+            'collections/Conversations.js',
+            'collections/Messages.js',
+            'modules/Messaging.js'
+         )
+    )
+));
 ?>
 
 <ul class="nav nav-tabs">

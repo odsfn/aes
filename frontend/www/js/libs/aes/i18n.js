@@ -9,7 +9,26 @@
  */
 var i18n = function() {
 
-    var 
+    var
+    /**
+     * Locale settings with defaults
+     * @type {Map}
+     */
+    local = {
+        messages: [],
+
+        dateFormat: {
+            short: 'dd/MM/yyyy',
+            medium: '',
+            full: ''
+        },
+                
+        timeFormat: {
+            short: 'HH:mm',
+            medium: 'HH:mm:ss',
+            full: 'hh:mm:ss a'
+        }
+    },
     /**
      * Translate msg to current language
      * @param {String} msg
@@ -17,7 +36,27 @@ var i18n = function() {
      * @returns {String}
      */    
     translate = function(msg, params) {
-        return msg;
+        params = params || {};
+        return _.template(msg, params, {
+          interpolate: /\{(.+?)\}/g
+        });
+    },
+    /**
+     * Returns date in format corresponding with current Local
+     * @param {Date} date   Current by default
+     * @param {type} type   short|medium|full format ( For the current moment does not affects on returned value )
+     * @returns {string}
+     */        
+    date = function(date, dateType, timeType) {
+        date = date || new Date();
+        dateType = dateType || 'short';
+        
+        var format = local.dateFormat[dateType];
+        
+        if(timeType)
+            format += local.timeFormat[timeType];
+        
+        return $.format.date(date.getTime(), format);
     },
     /**
      * This methods will be available in every template which is rendering by
@@ -51,6 +90,7 @@ var i18n = function() {
     };
     
     return _.extend({
+        "date": date,
         "setLocal": setLocal
     }, templateHelpers);
 }();
