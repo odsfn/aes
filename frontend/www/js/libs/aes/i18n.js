@@ -20,7 +20,7 @@ var i18n = function() {
         dateFormat: {
             short: 'dd/MM/yyyy',
             medium: '',
-            full: ''
+            full: 'MMM dd, yyyy'
         },
                 
         timeFormat: {
@@ -49,12 +49,17 @@ var i18n = function() {
      */        
     date = function(date, dateType, timeType) {
         date = date || new Date();
+        
+        if(typeof(date) === 'string' || typeof(date) === 'number') {
+            date = new Date(date);
+        }
+        
         dateType = dateType || 'short';
         
         var format = local.dateFormat[dateType];
         
         if(timeType)
-            format += local.timeFormat[timeType];
+            format += ' ' + local.timeFormat[timeType];
         
         return $.format.date(date.getTime(), format);
     },

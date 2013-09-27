@@ -25,7 +25,27 @@ var Conversation = Backbone.Model.extend({
 //        this.set('title', i18n.t('Conversation from {date} (default theme)', {date: i18n.date()}));
         var messages = this.get('messages') || [];
         
-        this.set('messages', new Messages(messages));
+        var collection = new Messages(messages, {conversationId: this.get('id')});
+        
+        this.set('messages', collection);
+    },
+            
+    getInitiatorData: function() {
+        return _.findWhere(this.get('participants'), {user_id: this.get('initiator_id')}).user;
+    },
+            
+    getLastMessageData: function() {
+        return this.get('messages').last().attributes;
+    },
+            
+    getParticipantData: function(userId) {
+        return _.filter(this.get('participants'), function(participant) {
+           return participant.user_id !== userId; 
+        })[0].user;
+    },
+            
+    getUserData: function(userId) {
+        return _.findWhere(this.get('participants'), {user_id: userId}).user;
     }
     
 });

@@ -34,7 +34,7 @@ var FeedCollection = Backbone.Collection.extend({
      */
     currentPatchCount: 0,
     
-    filter: {},
+    filter: null,
     
     getFilters: function() {
        return {};
@@ -115,6 +115,9 @@ var FeedCollection = Backbone.Collection.extend({
     },
     
     initialize: function() {
+
+        this.filter = {};
+
         this.on('request', function() {
            //totalCount will be returned by server
            this.off('add', this.incrementCount);

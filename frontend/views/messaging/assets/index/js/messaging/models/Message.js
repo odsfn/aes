@@ -10,6 +10,16 @@ var Message = Backbone.Model.extend({
         views: []   //{ user_id : null, viewed_ts: null}
     },
     
-    urlRoot: UrlManager.createUrlCallback('api/message')
+    urlRoot: UrlManager.createUrlCallback('api/message'),
+    
+    wasViewed: function(userId) {
+        if(this.get('user_id') === userId)
+            return true;
+        
+        if(_.findWhere(this.get('views'), {user_id: userId}))
+            return true;
+        
+        return false;
+    }
 });
 

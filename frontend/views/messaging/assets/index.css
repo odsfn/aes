@@ -1,4 +1,4 @@
-#column-right > ul.nav {
+#column-right > div > ul.nav {
     margin-bottom: 0px;
 }
 
@@ -7,9 +7,10 @@
     border-top: none;
 }
 
-#messages {
+.messages-cnt {
     margin: 20px 0;
     max-height: 500px;
+    min-height: 500px;
     overflow-y: scroll;
 }
 
@@ -36,7 +37,7 @@ div.post .icon-bell.visible {
     display: inline;
 }
 
-#posts-load-btn .get-more > div {
+#convs-load-btn .get-more > div {
     text-align: center;
     margin-top: 15px;
     
@@ -52,24 +53,24 @@ div.post .icon-bell.visible {
     background-color: #f9f9f9;
 }
 
-#posts-load-btn .get-more > div:hover {
+#convs-load-btn .get-more > div:hover {
     background-color: #DDD;
     cursor: pointer;
 }
 
-#posts-load-btn .get-more > div.loading:hover {
+#convs-load-btn .get-more > div.loading:hover {
     cursor: default;
 }
 
-#posts-load-btn .get-more > div > span {
+#convs-load-btn .get-more > div > span {
     display: none;
 }
 
-#posts-load-btn .get-more > div.loading > span {
+#convs-load-btn .get-more > div.loading > span {
     display: inline;
 }
 
-#posts-load-btn .get-more > div.loading > a {
+#convs-load-btn .get-more > div.loading > a {
     display: none;
 }
 
@@ -82,4 +83,32 @@ div.participant > div {
     width: 96px; 
     height: 96px; 
     background-color: #000;
+}
+
+img.loader {
+    left: -5px;
+    top: -1px;
+    position: relative;
+}
+
+ul.convs-tabs-cntr {
+    margin: 0;
+    padding: 10px 20px;
+    border-left: 1px solid #d4d4d4;
+    border-right: 1px solid #d4d4d4;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+ul.convs-tabs-cntr > li > a {
+    background-color: #eeeeee;
+    cursor: default;
+}
+
+ul.convs-tabs-cntr > li > a > i {
+    cursor: pointer;
+}
+
+ul.convs-tabs-cntr > li > a span.new-count {
+    font-weight: bold;
+    display: none;
 }
