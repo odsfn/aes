@@ -22,7 +22,7 @@ var Conversation = Backbone.Model.extend({
     urlRoot: UrlManager.createUrlCallback('api/conversation'),
     
     initialize: function() {
-//        this.set('title', i18n.t('Conversation from {date} (default theme)', {date: i18n.date()}));
+
         var messages = this.get('messages') || [];
         
         var collection = new Messages(messages, {conversationId: this.get('id')});

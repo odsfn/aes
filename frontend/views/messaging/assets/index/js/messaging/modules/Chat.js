@@ -7,6 +7,10 @@
  */
 App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
     
+    var config = {
+        messagesLimit: 50
+    };
+    
     var MessageView = Marionette.ItemView.extend({
         
         className: 'media post',
@@ -35,14 +39,23 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             return {
                 conversation: this.conversation
             };
-        }
+        },
+                
+        appendHtml: function(collectionView, itemView, index){
+            collectionView.$el.prepend(itemView.el);
+        }                
     });
     
     var ConversationTitleView;
     
     var InputView;
     
-    var LoadMsgsBtnView;
+    var LoadMsgsBtnView = MoreView.extend({
+        template: '#load-msg-btn-tpl',
+        ui:{
+            body: 'button'
+        }
+    });
     
 //    var FiltersView;
     
@@ -95,6 +108,9 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         itemView: ChatTitleView
     });
 
+    /**
+     * @TODO Move common functionality of feed view into the FeedView class
+     */
     var ChatView = Marionette.Layout.extend({
         
         template: '#chat-layout-tpl',
@@ -104,12 +120,11 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         },
         
         ui: {
-            feedCount: '.msgs-count'
+            feedCount: '.msgs-count',
+            loadBtn: 'li.load-btn-cnt'
         },
         
         initialize: function() {
-            // Init all related views here
-            
             this.messagesView = new MessagesView({
                 conversation: this.model,
                 collection: this.model.get('messages')
@@ -118,16 +133,26 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
                 
         serializeData: function() {
             return _.extend(Marionette.Layout.prototype.serializeData.apply(this), {
-               participant: this.model.getParticipantData() 
+               participant: this.model.getParticipantData(webUser.id) 
             });
         },
-                
+        
         onRender: function() {
+            this.moreView = new LoadMsgsBtnView({
+                appendTo: this.ui.loadBtn,
+                view: this.messagesView
+            });           
+        },
+
+        onShow: function() {
+    
             this.messagesReg.show(this.messagesView);
+            
             this.feedCountView = new FeedCountView({
                 el: this.ui.feedCount,
                 feed: this.model.get('messages')
             });
+            
         }
     });
 
@@ -139,28 +164,65 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
     
     this.openChat = function(conversation) {
         
+        //hide las conversation if any
+        if(this.openedConversation) {
+            this.activeChatViews.findByModel(this.openedConversation).$el.hide();
+        }
+        
         this.openedConversation = conversation;
         
-        Chat.titlesView.children.findByModel(conversation).$el.addClass('active');
+        var chat = this.activeChatViews.findByModel(conversation);
         
-        var chat = new ChatView({
-            model: conversation
-        });
+        var chatTitleView = Chat.titlesView.children.findByModel(conversation);
+        
+        if(chatTitleView) {
+            chatTitleView.$el.addClass('active');
+        }
+        
+        //ChatView not found in active, so should create it
+        if(!chat) {
 
-        Chat.activeReg.show(chat);
+            chat = new ChatView({
+                model: conversation
+            });
 
-        conversation.get('messages').fetch({
-            success: function() {
-                chat.messagesView.render();
-            }
-        });        
+            this.activeChatViews.add(chat);
+
+            $('.active-chat-cnt').append(chat.render().el);
+            
+            chat.triggerMethod('show');
+            
+            var messages = conversation.get('messages');
+
+            messages.limit = config.messagesLimit;
+            messages.fetch({
+                success: function() {
+                    chat.messagesView.render();
+                }
+            });            
+
+        }else{
+            
+            chat.$el.show();
+            
+        }
+               
+    };
+
+    this.setOptions = function(options) {
+        config = _.extend(config, _.pick(options, _.keys(config)));
     };
 
     this.closeChat = function(conversation) {        
-        //closing active chat
+        //closing chat
+        var activeChatView = this.activeChatViews.findByModel(conversation);
+        activeChatView.close();
+        this.activeChatViews.remove(activeChatView);
+        
+        //switch to other opened if active was closed
         if(_.isEqual(this.openedConversation, conversation)) {
             
-            this.activeReg.reset();
+            this.openedConversation = null;
             
             //select previous if any
             if(this.activeConversations.length) {
@@ -168,12 +230,15 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             }else{
                 this.trigger('allChatsClosed');
             }
+            
         }
     };
 
     Chat.addInitializer(function(){
         
         Chat.activeConversations = new Backbone.Collection();
+        
+        Chat.activeChatViews = new Backbone.ChildViewContainer();
         
         Chat.activeReg = new Marionette.Region({
             el: '.active-chat-cnt'

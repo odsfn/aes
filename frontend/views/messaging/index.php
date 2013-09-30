@@ -123,7 +123,7 @@ $this->widget('application.widgets.ClientApp', array(
                 
                 <ul class="nav pull-right">
                     <li><a class="msgs-count"><img src="/img/loader-circle-16.gif" class="loader">Total Messages Count: <span>0</span></a></li>
-                    <li><button type="more" class="btn" disabled="disabled">More</button></li>
+                    <li class="load-btn-cnt"></li>
                 </ul>
             </div>
         </div>    
@@ -143,6 +143,10 @@ $this->widget('application.widgets.ClientApp', array(
                 <div class="img-wrapper-tocenter users-photo"><span></span><img alt="<%= participant.displayName %>" src="<%= participant.photo %>"></div>
             </div>
         </div>    
+</script>
+
+<script type="text/template" id="load-msg-btn-tpl">
+    <button class="btn more"><%= t(view.moreMsg) %></button>
 </script>
 
 <script type="text/template" id="chat-title-tpl">

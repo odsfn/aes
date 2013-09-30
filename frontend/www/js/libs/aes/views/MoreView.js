@@ -12,8 +12,6 @@ var MoreView = Marionette.ItemView.extend({
     },
     
     ui: {
-        a: 'a',
-        loader: 'span',
         body: 'div.span12'
     },
     
@@ -33,10 +31,11 @@ var MoreView = Marionette.ItemView.extend({
         
         this.listenTo(this.base, 'render', _.bind(function() {
             this.render();
-            this.delegateEvents();
-            
+            this.delegateEvents();           
+        }, this));
+        
+        this.listenTo(this.base, 'show', _.bind(function() {
             $(this.appendTo).append(this.$el);
-            
         }, this));
     },
     

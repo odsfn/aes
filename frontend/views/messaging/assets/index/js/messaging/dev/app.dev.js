@@ -124,7 +124,7 @@ $(function(){
                         conversation_id: curId,
                         created_ts: time,
                         text: 'Cnvs_text_3. The collection\'s comparator may be included as an option. If you define an initialize function, it will be invoked when the collection is created.',
-                        user_id: 1
+                        user_id: 4
                     }
                 ],
                 participants: [
@@ -271,6 +271,41 @@ $(function(){
             fixtureConvs.at(0).get('messages')[0],
             fixtureConvs.at(1).get('messages')[0],
             fixtureConvs.at(2).get('messages')[0],
+            {
+                id: _.uniqueId(),
+                conversation_id: fixtureConvs.at(2).id,
+                created_ts: (new Date('25 Jun 2014 13:30:33')).getTime(),
+                text: 'C3M2. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
+                user_id: 1
+            },
+            {
+                id: _.uniqueId(),
+                conversation_id: fixtureConvs.at(2).id,
+                created_ts: (new Date('25 Jun 2014 10:32:03')).getTime(),
+                text: 'C3M3. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
+                user_id: 4
+            },
+            {
+                id: _.uniqueId(),
+                conversation_id: fixtureConvs.at(2).id,
+                created_ts: (new Date('25 Jun 2014 7:13:00')).getTime(),
+                text: 'C3M4. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
+                user_id: 1
+            },
+            {
+                id: _.uniqueId(),
+                conversation_id: fixtureConvs.at(2).id,
+                created_ts: (new Date('24 Jun 2014 18:56:33')).getTime(),
+                text: 'C3M5. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
+                user_id: 1
+            },
+            {
+                id: _.uniqueId(),
+                conversation_id: fixtureConvs.at(2).id,
+                created_ts: (new Date('24 Jun 2014 16:01:33')).getTime(),
+                text: 'C3M6. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
+                user_id: 4
+            },            
             fixtureConvs.at(3).get('messages')[0],
             fixtureConvs.at(4).get('messages')[0],
             fixtureConvs.at(5).get('messages')[0]
@@ -317,7 +352,11 @@ $(function(){
     
     
     App.module('Messaging').setOptions({
-        convsLimit: 4
+        convsLimit: 4,
+    });
+    
+    App.module('Messaging.Chat').setOptions({
+        messagesLimit: 4
     });
     
     App.start();
