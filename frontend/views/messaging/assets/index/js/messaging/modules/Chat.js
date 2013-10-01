@@ -298,6 +298,7 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         var activeChatView = this.activeChatViews.findByModel(conversation);
         activeChatView.close();
         this.activeChatViews.remove(activeChatView);
+        activeChatView.model.get('messages').reset([activeChatView.model.get('messages').at(0)]);
         
         //switch to other opened if active was closed
         if(_.isEqual(this.openedConversation, conversation)) {

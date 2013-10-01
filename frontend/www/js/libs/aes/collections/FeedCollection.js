@@ -95,6 +95,15 @@ var FeedCollection = Backbone.Collection.extend({
         Backbone.Collection.prototype.fetch.apply(this, [options]);
     },
             
+    reset: function(models, options) {
+
+        this.offset = 0;
+        this.totalCount = 0;
+        this.currentPatchCount = 0;
+        
+        Backbone.Collection.prototype.reset.apply(this, arguments);
+    },
+            
     getTimestamp: function(date) {
         var date = date || new Date();
         return Math.round(date.getTime() / 1000);

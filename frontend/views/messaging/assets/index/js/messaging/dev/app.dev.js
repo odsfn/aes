@@ -309,9 +309,13 @@ $(function(){
             fixtureConvs.at(3).get('messages')[0],
             fixtureConvs.at(4).get('messages')[0],
             fixtureConvs.at(5).get('messages')[0]
-        ]);
+        ], {
+            comparator: function(model) {
+                return -model.get('created_ts');
+            }
+        });
     
-    fauxServer.get('/index-test.php/api/conversation', function(context) {
+    fauxServer.get(UrlManager.createUrl('api/conversation'), function(context) {
         var responseObj,
             convsToReturn,
             filteredConvs = fixtureConvs;
@@ -330,7 +334,7 @@ $(function(){
         return wrapResponse(responseObj);
     });
     
-    fauxServer.get('/index-test.php/api/message', function(context) {
+    fauxServer.get(UrlManager.createUrl('api/message'), function(context) {
         var responseObj,
             msgsToReturn,
             convId,
@@ -350,7 +354,7 @@ $(function(){
         return wrapResponse(responseObj);
     });
     
-    fauxServer.addRoute('createMessage', '/index-test.php/api/message', 'POST', function(context) {
+    fauxServer.addRoute('createMessage', UrlManager.createUrl('api/message'), 'POST', function(context) {
        var time = new Date(),
            ts = time.getTime();
        
@@ -358,7 +362,7 @@ $(function(){
        context.data = _.extend(context.data, { 
            created_ts: ts
        });
-       fixtureMsgs.push(context.data);
+       fixtureMsgs.add(context.data);
        
        return wrapResponse(context.data);
     });
