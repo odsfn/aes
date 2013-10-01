@@ -28,6 +28,12 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
             'click': 'clicked'
         },
         
+        modelEvents: {
+            'change:messages': function() {
+                this.render();
+            }
+        },
+        
         serializeData: function() {
             return _.extend(Marionette.ItemView.prototype.serializeData.apply(this), {
                 initiator: this.model.getInitiatorData(),

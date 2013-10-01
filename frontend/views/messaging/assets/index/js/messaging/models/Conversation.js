@@ -28,6 +28,10 @@ var Conversation = Backbone.Model.extend({
         var collection = new Messages(messages, {conversationId: this.get('id')});
         
         this.set('messages', collection);
+        
+        this.get('messages').on('add', function() {
+            this.trigger('change:messages');
+        }, this);
     },
             
     getInitiatorData: function() {
@@ -35,7 +39,7 @@ var Conversation = Backbone.Model.extend({
     },
             
     getLastMessageData: function() {
-        return this.get('messages').last().attributes;
+        return this.get('messages').first().attributes;
     },
             
     getParticipantData: function(userId) {
