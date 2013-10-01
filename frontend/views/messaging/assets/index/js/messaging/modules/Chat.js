@@ -42,13 +42,72 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         },
                 
         appendHtml: function(collectionView, itemView, index){
-            collectionView.$el.prepend(itemView.el);
+            if(index == 0) {
+                collectionView.$el.append(itemView.el);
+            }else
+                collectionView.$el.prepend(itemView.el);
         }                
     });
     
     var ConversationTitleView;
     
-    var InputView;
+    var InputView = Marionette.View.extend({
+        
+        ui: {
+            postBtn: 'button.post',
+            text: 'textarea'
+        },
+                
+        triggers: {
+            'click button.post': 'post'
+        },
+        
+        startLoading: function() {
+            this.ui.postBtn.attr('disabled', 'disabled');
+            this.ui.text.attr('disabled', 'disabled');
+        },
+    
+        stopLoading: function() {
+            this.ui.text.val('');
+            this.ui.postBtn.attr('disabled', false);
+            this.ui.text.attr('disabled', false);
+        },        
+
+        setModel: function(model) {
+    
+            if(this.model && !_.isEqual(this.model, model)) {
+                this.stopListening(this.model);
+                this.stopLoading();
+            }
+            
+            this.model = model;
+
+            this.listenTo(this.model, {
+                'request': this.startLoading,
+                'sync': this.stopLoading
+            });
+        },
+
+        onPost: function() {
+            var text = this.ui.text.val();
+            
+            if(!text)
+                return;
+            
+            this.model.set('text', text);
+            
+            this.trigger('prepared');
+        },
+                
+        initialize: function(options) {
+    
+            if(this.model)
+                this.setModel(this.model);
+            
+            this.bindUIElements();
+        }
+        
+    });
     
     var LoadMsgsBtnView = MoreView.extend({
         template: '#load-msg-btn-tpl',
@@ -121,7 +180,15 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         
         ui: {
             feedCount: '.msgs-count',
-            loadBtn: 'li.load-btn-cnt'
+            loadBtn: 'li.load-btn-cnt',
+            input: '.new-post'
+        },
+        
+        createNewMessageModel: function() {
+            return new Message({
+               user_id: webUser.id,
+               conversation_id: this.model.get('id')
+            });
         },
         
         initialize: function() {
@@ -141,7 +208,7 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             this.moreView = new LoadMsgsBtnView({
                 appendTo: this.ui.loadBtn,
                 view: this.messagesView
-            });           
+            });
         },
 
         onShow: function() {
@@ -153,6 +220,19 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
                 feed: this.model.get('messages')
             });
             
+            this.inputView = new InputView({
+                el: this.ui.input,
+                model: this.createNewMessageModel()
+            });
+            
+            this.inputView.on('prepared', function() {
+                this.model.get('messages').create(this.inputView.model, {
+                    success: _.bind(function() {
+                        this.inputView.setModel(this.createNewMessageModel());
+                    }, this),
+                    wait: true
+                });
+            }, this);            
         }
     });
 

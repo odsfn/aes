@@ -41,7 +41,7 @@ $(function(){
             {
                 id: curId = _.uniqueId(),
                 title: 'Conversation 1',
-                created_ts: time = (new Date('Sep 25 2014 11:19:33')).getTime(),
+                created_ts: time = (new Date('Sep 25 2013 11:19:33')).getTime(),
                 messages: [
                     {
                         id: _.uniqueId(),
@@ -79,7 +79,7 @@ $(function(){
             {
                 id: curId = _.uniqueId(),
                 title: '',
-                created_ts: time = (new Date('Sep 24 2014 13:49:03')).getTime(),
+                created_ts: time = (new Date('Sep 24 2013 13:49:03')).getTime(),
                 messages: [
                     {
                         id: _.uniqueId(),
@@ -117,7 +117,7 @@ $(function(){
             {
                 id: curId = _.uniqueId(),
                 title: 'Conversation 3',
-                created_ts: time = (new Date('23 Sep 2014 1:10:01')).getTime(),
+                created_ts: time = (new Date('23 Sep 2013 1:10:01')).getTime(),
                 messages: [
                     {
                         id: _.uniqueId(),
@@ -155,7 +155,7 @@ $(function(){
             {
                 id: curId = _.uniqueId(),
                 title: '',
-                created_ts: time = (new Date('21 Sep 2014 18:11:33')).getTime(),
+                created_ts: time = (new Date('21 Sep 2013 18:11:33')).getTime(),
                 messages: [
                     {
                         id: _.uniqueId(),
@@ -193,7 +193,7 @@ $(function(){
             {
                 id: curId = _.uniqueId(),
                 title: 'Conversation 5',
-                created_ts: time = (new Date('21 Sep 2014 11:19:33')).getTime(),
+                created_ts: time = (new Date('21 Sep 2013 11:19:33')).getTime(),
                 messages: [
                     {
                         id: _.uniqueId(),
@@ -231,7 +231,7 @@ $(function(){
             {
                 id: curId = _.uniqueId(),
                 title: 'Conversation 6',
-                created_ts: time = (new Date('21 Sep 2014 11:00:33')).getTime(),
+                created_ts: time = (new Date('21 Sep 2013 11:00:33')).getTime(),
                 messages: [
                     {
                         id: _.uniqueId(),
@@ -274,35 +274,35 @@ $(function(){
             {
                 id: _.uniqueId(),
                 conversation_id: fixtureConvs.at(2).id,
-                created_ts: (new Date('25 Jun 2014 13:30:33')).getTime(),
+                created_ts: (new Date('25 Jun 2013 13:30:33')).getTime(),
                 text: 'C3M2. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
                 user_id: 1
             },
             {
                 id: _.uniqueId(),
                 conversation_id: fixtureConvs.at(2).id,
-                created_ts: (new Date('25 Jun 2014 10:32:03')).getTime(),
+                created_ts: (new Date('25 Jun 2013 10:32:03')).getTime(),
                 text: 'C3M3. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
                 user_id: 4
             },
             {
                 id: _.uniqueId(),
                 conversation_id: fixtureConvs.at(2).id,
-                created_ts: (new Date('25 Jun 2014 7:13:00')).getTime(),
+                created_ts: (new Date('25 Jun 2013 7:13:00')).getTime(),
                 text: 'C3M4. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
                 user_id: 1
             },
             {
                 id: _.uniqueId(),
                 conversation_id: fixtureConvs.at(2).id,
-                created_ts: (new Date('24 Jun 2014 18:56:33')).getTime(),
+                created_ts: (new Date('24 Jun 2013 18:56:33')).getTime(),
                 text: 'C3M5. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
                 user_id: 1
             },
             {
                 id: _.uniqueId(),
                 conversation_id: fixtureConvs.at(2).id,
-                created_ts: (new Date('24 Jun 2014 16:01:33')).getTime(),
+                created_ts: (new Date('24 Jun 2013 16:01:33')).getTime(),
                 text: 'C3M6. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna.',
                 user_id: 4
             },            
@@ -350,6 +350,18 @@ $(function(){
         return wrapResponse(responseObj);
     });
     
+    fauxServer.addRoute('createMessage', '/index-test.php/api/message', 'POST', function(context) {
+       var time = new Date(),
+           ts = time.getTime();
+       
+       context.data.id = _.uniqueId();
+       context.data = _.extend(context.data, { 
+           created_ts: ts
+       });
+       fixtureMsgs.push(context.data);
+       
+       return wrapResponse(context.data);
+    });
     
     App.module('Messaging').setOptions({
         convsLimit: 4,
