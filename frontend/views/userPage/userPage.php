@@ -57,7 +57,8 @@
                             'views/PostsView.js',
                             'views/CommentsView.js',
                             'views/EditableView.js',
-                            'views/MoreView.js'
+                            'views/MoreView.js',
+                            'modules/Feed.js'
                          )
                     )
                 )); 
