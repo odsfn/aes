@@ -51,7 +51,7 @@ $this->breadcrumbs->add($username, $userPageUrl);
                         'items' => array(
                             array('label'=> Yii::t('userPage', ($this->self) ? 'My page' : 'Page'), 'url'=> array('/userPage/index')),
                             array('label'=> Yii::t('userPage', 'My messages'), 'url'=> array('/messaging/index'), 'visible' => $this->self),
-                            array('label'=> Yii::t('userPage', 'Write message'), 'url'=> array('/messaging/index', array('writeTo'=> $this->profile->user_id)), 'visible' => (!Yii::app()->user->isGuest && !$this->self)),
+                            array('label'=> Yii::t('userPage', 'Write message'), 'url'=> array('/messaging/index/chat_with/' . $this->profile->user_id), 'visible' => (!Yii::app()->user->isGuest && !$this->self)),
                             array('label'=> Yii::t('userPage', ($this->self) ? 'My votes' : 'Votes'), 'url'=> array('/userPage/votes')),
                             array('label'=> Yii::t('userPage', ($this->self) ? 'My nominations' : 'Nominations'), 'url'=> array('/userPage/nominations')),
                             array('label'=> Yii::t('userPage', ($this->self) ? 'My mandates' : 'Mandates'), 'url'=> array('/userPage/mandates')),

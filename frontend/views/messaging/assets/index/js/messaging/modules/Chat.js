@@ -49,8 +49,6 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         }                
     });
     
-    var ConversationTitleView;
-    
     var InputView = Marionette.View.extend({
         
         ui: {
@@ -194,7 +192,7 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         initialize: function() {
             this.messagesView = new MessagesView({
                 conversation: this.model,
-                collection: this.model.get('messages')
+                collection: this.model.messages
             });
         },
                 
@@ -217,7 +215,7 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             
             this.feedCountView = new FeedCountView({
                 el: this.ui.feedCount,
-                feed: this.model.get('messages')
+                feed: this.model.messages
             });
             
             this.inputView = new InputView({
@@ -226,9 +224,11 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             });
             
             this.inputView.on('prepared', function() {
-                this.model.get('messages').create(this.inputView.model, {
-                    success: _.bind(function() {
+                this.model.messages.create(this.inputView.model, {
+                    success: _.bind(function(collection, response) {
                         this.inputView.setModel(this.createNewMessageModel());
+                        
+                        Chat.triggerMethod('message:added', this, this.model);
                     }, this),
                     wait: true
                 });
@@ -239,13 +239,17 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
     this.openedConversation = null;
 
     this.activateChat = function(conversation) {
-        Chat.activeConversations.add(conversation);
+        if(Chat.activeConversations.get(conversation))
+            Chat.openChat(conversation);
+        else
+            Chat.activeConversations.add(conversation);
     };
     
     this.openChat = function(conversation) {
         
-        //hide las conversation if any
+        //hide last conversation if any
         if(this.openedConversation) {
+            $('div.active-chat-titles-cnt > ul > li').removeClass('active');
             this.activeChatViews.findByModel(this.openedConversation).$el.hide();
         }
         
@@ -272,11 +276,11 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             
             chat.triggerMethod('show');
             
-            var messages = conversation.get('messages');
+            var messages = conversation.messages;
 
             messages.limit = config.messagesLimit;
             messages.fetch({
-                success: function() {
+                success: function(collection, response) {
                     chat.messagesView.render();
                 }
             });            
@@ -286,7 +290,8 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             chat.$el.show();
             
         }
-               
+        
+        this.triggerMethod('chat:opened', chat);
     };
 
     this.setOptions = function(options) {
@@ -300,8 +305,8 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         this.activeChatViews.remove(activeChatView);
         
         //flushing messages. Leave last only
-        var lastMessage = activeChatView.model.get('messages').at(0);
-        activeChatView.model.get('messages').reset([lastMessage]);
+        var lastMessage = activeChatView.model.messages.at(0);
+        activeChatView.model.messages.reset([lastMessage]);
         
         //switch to other opened if active was closed
         if(_.isEqual(this.openedConversation, conversation)) {

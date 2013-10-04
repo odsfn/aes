@@ -16,21 +16,16 @@ var Conversation = Backbone.Model.extend({
             },
             last_view_ts: timestamp
         } */
-        initiator: null     /* user_id */
+        initiator_id: null     /* user_id */
     },
     
     urlRoot: UrlManager.createUrlCallback('api/conversation'),
     
-    initialize: function() {
-
-        var messages = this.get('messages') || [];
+    initialize: function() {              
+        this.initMessages();
         
-        var collection = new Messages(messages, {conversationId: this.get('id')});
-        
-        this.set('messages', collection);
-        
-        this.get('messages').on('add', function() {
-            this.trigger('change:messages');
+        this.on('change:id', function() {
+            this.initMessages();
         }, this);
     },
             
@@ -39,7 +34,7 @@ var Conversation = Backbone.Model.extend({
     },
             
     getLastMessageData: function() {
-        return this.get('messages').first().attributes;
+        return this.messages.first().attributes;
     },
             
     getParticipantData: function(userId) {
@@ -50,6 +45,22 @@ var Conversation = Backbone.Model.extend({
             
     getUserData: function(userId) {
         return _.findWhere(this.get('participants'), {user_id: userId}).user;
-    }
+    },
+            
+    initMessages: function() {
+        
+        var id = this.get('id');
+        
+        if(id === null) 
+            return;
+        
+        var messages = this.get('messages') || [];
+        
+        this.messages = new Messages(messages, {conversationId: id});
+        
+        this.on('change:messages', function() {
+            this.messages.add(this.get('messages'), {merge: true});
+        }, this);
+    }            
     
 });

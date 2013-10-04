@@ -26,8 +26,8 @@ $this->widget('application.widgets.ClientApp', array(
 
 <script id="messaging-layout" type="text/template">
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#conversations-tab" data-toggle="tab">Conversations <span class="text-warning"></span></a></li>
-        <li><a href="#active-conv-tab" data-toggle="tab">View active <span class="text-warning"></span></a></li>
+        <li class="active"><a href="#conversations-tab">Conversations <span class="text-warning"></span></a></li>
+        <li><a href="#active-conv-tab">View active <span class="text-warning"></span></a></li>
     </ul>
 
     <div class="tab-content">
@@ -60,17 +60,18 @@ $this->widget('application.widgets.ClientApp', array(
 <script id="conversation" type="text/template">
     <div class="media post">
         <div class="pull-left">
-            <div class="img-wrapper-tocenter users-photo users-photo-<%= initiator_id %>">
+            <div class="img-wrapper-tocenter users-photo users-photo-<%= participant.user_id %>">
                 <span></span>
-                <a href="#"><img src="<%= initiator.photo %>" alt="<%= initiator.displayName %>"></a>
+                <a href="#"><img src="<%= participant.photo %>" alt="<%= participant.displayName %>"></a>
             </div>
         </div>
 
         <div class="media-body">
             <div class="post-body">
+            
                 <h5 class="media-heading">
-                    <span class="user"><%= initiator.displayName %></span> 
-                    <small><a href="#<%= lastMessage.id %>"><%= i18n.date(created_ts, 'full', 'full') %> <% if(title!=='') { %>at "<%= title %>"<% }; %></a></small>
+                    <span class="user"><%= participant.displayName %></span> 
+                    <small><a href="#<%= lastMessage.id %>"><%= i18n.date(created_ts, 'full', 'full') %> <% if(title && title !== '') { %>at "<%= title %>"<% }; %></a></small>
                     <i class="icon-bell pull-right <% if(hasUnviewedIncome) { %>visible<%}; %>"></i>
                 </h5>
 
@@ -116,11 +117,7 @@ $this->widget('application.widgets.ClientApp', array(
 
 <script type="text/template" id="chat-layout-tpl">
         <div class="navbar head">
-            <div class="navbar-inner">
-                <form class="navbar-search pull-left span5">
-                    <input type="text" class="search-query span12" placeholder="Tipe title here (optional)" value="<%= title %>">
-                </form>
-                
+            <div class="navbar-inner">                
                 <ul class="nav pull-right">
                     <li><a class="msgs-count"><img src="/img/loader-circle-16.gif" class="loader">Total Messages Count: <span>0</span></a></li>
                     <li class="load-btn-cnt"></li>

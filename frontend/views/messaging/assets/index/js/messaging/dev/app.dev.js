@@ -40,7 +40,7 @@ $(function(){
         fixtureConvs = new Backbone.Collection([
             {
                 id: curId = _.uniqueId(),
-                title: 'Conversation 1',
+//                title: 'Conversation 1',
                 created_ts: time = (new Date('Sep 25 2013 11:19:33')).getTime(),
                 messages: [
                     {
@@ -78,7 +78,7 @@ $(function(){
             
             {
                 id: curId = _.uniqueId(),
-                title: '',
+//                title: '',
                 created_ts: time = (new Date('Sep 24 2013 13:49:03')).getTime(),
                 messages: [
                     {
@@ -116,7 +116,7 @@ $(function(){
 
             {
                 id: curId = _.uniqueId(),
-                title: 'Conversation 3',
+//                title: 'Conversation 3',
                 created_ts: time = (new Date('23 Sep 2013 1:10:01')).getTime(),
                 messages: [
                     {
@@ -192,7 +192,7 @@ $(function(){
 
             {
                 id: curId = _.uniqueId(),
-                title: 'Conversation 5',
+//                title: 'Conversation 5',
                 created_ts: time = (new Date('21 Sep 2013 11:19:33')).getTime(),
                 messages: [
                     {
@@ -230,7 +230,7 @@ $(function(){
 
             {
                 id: curId = _.uniqueId(),
-                title: 'Conversation 6',
+//                title: 'Conversation 6',
                 created_ts: time = (new Date('21 Sep 2013 11:00:33')).getTime(),
                 messages: [
                     {
@@ -324,12 +324,31 @@ $(function(){
 //            filteredConvs = fixtureConvs.where({user_id :filterUserId});
 //        }
         
-        convsToReturn = new Backbone.Collection(filteredConvs.slice(context.data.offset, context.data.offset + context.data.limit));
+        var filters = context.data.filter;
         
-        responseObj = {
-            models: convsToReturn.toJSON(),
-            totalCount: filteredConvs.length
-        };
+        if(filters.initiator_id == 1 && filters.participant_id == 2) {
+            
+            responseObj = {
+                models: (new Backbone.Collection([fixtureConvs.at(0)])).toJSON(),
+                totalCount: 1
+            };
+            
+        } else if(filters.initiator_id == 1 && filters.participant_id == 5) {
+            
+            responseObj = {
+                models: (new Backbone.Collection([fixtureConvs.at(3)])).toJSON(),
+                totalCount: 1
+            };
+            
+        } else {
+        
+            convsToReturn = new Backbone.Collection(filteredConvs.slice(context.data.offset, context.data.offset + context.data.limit));
+
+            responseObj = {
+                models: convsToReturn.toJSON(),
+                totalCount: filteredConvs.length
+            };
+        }
         
         return wrapResponse(responseObj);
     });
@@ -366,6 +385,39 @@ $(function(){
        
        return wrapResponse(context.data);
     });
+
+    fauxServer.addRoute('createConv', UrlManager.createUrl('api/conversation'), 'POST', function(context) {
+       var time = new Date(),
+           ts = time.getTime();
+       
+       context.data.id = _.uniqueId();
+       context.data = _.extend(context.data, { 
+           created_ts: ts,
+           participants: [
+               {
+                   conversation_id: context.data.id,
+                   user_id: context.data.participants[0].user_id,
+                   user: {
+                       user_id: context.data.participants[0].user_id,
+                       photo: '',
+                       displayName: 'Vasiliy Pedak'
+                   }
+               },
+               {
+                   conversation_id: context.data.id,
+                   user_id: context.data.participants[1].user_id,
+                   user: {
+                       user_id: context.data.participants[1].user_id,
+                       photo: '',
+                       displayName: 'Username' + context.data.participants[1].user_id + ' Lastname'
+                   }
+               }
+           ]
+       });
+       fixtureMsgs.add(context.data);
+       
+       return wrapResponse(context.data);
+    });    
     
     App.module('Messaging').setOptions({
         convsLimit: 4,
