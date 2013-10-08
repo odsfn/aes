@@ -5,7 +5,7 @@
 $this->breadcrumbs->add('Messages', '/messaging/index');
 
 $this->widget('application.widgets.ClientApp', array(
-    'isolated' => true,
+//    'isolated' => true,
     'appName' => 'messaging',
     'requires' => array(
         'depends' => array('loadmask'),
@@ -22,6 +22,23 @@ $this->widget('application.widgets.ClientApp', array(
          )
     )
 ));
+
+// @TODO: Replace this by setting system property
+if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
+    Yii::app()->clientScript->registerScript('setLimitTest', 
+            "App.on('initialize:before', function() { 
+                App.module('Messaging').setOptions({
+                    convsLimit: 4,
+                });
+
+                App.module('Messaging.Chat').setOptions({
+                    messagesLimit: 4
+                });            
+            });",
+            CClientScript::POS_HEAD
+    );                    
+}
+
 ?>
 
 <script id="messaging-layout" type="text/template">

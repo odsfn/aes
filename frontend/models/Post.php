@@ -157,17 +157,4 @@ class Post extends CActiveRecord
             )
         );
     }
-    
-    /**
-     * @TODO: Move it to a behaviour
-     */    
-    public function populateRecord($attributes,$callAfterFind=true)
-    {
-        if ( is_array($attributes))
-                foreach ($attributes as $name => &$value)
-                        if ($this->hasAttribute($name) and $value !== null)
-                                settype($value, $this->getMetaData()->columns[$name]->type);
-
-        return parent::populateRecord($attributes, $callAfterFind);
-    }
 }

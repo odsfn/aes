@@ -5,6 +5,11 @@
  */
 class PostController extends RestController {
     
+    public $acceptableFilters = array(
+        'plain' => 'userPageId',
+        'model' => 'conversation_id'
+    );    
+    
     public $nestedModels = array(
         
         'user' => array(
@@ -61,27 +66,22 @@ class PostController extends RestController {
         
         $criteria = $this->getModel()
                     ->with($this->nestedRelations)
-                    ->onUsersPage($userPageId = $this->restFilter['userPageId'])
+                    ->onUsersPage($userPageId = $this->plainFilter['userPageId'])
                     ->postOnly();
         
         $countCriteria = PostPlacement::model()
             ->postsOnUsersPage($userPageId);
-
         
-        unset($this->restFilter['userPageId']);
-        
-        if(isset($this->restFilter['usersRecordsOnly']) && $this->restFilter['usersRecordsOnly']) {
+        if(isset($this->plainFilter['usersRecordsOnly']) && $this->plainFilter['usersRecordsOnly']) {
             
-            if($this->restFilter['usersRecordsOnly'] !== 'false') {
+            if($this->plainFilter['usersRecordsOnly'] !== 'false') {
                 $criteria->usersOnly($userPageId);
                 $countCriteria->usersOnly($userPageId);
             }
             
-            unset($this->restFilter['usersRecordsOnly']);
         }
         
-        $criteria->filter($this->restFilter)
-                ->orderBy('created_ts', 'DESC');
+        $criteria->orderBy('created_ts', 'DESC');
         
         $totalCount = $countCriteria->count();
         

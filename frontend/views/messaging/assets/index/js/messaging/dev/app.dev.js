@@ -187,7 +187,7 @@ $(function(){
                         last_view_ts: time                       
                     }
                 ],
-                initiator_id: 5
+                initiator_id: 1
             },
 
             {
@@ -200,7 +200,7 @@ $(function(){
                         conversation_id: curId,
                         created_ts: time,
                         text: 'Cnvs_text_5. The collection\'s comparator may be included as an option. If you define an initialize function, it will be invoked when the collection is created.',
-                        user_id: 1
+                        user_id: 2
                     }
                 ],
                 participants: [

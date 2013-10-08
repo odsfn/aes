@@ -71,6 +71,18 @@ return array(
       'email' => 'tester5@mail.ru',
       'photo' => NULL,
       'photo_thmbnl_64' => NULL
-  )    
+  ),
+  array(
+      'user_id' => '7',
+      'first_name' => 'Steve',
+      'last_name' => 'Jobs',
+      'birth_place' => 'San Francisco, California, US',
+      'birth_day' => '1955-02-24',
+      'gender' => '1',
+      'mobile_phone' => '+1(234)567-90-02',
+      'email' => 'tester5@mail.ru',
+      'photo' => NULL,
+      'photo_thmbnl_64' => NULL
+  )     
 );
 

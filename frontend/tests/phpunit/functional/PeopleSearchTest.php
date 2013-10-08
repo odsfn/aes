@@ -10,11 +10,11 @@ class PeopleSearchTest extends WebTestCase {
     public function testShowAllUsers() {
         $this->openPeople();
         
-        $this->assertTextPresent('Found 5 persones');
+        $this->assertTextPresent('Found 6 persones');
         
         $users = $this->getFixtureManager()->getRows('user_profile');
         
-        unset($users[5]);   // remove inactive
+        array_splice($users, 5);
         
         foreach ($users as $index => $user) {
             $this->assertElementPresent($selector = 'css=.list-view .items > .row-fluid:nth-child(' . ($index + 1) .')');
@@ -45,7 +45,7 @@ class PeopleSearchTest extends WebTestCase {
         $this->click($submitSel = 'css=button[type="submit"]');
         $this->waitForPageToLoad();
         
-        $this->assertCssCount($userSel = 'css=.list-view .items > .row-fluid', 1);
+        $this->assertCssCount($userSel = 'css=.list-view .items > .row-fluid', 2);
         $this->assertElementContainsText($userSel . ':nth-child(1)', 'Vasiliy Pedak');
     }
     
@@ -114,7 +114,7 @@ class PeopleSearchTest extends WebTestCase {
         $this->click('css=input[name="reset"]');
         $this->waitForPageToLoad();
         
-        $this->assertCssCount($userSel = 'css=.list-view .items > .row-fluid', 5);
+        $this->assertCssCount($userSel = 'css=.list-view .items > .row-fluid', 6);
         
         foreach ($selectors = array('name', 'ageFrom', 'ageTo', 'birth_day', 'birth_place', 'gender') as $id)
             $this->assertValue('id=PeopleSearch_' . $id, '');
@@ -137,7 +137,7 @@ class PeopleSearchTest extends WebTestCase {
         
         $this->assertTextNotPresent('No results found');
         
-        $this->assertCssCount($userSel = 'css=.list-view .items > .row-fluid', 5);
+        $this->assertCssCount($userSel = 'css=.list-view .items > .row-fluid', 6);
     }
     
     public function openPeople() {

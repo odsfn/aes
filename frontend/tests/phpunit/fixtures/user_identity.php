@@ -6,4 +6,5 @@ return array(
   array('id' => '4','user_id' => '4','identity' => 'tester2@mail.ru','type' => 'email','status' => '2'),
   array('id' => '5','user_id' => '5','identity' => 'tester3@mail.ru','type' => 'email','status' => '2'),
   array('id' => '6','user_id' => '6','identity' => 'tester4@mail.ru','type' => 'email','status' => '1'),
+  array('id' => '7','user_id' => '7','identity' => 'tester5@mail.ru','type' => 'email','status' => '2'),
 );

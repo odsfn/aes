@@ -21,6 +21,100 @@ class RestController extends ERestController {
     public $modelsUserIdAttr = 'user_id';
     
     /**
+     * Describes which filters to accept. Allowable format:
+     * 
+     *  array('plain'=>'a,b,c', 'model'=>'d,e')
+     * 
+     * Filters described in 'plain' key will be copied to $this->plainFilters as 
+     * key - value pairs. They are usefull when we override rest get methods.
+     * 
+     * Filters described in 'model' will be formated to ERestController filter format. 
+     * Filters that are not present in 'model' will be removed from $this->restFilter.
+     * 
+     * If this property will be empty then all filters will be accepted and converted
+     * to the ERestController filter format 
+     * 
+     * ERestController filters will be applied to the method filter()
+     * 
+     * @var array 
+     */
+    public $acceptFilters = array();
+    
+    protected $plainFilter = array();
+
+
+    public function beforeAction($event) {
+        $result = parent::beforeAction($event);
+        
+        if(ArrayHelper::isAssoc($this->restFilter)) {   //Conversion needed
+            
+            if(!empty($this->acceptFilters['plain'])) {
+                $plainKeys = explode(',', $this->acceptFilters['plain']);
+                
+                foreach ($plainKeys as $key) {
+                    $this->plainFilter[$key] = $this->restFilter[$key];
+                }
+            }else{  //copy all to plainFilter
+                foreach ($this->restFilter as $key => $value) {
+                    $this->plainFilter[$key] = $value;
+                }          
+            }
+            
+            if(!empty($this->acceptFilters['model'])) {
+                $acceptableKeys = explode(',', $this->acceptFilters['model']);
+                
+                foreach ($this->restFilter as $key => $value) {
+                    if(!in_array($key, $acceptableKeys))
+                        unset($this->restFilter[$key]);
+                }
+            }
+            
+            //Convert filters to acceptable format
+            $convertedFilter = array();
+            
+            foreach ($this->restFilter as $filterName => $value) {
+                $convertedFilter[] = array('property' => $filterName, 'value' => $value);
+            }
+            
+            $this->restFilter = $convertedFilter;
+            
+        } else {                                        //Filters are in acceptable format
+            
+            $plainKeys = array();
+            $filterableModelKeys = array();
+            
+            if(!empty($this->acceptFilters['plain'])) {
+                $plainKeys = explode(',', $this->acceptFilters['plain']);
+            }
+            
+            if(!empty($this->acceptFilters['model'])) {
+                $filterableModelKeys = explode(',', $this->acceptFilters['model']);
+            }
+            
+            $checkPlain = (bool)count($plainKeys);
+            $checkModel = (bool)count($filterableModelKeys);
+            
+            if($checkModel || $checkPlain) {
+                foreach ($this->restFilter as $index => $filter ) {
+                
+                    $filterKey = $filter['property'];
+                    
+                    if($checkPlain && in_array($filterKey, $plainKeys)) {
+                        $this->plainFilter[$filterKey] = $filter['value'];
+                    }
+                        
+                    if($checkModel && !in_array($filterKey, $filterableModelKeys)){
+                        unset($this->restFilter[$index]);
+                    }
+                    
+                }
+            }
+        }
+        
+        return $result;
+    }
+    
+    /**
      * Override to ignore any access restrictions. 
      * @TODO: Implement it for security needs
      */
@@ -33,7 +127,14 @@ class RestController extends ERestController {
      * This output helper has been overriden for compability with Backbone.parse method
      */
     public function outputHelper($message, $results, $totalCount = 0, $model = null) {
-        parent::outputHelper($message, $results, $totalCount, $model = 'models');
+        parent::outputHelper($message, $results, (int)$totalCount, $model = 'models');
+    }
+    
+    /**
+     * Overrides method to provide formatting of specified attributes
+     */
+    public function allToArray($models) {
+        return $this->formatOutput(parent::allToArray($models));
     }
     
     /**
@@ -134,5 +235,18 @@ class RestController extends ERestController {
             $user = Yii::app()->user; 
         
         return $model->{$this->modelsUserIdAttr} == $user->id;
+    }
+    
+    protected function getOutputFormatters() {
+        return array();
+    }
+    
+    /**
+     * Formats models attributes by specified formatters before give them to 
+     * the response
+     * @param array $array  Array of models attributes converted to array
+     */
+    protected function formatOutput($array) {
+        return ArrayHelper::format($array, $this->outputFormatters);
     }
 }

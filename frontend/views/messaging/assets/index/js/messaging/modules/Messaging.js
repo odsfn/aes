@@ -65,8 +65,7 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
           existingConv.fetch({
               data: {
                   filter: {
-                    initiator_id: webUser.id,
-                    participant_id: userId
+                      participants: [webUser.id, userId]
                   }
               },
               success: function(model, response) {
@@ -87,7 +86,7 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
                                     user_id: webUser.id,
                                 },
                                 {
-                                    user_id: 155,                     
+                                    user_id: userId,    
                                 }
                             ],
 

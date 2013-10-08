@@ -38,7 +38,9 @@ var FeedCountView = Marionette.View.extend({
 
             this.feed = feed;
 
-            this.ui.count.text(this.feed.length);
+            var initialCount = this.feed.totalCount || this.feed.length;
+
+            this.ui.count.text(initialCount);
             this.listenTo(this.feed, 'totalCountChanged', this.updateCount);
             this.listenTo(this.feed, 'request', this.startLoader);
             this.listenTo(this.feed, 'sync', this.stopLoader);

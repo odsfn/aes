@@ -51,7 +51,7 @@ var FeedCollection = Backbone.Collection.extend({
         
         this.currentPatchCount = fetchedModels.length;
         
-        this.setTotalCount(response.data.totalCount);
+        this.setTotalCount(parseInt(response.data.totalCount));
         
         return fetchedModels;
     },
@@ -119,7 +119,7 @@ var FeedCollection = Backbone.Collection.extend({
             
     setTotalCount: function(value) {
         var lastValue = this.totalCount;
-        this.totalCount = value;
+        this.totalCount = parseInt(value);
         this.trigger('totalCountChanged', value, lastValue);
     },
     

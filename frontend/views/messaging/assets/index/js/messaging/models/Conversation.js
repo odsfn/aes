@@ -39,7 +39,7 @@ var Conversation = Backbone.Model.extend({
             
     getParticipantData: function(userId) {
         return _.filter(this.get('participants'), function(participant) {
-           return participant.user_id !== userId; 
+           return participant.user_id != userId; 
         })[0].user;
     },
             
@@ -61,6 +61,6 @@ var Conversation = Backbone.Model.extend({
         this.on('change:messages', function() {
             this.messages.add(this.get('messages'), {merge: true});
         }, this);
-    }            
+    }
     
 });
