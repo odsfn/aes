@@ -79,7 +79,7 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
         <div class="pull-left">
             <div class="img-wrapper-tocenter users-photo users-photo-<%= participant.user_id %>">
                 <span></span>
-                <a href="#"><img src="<%= participant.photo %>" alt="<%= participant.displayName %>"></a>
+                <a href="#"><img src="<%= participant.photoThmbnl64 %>" alt="<%= participant.displayName %>"></a>
             </div>
         </div>
 
@@ -105,7 +105,7 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
         <div class="pull-left">
             <div class="img-wrapper-tocenter users-photo users-photo-<%= user_id %>">
                 <span></span>
-                <a><img src="<%= user.photo %>" alt="<%= user.displayName %>"></a>
+                <a><img src="<%= user.photoThmbnl64 %>" alt="<%= user.displayName %>"></a>
             </div>
         </div>
 
@@ -154,7 +154,7 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
             </div>
 
             <div class="participant">
-                <div class="img-wrapper-tocenter users-photo"><span></span><img alt="<%= participant.displayName %>" src="<%= participant.photo %>"></div>
+                <div class="img-wrapper-tocenter users-photo"><span></span><img alt="<%= participant.displayName %>" src="<%= participant.photoThmbnl64 %>"></div>
             </div>
         </div>    
 </script>
