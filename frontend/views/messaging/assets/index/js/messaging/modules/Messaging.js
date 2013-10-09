@@ -38,6 +38,13 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
                 lastMessage: this.model.getLastMessageData(),
                 hasUnviewedIncome: this.model.messages.hasUnviewed(webUser.id)
             });
+        },
+                
+        render: function() {
+            if(!this.model.getLastMessageData())
+                return this;
+            
+            Marionette.ItemView.prototype.render.apply(this, arguments);
         }
     });
     

@@ -9,7 +9,7 @@ class ConversationController extends RestController {
         'plain' => 'participants'
     );
     
-    public $nestedModels = array(
+    public $nestedModels = array(        
         'participants.user' => array(
             'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64'
         )
@@ -88,17 +88,24 @@ class ConversationController extends RestController {
             $participants = array($userId);
             
         $criteria = $this->getModel()
-                ->with($this->nestedRelations)
                 ->criteriaWithParticipants($participants)
-                ->orderBy('created_ts', 'DESC')
-                ->limit($this->restLimit)
-                ->offset($this->restOffset);
-
-        $conversations = $criteria->findAll(array('with'=>'messages'));
+                ->with($this->nestedRelations);
 
         $conversation = new Conversation;
         $this->_attachBehaviors($conversation);
-        $countCriteria = $conversation->criteriaWithParticipants($participants);
+        $countCriteria = $conversation
+                ->criteriaWithParticipants($participants)
+                ->with($this->nestedRelations);
+        
+        if(empty($this->plainFilter['participants'])) {
+            $criteria->criteriaHasMessages();
+            $countCriteria->criteriaHasMessages();
+        }
+        
+        $conversations = $criteria->orderBy('created_ts', 'DESC')
+                ->limit($this->restLimit)
+                ->offset($this->restOffset)
+                ->findAll(array('distinct'=>true));
         
         foreach ($conversations as $conversation)
             $conversation->messages = $conversation->messages(array(

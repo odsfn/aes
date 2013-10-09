@@ -125,11 +125,12 @@ class Conversation extends CActiveRecord
         return $this;
     } 
     
-//    public function scopes() {
-//        return array(
-//            'criteriaHasMessages' => array(
-//                'join' => 'INNER JOIN message m ON t.id = m.conversation_id'
-//            )
-//        );
-//    }
+    public function scopes() {
+        return array(
+            'criteriaHasMessages' => array(
+//                'distinct' => true,
+                'join' => 'INNER JOIN message m ON t.id = m.conversation_id'
+            )
+        );
+    }
 }
