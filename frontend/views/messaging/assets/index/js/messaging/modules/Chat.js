@@ -29,6 +29,7 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
     });    
     
     var MessagesView = Marionette.CollectionView.extend({
+        
         itemView: MessageView,
                 
         initialize: function(options) {
@@ -42,10 +43,7 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         },
                 
         appendHtml: function(collectionView, itemView, index){
-            if(index == 0) {
                 collectionView.$el.append(itemView.el);
-            }else
-                collectionView.$el.prepend(itemView.el);
         }                
     });
     
@@ -206,6 +204,10 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             this.moreView = new LoadMsgsBtnView({
                 appendTo: this.ui.loadBtn,
                 view: this.messagesView
+            });
+            
+            this.listenTo(this.moreView, 'loaded', function() {
+                this.messagesView.render();
             });
         },
 

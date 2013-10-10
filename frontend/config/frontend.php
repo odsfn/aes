@@ -131,6 +131,15 @@ return array(
                             'css' => array(
                                 'loadmask.css'
                             )
+                        ),
+                        
+                        'backbone.poller' => array(
+                            'depends' => array('backbone'),
+                            
+                            'baseUrl' => 'js/libs/backbone.poller',
+                            'js' => array(
+                                'backbone.poller.js'
+                            )
                         )
                     )
                 )

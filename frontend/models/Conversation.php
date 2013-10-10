@@ -125,12 +125,24 @@ class Conversation extends CActiveRecord
         return $this;
     } 
     
-    public function scopes() {
-        return array(
-            'criteriaHasMessages' => array(
-//                'distinct' => true,
-                'join' => 'INNER JOIN message m ON t.id = m.conversation_id'
-            )
-        );
+    public function criteriaHasMessages($since = null) {
+        
+        if($since)
+            $since = ' AND m.created_ts > "' . $since . '" ';
+        
+        $this->getDbCriteria()->mergeWith(array(
+            'join' => 'INNER JOIN message m ON t.id = m.conversation_id' . $since
+        ));
+        
+        return $this;
     }
+    
+//    public function scopes() {
+//        return array(
+//            'criteriaHasMessages' => array(
+////                'distinct' => true,
+//                'join' => 'INNER JOIN message m ON t.id = m.conversation_id'
+//            )
+//        );
+//    }
 }

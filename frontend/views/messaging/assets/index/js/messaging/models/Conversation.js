@@ -35,7 +35,7 @@ var Conversation = Backbone.Model.extend({
             
     getLastMessageData: function() {
         if(this.messages.length)
-            return this.messages.first().attributes;
+            return this.messages.last().attributes;
         else
             return false;
     },

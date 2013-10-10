@@ -8,7 +8,7 @@ $this->widget('application.widgets.ClientApp', array(
 //    'isolated' => true,
     'appName' => 'messaging',
     'requires' => array(
-        'depends' => array('loadmask'),
+        'depends' => array('loadmask', 'backbone.poller'),
         'js' => array(
             'models/Conversation.js',
             'models/Message.js',
@@ -18,7 +18,8 @@ $this->widget('application.widgets.ClientApp', array(
             'aes:views/MoreView.js',
             'aes:views/FeedCountView.js',
             'modules/Messaging.js',
-            'modules/Chat.js'
+            'modules/Chat.js',
+            'modules/LivePolling.js'
          )
     )
 ));
@@ -33,7 +34,13 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
 
                 App.module('Messaging.Chat').setOptions({
                     messagesLimit: 4
-                });            
+                });
+                
+                App.module('Messaging.LivePolling').setOptions({
+                    poller: {
+                        delay: 6000
+                    }
+                });
             });",
             CClientScript::POS_HEAD
     );                    
@@ -42,6 +49,11 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
 ?>
 
 <script id="messaging-layout" type="text/template">
+    <audio id="message-in" preload style="display: none;">
+        <source src="/audio/message-in.mp3" type="audio/mpeg">
+        <source src="/audio/message-in.wav" type="audio/wav">
+    </audio>
+    
     <ul class="nav nav-tabs">
         <li class="active"><a href="#conversations-tab">Conversations <span class="text-warning"></span></a></li>
         <li><a href="#active-conv-tab">View active <span class="text-warning"></span></a></li>

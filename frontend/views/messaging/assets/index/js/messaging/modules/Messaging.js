@@ -129,6 +129,34 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         this.triggerMethod('tabOpened:' + tabName, tabName);
     };
 
+    /**
+     * Trigger this method by calling Messagin.triggerMethod(newMessagesFromOthers, conversationWithMessages)
+     * to notify module about new messages gotten from others.
+     * 
+     * @param {Messages} messages
+     * @param {Conversation} conversation
+     */
+    this.onReceiveMessages = function(messages, conversation) {
+        
+        var existingConversation;
+        //try to find existing conversation
+        if( existingConversation = this.conversations.findWhere({id: conversation.get('id')}) ) {
+            
+            messages = messages.filter(function(message) {
+                return !existingConversation.messages.get(message);
+            });
+            
+            if(messages.length > 0) {
+                existingConversation.messages.add(messages);
+                $('#message-in')[0].play();
+            }
+        }
+        else {
+            this.conversations.add(conversation);
+            $('#message-in')[0].play();
+        }
+    };
+
     Messaging.addInitializer(function() {
         var chatModule = App.module('Messaging.Chat');
         

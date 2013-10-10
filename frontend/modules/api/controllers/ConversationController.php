@@ -6,7 +6,7 @@
 class ConversationController extends RestController {
     
     public $acceptFilters = array(
-        'plain' => 'participants'
+        'plain' => 'participants,since'
     );
     
     public $nestedModels = array(        
@@ -98,8 +98,14 @@ class ConversationController extends RestController {
                 ->with($this->nestedRelations);
         
         if(empty($this->plainFilter['participants'])) {
-            $criteria->criteriaHasMessages();
-            $countCriteria->criteriaHasMessages();
+            
+            $since = null;
+            
+            if(!empty($this->plainFilter['since']))
+                $since = date('Y-m-d H:i:s', floor(((int)$this->plainFilter['since']) / 1000));
+            
+            $criteria->criteriaHasMessages($since);
+            $countCriteria->criteriaHasMessages($since);
         }
         
         $conversations = $criteria->orderBy('created_ts', 'DESC')
@@ -107,11 +113,19 @@ class ConversationController extends RestController {
                 ->offset($this->restOffset)
                 ->findAll(array('distinct'=>true));
         
-        foreach ($conversations as $conversation)
-            $conversation->messages = $conversation->messages(array(
+        foreach ($conversations as $conversation) {
+            $params = array(
                 'order'=>'created_ts DESC',
                 'limit'=>1
-            ));
+            );
+            
+            if($since) {
+                $params['condition'] = 'created_ts > "' . $since . '"';
+                unset($params['limit']);
+            }
+            
+            $conversation->messages = $conversation->messages($params);
+        }
         
         $this->outputHelper( 
             'Records Retrieved Successfully',

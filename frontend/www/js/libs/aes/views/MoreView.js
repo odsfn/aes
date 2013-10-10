@@ -11,6 +11,8 @@ var MoreView = Marionette.ItemView.extend({
         'click': 'onClick'
     },
     
+    
+    
     ui: {
         body: 'div.span12'
     },
@@ -75,5 +77,6 @@ var MoreView = Marionette.ItemView.extend({
     stopLoader: function() {
         this.loading = false;
         this.ui.body.removeClass('loading');
+        this.trigger('loaded');
     }
 });
