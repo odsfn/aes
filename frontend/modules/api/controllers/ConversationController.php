@@ -101,8 +101,10 @@ class ConversationController extends RestController {
             
             $since = null;
             
-            if(!empty($this->plainFilter['since']))
-                $since = date('Y-m-d H:i:s', floor(((int)$this->plainFilter['since']) / 1000));
+            if(!empty($this->plainFilter['since'])) {
+                $ts = substr($this->plainFilter['since'], 0, 10);
+                $since = date('Y-m-d H:i:s', $ts);
+            }
             
             $criteria->criteriaHasMessages($since);
             $countCriteria->criteriaHasMessages($since);
