@@ -60,7 +60,7 @@ var FeedCollection = Backbone.Collection.extend({
      * Loads next part of data
      */
     fetchNext: function(options) {
-        this.offset += this.currentPatchCount;
+        this.offset = this.models.length;
         _.extend(options, {remove: false});
         this.fetch(options);
     },        

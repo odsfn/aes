@@ -29,7 +29,7 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
     Yii::app()->clientScript->registerScript('setLimitTest', 
             "App.on('initialize:before', function() { 
                 App.module('Messaging').setOptions({
-                    convsLimit: 4,
+                    convsLimit: 4
                 });
 
                 App.module('Messaging.Chat').setOptions({
