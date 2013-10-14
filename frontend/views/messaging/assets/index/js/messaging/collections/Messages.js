@@ -8,7 +8,6 @@ var Messages = FeedCollection.extend({
     url: UrlManager.createUrlCallback('api/message'),
     
     comparator: function(model) {
-//        return -model.get('created_ts');
           return model.get('created_ts');
     },
             

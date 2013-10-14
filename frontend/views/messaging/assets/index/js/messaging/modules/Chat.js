@@ -123,7 +123,8 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         
         ui: {
             closeBtn: 'i.icon-remove',
-            body: 'a'
+            body: 'a',
+            unviewedCount: 'span.new-count'
         },
                 
         triggers: {
@@ -148,12 +149,21 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         serializeData: function() {
             return _.extend(Marionette.ItemView.prototype.serializeData.apply(this, arguments), {
                 title: this.getTitle(),
-                unviewedCount: ''
+                unviewedCount: this.model.getUnviewedMessagesCount(webUser.id)
             });
         },
+        
+        onRender: function() {
+            var count = this.model.getUnviewedMessagesCount(webUser.id);
+            
+            if(count > 0)
+                this.ui.unviewedCount.show();
+            else
+                this.ui.unviewedCount.hide();
+        },
                 
-        onBeforeRender: function() {
-            $('div.active-chat-titles-cnt > ul > li').removeClass('active');
+        initialize: function() {
+            this.model.on('messagesIn change:participant:last_view_ts', function() {this.render();}, this);
         }
     });
     
@@ -323,6 +333,24 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             }
             
         }
+    };
+
+    /**
+     * Returns model of opened conversation. It is selected one of the chat tabs.
+     * If there is no opened returns null
+     * 
+     * @param {boolean} checkActive If it is set true ( by default ) it will check also
+     * whether the 'Active conversation' tab is active
+     * @return {Conversation}
+     */
+    this.getOpenedConversation = function(checkActive) {
+        if(checkActive !== 'undefined' && checkActive !== false)
+            checkActive = true;
+        
+        if(checkActive && !$('li.active > a[href="#active-conv-tab"]').length)
+            return null;
+        
+        return this.openedConversation;
     };
 
     Chat.addInitializer(function(){

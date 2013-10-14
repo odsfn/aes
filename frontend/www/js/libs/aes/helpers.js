@@ -40,10 +40,18 @@ Backbone.Model.prototype.parse = function(response, options) {
             alert('Error: Invalid response format');
     }
     
-    if(response.data.totalCount === 1)
-        return response.data.models[0];
-    else if(response.totalCount === 0)
-        return {};
+    var result = {};
+    
+    if(response.data.totalCount === 1) {
+        
+        if(_.isArray(response.data.models))
+            result = response.data.models[0];
+        else
+            result = response.data.models;
+        
+    }
+    
+    return result;
 };
         
 Backbone.Collection.prototype.parse = function(response, options) {

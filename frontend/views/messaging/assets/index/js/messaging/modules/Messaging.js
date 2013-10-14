@@ -1,6 +1,5 @@
 /** 
- * Messaging module. Shows system messages, lists conversations and allows to 
- * chat with others.
+ * Messaging module. Shows system messages, list of conversations.
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
@@ -30,13 +29,14 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
 
         initialize: function() {
             this.listenTo(this.model.messages, 'add', this.render);
+            this.listenTo(this.model, 'change:participant:last_view_ts', this.render);
         },
                 
         serializeData: function() {
             return _.extend(Marionette.ItemView.prototype.serializeData.apply(this), {
                 participant: this.model.getParticipantData(webUser.id),
                 lastMessage: this.model.getLastMessageData(),
-                hasUnviewedIncome: this.model.messages.hasUnviewed(webUser.id)
+                hasUnviewedIncome: this.model.hasUnviewedMessages(webUser.id)
             });
         },
                 
@@ -142,6 +142,7 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         //try to find existing conversation
         if( existingConversation = this.conversations.findWhere({id: conversation.get('id')}) ) {
             
+            //throw away messages that already exist
             messages = messages.filter(function(message) {
                 return !existingConversation.messages.get(message);
             });
@@ -149,11 +150,19 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
             if(messages.length > 0) {
                 existingConversation.messages.add(messages);
                 $('#message-in')[0].play();
+                this.triggerMethod('messagesReceived', existingConversation, existingConversation.messages, messages.length);
+                
+                existingConversation.trigger('messagesIn', existingConversation.messages, messages.length);
             }
+            
         }
         else {
+            
             this.conversations.add(conversation);
+            existingConversation = this.conversations.findWhere({id: conversation.get('id')});
             $('#message-in')[0].play();
+            this.triggerMethod('conversationReceived', existingConversation, existingConversation.messages, existingConversation.messages.length);
+            
         }
     };
 
@@ -241,6 +250,7 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         Messaging.conversations.fetch({
             success: function() {
                 Messaging.layout.conversations.show(Messaging.conversationsView);
+                Messaging.trigger('conversationsFetched', Messaging.conversations);
             },
             merge: true,
             remove: false

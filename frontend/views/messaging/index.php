@@ -12,6 +12,7 @@ $this->widget('application.widgets.ClientApp', array(
         'js' => array(
             'models/Conversation.js',
             'models/Message.js',
+            'models/Participant.js',
             'aes:collections/FeedCollection.js',
             'collections/Conversations.js',
             'collections/Messages.js',
@@ -19,7 +20,8 @@ $this->widget('application.widgets.ClientApp', array(
             'aes:views/FeedCountView.js',
             'modules/Messaging.js',
             'modules/Chat.js',
-            'modules/LivePolling.js'
+            'modules/LivePolling.js',
+            'modules/UnviewedIndicator.js'
          )
     )
 ));
@@ -179,4 +181,8 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
     <a href="#">
         <span class="text-warning new-count">+<span><%= unviewedCount %></span>&nbsp;</span><span class="title"><%= title %></span>&nbsp;<i class="icon-remove"></i>
     </a>
+</script>
+
+<script type="text/template" id="msgs-in-count-tpl">
+    <span><b>&nbsp+<%= count %></b></span>
 </script>

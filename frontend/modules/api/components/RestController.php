@@ -171,6 +171,9 @@ class RestController extends ERestController {
     protected function saveModel($model, $data) {
         $data = $this->removeVirtualAttributes($data);
         
+        if(count($this->inputFormatters) > 0)
+            $data = $this->formatInput($data);
+        
         return parent::saveModel($model, $data);
     }
     
@@ -241,6 +244,10 @@ class RestController extends ERestController {
         return array();
     }
     
+    protected function getInputFormatters() {
+        return array();
+    }
+    
     /**
      * Formats models attributes by specified formatters before give them to 
      * the response
@@ -248,5 +255,9 @@ class RestController extends ERestController {
      */
     protected function formatOutput($array) {
         return ArrayHelper::format($array, $this->outputFormatters);
+    }
+    
+    protected function formatInput($array) {
+        return ArrayHelper::format($array, $this->inputFormatters);
     }
 }
