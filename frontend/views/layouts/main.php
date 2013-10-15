@@ -42,7 +42,7 @@
                                         array('divider'=>'', 'visible'=>!Yii::app()->user->isGuest),
                                         array('label'=>'Your page', 'url'=>array('/userPage/index'), 'visible'=>!Yii::app()->user->isGuest),
                                         array('divider'=>''),
-                                        array('label'=>'Elections', 'url'=>'#'),
+                                        array('label'=>'Elections', 'url'=>array('/election/')),
                                         array('divider'=>''),
                                         array('label'=>'People', 'url'=>array('/people/index')),
                                         array('divider'=>''),

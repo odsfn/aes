@@ -1,0 +1,1 @@
+<a href="/election/create">create new</a>
