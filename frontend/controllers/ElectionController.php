@@ -3,6 +3,26 @@
 class ElectionController extends FrontController
 {
 
+    public function filters(){
+        return array(
+            'accessControl',
+        );
+    }
+
+    public function accessRules() {
+        return array(
+            array('allow',
+                'actions' => array('create'),
+                'users'=>array('@')
+            ),
+            array('deny',
+                'actions'=>array('create'),
+                'users'=>array('*')
+            )
+        );
+    }
+
+
     public function actionIndex()
     {
         $this->render('index');
