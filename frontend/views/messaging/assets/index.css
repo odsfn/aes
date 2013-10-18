@@ -112,3 +112,7 @@ ul.convs-tabs-cntr > li > a span.new-count {
     font-weight: bold;
     display: none;
 }
+
+#conversations-tab button.unviewed-filter {
+    margin-left: 1%;
+}

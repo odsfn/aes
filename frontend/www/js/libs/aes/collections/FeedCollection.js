@@ -1,9 +1,6 @@
 /* 
  * This collection represents feed. It encapsulates functionality of 
- * navigation through infinite models feed - like posts. 
- * 
- * @TODO: Resolve how to process models that were added when user is watching
- * his feed
+ * navigation through infinite models feed - like posts.
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */

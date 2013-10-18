@@ -13,6 +13,19 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         
         template: '#messaging-layout',
         
+        ui: {
+            unviewedFilter: '#conversations-tab button.unviewed-filter'
+        },
+        
+        events: {
+            'click #conversations-tab button.unviewed-filter': 'onFilterChangedUnviewed'
+        },
+        
+        onFilterChangedUnviewed: function() {
+            this.ui.unviewedFilter.toggleClass('active');
+            this.trigger('filterChanged', 'unviewed', this.ui.unviewedFilter.hasClass('active'));
+        },
+        
         regions: {
             conversations: '#convs-container',
             
@@ -49,7 +62,14 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
     });
     
     var ConversationsView = Marionette.CollectionView.extend({
-        itemView: ConversationView
+        itemView: ConversationView,
+        
+        initialize: function() {
+            this.listenTo(this.collection, 'change:participant:last_view_ts', function(){
+                this.collection.sort();
+                this.render();
+            });
+        }
     });
 
     Messaging.Router = Marionette.AppRouter.extend({
@@ -166,6 +186,11 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         }
     };
 
+    this.applyFilter = function(filter, value) {
+        console.log('Applying filter "' + filter + '" with value "' + value + '"' );
+        Messaging.conversations.setFilter(filter, value);
+    };
+
     Messaging.addInitializer(function() {
         var chatModule = App.module('Messaging.Chat');
         
@@ -235,6 +260,10 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         chatModule.on('allChatsClosed', function() {
             this.switchToTab('conversations');
         }, this);
+        
+        this.listenTo(Messaging.layout, {
+           'filterChanged': this.applyFilter
+        });
         
         this.router = new Messaging.Router({
             controller: this

@@ -66,10 +66,12 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
         <div class="tab-pane active" id="conversations-tab">
             <div class="navbar head">
                 <div class="navbar-inner">
-<!--                    <form class="navbar-search pull-left span5">
-                        <input type="text" class="search-query span12" placeholder="Type name, email of companion or theme of conversation">
-                    </form>-->
+                    <form class="navbar-search pull-left span5">
+                        <input type="text" class="search-query span12" placeholder="Type name or email of companion">
+                    </form>
 
+                    <!-- <button class="btn unviewed-filter">Unviewed</button> -->
+                    
                     <ul class="nav pull-right">
                         <li><a id="convs-count"><img src="/img/loader-circle-16.gif" class="loader">Found <span>0</span> conversations</a></li>
                     </ul>
@@ -101,11 +103,11 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
             <div class="post-body">
             
                 <h5 class="media-heading">
-                    <span class="user"><%= participant.displayName %></span> 
-                    <small><a href="#<%= lastMessage.id %>"><%= i18n.date(created_ts, 'full', 'full') %> <% if(title && title !== '') { %>at "<%= title %>"<% }; %></a></small>
+                    With <span class="user"><%= participant.displayName %></span>
+                    <small>Last message from <%= lastMessage.user.displayName %> <a href="#<%= lastMessage.id %>"><%= i18n.date(created_ts, 'full', 'full') %> <% if(title && title !== '') { %>at "<%= title %>"<% }; %></a></small>
                     <i class="icon-bell pull-right <% if(hasUnviewedIncome) { %>visible<%}; %>"></i>
                 </h5>
-
+                
                 <div class="post-content">
                     <%= lastMessage.text %>
                 </div>

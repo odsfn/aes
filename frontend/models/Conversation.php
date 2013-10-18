@@ -136,4 +136,22 @@ class Conversation extends CActiveRecord
         
         return $this;
     }
+    
+    public function criteriaUnviewedBy($participantId) {
+        
+        $this->getDbCriteria()->mergeWith(array(
+              'join' => 'INNER JOIN message nm ON t.id = nm.conversation_id AND nm.created_ts > cp0.last_view_ts AND nm.user_id <> ' . (int)$participantId
+        ));
+        
+        return $this;
+    }
+    
+    public function criteriaUnviewedFirst($participantId) {
+        $this->getDbCriteria()->mergeWith(array(
+              'select' => array('*', new CDbExpression("IF(m.created_ts > cp0.last_view_ts AND m.user_id <> " . (int)$participantId . ", '1', '0') as unviewed")),
+              'order' => 'unviewed DESC'
+        ));
+        
+        return $this;       
+    }
 }

@@ -34,9 +34,13 @@ var Conversation = Backbone.Model.extend({
     },
             
     getLastMessageData: function() {
-        if(this.messages.length)
-            return this.messages.last().attributes;
-        else
+        if(this.messages.length) {
+            
+            var msgAttrs = this.messages.last().attributes;
+            
+            return _.extend({}, msgAttrs, {user: this.getUserData(msgAttrs.user_id)});
+
+        } else
             return false;
     },
     

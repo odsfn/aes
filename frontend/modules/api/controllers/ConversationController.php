@@ -6,7 +6,7 @@
 class ConversationController extends RestController {
     
     public $acceptFilters = array(
-        'plain' => 'participants,since'
+        'plain' => 'participants,since,unviewed'
     );
     
     public $nestedModels = array(        
@@ -80,10 +80,12 @@ class ConversationController extends RestController {
         
         $userId = Yii::app()->user->id;
         
-        if(!empty($this->plainFilter['participants'])) {
+        if(!empty($this->plainFilter['participants'])) {    //Find conversation by certain participants
+            
             $participants = $this->plainFilter['participants'];
             if(!in_array($userId, $participants))
                 throw new CHttpException(403, 'You are able to see conversations where you are participating only.');
+            
         } else
             $participants = array($userId);
             
@@ -106,11 +108,18 @@ class ConversationController extends RestController {
                 $since = date('Y-m-d H:i:s', $ts);
             }
             
-            $criteria->criteriaHasMessages($since);
+            $criteria->criteriaHasMessages($since)->criteriaUnviewedFirst($userId);
+            
             $countCriteria->criteriaHasMessages($since);
+            
+            if(!empty($this->plainFilter['unviewed']) && $this->plainFilter['unviewed'] !== 'false') {   //Unviewed filter applied
+                $criteria->criteriaUnviewedBy($userId);
+                $countCriteria->criteriaUnviewedBy($userId);
+            }
+            
         }
         
-        $conversations = $criteria->orderBy('created_ts', 'DESC')
+        $conversations = $criteria
                 ->limit($this->restLimit)
                 ->offset($this->restOffset)
                 ->findAll(array('distinct'=>true));
