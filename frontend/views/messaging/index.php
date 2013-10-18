@@ -90,7 +90,7 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
         </div>
 
         <div class="tab-pane" id="active-conv-tab">
-            <div class="active-chat-titles-cnt"></div>
+            <div class="active-chat-titles-cnt"><img src="/img/loader-circle-16.gif" class="loader"></div>
             <div class="active-chat-cnt"></div>
         </div>
 
@@ -194,4 +194,8 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
 
 <script type="text/template" id="msgs-in-count-tpl">
     <span><b>&nbsp+<%= count %></b></span>
+</script>
+
+<script type="text/template" id="no-item-tpl">
+    <span><%= t('No items found') %>.</span>
 </script>

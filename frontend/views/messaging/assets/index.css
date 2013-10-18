@@ -116,3 +116,7 @@ ul.convs-tabs-cntr > li > a span.new-count {
 #conversations-tab button.unviewed-filter {
     margin-left: 1%;
 }
+
+.active-chat-titles-cnt img {
+    margin: 20px;
+}

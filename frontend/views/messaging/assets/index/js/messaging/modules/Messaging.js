@@ -69,8 +69,15 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         }
     });
     
+    var NoItemView = Marionette.ItemView.extend({
+        template: '#no-item-tpl'
+    });
+    
     var ConversationsView = Marionette.CollectionView.extend({
+        
         itemView: ConversationView,
+        
+        emptyView: NoItemView,
         
         initialize: function() {
             this.listenTo(this.collection, 'change:participant:last_view_ts', function(){
