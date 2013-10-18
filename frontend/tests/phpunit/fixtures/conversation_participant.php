@@ -48,7 +48,7 @@ return array(
     array(
         'id' => 10,
         'conversation_id' => 5,
-        'user_id' => 6
+        'user_id' => 7
     ),
     array(
         'id' => 11,

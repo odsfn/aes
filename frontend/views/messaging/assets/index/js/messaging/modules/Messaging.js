@@ -14,16 +14,24 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         template: '#messaging-layout',
         
         ui: {
-            unviewedFilter: '#conversations-tab button.unviewed-filter'
+            unviewedFilter: '#conversations-tab button.unviewed-filter',
+            participantFilter: 'input[name="participantName"]',
+            partntFilterBtn: 'button.participant-filter-apply'
         },
         
         events: {
-            'click #conversations-tab button.unviewed-filter': 'onFilterChangedUnviewed'
+            'click #conversations-tab button.unviewed-filter': 'onFilterChangedUnviewed',
+            'click button.participant-filter-apply': 'onParticipantFilterApplied'
         },
         
         onFilterChangedUnviewed: function() {
             this.ui.unviewedFilter.toggleClass('active');
             this.trigger('filterChanged', 'unviewed', this.ui.unviewedFilter.hasClass('active'));
+        },
+        
+        onParticipantFilterApplied: function(e) {
+            e.preventDefault();
+            this.trigger('filterChanged', 'participantName', this.ui.participantFilter.val());
         },
         
         regions: {
@@ -160,7 +168,20 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         
         var existingConversation;
         //try to find existing conversation
-        if( existingConversation = this.conversations.findWhere({id: conversation.get('id')}) ) {
+        existingConversation = this.conversations.findWhere({id: conversation.get('id')});
+        
+        if(!existingConversation) {
+            //try to find in active. This is usefull in case when we have filtered one
+            //of active conversations from this.conversations
+            existingConversation = App.module('Messaging.Chat').activeConversations.findWhere({id: conversation.get('id')});
+            
+            if(existingConversation) {
+                this.conversations.add(existingConversation);
+                this.conversationsView.render();
+            }
+        }
+        
+        if( existingConversation ) {
             
             //throw away messages that already exist
             messages = messages.filter(function(message) {
@@ -187,7 +208,6 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
     };
 
     this.applyFilter = function(filter, value) {
-        console.log('Applying filter "' + filter + '" with value "' + value + '"' );
         Messaging.conversations.setFilter(filter, value);
     };
 

@@ -6,7 +6,7 @@
 class ConversationController extends RestController {
     
     public $acceptFilters = array(
-        'plain' => 'participants,since,unviewed'
+        'plain' => 'participants,since,unviewed,participantName'
     );
     
     public $nestedModels = array(        
@@ -108,13 +108,20 @@ class ConversationController extends RestController {
                 $since = date('Y-m-d H:i:s', $ts);
             }
             
-            $criteria->criteriaHasMessages($since)->criteriaUnviewedFirst($userId);
+            $criteria->criteriaHasMessages($since)->criteriaOrderUnviewedFirst($userId);
             
             $countCriteria->criteriaHasMessages($since);
             
-            if(!empty($this->plainFilter['unviewed']) && $this->plainFilter['unviewed'] !== 'false') {   //Unviewed filter applied
-                $criteria->criteriaUnviewedBy($userId);
-                $countCriteria->criteriaUnviewedBy($userId);
+            if(!empty($this->plainFilter['participantName'])) {     //Filtration by participant name
+                
+                $participantNameFilter = PeopleSearch::getCriteriaFindByName($this->plainFilter['participantName'], 'profile');
+                
+                $participantNameFilter->join = 'LEFT JOIN conversation_participant cp ON cp.conversation_id = t.id ' 
+                                                . 'LEFT JOIN user_profile profile ON profile.user_id = cp.user_id';
+                
+                $criteria->getDbCriteria()->mergeWith($participantNameFilter);
+                
+                $countCriteria->getDbCriteria()->mergeWith($participantNameFilter);
             }
             
         }
@@ -122,7 +129,7 @@ class ConversationController extends RestController {
         $conversations = $criteria
                 ->limit($this->restLimit)
                 ->offset($this->restOffset)
-                ->findAll(array('distinct'=>true));
+                ->findAll(array('group' => 't.id'));
         
         foreach ($conversations as $conversation) {
             $params = array(

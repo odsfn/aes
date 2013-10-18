@@ -66,7 +66,7 @@ return array(
     array(
         'id' => 10,
         'conversation_id' => 5,
-        'user_id' => 6,
+        'user_id' => 7,
         'created_ts' => '2013-09-21 11:19:33',
         'text' => 'Cnvs_text_5. The collection\'s comparator may be included as an option. If you define an initialize function, it will be invoked when the collection is created.'
     ),

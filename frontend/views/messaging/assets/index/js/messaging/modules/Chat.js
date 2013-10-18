@@ -112,8 +112,6 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         }
     });
     
-//    var FiltersView;
-    
     var ChatTitleView = Marionette.ItemView.extend({
         tagName: 'li',
                 

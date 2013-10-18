@@ -66,8 +66,15 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
         <div class="tab-pane active" id="conversations-tab">
             <div class="navbar head">
                 <div class="navbar-inner">
-                    <form class="navbar-search pull-left span5">
-                        <input type="text" class="search-query span12" placeholder="Type name or email of companion">
+                    <form class="navbar-search pull-left span3">
+                       
+                        <div class="input-append span12">
+                            
+                            <input name="participantName" type="text" class="span12" placeholder="Type name of companion">
+                            <button class="btn participant-filter-apply">Find</button>
+                            
+                        </div>
+                        
                     </form>
 
                     <!-- <button class="btn unviewed-filter">Unviewed</button> -->

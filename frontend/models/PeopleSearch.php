@@ -66,20 +66,8 @@ class PeopleSearch extends CFormModel{
             //Select only active
             'join' => 'INNER JOIN user ON user.id = t.user_id AND user.status = ' . UserAccount::STATUS_ACTIVE
         ));
-        
-        if(($pos = strpos($this->name, ' ')) !== FALSE && $pos > 0) {
-            
-            $nameParts = explode(' ', $this->name);
-            
-            $criteria->addCondition('(first_name LIKE "%' . $nameParts[0] . '%" AND last_name LIKE "%' . $nameParts[1] . '%")'
-                    . ' OR (first_name LIKE "%' . $nameParts[1] . '%" AND last_name LIKE "%' . $nameParts[0] . '%")'
-            );
-            
-        } else {
-            $criteria->compare('first_name', $this->name, true);
-            $criteria->compare('last_name', $this->name, true, 'OR');
-        }
 
+        $criteria->mergeWith(self::getCriteriaFindByName($this->name));
         
 	$criteria->compare('birth_place', $this->birth_place, true);
         
@@ -124,5 +112,37 @@ class PeopleSearch extends CFormModel{
         $at->sub(new DateInterval('P' . $years . 'Y'));
         
         return $at;
+    }
+    
+    /**
+     * Creates or modifies criteria to search by user name
+     * 
+     * @param string $name  Of the user to find
+     * @param string $columnPrefix
+     * @param CDbCriteria $criteria
+     * @return \CDbCriteria
+     */
+    public static function getCriteriaFindByName($name, $columnPrefix = null, $criteria = null) {
+        
+        if(empty($criteria))
+            $criteria = new CDbCriteria;
+        
+        if(!empty($columnPrefix))
+            $columnPrefix .= '.';
+        
+        if(($pos = strpos($name, ' ')) !== FALSE && $pos > 0) {
+            
+            $nameParts = explode(' ', $name);
+            
+            $criteria->addCondition('(' . $columnPrefix . 'first_name LIKE "%' . $nameParts[0] . '%" AND ' . $columnPrefix . 'last_name LIKE "%' . $nameParts[1] . '%")'
+                    . ' OR (' . $columnPrefix . 'first_name LIKE "%' . $nameParts[1] . '%" AND ' . $columnPrefix . 'last_name LIKE "%' . $nameParts[0] . '%")'
+            );
+            
+        } else {
+            $criteria->compare($columnPrefix . 'first_name', $name, true);
+            $criteria->compare($columnPrefix . 'last_name', $name, true, 'OR');
+        }
+        
+        return $criteria;
     }
 }

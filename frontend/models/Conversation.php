@@ -146,7 +146,8 @@ class Conversation extends CActiveRecord
         return $this;
     }
     
-    public function criteriaUnviewedFirst($participantId) {
+    public function criteriaOrderUnviewedFirst($participantId) {
+        
         $this->getDbCriteria()->mergeWith(array(
               'select' => array('*', new CDbExpression("IF(m.created_ts > cp0.last_view_ts AND m.user_id <> " . (int)$participantId . ", '1', '0') as unviewed")),
               'order' => 'unviewed DESC'
