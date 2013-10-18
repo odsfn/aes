@@ -32,9 +32,13 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         
         itemView: MessageView,
                 
-        initialize: function(options) {
-            this.conversation = options.conversation;
-        },
+        scrollDown: function() {
+            this.$el.parent().scrollTop(this.$el.height());
+        },        
+                
+        onAfterItemAdded: function() {
+            this.scrollDown();
+        },       
                 
         itemViewOptions: function(model, index) {
             return {
@@ -44,7 +48,11 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
                 
         appendHtml: function(collectionView, itemView, index){
                 collectionView.$el.append(itemView.el);
-        }                
+        },
+                
+        initialize: function(options) {
+            this.conversation = options.conversation;
+        }
     });
     
     var InputView = Marionette.View.extend({
