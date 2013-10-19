@@ -212,7 +212,8 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
                 
         serializeData: function() {
             return _.extend(Marionette.Layout.prototype.serializeData.apply(this), {
-               participant: this.model.getParticipantData(webUser.id) 
+               participant: this.model.getParticipantData(webUser.id),
+               user: this.model.getUserData(webUser.id)
             });
         },
         

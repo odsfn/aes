@@ -66,7 +66,7 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
         <div class="tab-pane active" id="conversations-tab">
             <div class="navbar head">
                 <div class="navbar-inner">
-                    <form class="navbar-search pull-left span3">
+                    <form class="navbar-search pull-left span4">
                        
                         <div class="input-append span12">
                             
@@ -110,7 +110,7 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
             <div class="post-body">
             
                 <h5 class="media-heading">
-                    With <span class="user"><%= participant.displayName %></span>
+                    With <span class="user"><a href="<%= participant.pageUrl %>" target="_blank"><%= participant.displayName %></a></span>
                     <small>Last message from <%= lastMessage.user.displayName %> <a href="#<%= lastMessage.id %>"><%= i18n.date(created_ts, 'full', 'full') %> <% if(title && title !== '') { %>at "<%= title %>"<% }; %></a></small>
                     <i class="icon-bell pull-right <% if(hasUnviewedIncome) { %>visible<%}; %>"></i>
                 </h5>
@@ -168,7 +168,12 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
         <div class="messages-cnt"></div>
 
         <div class="new-post row-fluid">
-            <div class="body span10 well">
+        
+            <div class="participant">
+                <div class="img-wrapper-tocenter users-photo"><span></span><img alt="<%= user.displayName %>" src="<%= user.photoThmbnl64 %>"></div>
+            </div>        
+        
+            <div class="body span9 well">
                 <textarea class="span12"></textarea>
                 <div class="controls pull-right">
                     <button data-loading-text="<%= t('Sending...') %>" class="btn btn-primary post" type="button"><%= t('Send') %></button>
@@ -178,7 +183,8 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
 
             <div class="participant">
                 <div class="img-wrapper-tocenter users-photo"><span></span><img alt="<%= participant.displayName %>" src="<%= participant.photoThmbnl64 %>"></div>
-            </div>
+            </div>    
+            
         </div>    
 </script>
 

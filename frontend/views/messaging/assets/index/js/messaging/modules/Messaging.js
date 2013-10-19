@@ -38,6 +38,10 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
             conversations: '#convs-container',
             
             convsLoader: '#convs-load-btn'
+        },
+                
+        onShow: function() {
+            $('a[href="#active-conv-tab"]').parent().hide();
         }
     });
     
@@ -45,7 +49,7 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
         template: '#conversation',
         
         triggers: {
-            'click': 'clicked'
+            'click .post-content, .media-heading > small, .media-heading > i': 'clicked'
         },
 
         initialize: function() {
@@ -159,6 +163,11 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
             actives: 'active-conv-tab',
             conversations: 'conversations-tab'
         };
+        
+        if(tabName == 'actives') {
+            $('a[href="#' + tabNameToIdMap[tabName] + '"]').parent().show();
+        }else if(App.module('Messaging.Chat').activeConversations.length == 0)
+            $('a[href="#' + tabNameToIdMap['actives'] + '"]').parent().hide();
         
         $('a[href="#' + tabNameToIdMap[tabName] + '"]').tab('show');
         this.triggerMethod('tabOpened:' + tabName, tabName);

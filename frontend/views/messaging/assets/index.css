@@ -37,6 +37,10 @@ div.post .icon-bell.visible {
     display: inline;
 }
 
+#convs-container div.post .post-content {
+    cursor: pointer;
+}
+
 #convs-load-btn .get-more > div {
     text-align: center;
     margin-top: 15px;
@@ -74,15 +78,20 @@ div.post .icon-bell.visible {
     display: none;
 }
 
-div.new-post > .body {
-    margin-left: 2.6% !important;
-    margin-right: 1.5%;
+div.new-post .body {
+    margin-left: 1% !important;
+}
+
+div.participant {
+    float: left;
+    padding-left: 1%;
 }
 
 div.participant > div {
-    width: 96px; 
-    height: 96px; 
+    width: 64px; 
+    height: 64px; 
     background-color: #000;
+    box-shadow: 1px 1px 5px 0 #C9C9C9;
 }
 
 img.loader {
