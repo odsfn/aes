@@ -16,6 +16,17 @@
  */
 class PostRate extends CActiveRecord
 {
+    public function behaviors() {
+        return array(
+            'UpdateDateBehavior' => array(
+                'class' => 'UpdateDateBehavior',
+                'fields' => array(
+                    'create'=> array('created_ts')
+                )
+            )
+        );
+    }
+    
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -102,11 +113,11 @@ class PostRate extends CActiveRecord
     
     protected function beforeSave() {
         if($this->isNewRecord) {
-            $this->created_ts = date('Y-m-d H:i:s');
-            
+
             $lastRate = PostRate::model()->find('user_id = ' . $this->user_id . ' AND post_id = ' . $this->post_id);
             if($lastRate) 
                 $lastRate->delete();
+            
         }
         
         return parent::beforeSave();
@@ -125,11 +136,7 @@ class PostRate extends CActiveRecord
         return parent::afterFind();
     }
     
-    /**
-     * @TODO: Move it to a behaviour
-     */  
-    public function populateRecord($attributes,$callAfterFind=true)
-    {
+    public function populateRecord($attributes,$callAfterFind=true) {
         if ( is_array($attributes))
                 foreach ($attributes as $name => &$value)
                         if ($this->hasAttribute($name) and $value !== null)

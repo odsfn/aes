@@ -20,6 +20,18 @@
  */
 class Post extends CActiveRecord
 {
+    public function behaviors() {
+        return array(
+            'UpdateDateBehavior' => array(
+                'class' => 'UpdateDateBehavior',
+                'fields' => array(
+                    'create'=> array('created_ts'),
+                    'update'=> array('last_update_ts')
+                )
+            )
+        );
+    }
+    
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -108,17 +120,8 @@ class Post extends CActiveRecord
             'criteria'=>$criteria,
         ));
     }
-    
-    protected function beforeSave() {
-        if($this->isNewRecord) {
-            $this->created_ts = date('Y-m-d H:i:s');
-        }else{
-            $this->last_update_ts = date('Y-m-d H:i:s');
-        }
-        
-        return parent::beforeSave();
-    }
 
+    // @TODO: replace it. Add corresponding formatter to the Rest controller
     public function getAttributes($names = true) {
         $result = parent::getAttributes($names);
         $result['displayTime'] = $this->displayTime;
@@ -126,10 +129,13 @@ class Post extends CActiveRecord
         return $result;
     }
     
+    // @TODO: replace it. Add corresponding formatter to the Rest controller
     public $displayTime;
     
+    // @TODO: replace it. Add corresponding formatter to the Rest controller
     public $createdTs;
     
+    // @TODO: replace it. Add corresponding formatter to the Rest controller
     protected function afterFind() {
         $this->displayTime = Yii::app()->dateFormatter->formatDateTime($this->created_ts, 'medium', 'medium');
         $this->createdTs = strtotime($this->created_ts);
