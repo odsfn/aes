@@ -41,14 +41,17 @@ var FeedCollection = Backbone.Collection.extend({
         return -model.get('createdTs');
     },
     
-    parse: function(response) {
+    parse: function(response, options) {
 
         var 
             fetchedModels = Backbone.Collection.prototype.parse.apply(this, arguments);
         
         this.currentPatchCount = fetchedModels.length;
         
-        this.setTotalCount(parseInt(response.data.totalCount));
+        if(_.has(response, 'data') && _.has(response.data, 'totalCount'))
+            this.setTotalCount(parseInt(response.data.totalCount));
+        else if(_.has(options, 'totalCount'))
+            this.setTotalCount(parseInt(options.totalCount));
         
         return fetchedModels;
     },

@@ -54,6 +54,15 @@ return array(
 
 			'rules' => array(
                                 // Restfullyii routes
+                            
+                                'api/<target_type:\w+>_<controller:(comment|rate)>'=>array('api/<controller>/restList', 'verb'=>'GET'),
+                                'api/<target_type:\w+>_<controller:(comment|rate)>/<id:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),
+                                array('api/<controller>/restUpdate', 'pattern'=>'api/<target_type:\w+>_<controller:(comment|rate)>/<id:\w*>', 'verb'=>'PUT'),
+                                array('api/<controller>/restDelete', 'pattern'=>'api/<target_type:\w+>_<controller:(comment|rate)>/<id:\w*>', 'verb'=>'DELETE'),
+                                array('api/<controller>/restCreate', 'pattern'=>'api/<target_type:\w+>_<controller:(comment|rate)>', 'verb'=>'POST'),
+                                array('api/<controller>/restCreate', 'pattern'=>'api/<target_type:\w+>_<controller:(comment|rate)>/<id:\w+>', 'verb'=>'POST'),                          
+                            
+                            
                                 'api/<controller:\w+>'=>array('api/<controller>/restList', 'verb'=>'GET'),
                                 'api/<controller:\w+>/<id:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),
                                 'api/<controller:\w+>/<id:\w*>/<var:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),

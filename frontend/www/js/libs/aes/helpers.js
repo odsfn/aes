@@ -28,16 +28,22 @@ var
     }();
 
 // Overriding parsing to correctly connect with restfullyii response format
-Backbone.Model.prototype.parse = function(response, options) {
+Backbone.Model.prototype.parse = function(rawData, options) {
+    
+    if(_.isObject(rawData) && ( !_.has(rawData, 'success') || !_.has(rawData, 'message') || !_.has(rawData, 'data') )) {        //
+        return rawData;
+    }
+    
+    var response = rawData;
     
     if(!_.isObject(response.data))  //Parsing response in context of collection's fetch 
         return response;
     
     if(!response.success) {
         if(response.message)
-            alert('Error: ' + response.message);
+            throw new Error(response.message);
         else
-            alert('Error: Invalid response format');
+            throw new Error('Invalid response format');
     }
     
     var result = {};
@@ -54,7 +60,14 @@ Backbone.Model.prototype.parse = function(response, options) {
     return result;
 };
         
-Backbone.Collection.prototype.parse = function(response, options) {
+Backbone.Collection.prototype.parse = function(rawData, options) {
+    
+    if(_.isObject(rawData) && ( !_.has(rawData, 'success') || !_.has(rawData, 'message') || !_.has(rawData, 'data') )) {        //
+        return rawData;
+    }
+    
+    var response = rawData;    
+    
     if(!response.success) {
         if(response.message)
             alert('Error: ' + response.message);
