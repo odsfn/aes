@@ -87,7 +87,7 @@ App.module('Messaging.UnviewedIndicator', function(UnviewedIndicator, App, Backb
         var count = 0;
         
         messagingModule.conversations.each(function(conv) {
-            count += conv.getUnviewedMessagesCount(webUser.id);
+            count += conv.getUnviewedMessagesCount(WebUser.getId());
         });
         
         return count;
@@ -107,7 +107,7 @@ App.module('Messaging.UnviewedIndicator', function(UnviewedIndicator, App, Backb
                if(!chatModule || !chatModule.getOpenedConversation() || chatModule.getOpenedConversation().get('id') != conv.get('id'))
                    this.addCount(inCount);
                else
-                   conv.updateLastViewTs(webUser.id);
+                   conv.updateLastViewTs(WebUser.getId());
            },
            'conversationsFetched': function() {
                 this.setCount(this.getUnviewedCount());
@@ -125,7 +125,7 @@ App.module('Messaging.UnviewedIndicator', function(UnviewedIndicator, App, Backb
        
        if(chatModule) {
            this.listenTo(chatModule, 'chat:opened', function(chat) {
-                chat.model.updateLastViewTs(webUser.id);
+                chat.model.updateLastViewTs(WebUser.getId());
            });
        }
     });

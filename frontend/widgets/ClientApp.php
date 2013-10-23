@@ -73,7 +73,7 @@ class ClientApp extends CWidget {
          */
         $this->clientScript->registerScriptFile('/js/libs/aes/WebUser.js');
         $this->clientScript->registerScript('webUserInit', 
-            'var webUser = new WebUser({' . ((!$user->isGuest)?'id: ' . $user->id . ', displayName: "' . $user->username . '"' : '') . '});',
+            'WebUser.initialize({' . ((!$user->isGuest)?'id: ' . $user->id . ', displayName: "' . $user->username . '"' : '') . '});',
             CClientScript::POS_HEAD
         );
         

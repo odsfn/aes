@@ -74,13 +74,13 @@ var EditableView = Marionette.ItemView.extend({
             
     onRender: function() {
         //Checking for available actions for current user
-        if(webUser.isGuest()) {
+        if(WebUser.isGuest()) {
             this.$el.hide();
             
         //Authenticated but post made by other user
-        } else if(webUser.id != this.model.get('user_id')) {
+        } else if(WebUser.getId() != this.model.get('user_id')) {
             //on the current user's page
-            if(webUser.id == PostsApp.pageUserId)
+            if(WebUser.getId() == PostsApp.pageUserId)
                //current user can't edit posts made by others
                this.ui.editBtn.remove();
             else    //on page of another user

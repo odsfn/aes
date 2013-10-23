@@ -59,9 +59,9 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
                 
         serializeData: function() {
             return _.extend(Marionette.ItemView.prototype.serializeData.apply(this), {
-                participant: this.model.getParticipantData(webUser.id),
+                participant: this.model.getParticipantData(WebUser.getId()),
                 lastMessage: this.model.getLastMessageData(),
-                hasUnviewedIncome: this.model.hasUnviewedMessages(webUser.id)
+                hasUnviewedIncome: this.model.hasUnviewedMessages(WebUser.getId())
             });
         },
                 
@@ -111,7 +111,7 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
           existingConv.fetch({
               data: {
                   filter: {
-                      participants: [webUser.id, userId]
+                      participants: [WebUser.getId(), userId]
                   }
               },
               success: function(model, response) {
@@ -129,14 +129,14 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
 
                             participants: [         
                                 {
-                                    user_id: webUser.id,
+                                    user_id: WebUser.getId(),
                                 },
                                 {
                                     user_id: userId,    
                                 }
                             ],
 
-                            initiator_id: webUser.id
+                            initiator_id: WebUser.getId()
                         });
                         
                         existingConv.save(null, {
@@ -238,13 +238,13 @@ App.module('Messaging', function(Messaging, App, Backbone, Marionette, $, _) {
             var openedConv = App.module('Messaging.Chat').openedConversation || false;
             
             if(openedConv) {
-                this.router.navigate('chat_with/' + openedConv.getParticipantData(webUser.id).user_id);
+                this.router.navigate('chat_with/' + openedConv.getParticipantData(WebUser.getId()).user_id);
             }else
                 this.router.navigate('chats');
         });
         
         this.listenTo(chatModule, 'chat:opened', function(chatView) {
-            this.router.navigate('chat_with/' + chatView.model.getParticipantData(webUser.id).user_id);
+            this.router.navigate('chat_with/' + chatView.model.getParticipantData(WebUser.getId()).user_id);
         }, this);
         
         Messaging.layout = new MessagingLayout();

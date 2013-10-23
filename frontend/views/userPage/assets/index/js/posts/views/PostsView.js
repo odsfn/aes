@@ -56,12 +56,12 @@ var PostView = Marionette.ItemView.extend({
     },
             
     onMouseEnter: function() {
-        if(!webUser.isGuest())
+        if(!WebUser.isGuest())
             this.ui.body.addClass('hovered');
     },
 
     onMouseLeave: function() {
-        if(!webUser.isGuest())
+        if(!WebUser.isGuest())
             this.ui.body.removeClass('hovered');
     },
     
@@ -80,7 +80,7 @@ var PostView = Marionette.ItemView.extend({
         
         var rate;
         //Mark user's vote
-        if(!webUser.isGuest() && (rate = this.model.rates.getRate(webUser.id))) {
+        if(!WebUser.isGuest() && (rate = this.model.rates.getRate(WebUser.getId()))) {
              if(rate.get('score') == 1) {
                  this.ui.ratePlus.addClass('chosen');
              }else{
@@ -91,7 +91,7 @@ var PostView = Marionette.ItemView.extend({
             
     rate: function(score) {
         
-        if(webUser.isGuest())
+        if(WebUser.isGuest())
             return;
         
         if(score === 'up') {
@@ -101,7 +101,7 @@ var PostView = Marionette.ItemView.extend({
         }
         
         var 
-            lastRate = this.model.rates.getRate(webUser.id),
+            lastRate = this.model.rates.getRate(WebUser.getId()),
             lastRateScore = null;
     
         if(lastRate) {
@@ -110,7 +110,7 @@ var PostView = Marionette.ItemView.extend({
         }
         
         if(lastRateScore != score) {    
-            this.model.rates.addRate(webUser.id, score);
+            this.model.rates.addRate(WebUser.getId(), score);
         }       
         
     },

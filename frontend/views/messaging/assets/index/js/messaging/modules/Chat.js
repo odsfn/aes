@@ -144,7 +144,7 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         },        
         
         getTitle: function() {
-            var result = this.model.getParticipantData(webUser.id).displayName;
+            var result = this.model.getParticipantData(WebUser.getId()).displayName;
             
             if(this.model.get('title'))
                 result  += ' - ' + this.model.get('title');
@@ -155,12 +155,12 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         serializeData: function() {
             return _.extend(Marionette.ItemView.prototype.serializeData.apply(this, arguments), {
                 title: this.getTitle(),
-                unviewedCount: this.model.getUnviewedMessagesCount(webUser.id)
+                unviewedCount: this.model.getUnviewedMessagesCount(WebUser.getId())
             });
         },
         
         onRender: function() {
-            var count = this.model.getUnviewedMessagesCount(webUser.id);
+            var count = this.model.getUnviewedMessagesCount(WebUser.getId());
             
             if(count > 0)
                 this.ui.unviewedCount.show();
@@ -198,7 +198,7 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         
         createNewMessageModel: function() {
             return new Message({
-               user_id: webUser.id,
+               user_id: WebUser.getId(),
                conversation_id: this.model.get('id')
             });
         },
@@ -212,8 +212,8 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
                 
         serializeData: function() {
             return _.extend(Marionette.Layout.prototype.serializeData.apply(this), {
-               participant: this.model.getParticipantData(webUser.id),
-               user: this.model.getUserData(webUser.id)
+               participant: this.model.getParticipantData(WebUser.getId()),
+               user: this.model.getUserData(WebUser.getId())
             });
         },
         

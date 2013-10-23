@@ -51,7 +51,7 @@ class MarionetteWidget extends CWidget {
 
             $this->registerSelf();
 
-            echo file_get_contents(Yii::getPathOfAlias($this->requires['basePath']) . '/templates.html');
+            echo file_get_contents(Yii::getPathOfAlias($this->basePath) . '/templates.html');
             
             self::$registered = true;
             
@@ -150,13 +150,13 @@ class MarionetteWidget extends CWidget {
          */
         $this->clientScript->registerScriptFile('/js/libs/aes/WebUser.js');
         $this->clientScript->registerScript('webUserInit', 
-            'var webUser = new WebUser({' . ((!$user->isGuest)?'id: ' . $user->id . ', displayName: "' . $user->username . '"' : '') . '});',
+            'WebUser.initialize({' . ((!$user->isGuest)?'id: ' . $user->id . ', displayName: "' . $user->username . '"' : '') . '});',
             CClientScript::POS_HEAD
         );        
     }
     
     protected function registerSelf() {
-        $this->requires['basePath'] = $this->basePath;
+        $this->requires['baseUrl'] = 'js/libs/aes/widgets/' . $this->widgetId;
         
         if(!isset($this->requires['js'])) {
             $this->requires['js'] = array();

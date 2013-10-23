@@ -8,10 +8,10 @@ var Conversations = FeedCollection.extend({
     
     comparator: function(m1, m2) {
         
-        if(m1.hasUnviewedMessages(webUser.id) && !m2.hasUnviewedMessages(webUser.id))
+        if(m1.hasUnviewedMessages(WebUser.getId()) && !m2.hasUnviewedMessages(WebUser.getId()))
             return -1;
             
-        else if(m2.hasUnviewedMessages(webUser.id) && !m1.hasUnviewedMessages(webUser.id))
+        else if(m2.hasUnviewedMessages(WebUser.getId()) && !m1.hasUnviewedMessages(WebUser.getId()))
             return 1;
             
         if(m1.get('created_ts') > m2.get('created_ts'))

@@ -246,7 +246,7 @@ var CommentsWidget = (function(){
 
             var rate;
             //Mark user's vote
-            if(!this._user.isGuest() && (rate = this.model.rates.getRate(this._user.id))) {
+            if(!this._user.isGuest() && (rate = this.model.rates.getRate(this._user.getId()))) {
                  if(rate.get('score') == 1) {
                      this.ui.ratePlus.addClass('chosen');
                  }else{
@@ -267,7 +267,7 @@ var CommentsWidget = (function(){
             }
 
             var 
-                lastRate = this.model.rates.getRate(this._user.id),
+                lastRate = this.model.rates.getRate(this._user.getId()),
                 lastRateScore = null;
 
             if(lastRate) {
@@ -276,7 +276,7 @@ var CommentsWidget = (function(){
             }
 
             if(lastRateScore != score) {    
-                this.model.rates.addRate(this._user.id, score);
+                this.model.rates.addRate(this._user.getId(), score);
             }       
 
         },
@@ -355,7 +355,7 @@ var CommentsWidget = (function(){
         
         targetType: null,
         
-        webUser: null,
+        webUser: WebUser || null,
         
         urlManager: UrlManager || null, 
         
@@ -417,7 +417,7 @@ var CommentsWidget = (function(){
                 itemViewOptions: {
                     template: config.templates.commentView,
                     
-                    user: webUser
+                    user: config.webUser
                 }
                 
             });

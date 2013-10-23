@@ -247,9 +247,9 @@ $(function(){
        
        context.data.id = _.uniqueId();
        context.data = _.extend(context.data, { 
-           user_id: webUser.id,
+           user_id: WebUser.getId(),
            user: {
-                displayName: webUser.displayName,
+                displayName: WebUser.displayName,
                 photo: 'http://placehold.it/64x64'
            },
            displayTime: $.format.date(time, 'MMM d, yyyy hh:mm:ss a'),

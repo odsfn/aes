@@ -2,40 +2,33 @@
  * WebUser model. 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
-var WebUser = function (config) {
+var WebUser = (function(){
     
-    var 
+    var id, displayName, authToken;
     
-    config = config || {},
-    
-    publicProps = {
-    
-        id: null,
-                
-        displayName: '',
+    return {
         
-        authToken: ''
-    },
-    
-    publicMethods = {
-
+        getId: function() {
+            return id;
+        },
+        
         isGuest: function() {
             return !this.isAuthenticated();
         },
 
         isAuthenticated: function() {
-            if(this.id) {
+            if(id) {
                 return true;
             }
 
             return false;
+        },
+                
+        initialize: function(config) {
+            id = config.id;
+            displayName = config.displayName;
+            authToken = config.authToken;
         }
-    
     };
     
-    $.extend(this, publicProps, config, publicMethods);
-};
-
-WebUser.getInstace = function() {
-    return webUser;
-};
+})();

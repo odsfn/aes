@@ -71,9 +71,7 @@ var widgetWithDataSet = CommentsWidget.create({
                     created_ts: 1376577889,                   
                 }        
         ]
-    },
-    
-    webUser: webUser
+    }
 });
 
 $('#comments-box-with-data-set').html(widgetWithDataSet.render().el);

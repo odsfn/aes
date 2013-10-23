@@ -61,7 +61,7 @@ App.module('Messaging.LivePolling', function(LivePolling, App, Backbone, Marione
                 
                 // throw away own messages
                 var messages = _.filter(conversation.messages.models, function(message) { 
-                    return (message.get('user_id') != webUser.id); 
+                    return (message.get('user_id') != WebUser.getId()); 
                 });
 
                 if(messages.length > 0)

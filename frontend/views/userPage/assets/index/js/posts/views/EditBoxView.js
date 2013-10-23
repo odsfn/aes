@@ -135,7 +135,7 @@ var EditBoxView = Marionette.ItemView.extend({
             
     onRender: function() {
         //Don't show for unauthenticated
-        if(webUser.isGuest())
+        if(WebUser.isGuest())
             this.$el.hide();
     }
 });
