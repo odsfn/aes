@@ -151,6 +151,35 @@ return array(
                             )
                         )
                     )
+                ),
+            
+                'widgetFactory' => array(
+                    
+                    'class' => 'AesWidgetFactory',
+                    
+                    'widgets' => array(
+                        /**
+                         * Displays Comments Widget to the specified commentable entity.
+                         * Allows to add, edit, delete comments to owner or administrator
+                         * 
+                         * @param int $targetId Required id of the commentable entity
+                         * @param string $targetType Required name of the commentable entity ( Election ... )
+                         * 
+                         * See frontend/views/sandbox/commentsWidget.php for examples
+                         */
+                        'CommentsMarionetteWidget' => array(
+                            'widgetName' => 'CommentsWidget',
+                            'requires' => array(
+                                'depends' => array('loadmask'),
+                                'js' => array(
+                                    'EditBoxView.js',
+                                    'EditableView.js',
+                                    'aes:collections/FeedCollection.js'
+                                 )
+                            ),
+                        )
+                        
+                    )
                 )
 	),
     

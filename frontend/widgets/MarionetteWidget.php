@@ -2,9 +2,9 @@
 /**
  * Base class for Backbone.Marionette widgets. It accembles all common client 
  * scripts and packages, generates code to initialization of commonly used objects
- * on client 
+ * on client and publishes widgets' templates and css.
  * 
- * @TODO: and publishes widgets' templates and css.
+ * By demand can generate code for widget initialization and showing.
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
@@ -12,7 +12,7 @@ class MarionetteWidget extends CWidget {
     
     public $widgetName;
     
-    public $basePath;
+    public $_basePath;
 
     /**
      * Flag that indicates whether to run application in isolated mode. If true
@@ -31,15 +31,93 @@ class MarionetteWidget extends CWidget {
      */
     public $requires = array();
 
+    public $show = false;
+    
+    public $jsConstructorOptions = array();
+    
     /**
      * @var CClientScript 
      */
-    protected $clientScript;
+    protected $_clientScript;
     
+    protected static $registered = false;
+
+
     public function run() {
 
-        $this->clientScript = Yii::app()->clientScript;
+        if(!self::$registered) {
+            
+            $this->registerCommon();
 
+            $this->registerSelf();
+
+            echo file_get_contents(Yii::getPathOfAlias($this->requires['basePath']) . '/templates.html');
+            
+            self::$registered = true;
+            
+        }
+        
+        if($this->show) {
+            
+            if(isset($this->show['el'])) {  //Should be showen in specified element selector
+                $elSelector = $this->show['el'];
+            }else{                          //Prepare the tag for it
+                
+                $elSelector = '#' . $this->id;
+                
+                list($tag, $htmlOptions) = $this->show;
+                
+                if(!isset($htmlOptions['id']))
+                    $htmlOptions['id'] = $this->id;
+                else{
+                    $elSelector = '#' . $htmlOptions['id'];
+                }
+                
+                echo CHtml::tag($tag, $htmlOptions, '');
+            }
+            
+            // Register instantiation js code
+            $varName = $this->id . '_' . $this->widgetId . 'Widget';
+            
+            $jsonOpts = json_encode($this->jsConstructorOptions, JSON_FORCE_OBJECT);
+            
+            $this->clientScript->registerScript('init' . $this->widgetName .  $this->id, "
+                var $varName = {$this->widgetName}.create($jsonOpts);
+
+                $('$elSelector').html($varName.render().el);
+                $varName.triggerMethod('show');
+            ", CClientScript::POS_READY);       
+        }
+    }
+    
+    public function getWidgetId() {
+        return lcfirst(str_replace('Widget', '', $this->widgetName));
+    }
+    
+    public function getBasePath() {
+        if(!$this->_basePath) {
+            $this->_basePath = 'frontend.www.js.libs.aes.widgets.' . $this->widgetId;
+        }
+        
+        return $this->_basePath;
+    }
+    
+    /**
+     * @param string $path Path alias to the widget folder
+     */
+    public function setBasePath($path) {
+        $this->_basePath = $path;
+    }
+    
+    protected function getClientScript() {
+        if(!$this->_clientScript) {
+            $this->_clientScript = Yii::app()->clientScript;
+        }
+        
+        return $this->_clientScript;
+    }
+    
+    protected function registerCommon() {
         $this->clientScript->registerPackage('aes-common');
         if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
             $this->clientScript->registerScript('urlMangerInit', 
@@ -74,22 +152,31 @@ class MarionetteWidget extends CWidget {
         $this->clientScript->registerScript('webUserInit', 
             'var webUser = new WebUser({' . ((!$user->isGuest)?'id: ' . $user->id . ', displayName: "' . $user->username . '"' : '') . '});',
             CClientScript::POS_HEAD
-        );
-        
-        
+        );        
+    }
+    
+    protected function registerSelf() {
         $this->requires['basePath'] = $this->basePath;
         
+        if(!isset($this->requires['js'])) {
+            $this->requires['js'] = array();
+        }
+        $this->requires['js'] = array_merge($this->requires['js'], array($this->widgetName . '.js'));
+         
         $this->requires = $this->filterCommonScripts($this->requires);
+        
+        if(!isset($this->requires['css'])) {
+            $this->requires['css'] = array();
+        }
+        $this->requires['css'] = array_merge($this->requires['css'], array($this->widgetId . '.css'));
         
         $this->clientScript->packages = array_merge(
                 $this->clientScript->packages, 
                 array($this->widgetName => $this->requires)
         );
 
-        $this->clientScript->registerPackage($this->widgetName);
-        
+        $this->clientScript->registerPackage($this->widgetName);        
     }
-    
     
     protected function filterCommonScripts($requires) {
         $commonPathes = array();

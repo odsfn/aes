@@ -36,3 +36,6 @@ var WebUser = function (config) {
     $.extend(this, publicProps, config, publicMethods);
 };
 
+WebUser.getInstace = function() {
+    return webUser;
+};
