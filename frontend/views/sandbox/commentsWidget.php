@@ -1,5 +1,6 @@
 <?php 
 $this->layout = '//layouts/main';
+$election = Election::model()->findByPk(1);
 ?>
 
 <h1>Hello from sandbox!</h1>
@@ -16,11 +17,12 @@ $this->layout = '//layouts/main';
 
 $this->widget('CommentsMarionetteWidget', array(
     'jsConstructorOptions' => array(
-        'targetId' => 3,
+        'targetId' => 3,    //$election->id here
         'targetType' => 'Election',
         'autoFetch' => 0
     ),
-    'show' => array('el' => '#comments-box')
+    'show' => array('el' => '#comments-box'),
+    'roleCheckParams' => array('election' => $election)
 ));
 
 ?>
@@ -91,10 +93,11 @@ widgetWithDataSet.triggerMethod('show');
 
     $this->widget('CommentsMarionetteWidget', array(
         'jsConstructorOptions' => array(
-            'targetId' => 1,
+            'targetId' => $election->id,
             'targetType' => 'Election'
         ),
-        'show' => array('div', array('class'=>'span4'))
+        'show' => array('div', array('class'=>'span4')),
+        'roleCheckParams' => array('election' => $election)
     ));
 
     ?>    

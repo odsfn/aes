@@ -8,25 +8,14 @@ require_once(dirname(__FILE__).'/WebTestCase.php');
 
 require('./../../../common/lib/vendor/autoload.php');
 
-//Yiinitializr\Helpers\Initializer::create('./../../../', 'console', array(
-//	__DIR__ .'/../../../common/config/main.php',
-//	__DIR__ .'/../../../common/config/env.php',
-//	__DIR__ .'/../../../common/config/local.php',
-//	'main',
-//	'env',
-//	'local-test'
-//));
-
-$config = Yiinitializr\Helpers\Initializer::config('frontend', array(
+\Yii::createWebApplication(Yiinitializr\Helpers\Initializer::config('frontend', array(
 	__DIR__ .'/../../../common/config/main.php',
 	__DIR__ .'/../../../common/config/env.php',
 	__DIR__ .'/../../../common/config/local.php',
 	'main',
 	'test',
 	'local-test'
-));
-
-$app = \Yii::createWebApplication($config);
+)));
 
 // Migrate up for the test db
 $runner=new CConsoleCommandRunner();

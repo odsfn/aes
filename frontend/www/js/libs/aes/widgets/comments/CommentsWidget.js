@@ -225,12 +225,12 @@ var CommentsWidget = (function(){
         },
 
         onMouseEnter: function() {
-            if(!this._user.isGuest())
+            if(this._user.hasAccess('CommentView.showControls', this))
                 this.ui.body.addClass('hovered');
         },
 
         onMouseLeave: function() {
-            if(!this._user.isGuest())
+            if(this._user.hasAccess('CommentView.showControls', this))
                 this.ui.body.removeClass('hovered');
         },
 
@@ -257,7 +257,7 @@ var CommentsWidget = (function(){
 
         rate: function(score) {
 
-            if(this._user.isGuest())
+            if(!this._user.hasAccess('CommentView.rate', this))
                 return;
 
             if(score === 'up') {
@@ -380,6 +380,38 @@ var CommentsWidget = (function(){
         pagination: null
         
     };
+    
+    WebUser.addAccessRules({
+        
+       "EditBoxView": {
+           "show": function(view) {
+               return this.isAuthenticated();
+           }
+       },
+               
+       "EditableView": {
+           "show": function(view) {
+               return this.isAuthenticated();
+           },
+           "edit": function(view) {
+               return ( this.getId() == view.model.get('user_id') );
+           },
+           "delete": function(view) {
+               return ( this.getId() == view.model.get('user_id') || this.hasRole('commentsAdmin') );
+           }
+       },
+               
+       "CommentView": {
+           "rate": function(view) {
+               return this.isAuthenticated();
+           },
+                   
+           "showControls": function(view) {
+               return this.isAuthenticated();
+           }
+       }
+       
+    });
     
     return {
         create: function(options) {

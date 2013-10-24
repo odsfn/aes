@@ -62,4 +62,20 @@ class ArrayHelper {
         
         return $array;        
     }
+    
+    public static function modelsToArray($models) {
+        Yii::import('common.extensions.restfullyii.components.MorrayBehavior');
+        
+        $result = array();
+        
+        foreach($models as $index => $model)
+        {
+            if(!array_key_exists('MorrayBehavior', $model->behaviors()))
+                $model->attachBehavior('MorrayBehavior', new MorrayBehavior());
+            
+            $result[] = $model->toArray();
+        }
+        
+        return $result;
+    }
 }

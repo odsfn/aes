@@ -31,10 +31,52 @@ class MarionetteWidget extends CWidget {
      */
     public $requires = array();
 
+    /**
+     * Specifiez how to show this widget. It should be an array that contains 
+     * 
+     * 'el' => '.jquery-selector-of-exisiting-dom-node'
+     * 
+     * or 
+     * 
+     * array('tagName', array('htmlOptions')) to generate html code
+     * 
+     * @var array
+     */
     public $show = false;
     
+    /**
+     * This options will be converted to the json and passed to the widget's factory
+     * method as config
+     * 
+     * @var array 
+     */
     public $jsConstructorOptions = array();
     
+    /**
+     * Specifies the set of roles which this widget relyes
+     * 
+     * Key should be the name of the certain role acceptable by client widget.
+     * 
+     * Value can be the callback function which takes params from $this->roleCheckParams
+     * and returns boolean value that determines whether role in key will be added.
+     * 
+     * checkForRoles = array(
+     * 
+     *  'jsRoleName' => function($params) {
+     *      return ( $param['someModel']->someAttr == Yii::app()->user->id);
+     *  },
+     * 
+     *  'anotherRoleName', //it is same with server side role name
+     * 
+     *  'jsRoleName2' => 'serverSideRoleName'
+     * 
+     * }
+     * 
+     * @var array
+     */
+    public $checkForRoles = array();
+    
+    public $roleCheckParams;
     /**
      * @var CClientScript 
      */
@@ -52,6 +94,20 @@ class MarionetteWidget extends CWidget {
             $this->registerSelf();
 
             echo file_get_contents(Yii::getPathOfAlias($this->basePath) . '/templates.html');
+            
+            if(count($this->checkForRoles)) {
+
+                $rolesToAdd = $this->performRolesCheck($this->checkForRoles);
+
+                if(count($rolesToAdd)) {
+
+                    $rolesToAdd = json_encode($rolesToAdd);
+
+                    $this->_clientScript->registerScript('addingRolesForWidget' . $this->id, "
+                        WebUser.addRoles($rolesToAdd);
+                    ", CClientScript::POS_HEAD);
+                }
+            }            
             
             self::$registered = true;
             
@@ -197,5 +253,43 @@ class MarionetteWidget extends CWidget {
         $requires['depends'][] = $commonPack;
         
         return $requires;
-    }    
+    }
+    
+    /**
+     * @param array $roles
+     * @return array    Client side roles names
+     */
+    protected function performRolesCheck($roles) {
+
+        $rolesToAdd = array();
+
+        foreach ($roles as $roleName => $params) {
+
+            $checker = false;
+            
+            $yiiRoleName = $roleName;
+            
+            if(!is_numeric($roleName)) {
+
+                if(!is_callable($params)) {
+                    $yiiRoleName = $params;
+                } else {
+                    $checker = $params;
+                }
+
+                if($checker && call_user_func($checker, $this->roleCheckParams)) {
+                    $rolesToAdd[] = $roleName;
+                    continue;
+                }
+
+            }else
+                $roleName = $yiiRoleName = $params;
+            
+            if(Yii::app()->user->checkAccess($yiiRoleName, $this->roleCheckParams))
+                $rolesToAdd[] = $roleName;
+            
+        }   
+        
+        return $rolesToAdd;
+    }
 }

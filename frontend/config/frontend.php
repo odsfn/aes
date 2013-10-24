@@ -177,6 +177,11 @@ return array(
                                     'aes:collections/FeedCollection.js'
                                  )
                             ),
+                            'checkForRoles' => array(
+                                'commentsAdmin' => function($params) {
+                                        return ($params['election']->user_id == Yii::app()->user->getId());
+                                }
+                            )
                         )
                         
                     )

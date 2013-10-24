@@ -73,19 +73,14 @@ var EditableView = Marionette.ItemView.extend({
     },
             
     onRender: function() {
-        //Checking for available actions for current user
-        if(WebUser.isGuest()) {
+        if(!WebUser.hasAccess('EditableView.show', this))
             this.$el.hide();
-            
-        //Authenticated but post made by other user
-        } else if(WebUser.getId() != this.model.get('user_id')) {
-            //on the current user's page
-            if(true || WebUser.getId() == PostsApp.pageUserId)
-               //current user can't edit posts made by others
-               this.ui.editBtn.remove();
-            else    //on page of another user
-               this.$el.hide(); 
-        }
+        
+        if(!WebUser.hasAccess('EditableView.edit', this))
+            this.ui.editBtn.remove();
+        
+        if(!WebUser.hasAccess('EditableView.delete', this))
+            this.ui.deleteBtn.remove();
     }
 });
 
