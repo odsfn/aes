@@ -174,7 +174,9 @@ return array(
                                 'js' => array(
                                     'EditBoxView.js',
                                     'EditableView.js',
-                                    'aes:collections/FeedCollection.js'
+                                    'aes:collections/FeedCollection.js',
+                                    'aes:views/FeedCountView.js',
+                                    'aes:views/MoreView.js'
                                  )
                             ),
                             'checkForRoles' => array(

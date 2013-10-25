@@ -141,6 +141,11 @@ var CommentsWidget = (function(){
     });
     
     var Comments = FeedCollection.extend({
+        
+       comparator: function(model) {
+           return model.get('created_ts');
+       },        
+        
        model: function(attrs, options) {
            return new Comment(attrs, _.extend(options, {
                commentRates: options.collection.createCommentRates()
@@ -296,7 +301,7 @@ var CommentsWidget = (function(){
 
             return serializedData;
         }
-    });    
+    });
     
     /* 
      * Comments list with ability to add new comments for any post
@@ -346,8 +351,87 @@ var CommentsWidget = (function(){
                 }, this),
                 wait: true
             });
-        }            
+        },        
+        
+        appendHtml: function(collectionView, itemView){
+            collectionView.ui.feed.append(itemView.el);
+        }
     });    
+    
+    var Composite = Marionette.View.extend({
+        
+        initialize: function() {
+            this.children = new Backbone.ChildViewContainer();
+        },
+                
+        render: function() {
+            
+            this.isClosed = false;
+
+            this.triggerMethod("before:render", this);
+
+            this.children.each(function(view) {
+                this.$el.append(view.render().$el);
+            }, this);
+
+            this.bindUIElements();
+
+            this.triggerMethod("render", this);
+
+            return this;            
+            
+        },
+        
+        onShow: function() {
+    
+            this.children.each(function(view) {
+                view.triggerMethod('show');
+            });
+            
+        }
+        
+    });
+    
+    var LoadBtnView = MoreView.extend({
+        template: '#load-msg-btn-tpl',
+        ui:{
+            body: 'button'
+        }
+    });
+    
+    var FeedTitleView = Marionette.ItemView.extend({
+        
+        template: '#feed-title-layout-tpl',
+        
+        ui: {
+            feedCount: '.msgs-count',
+            loadBtn: 'li.load-btn-cnt',
+        },
+        
+        initialize: function(options) {
+            this.feedView = options.feedView || false;
+        },
+        
+        onRender: function() {
+            this.moreView = new LoadBtnView({
+                appendTo: this.ui.loadBtn,
+                view: this.feedView
+            });
+            
+            this.listenTo(this.moreView, 'loaded', function() {
+                this.feedView.render();
+            });
+        },
+
+        onShow: function() {
+            
+            this.feedCountView = new FeedCountView({
+                el: this.ui.feedCount,
+                feed: this.feedView.collection
+            });
+            
+        }
+    });
     
     var defaultConfig = {
 
@@ -377,7 +461,9 @@ var CommentsWidget = (function(){
             rates: null
         },
         
-        pagination: null
+        limit: 20,
+        
+        title: false
         
     };
     
@@ -433,14 +519,17 @@ var CommentsWidget = (function(){
                 targetId: config.targetId,
                 targetType: config.targetType,
                 url: config.urls.comments,
-                commentRatesUrl: config.urls.rates
+                commentRatesUrl: config.urls.rates,
             });
+            
+            if(config.limit) {
+                comments.limit = config.limit;
+            }
             
             if(config.initData.models.length > 0)   //setting up init data rows if any provided
                 comments.reset(config.initData.models, {parse: true, totalCount: config.initData.totalCount});
                 
-            
-            view = new CommentsView({
+            var commentsView = view = new CommentsView({
                 
                 template: config.templates.commentsView,
                 
@@ -455,9 +544,24 @@ var CommentsWidget = (function(){
             });
             
             if(config.autoFetch && config.initData.models.length == 0)            
-                view.once('show', function() {
-                   this.collection.fetch(); 
+                commentsView.once('show', function() {
+                   this.collection.fetch({
+                       success: function() {
+                            commentsView.render();
+                       },
+                       silent: true
+                   });
                 });
+                
+            if(config.title) {
+                var titleView = new FeedTitleView({
+                    feedView: view
+                });
+                
+                view = new Composite();
+                view.children.add(titleView);
+                view.children.add(commentsView);
+            }
             
             return view;
         }

@@ -94,7 +94,9 @@ widgetWithDataSet.triggerMethod('show');
     $this->widget('CommentsMarionetteWidget', array(
         'jsConstructorOptions' => array(
             'targetId' => $election->id,
-            'targetType' => 'Election'
+            'targetType' => 'Election',
+            'title' => true,
+            'limit' => 2
         ),
         'show' => array('div', array('class'=>'span4')),
         'roleCheckParams' => array('election' => $election)

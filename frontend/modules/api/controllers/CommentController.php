@@ -81,7 +81,7 @@ class CommentController extends RestController {
             $criteria
                 ->limit($this->restLimit)
                 ->offset($this->restOffset)
-                ->findAll(array('order' => 'created_ts ASC')),
+                ->findAll(array('order' => 'created_ts DESC')),
             (int)$totalCount
         );
     }

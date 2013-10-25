@@ -51,3 +51,29 @@
     <div class="comment-to-comment">
     </div>
 </script>
+
+
+
+
+<script type="text/template" id="feed-title-layout-tpl">
+        <div class="navbar head">
+            <div class="navbar-inner">
+                <ul class="nav">
+                    <li><a><b>Comments</b></a></li>
+                </ul>
+                
+                <ul class="nav pull-right">
+                    <li><a class="msgs-count"><img src="/img/loader-circle-16.gif" class="loader">Total count: <span>0</span></a></li>
+                    <li class="load-btn-cnt"></li>
+                </ul>
+            </div>
+        </div>  
+</script>
+
+<script type="text/template" id="load-msg-btn-tpl">
+    <button class="btn more"><%= t(view.moreMsg) %></button>
+</script>
+
+<script type="text/template" id="no-item-tpl">
+    <span><%= t('No items found') %>.</span>
+</script>
