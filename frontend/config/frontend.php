@@ -39,7 +39,7 @@ return array(
     
 	// application components
 	'components' => array(
-
+            
 		'bootstrap' => array(
 		        'class' => 'bootstrap.components.Bootstrap',
 			'responsiveCss' => true,
@@ -180,9 +180,18 @@ return array(
                                  )
                             ),
                             'checkForRoles' => array(
-                                'commentsAdmin' => function($params) {
-                                        return ($params['election']->user_id == Yii::app()->user->getId());
-                                }
+//                                'commentsAdmin' => function($params) {
+//                                        return ($params['election']->user_id == Yii::app()->user->getId());
+//                                },
+                                        
+                                'commentsAdmin' => array('commentModerator', 
+                                    function($widget) {
+                                        return array(
+                                            'targetId' => $widget->jsConstructorOptions['targetId'],
+                                            'targetType' => $widget->jsConstructorOptions['targetType']
+                                        );
+                                    }
+                                )
                             )
                         )
                         

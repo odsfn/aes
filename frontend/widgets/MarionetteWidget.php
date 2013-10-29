@@ -271,9 +271,16 @@ class MarionetteWidget extends CWidget {
             
             if(!is_numeric($roleName)) {
 
-                if(!is_callable($params)) {
+                if (is_array($params) && !is_callable($params)) {
+                    $yiiRoleName = $params[0];
+                    $roleCheckParams = call_user_func($params[1], $this);
+                }
+                
+                elseif(!is_callable($params)) {
                     $yiiRoleName = $params;
-                } else {
+                }
+                
+                else {
                     $checker = $params;
                 }
 
@@ -285,7 +292,7 @@ class MarionetteWidget extends CWidget {
             }else
                 $roleName = $yiiRoleName = $params;
             
-            if(Yii::app()->user->checkAccess($yiiRoleName, $this->roleCheckParams))
+            if(Yii::app()->user->checkAccess($yiiRoleName, $roleCheckParams))
                 $rolesToAdd[] = $roleName;
             
         }   

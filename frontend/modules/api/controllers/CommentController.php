@@ -13,6 +13,8 @@
  */
 class CommentController extends RestController {
     
+    protected $targetType;
+
     public $acceptableFilters = array(
         'plain' => 'target_id,target_type'
     );    
@@ -52,7 +54,8 @@ class CommentController extends RestController {
     {
         if(!$this->model) {
             $model = $_GET['target_type'] . 'Comment';
-
+            
+            $this->targetType = $_GET['target_type'];
             unset($_GET['target_type']);
 
             try {
@@ -91,4 +94,24 @@ class CommentController extends RestController {
         
         parent::doRestCreate($data);
     }
+    
+    public function doesUserCanControlModel($user, $rule) {
+        $id = (int)$_GET['id'];
+        
+        $model = $this->loadOneModel($id);
+        
+        $params = array(
+            'targetType'    =>  $this->targetType,
+            'targetId'      =>  $model->target_id,
+            'comment'       =>  $model
+        );
+        
+        if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('updateComment', $params) )
+            return true;
+        
+        if( $this->action->id == 'restDelete' && Yii::app()->user->checkAccess('deleteComment', $params) )
+            return true;
+        
+        return false;
+    }    
 }

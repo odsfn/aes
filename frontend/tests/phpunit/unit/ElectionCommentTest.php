@@ -33,7 +33,7 @@ class ElectionCommentTest extends CDbTestCase {
             $result[$index] = $model->toArray();
         }        
         
-        $this->assertCount(3, $result);
+        $this->assertCount(5, $result);
         
         $this->assertEquals('Vasiliy Pedak', $result[0]['user']['displayName']);
     }

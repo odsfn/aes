@@ -35,6 +35,12 @@ return array(
 	),
 	'components' => array(
 	    
+                'authManager'=>array(
+                    'class'=>'CDbAuthManager',
+                    'connectionID'=>'db',
+                    'defaultRoles' => array('commentReader', 'commentor')
+                ),            
+            
 		'db'=>array(
 //		    Provide this setting in the config/local.php or config/env/dev.php or config/env/prod.php
 //		    

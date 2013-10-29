@@ -5,6 +5,30 @@ $election = Election::model()->findByPk(1);
 
 <h1>Hello from sandbox!</h1>
 
+<hr>
+
+<i>With fetching set of models</i>
+
+<p>Lorem ipsum dolor. And comments to it below.</p>
+
+<div class="row-fluid">
+    <?php
+
+    $this->widget('CommentsMarionetteWidget', array(
+        'jsConstructorOptions' => array(
+            'targetId' => $election->id,
+            'targetType' => 'Election',
+            'title' => true,
+            'limit' => 2
+        ),
+        'show' => array('div', array('class'=>'span4'))
+    ));
+
+    ?>    
+</div>
+
+<hr>
+
 <i>Empty comments</i>
 
 <p>Lorem ipsum dolor. And comments to it below.</p>
@@ -81,26 +105,3 @@ widgetWithDataSet.triggerMethod('show');
 ", CClientScript::POS_READY);
 
 ?>
-
-<hr>
-
-<i>With fetching set of models</i>
-
-<p>Lorem ipsum dolor. And comments to it below.</p>
-
-<div class="row-fluid">
-    <?php
-
-    $this->widget('CommentsMarionetteWidget', array(
-        'jsConstructorOptions' => array(
-            'targetId' => $election->id,
-            'targetType' => 'Election',
-            'title' => true,
-            'limit' => 2
-        ),
-        'show' => array('div', array('class'=>'span4')),
-        'roleCheckParams' => array('election' => $election)
-    ));
-
-    ?>    
-</div>

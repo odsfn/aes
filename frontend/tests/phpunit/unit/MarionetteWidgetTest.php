@@ -66,4 +66,49 @@ class MarionetteWidgetTest extends PHPUnit_Framework_TestCase {
         
     }
     
+    public function testPerformRoleCheckAndConvertionToJsRolePassingParamsToRoleChecker() {
+        
+        $webUserMock = $this->getMock('CWebUser', array('checkAccess', 'init', 'getId'));
+        
+        $webUserMock->expects($this->at(1))
+            ->method('checkAccess')
+            ->with('commentModerator', array(
+                    'targetId'=>1, 
+                    'targetType'=>'Election'
+                )
+            )
+            ->will($this->returnValue(true));
+        
+        $webUserMock->expects($this->any())
+                ->method('getId')
+                ->will($this->returnValue(1));
+        
+        Yii::app()->setComponent('user', $webUserMock, false);
+        
+        $widget = new MarionetteWidget;
+        
+        $widget->jsConstructorOptions = array(
+            'targetId'=>1, 
+            'targetType'=>'Election'    
+        );
+        
+        $widget->checkForRoles = array(
+            'commentsAdmin' => array('commentModerator', 
+                                    function($widget) {
+                                        return array(
+                                            'targetId' => $widget->jsConstructorOptions['targetId'],
+                                            'targetType' => $widget->jsConstructorOptions['targetType']
+                                        );
+                                    }
+            )
+        );
+        
+        $class = new ReflectionClass('MarionetteWidget');
+        $method = $class->getMethod('performRolesCheck');
+        $method->setAccessible(true);
+        
+        $result = $method->invokeArgs($widget, array($widget->checkForRoles));
+        
+        $this->assertEquals(array('commentsAdmin'), $result);       
+    }
 }
