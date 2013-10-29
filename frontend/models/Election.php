@@ -56,6 +56,14 @@ class Election extends CActiveRecord
 
     public $uploaded_file = null;
 
+    public $_text_status = null;
+
+    public function getText_status() {
+        if ($this->_text_status === null)
+            $this->_text_status = Yii::t('aes',self::$statuses[$this->status]);
+        return $this->_text_status;
+    }
+
     /**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -94,9 +102,12 @@ class Election extends CActiveRecord
             array('status', 'in', 'range'=>array(0,1,2,3,4)),
             array('uploaded_file', 'file', 'types' => 'jpg,jpeg,jpe,png,gif', 'maxSize' => 5000000, 'allowEmpty'=>true),
 
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
 			array('id, user_id, name, status, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'safe', 'on'=>'search'),
+
+            array('name, status', 'safe', 'on'=>'search'),
+
+            array('id, name, status, text_status', 'safe', 'on' => 'rest'),
+
 		);
 	}
 
