@@ -55,10 +55,36 @@ class ElectionController extends FrontController
                     $image->resize(Election::IMAGE_WIDTH, Election::IMAGE_HEIGHT)->quality(Election::IMAGE_QUALITY);
                     $image->save(Yii::app()->basePath . Election::IMAGE_SAVE_PATH.$model->id.'.jpg');
                 }
+                
+                $this->assignRoles($model);
+                
                 $this->redirect('/election');
             }
         }
 
         $this->render('create',array('model'=>$model));
+    }
+    
+    /**
+     * Assigns roles on creatrion of Election
+     * 
+     * @param Election $model
+     */
+    protected function assignRoles($model) {
+        
+        $auth = Yii::app()->authManager;
+        
+        $role = $auth->createRole(($uniqRoleName = 'Election_' . $model->id . '_commentModerator'));
+        $role->addChild('commentModerator');
+        
+        //Allow to the creator of election moderate comments
+        Yii::app()->authManager->assign($uniqRoleName, $model->user_id, 
+                'return ($data[\'targetType\']==$params[\'targetType\'] && $data[\'targetId\']==$params[\'targetId\']);',
+                array(
+                    'targetType' => 'Election',
+                    'targetId'   => $model->id
+                    )
+        );
+        
     }
 }
