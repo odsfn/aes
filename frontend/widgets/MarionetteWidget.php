@@ -68,7 +68,11 @@ class MarionetteWidget extends CWidget {
      * 
      *  'anotherRoleName', //it is same with server side role name
      * 
-     *  'jsRoleName2' => 'serverSideRoleName'
+     *  'jsRoleName2' => 'serverSideRoleName' // for serverSideRoleName checkAccess will be performed
+     *                                        // but jsRoleName2 will be registered on cliend side if
+     *                                        // access check will be true
+     * 
+     *  'someRoleName' => array('serverSideSomeRoleName', function($widget) { return ( $paramsForCheckAccess = array($widget->someAttr ... }
      * 
      * }
      * 

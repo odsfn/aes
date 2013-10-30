@@ -11,8 +11,6 @@ var MoreView = Marionette.ItemView.extend({
         'click': 'onClick'
     },
     
-    
-    
     ui: {
         body: 'div.span12'
     },

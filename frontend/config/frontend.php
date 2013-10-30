@@ -179,11 +179,7 @@ return array(
                                     'aes:views/MoreView.js'
                                  )
                             ),
-                            'checkForRoles' => array(
-//                                'commentsAdmin' => function($params) {
-//                                        return ($params['election']->user_id == Yii::app()->user->getId());
-//                                },
-                                        
+                            'checkForRoles' => array(                                        
                                 'commentsAdmin' => array('commentModerator', 
                                     function($widget) {
                                         return array(
