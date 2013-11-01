@@ -37,7 +37,7 @@ class RateController extends RestController {
             try {
                 $this->model = new $model;
             } catch (Exception $e) {
-                throw new Exception('You should provide existing model name in "target_type" request attribute', null, $e);
+                throw new Exception('You should provide existing rateable entity name in "target_type" request attribute', null, $e);
             }
         }
         

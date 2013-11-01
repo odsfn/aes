@@ -278,7 +278,11 @@ var RatesWidget = (function(){
             
             if(config.autoFetch && config.initData.models.length == 0)            
                 view.once('show', function() {
-                   view.ratesCollection.fetch();
+                   view.ratesCollection.fetch({
+                       success: function() {
+                           view.render();
+                       }
+                   });
                 });          
                
             return view;
