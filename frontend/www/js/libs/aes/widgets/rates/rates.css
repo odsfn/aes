@@ -1,0 +1,13 @@
+.rates span {
+    margin-left: 7px;
+    opacity: 0.25;
+}
+
+.rates.active span {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.rates span.chosen {
+    font-weight: bold;
+}

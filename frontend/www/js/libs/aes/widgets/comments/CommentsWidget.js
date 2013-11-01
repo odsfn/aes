@@ -5,73 +5,6 @@
  */
 var CommentsWidget = (function(){
 
-    var CommentRate = Backbone.Model.extend({
-        
-        defaults: {
-            score: null,
-            target_id: null,
-            user_id: null,
-            createdTs: null
-        },
-                
-        /**
-         * @TODO: implement this
-         */        
-        parse: function(rawData) {
-            
-            rawData = Backbone.Model.prototype.parse.apply(this, arguments)
-            
-            rawData.created_ts = parseInt(rawData.created_ts) * 1000;
-            
-            var toInt = ['id', 'score', 'target_id', 'user_id'];
-            
-            for(var i = 0; i < toInt.length; i++) {
-                rawData[toInt[i]] = parseInt(rawData[toInt[i]]);
-            }
-            
-            return rawData;
-        }                
-    });
-    
-    var CommentRates = Backbone.Collection.extend({
-
-        target_id: null,
-
-        model: CommentRate,
-
-        initialize: function(models, options) {
-            var options = options || {};
-
-            this.url = options.url;
-
-            _.defaults(options, {
-                target_id: null
-            });
-
-            _.extend(this, _.pick(_.keys(options)));
-        },
-
-        getLikes: function() {
-            return this.where({score: 1}).length;
-        },
-
-        getDislikes: function() {
-            return this.where({score: -1}).length;
-        },
-
-        addRate: function(user_id, score) {
-            return this.create({
-               target_id: this.target_id,
-               user_id: user_id,
-               score: score
-            });
-        },        
-
-        getRate: function(user_id) {
-            return this.findWhere({user_id: user_id});
-        }
-    });    
-    
     var Comment = Backbone.Model.extend({
         
         defaults: {
@@ -85,7 +18,7 @@ var CommentsWidget = (function(){
             content: '',
             likes: null,
             dislikes: null,
-            comments: []
+            rates: []
         },
 
         initialize: function(attrs, options) {
@@ -153,7 +86,8 @@ var CommentsWidget = (function(){
        },
                
        createCommentRates: function() {
-            var commentRates = new CommentRates([], {
+            
+            var commentRates = new Rates([], {
                 url: this.commentRatesUrl
             });
             
@@ -192,41 +126,32 @@ var CommentsWidget = (function(){
             this.strategies = {
                 editable: new EditableView({view: this})
             };
+            
+            this.ratesView = new RatesWidget.create({
+                
+                targetId: this.model.id,
+                
+                targetType: 'ElectionComment',
+                
+                urls: {
+                    rates: options.ratesUrl
+                },
+  
+                ratesCollection: this.model.rates
+                
+            });
 
-            this.listenTo(this.model.rates, 'add', _.bind(function(rate, collection){
-                if(rate.get('score') == 1) {
-                    this.ui.ratePlus.addClass('chosen');
-                }
-                else
-                    this.ui.rateMinus.addClass('chosen');
-
-                this.updateRates();
-            }, this));
-
-            this.listenTo(this.model.rates, 'remove', _.bind(function(rate, collection){
-                if(rate.get('score') == 1) {
-                    this.ui.ratePlus.removeClass('chosen');
-                }
-                else
-                    this.ui.rateMinus.removeClass('chosen');
-
-                this.updateRates();
-            }, this));
         },
 
         ui: {
             rates: '.post-rate',
             body: '.post-body',
-            comments: 'div.comments', 
-            ratePlus: '.post-rate:first span.icon-thumbs-up',
-            rateMinus: '.post-rate:first span.icon-thumbs-down'
+            comments: 'div.comments'
         },
 
         events: {
             'mouseenter div.post-body:first': 'onMouseEnter',
-            'mouseleave div.post-body:first': 'onMouseLeave',
-            'click .post-rate:first span.icon-thumbs-up': 'onRatePlus',
-            'click .post-rate:first span.icon-thumbs-down': 'onRateMinus'
+            'mouseleave div.post-body:first': 'onMouseLeave'
         },
 
         onMouseEnter: function() {
@@ -239,67 +164,12 @@ var CommentsWidget = (function(){
                 this.ui.body.removeClass('hovered');
         },
 
-        onRatePlus: function() {
-            this.rate('up');
-        },
-
-        onRateMinus: function() {
-            this.rate('down');
-        },
-
         onRender: function() {
 
-            var rate;
-            //Mark user's vote
-            if(!this._user.isGuest() && (rate = this.model.rates.getRate(this._user.getId()))) {
-                 if(rate.get('score') == 1) {
-                     this.ui.ratePlus.addClass('chosen');
-                 }else{
-                     this.ui.rateMinus.addClass('chosen');
-                 }
-            }
-        },
-
-        rate: function(score) {
-
-            if(!this._user.hasAccess('CommentView.rate', this))
-                return;
-
-            if(score === 'up') {
-                score = 1;
-            }else{
-                score = -1;
-            }
-
-            var 
-                lastRate = this.model.rates.getRate(this._user.getId()),
-                lastRateScore = null;
-
-            if(lastRate) {
-                lastRate.destroy();
-                lastRateScore = lastRate.get('score');
-            }
-
-            if(lastRateScore != score) {    
-                this.model.rates.addRate(this._user.getId(), score);
-            }       
-
-        },
-
-        updateRates: function() {
-            this.ui.ratePlus.html(this.model.rates.getLikes());
-            this.ui.rateMinus.html(this.model.rates.getDislikes());
-        },
-
-        serializeData: function() {
-            var serializedData = Marionette.ItemView.prototype.serializeData.apply(this, arguments);
-
-            _.extend(serializedData, {
-                likes: this.model.rates.getLikes(),
-                dislikes: this.model.rates.getDislikes()
-            });
-
-            return serializedData;
+             this.ui.rates.html(this.ratesView.render().el);
+             this.ratesView.delegateEvents();
+             this.ratesView.bindEventsToTarget(this.$el);
+             
         }
     });
     
@@ -488,10 +358,6 @@ var CommentsWidget = (function(){
        },
                
        "CommentView": {
-           "rate": function(view) {
-               return this.isAuthenticated();
-           },
-                   
            "showControls": function(view) {
                return this.isAuthenticated();
            }
@@ -537,7 +403,7 @@ var CommentsWidget = (function(){
                 
                 itemViewOptions: {
                     template: config.templates.commentView,
-                    
+                    ratesUrl: config.urls.rates,
                     user: config.webUser
                 }
                 

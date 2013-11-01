@@ -179,6 +179,9 @@ return array(
                                     'aes:views/MoreView.js'
                                  )
                             ),
+                            'dependentWidgets' => array(
+                                'RatesMarionetteWidget'
+                            ),
                             'checkForRoles' => array(                                        
                                 'commentsAdmin' => array('commentModerator', 
                                     function($widget) {
@@ -188,8 +191,12 @@ return array(
                                         );
                                     }
                                 )
-                            )
-                        )
+                            ),
+                         ),
+                                        
+                        'RatesMarionetteWidget' => array(
+                            'widgetName' => 'RatesWidget'                                        
+                        ),
                         
                     )
                 )

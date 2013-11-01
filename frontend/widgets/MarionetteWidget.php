@@ -81,41 +81,19 @@ class MarionetteWidget extends CWidget {
     public $checkForRoles = array();
     
     public $roleCheckParams;
+    
+    public $dependentWidgets = array();
     /**
      * @var CClientScript 
      */
     protected $_clientScript;
     
-    protected static $registered = false;
+    protected static $registered = array();
 
 
     public function run() {
-
-        if(!self::$registered) {
-            
-            $this->registerCommon();
-
-            $this->registerSelf();
-
-            echo file_get_contents(Yii::getPathOfAlias($this->basePath) . '/templates.html');
-            
-            if(count($this->checkForRoles)) {
-
-                $rolesToAdd = $this->performRolesCheck($this->checkForRoles);
-
-                if(count($rolesToAdd)) {
-
-                    $rolesToAdd = json_encode($rolesToAdd);
-
-                    $this->_clientScript->registerScript('addingRolesForWidget' . $this->id, "
-                        WebUser.addRoles($rolesToAdd);
-                    ", CClientScript::POS_HEAD);
-                }
-            }            
-            
-            self::$registered = true;
-            
-        }
+        
+        $this->register();
         
         if($this->show) {
             
@@ -167,6 +145,52 @@ class MarionetteWidget extends CWidget {
      */
     public function setBasePath($path) {
         $this->_basePath = $path;
+    }
+    
+    public function isRegistered() {
+        return self::checkIsRegistered($this->widgetName);
+    }
+
+    public static function checkIsRegistered($widgetName) {
+        return in_array($widgetName, self::$registered);
+    }
+
+    public function register() {
+        
+        if(!$this->isRegistered()) {
+            
+            $this->registerCommon();
+            
+            $this->registerDependentWidgets();
+
+            $this->registerSelf();
+
+            echo file_get_contents(Yii::getPathOfAlias($this->basePath) . '/templates.html');
+            
+            if(count($this->checkForRoles)) {
+
+                $rolesToAdd = $this->performRolesCheck($this->checkForRoles);
+
+                if(count($rolesToAdd)) {
+
+                    $rolesToAdd = json_encode($rolesToAdd);
+
+                    $this->_clientScript->registerScript('addingRolesForWidget' . $this->id, "
+                        WebUser.addRoles($rolesToAdd);
+                    ", CClientScript::POS_HEAD);
+                }
+            }            
+            
+            self::$registered[] = $this->widgetName;
+            
+        }        
+    }
+    
+    protected function registerDependentWidgets() {
+        foreach ($this->dependentWidgets as $widget) {
+            $w = $this->createWidget($widget);
+            $w->register();
+        }
     }
     
     protected function getClientScript() {

@@ -17,10 +17,6 @@
     margin-right: 7px;
 }
 
-.post .post-rate span {
-    margin-left: 7px;
-}
-
 .post .media-body .post-after {
     height: 20px;
 }
@@ -33,24 +29,8 @@
     display: none;
 }
 
-.post .post-rate {
-    opacity: 0.25;
-}
-
 .post .post-body.hovered .controls{
     display: inline;
-}
-
-.post .post-body.hovered .post-rate{
-    opacity: 1;
-}
-
-.post-body.hovered .post-rate span {
-    cursor: pointer;
-}
-
-.post-rate span.chosen {
-    font-weight: bold;
 }
 
 .post .comments > .media:first-child, 
