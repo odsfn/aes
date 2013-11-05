@@ -7,11 +7,11 @@
  */
 abstract class Commentable extends CActiveRecord implements iCommentable {
     
-    public function doesUnassignedCanComment() {
+    public function canUnassignedComment() {
         return true;
     }
     
-    public function doesUnassignedCanRead() {
+    public function canUnassignedRead() {
         return true;
     }
     

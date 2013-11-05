@@ -183,7 +183,7 @@ return array(
                                 'RatesMarionetteWidget'
                             ),
                             'checkForRoles' => array(                                        
-                                'commentsAdmin' => array('commentModerator', 
+                                'commentsAdmin' => array('election_commentModerator', 
                                     function($widget) {
                                         return array(
                                             'targetId' => $widget->jsConstructorOptions['targetId'],

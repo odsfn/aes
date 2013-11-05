@@ -131,7 +131,4 @@ class ElectionAccessCheckTest extends CDbTestCase {
         // user ??? is creator ?
     }
     
-    public function testAllowAllReadComments() {
-        $this->markTestIncomplete();
-    }
 }

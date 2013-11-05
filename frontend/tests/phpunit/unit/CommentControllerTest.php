@@ -97,6 +97,128 @@ class CommentControllerTest extends CDbTestCase {
         $this->assertTrue($this->authenticate('truvazia@gmail.com', 'qwerty'));
     }    
     
+    public function testUnauthorizedCanRead() {
+        $result = $this->xhr('api/Election_comment?filter[target_id]=1', '', 'GET');
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+        
+        $result = $this->xhr('api/Election_comment/1?filter[target_id]=1', '', 'GET');
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+    }
+
+    public function testUnauthorizedCanReadWithUnassignedLevelRead() {
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_READ;
+        $election1->save();
+        
+        $result = $this->xhr('api/Election_comment?filter[target_id]=1', '', 'GET');
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+        
+        $result = $this->xhr('api/Election_comment/1?filter[target_id]=1', '', 'GET');
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+    }
+    
+    public function testUnauthorizedCanReadWithUnassignedLevelCreate() {
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_COMMENT;
+        $election1->save();
+        
+        $result = $this->xhr('api/Election_comment?filter[target_id]=1', '', 'GET');
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+        
+        $result = $this->xhr('api/Election_comment/1?filter[target_id]=1', '', 'GET');
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+    }    
+    
+    public function testUnauthorizedCantReadWithUnassignedLevelNone() {
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_NONE;
+        $election1->save();
+        
+        $result = $this->xhr('api/Election_comment?filter[target_id]=1', '', 'GET');
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 3\d\d~m', $result));
+        
+        $result = $this->xhr('api/Election_comment/1?filter[target_id]=1', '', 'GET');
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 3\d\d~m', $result));
+    }
+
+    public function testAuthorizedUnassignedCanReadWithUnassignedLevelRead() {
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_READ;
+        $election1->save();
+        
+        $this->authenticate('truvazia@gmail.com', 'qwerty');
+        
+        $result = $this->xhr('api/Election_comment?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+        
+        $result = $this->xhr('api/Election_comment/1?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+    }
+
+    public function testAuthorizedUnassignedCantReadWithUnassignedLevelNone() {
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_NONE;
+        $election1->save();
+        
+        $this->authenticate('truvazia@gmail.com', 'qwerty');
+        
+        $result = $this->xhr('api/Election_comment?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.\d 403~m', $result));
+        
+        $result = $this->xhr('api/Election_comment/1?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.\d 403~m', $result));        
+    }
+    
+    public function testAuthorizedAssignedCanReadWithUnassignedLevelNone() {
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_NONE;
+        $election1->save();
+        
+        $this->authenticate('truvazia@gmail.com', 'qwerty');
+        
+        $election1->assignRoleToUser(1, 'election_participant');
+        
+        $result = $this->xhr('api/Election_comment?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+        
+        $result = $this->xhr('api/Election_comment/1?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));        
+    }
+
     public function testUnauthorizedCantCreate() {
         $result = $this->xhr('api/Election_comment', '{"target_id":"1","user_id":null,"user":{"user_id":null,"photo":"","displayName":""},"content":"Comment n+4","likes":null,"dislikes":null,"comments":[]}');
         
@@ -132,6 +254,50 @@ class CommentControllerTest extends CDbTestCase {
         $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
         
         $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));   
+    }
+    
+    public function testAuthorizedUnassignedCantCreateWithUnassignedLevelRead() {
+        
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_READ;
+        $election1->save();
+        
+        $this->authenticate('truvazia@gmail.com', 'qwerty');
+        
+        $result = $this->xhr('api/Election_comment', '{"target_id":"1","user_id":null,"user":{"user_id":null,"photo":"","displayName":""},"content":"Comment n+4","likes":null,"dislikes":null,"comments":[]}', 'POST', true);        
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.\d 403~m', $result)); 
+    }
+
+    public function testAuthorizedUnassignedCantCreateWithUnassignedLevelNone() {
+        
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_NONE;
+        $election1->save();
+        
+        $this->authenticate('truvazia@gmail.com', 'qwerty');
+        
+        $result = $this->xhr('api/Election_comment', '{"target_id":"1","user_id":null,"user":{"user_id":null,"photo":"","displayName":""},"content":"Comment n+4","likes":null,"dislikes":null,"comments":[]}', 'POST', true);        
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.\d 403~m', $result)); 
+    }
+    
+    public function testAuthorizedAssignedCanCreateWithUnassignedLevelNotCreate() {
+        
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_READ;
+        $election1->save();
+        
+        $election1->assignRoleToUser(1, 'election_participant');
+        
+        $this->authenticate('truvazia@gmail.com', 'qwerty');
+        
+        $result = $this->xhr('api/Election_comment', '{"target_id":"1","user_id":null,"user":{"user_id":null,"photo":"","displayName":""},"content":"Comment n+4","likes":null,"dislikes":null,"comments":[]}', 'POST', true);        
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result)); 
+        
     }
     
     public function testAuthorizedCanUpdateOwn() {
@@ -224,5 +390,72 @@ class CommentControllerTest extends CDbTestCase {
         
         $this->assertTrue((bool)preg_match('~HTTP/1\.\d 403~m', $result));       
     }
+
+    public function testAdminCanRead() {
+        
+        $this->authenticate('vptester@mail.ru', 'qwerty');
+        
+        $result = $this->xhr('api/Election_comment?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+        
+        $result = $this->xhr('api/Election_comment/1?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+    }    
     
+    public function testAdminCanReadWithUnassignedLevelNone() {
+        
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_NONE;
+        $election1->save();
+        
+        $this->authenticate('vptester@mail.ru', 'qwerty');
+        
+        $result = $this->xhr('api/Election_comment?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+        
+        $result = $this->xhr('api/Election_comment/1?filter[target_id]=1', '', 'GET', true);
+        
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+    }
+    
+    public function testAdminCanCreate() {
+        
+        $this->authenticate('vptester@mail.ru', 'qwerty');
+        
+        $result = $this->xhr('api/Election_comment', '{"target_id":"1","user_id":null,"user":{"user_id":null,"photo":"","displayName":""},"content":"Comment n+4","likes":null,"dislikes":null,"comments":[]}', 'POST', true);
+        
+        //assert created
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+        
+    }    
+
+    public function testAdminCanCreateWithUnassignedLevelNone() {
+                
+        $election1 = Election::model()->findByPk(1);
+        $election1->unassigned_access_level = Election::UNASSIGNED_CAN_NONE;
+        $election1->save();
+        
+        $this->authenticate('vptester@mail.ru', 'qwerty');
+        
+        $result = $this->xhr('api/Election_comment', '{"target_id":"1","user_id":null,"user":{"user_id":null,"photo":"","displayName":""},"content":"Comment n+4","likes":null,"dislikes":null,"comments":[]}', 'POST', true);
+        
+        //assert created
+        $this->assertTrue((bool)preg_match('~HTTP/1\.1 2\d\d~m', $result));
+        
+        $this->assertTrue((bool)preg_match('~"success":\s?"?true"?~m', $result));
+    }
+        
 }

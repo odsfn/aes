@@ -6,9 +6,14 @@
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
 interface iCommentable {
+    /**
+     * @return bool 
+     */
+    public function canUnassignedComment();
     
-    public function doesUnassignedCanComment();
-    
-    public function doesUnassignedCanRead();
+    /**
+     * @return bool
+     */
+    public function canUnassignedRead();
     
 }

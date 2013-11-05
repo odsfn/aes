@@ -99,24 +99,16 @@ class CommentController extends RestController {
 	return array(
             array('allow',
                 'actions' => array('restList', 'restView', 'restCreate', 'restDelete', 'restUpdate'),
-                'expression' => array($this, 'doesUserCanControlModel')
+                'expression' => array($this, 'checkAccess')
             ),
 	    array('deny', 
 		'actions' => array('restList', 'restView', 'restCreate', 'restDelete', 'restUpdate'),
 		'users' => array('*')
 	    )
 	);
-    }    
-    
-    /**
-     * @TODO move access check to the controllers filters
-     * 
-     * @param type $user
-     * @param type $rule
-     * @return boolean
-     * @throws Exception
-     */
-    public function doesUserCanControlModel($user, $rule) {
+    }
+
+    public function checkAccess() {
         $id = (int)$_GET['id'];
         
         $model = $this->loadOneModel($id);
@@ -129,6 +121,10 @@ class CommentController extends RestController {
             $target = $model->target;
         else {  //model was not initialized because check is performing during createComment
             $data = $this->data();
+            
+            if(!$data) 
+                $data = $_GET['filter'];
+            
             $targetClass = $this->targetType;
             $target = new $targetClass;
             $target = $target->findByPk($data['target_id']);
@@ -141,10 +137,10 @@ class CommentController extends RestController {
         
         $disabledRoles = array();
         
-        if(!$target->doesUnassignedCanComment())
+        if(!$target->canUnassignedComment())
             $disabledRoles[] = 'commentor';
         
-        if(!$target->doesUnassignedCanRead())
+        if(!$target->canUnassignedRead())
             $disabledRoles[] = 'commentReader';
         
         $params['disabledRoles'] = $disabledRoles;

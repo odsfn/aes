@@ -6,7 +6,7 @@ Yii::import('common.components.ObjectAuthAssignment');
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
-class ObjectAuthAssignmentBehavior extends CBehavior implements iObjectAuthAssignment {
+class ObjectAuthAssignmentBehavior extends CActiveRecordBehavior implements iObjectAuthAssignment {
     
     /**
      * @var ObjectAuthAssignment
@@ -26,19 +26,10 @@ class ObjectAuthAssignmentBehavior extends CBehavior implements iObjectAuthAssig
         if(!$this->objectType)
             $this->objectType = get_class($this->owner);
         
-        if(!$this->objectId && $this->owner instanceof CActiveRecord) {
-            
-            $idAttr = $this->owner->getMetaData()->tableSchema->primaryKey;
-            
-            if(is_array($idAttr))
-                throw new Exception ('Compound primary keys does not supported by ObjectAuthAssignment');
-
-                $this->objectId = $this->owner->{$idAttr};
-        } else 
-            throw new Exception ('You should specify the objectId property or attach this behaviour to a CActiveRecord instance');
+        if(!$this->objectId)
+            $this->setObjectId($this->getObjectIdFromOwner());
         
         $this->_oaa->objectType = $this->objectType;
-        $this->_oaa->objectId = $this->objectId;
     }
 
     public function detach($owner) {
@@ -59,5 +50,26 @@ class ObjectAuthAssignmentBehavior extends CBehavior implements iObjectAuthAssig
     
     public function revokeRoleFromUser($userId, $roleName) {
         return $this->_oaa->revokeRoleFromUser($userId, $roleName);
+    }
+    
+    public function afterSave($event) {
+        if(!$this->objectId)
+            $this->setObjectId($this->getObjectIdFromOwner());
+    }
+    
+    protected function getObjectIdFromOwner() {
+        
+        $idAttr = $this->owner->getMetaData()->tableSchema->primaryKey;
+
+        if(is_array($idAttr))
+            throw new Exception ('Compound primary keys does not supported by ObjectAuthAssignment');
+
+        return $this->owner->{$idAttr};
+
+    }
+    
+    public function setObjectId($objectId) {
+        $this->objectId = $objectId;
+        $this->_oaa->objectId = $this->objectId;
     }
 }
