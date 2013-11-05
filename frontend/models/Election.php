@@ -56,12 +56,20 @@ class Election extends CActiveRecord
 
     public $uploaded_file = null;
 
-    public $_text_status = null;
+    private $_text_status = null;
 
     public function getText_status() {
         if ($this->_text_status === null)
             $this->_text_status = Yii::t('aes',self::$statuses[$this->status]);
         return $this->_text_status;
+    }
+
+    private $_have_pic = null;
+
+    public function getHave_pic() {
+        if ($this->_have_pic === null)
+            $this->_have_pic = (int)is_file(Yii::app()->basePath.'/www/uploads/elections/'.$this->id.'.jpg');
+        return $this->_have_pic;
     }
 
     /**
@@ -106,7 +114,7 @@ class Election extends CActiveRecord
 
             array('name, status', 'safe', 'on'=>'search'),
 
-            array('id, name, status, text_status', 'safe', 'on' => 'rest'),
+            array('id, name, status, text_status, have_pic', 'safe', 'on' => 'rest'),
 
 		);
 	}
