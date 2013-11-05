@@ -19,7 +19,7 @@
  * The followings are the available model relations:
  * @property User $user
  */
-class Election extends CActiveRecord
+class Election extends Commentable
 {
     const IMAGE_WIDTH = 400;
     const IMAGE_HEIGHT = 400;
@@ -171,4 +171,19 @@ class Election extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+        
+        /**
+         * @TODO: Implement methods of iCommentable depending on models attributes 
+         * 
+         * @return boolean
+         *
+        public function doesUnassignedCanComment() {
+            return true;
+        }
+        
+        public function doesUnassignedCanRead() {
+            return true;
+        }
+         *
+         */
 }

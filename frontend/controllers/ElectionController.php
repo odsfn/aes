@@ -72,19 +72,7 @@ class ElectionController extends FrontController
      */
     protected function assignRoles($model) {
         
-        $auth = Yii::app()->authManager;
-        
-        $role = $auth->createRole(($uniqRoleName = 'Election_' . $model->id . '_commentModerator'));
-        $role->addChild('commentModerator');
-        
-        //Allow to the creator of election moderate comments
-        Yii::app()->authManager->assign($uniqRoleName, $model->user_id, 
-                'return ($data[\'targetType\']==$params[\'targetType\'] && $data[\'targetId\']==$params[\'targetId\']);',
-                array(
-                    'targetType' => 'Election',
-                    'targetId'   => $model->id
-                    )
-        );
+        $model->assignRoleToUser($model->user_id, 'election_commentModerator');
         
     }
 }

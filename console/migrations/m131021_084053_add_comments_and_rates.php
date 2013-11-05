@@ -1,7 +1,7 @@
 <?php
 
-Yii::import('console.components.RateableDbManagerHelper');
-Yii::import('console.components.CommentableDbManagerHelper');
+Yii::import('console.helpers.RateableDbManagerHelper');
+Yii::import('console.helpers.CommentableDbManagerHelper');
 
 class m131021_084053_add_comments_and_rates extends EDbMigration
 {

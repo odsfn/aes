@@ -11,12 +11,10 @@ class CommentControllerTest extends CDbTestCase {
     
     protected $fixtures = array(
         'user' => 'userAccount.models.UserAccount',
-        'user_identity' => 'userAccount.models.Identity',
         'user_profile' => 'userAccount.models.Profile',
-        'election' => 'Election',
         'election_comment' => 'ElectionComment',
-        'AuthItem'         => ':AuthItem',
-        'AuthItemChild'    => ':AuthItemChild',
+        'election' => 'Election',
+        'election_auth_assignment' => ':election_auth_assignment',
         'AuthAssignment'   => ':AuthAssignment'
     );
 
@@ -124,7 +122,6 @@ class CommentControllerTest extends CDbTestCase {
         $this->assertTrue((bool)preg_match('~HTTP/1\.1 3\d\d~m', $result));
     }
 
-
     public function testAuthorizedCanCreate() {
         
         $this->authenticate('truvazia@gmail.com', 'qwerty');
@@ -228,90 +225,4 @@ class CommentControllerTest extends CDbTestCase {
         $this->assertTrue((bool)preg_match('~HTTP/1\.\d 403~m', $result));       
     }
     
-    public function testCheckAccess() {
-        
-        //Moderator ( user 3 ) can moderate comments of Election 1
-        $result = Yii::app()->getAuthManager()->checkAccess('Election_1_commentModerator',3,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertTrue($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('commentModerator',3,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertTrue($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',3,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertTrue($result);
-        
-        //Moderator ( user 4 ) also can moderate comments of Election 1
-        $result = Yii::app()->getAuthManager()->checkAccess('Election_1_commentModerator',4,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertTrue($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('commentModerator',4,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertTrue($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',4,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertTrue($result);        
-        
-        //Moderator ( user 1 ) can moderate comments of Election 2
-        $result = Yii::app()->getAuthManager()->checkAccess('Election_2_commentModerator',1,array('targetType' => 'Election', 'targetId' => 2));
-        $this->assertTrue($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('commentModerator',1,array('targetType' => 'Election', 'targetId' => 2));
-        $this->assertTrue($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',1,array('targetType' => 'Election', 'targetId' => 2));
-        $this->assertTrue($result);
-        
-        //Moderator ( user 4 ) also can moderate comments of Election 2
-        $result = Yii::app()->getAuthManager()->checkAccess('Election_2_commentModerator',4,array('targetType' => 'Election', 'targetId' => 2));
-        $this->assertTrue($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('commentModerator',4,array('targetType' => 'Election', 'targetId' => 2));
-        $this->assertTrue($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',4,array('targetType' => 'Election', 'targetId' => 2));
-        $this->assertTrue($result);          
-        
-        //Moderator ( user 1 ) cant moderate comments of Election 1
-        $result = Yii::app()->getAuthManager()->checkAccess('Election_1_commentModerator', 1 ,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertFalse($result);        
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('commentModerator',1,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertFalse($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',1,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertFalse($result);
-        
-        //Moderator ( user 3 ) cant moderate comments of Election 2
-        $result = Yii::app()->getAuthManager()->checkAccess('Election_2_commentModerator', 3 ,array('targetType' => 'Election', 'targetId' => 1));
-        $this->assertFalse($result);           
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('commentModerator',3,array('targetType' => 'Election', 'targetId' => 2));
-        $this->assertFalse($result);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',3,array('targetType' => 'Election', 'targetId' => 2));
-        $this->assertFalse($result);
-        
-    }
-    
-    public function testCheckAccessUpdateOwn() {
-        
-        $userMock = $this->getMock('CWebUser', array('getId', 'getIsGuest', 'init'));
-        
-        $userMock->expects($this->any())
-                ->method('getId')
-                ->will($this->returnValue(1));
-        
-        $userMock->expects($this->any())
-                ->method('getIsGuest')
-                ->will($this->returnValue(false));
-        
-        Yii::app()->setComponent('user', $userMock, false);
-        
-        $result = Yii::app()->getAuthManager()->checkAccess('updateComment', 1, array(
-            'targetType' => 'Election', 
-            'targetId' => 1,
-            'comment'  => ElectionComment::model()->findByPk(1)
-        ));
-        
-        $this->assertTrue($result);
-    }
 }

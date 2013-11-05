@@ -6,6 +6,24 @@ class m131029_172859_add_comment_authItems extends EDbMigration
 	{
             $this->execute(file_get_contents(Yii::getPathOfAlias('system.web.auth') . '/schema-mysql.sql'));
             
+            $this->dropTable('AuthAssignment');
+            
+            $this->execute(
+                    "create table `AuthAssignment`
+                    (
+                       `id`                   int(11) not null AUTO_INCREMENT,  
+                       `itemname`             varchar(64) not null,
+                       `userid`               int(11) not null,
+                       `bizrule`              text,
+                       `data`                 text,
+                       primary key (`id`),
+                       foreign key (`itemname`) references `AuthItem` (`name`) on delete cascade on update cascade
+                    ) engine InnoDB;"
+            );
+            
+            $this->createIndex('ux_AuthAssignment_itemname_userid', 'AuthAssignment', 'itemname,userid', true);
+            $this->addForeignKey('fk_AuthAssignment_userid', 'AuthAssignment', 'userid', 'user', 'id', 'CASCADE', 'NO ACTION');
+            
             $auth = Yii::app()->authManager;
             
             $auth->createOperation('createComment');
@@ -17,32 +35,29 @@ class m131029_172859_add_comment_authItems extends EDbMigration
             $task->addChild('updateComment');
             $task->addChild('deleteComment');
             
-            $role = $auth->createRole('commentReader', '', 'return Yii::app()->user->isGuest;');
+            $role = $auth->createRole('commentReader', '', 'return (!in_array("commentReader", $params["disabledRoles"]));');
             $role->addChild('readComment');
             
-            $role = $auth->createRole('commentor', '', 'return !Yii::app()->user->isGuest;');
-            $role->addChild('commentReader');
+            $role = $auth->createRole('commentor', '', 'return (!in_array("commentor", $params["disabledRoles"]) && !Yii::app()->user->isGuest);');
+            $role->addChild('readComment');
             $role->addChild('manageOwnComment');
             $role->addChild('createComment');
             
-            $role = $auth->createRole('commentModerator', '');
-            $role->addChild('commentor');
+            $role = $auth->createRole('election_commentor');
+            $role->addChild('readComment');
+            $role->addChild('manageOwnComment');
+            $role->addChild('createComment');            
+            
+            $role = $auth->createRole('election_commentModerator', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_commentModerator"));');
+            $role->addChild('election_commentor');
             $role->addChild('deleteComment');
             
+            $role = $auth->createRole('election_participant', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_participant"));');
+            $role->addChild('election_commentor');
 	}
 
 	public function down()
-	{
-            $auth = Yii::app()->authManager;
-            
-            $authItems = array(
-                'createComment', 'readComment', 'updateComment', 'deleteComment',
-                'manageOwnComment', 'commentReader', 'commentor', 'commentModerator'
-            );
-            
-            foreach ($authItems as $item)
-                $auth->removeAuthItem($item);
-            
+	{   
             $this->dropTable('AuthAssignment');
             $this->dropTable('AuthItemChild');
             $this->dropTable('AuthItem');

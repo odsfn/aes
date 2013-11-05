@@ -95,16 +95,65 @@ class CommentController extends RestController {
         parent::doRestCreate($data);
     }
     
+    public function accessRules() {
+	return array(
+            array('allow',
+                'actions' => array('restList', 'restView', 'restCreate', 'restDelete', 'restUpdate'),
+                'expression' => array($this, 'doesUserCanControlModel')
+            ),
+	    array('deny', 
+		'actions' => array('restList', 'restView', 'restCreate', 'restDelete', 'restUpdate'),
+		'users' => array('*')
+	    )
+	);
+    }    
+    
+    /**
+     * @TODO move access check to the controllers filters
+     * 
+     * @param type $user
+     * @param type $rule
+     * @return boolean
+     * @throws Exception
+     */
     public function doesUserCanControlModel($user, $rule) {
         $id = (int)$_GET['id'];
         
         $model = $this->loadOneModel($id);
         
         $params = array(
-            'targetType'    =>  $this->targetType,
-            'targetId'      =>  $model->target_id,
-            'comment'       =>  $model
+            'comment' => $model
         );
+        
+        if($model) 
+            $target = $model->target;
+        else {  //model was not initialized because check is performing during createComment
+            $data = $this->data();
+            $targetClass = $this->targetType;
+            $target = new $targetClass;
+            $target = $target->findByPk($data['target_id']);
+        }
+        
+        if(! $target instanceof iCommentable )
+            throw new Exception ('Comment target ( object which is being commented ) should be an instance of iCommentable');
+        
+        $params[lcfirst($this->targetType)] = $target;
+        
+        $disabledRoles = array();
+        
+        if(!$target->doesUnassignedCanComment())
+            $disabledRoles[] = 'commentor';
+        
+        if(!$target->doesUnassignedCanRead())
+            $disabledRoles[] = 'commentReader';
+        
+        $params['disabledRoles'] = $disabledRoles;
+        
+        if( ( $this->action->id == 'restList' || $this->action->id == 'restView' ) && Yii::app()->user->checkAccess('readComment', $params) )
+            return true;
+        
+        if( $this->action->id == 'restCreate' && Yii::app()->user->checkAccess('createComment', $params) )
+            return true;
         
         if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('updateComment', $params) )
             return true;
