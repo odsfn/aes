@@ -35,25 +35,46 @@ class m131029_172859_add_comment_authItems extends EDbMigration
             $task->addChild('updateComment');
             $task->addChild('deleteComment');
             
+            $task = $auth->createTask('commentation');
+            $task->addChild('readComment');
+            $task->addChild('manageOwnComment');
+            $task->addChild('createComment');            
+            
             $role = $auth->createRole('commentReader', '', 'return (!in_array("commentReader", $params["disabledRoles"]));');
             $role->addChild('readComment');
             
             $role = $auth->createRole('commentor', '', 'return (!in_array("commentor", $params["disabledRoles"]) && !Yii::app()->user->isGuest);');
-            $role->addChild('readComment');
-            $role->addChild('manageOwnComment');
-            $role->addChild('createComment');
+            $role->addChild('commentation');
             
-            $role = $auth->createRole('election_commentor');
-            $role->addChild('readComment');
-            $role->addChild('manageOwnComment');
-            $role->addChild('createComment');            
-            
-            $role = $auth->createRole('election_commentModerator', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_commentModerator"));');
-            $role->addChild('election_commentor');
-            $role->addChild('deleteComment');
+            // Election RBAC hierarchy     
             
             $role = $auth->createRole('election_participant', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_participant"));');
-            $role->addChild('election_commentor');
+            $role->addChild('commentation');
+            
+            $role = $auth->createRole('election_commentModerator', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_commentModerator"));');
+            $role->addChild('commentation');
+            $role->addChild('deleteComment');
+            
+            $auth->createTask('election_manage');
+            
+            $task = $auth->createTask('election_administration');
+            $task->addChild('commentation');
+            $task->addChild('deleteComment');
+            $task->addChild('election_manage');
+            
+            $role = $auth->createRole('election_admin', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_admin"));');
+            $role->addChild('election_administration');
+            
+            $auth->createOperation('election_addAdmin');
+            $auth->createOperation('election_deleteAdmin');
+            
+            $task = $auth->createTask('election_manageAdmins');
+            $task->addChild('election_addAdmin');
+            $task->addChild('election_deleteAdmin');
+            
+            $role = $auth->createRole('election_creator', '', 'return (isset($params["election"]) && $params["election"]->user_id == $params["userId"]);');
+            $role->addChild('election_administration');
+            $role->addChild('election_manageAdmins');
 	}
 
 	public function down()

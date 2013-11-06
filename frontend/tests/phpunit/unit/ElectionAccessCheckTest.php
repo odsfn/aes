@@ -19,7 +19,7 @@ class ElectionAccessCheckTest extends CDbTestCase {
         
         //Moderator ( user 3 ) can moderate comments of Election 1
         
-        $result = Yii::app()->getAuthManager()->checkAccess('election_commentModerator',3,array('election' => $election1));
+        $result = Yii::app()->getAuthManager()->checkAccess('election_creator',3,array('election' => $election1));
         $this->assertTrue($result);
         
         $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',3,array('election' => $election1));
@@ -27,7 +27,7 @@ class ElectionAccessCheckTest extends CDbTestCase {
         
         //Moderator ( user 4 ) also can moderate comments of Election 1
         
-        $result = Yii::app()->getAuthManager()->checkAccess('election_commentModerator',4,array('election' => $election1));
+        $result = Yii::app()->getAuthManager()->checkAccess('election_admin',4,array('election' => $election1));
         $this->assertTrue($result);
         
         $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',4,array('election' => $election1));
@@ -35,7 +35,7 @@ class ElectionAccessCheckTest extends CDbTestCase {
         
         //Moderator ( user 1 ) can moderate comments of Election 2
         
-        $result = Yii::app()->getAuthManager()->checkAccess('election_commentModerator',1,array('election' => $election2));
+        $result = Yii::app()->getAuthManager()->checkAccess('election_creator',1,array('election' => $election2));
         $this->assertTrue($result);
         
         $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',1,array('election' => $election2));
@@ -43,7 +43,7 @@ class ElectionAccessCheckTest extends CDbTestCase {
         
         //Moderator ( user 4 ) also can moderate comments of Election 2
         
-        $result = Yii::app()->getAuthManager()->checkAccess('election_commentModerator',4,array('election' => $election2));
+        $result = Yii::app()->getAuthManager()->checkAccess('election_admin',4,array('election' => $election2));
         $this->assertTrue($result);
         
         $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',4,array('election' => $election2));
@@ -51,7 +51,7 @@ class ElectionAccessCheckTest extends CDbTestCase {
         
         //Moderator ( user 1 ) cant moderate comments of Election 1     
         
-        $result = Yii::app()->getAuthManager()->checkAccess('election_commentModerator',1,array('election' => $election1));
+        $result = Yii::app()->getAuthManager()->checkAccess('election_creator',1,array('election' => $election1));
         $this->assertFalse($result);
         
         $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',1,array('election' => $election1));
@@ -59,7 +59,7 @@ class ElectionAccessCheckTest extends CDbTestCase {
         
         //Moderator ( user 3 ) cant moderate comments of Election 2          
         
-        $result = Yii::app()->getAuthManager()->checkAccess('election_commentModerator',3,array('election' => $election2));
+        $result = Yii::app()->getAuthManager()->checkAccess('election_creator',3,array('election' => $election2));
         $this->assertFalse($result);
         
         $result = Yii::app()->getAuthManager()->checkAccess('deleteComment',3,array('election' => $election2));

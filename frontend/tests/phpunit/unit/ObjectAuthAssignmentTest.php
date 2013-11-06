@@ -18,13 +18,13 @@ class ObjectAuthAssignmentTest extends CDbTestCase {
         $objAuth1->objectType = 'Election';
         $objAuth1->objectId = 1;
         
-        $this->assertTrue($objAuth1->checkUserInRole($userId, 'election_commentModerator'));
+        $this->assertTrue($objAuth1->checkUserInRole($userId, 'election_creator'));
         
         $objAuth2 = new ObjectAuthAssignment;
         $objAuth2->objectType = 'Election';
         $objAuth2->objectId = 2;
         
-        $this->assertFalse($objAuth2->checkUserInRole($userId, 'election_commentModerator'));
+        $this->assertFalse($objAuth2->checkUserInRole($userId, 'election_creator'));
     }
     
     function testAssignRoleToUser() {
@@ -36,11 +36,11 @@ class ObjectAuthAssignmentTest extends CDbTestCase {
         $objAuth2->objectType = 'Election';
         $objAuth2->objectId = 2;
         
-        $getAuthAssignment = $this->commandGetAuthAssignment($userId, 'election_commentModerator');
+        $getAuthAssignment = $this->commandGetAuthAssignment($userId, 'election_creator');
         
         $this->assertEquals(0, $getAuthAssignment->query()->count());
         
-        $this->assertTrue($objAuth2->assignRoleToUser($userId, 'election_commentModerator'));
+        $this->assertTrue($objAuth2->assignRoleToUser($userId, 'election_creator'));
         
         $result = $getAuthAssignment->queryAll();
         $this->assertEquals(1, count($result));
@@ -55,19 +55,19 @@ class ObjectAuthAssignmentTest extends CDbTestCase {
         
         $userId = 5;
         
-        $getAuthAssignment = $this->commandGetAuthAssignment($userId, 'election_commentModerator');
+        $getAuthAssignment = $this->commandGetAuthAssignment($userId, 'election_creator');
         
         $objAuth2 = new ObjectAuthAssignment;
         $objAuth2->objectType = 'Election';
         $objAuth2->objectId = 2;
         
-        $objAuth2->assignRoleToUser($userId, 'election_commentModerator');
+        $objAuth2->assignRoleToUser($userId, 'election_creator');
         
         $objAuth1 = new ObjectAuthAssignment;
         $objAuth1->objectType = 'Election';
         $objAuth1->objectId = 1;
         
-        $objAuth1->assignRoleToUser($userId, 'election_commentModerator');
+        $objAuth1->assignRoleToUser($userId, 'election_creator');
         
         $result = $getAuthAssignment->queryAll();
         $this->assertEquals(1, count($result));
@@ -85,9 +85,9 @@ class ObjectAuthAssignmentTest extends CDbTestCase {
         $objAuth2->objectType = 'Election';
         $objAuth2->objectId = 2;
         
-        $objAuth2->revokeRoleFromUser($userId, 'election_commentModerator');
+        $objAuth2->revokeRoleFromUser($userId, 'election_admin');
         
-        $this->assertEquals(1, $this->commandGetAuthAssignment($userId, 'election_commentModerator')->query()->count());
+        $this->assertEquals(1, $this->commandGetAuthAssignment($userId, 'election_admin')->query()->count());
         $this->assertEquals(0, $this->commandGetObjectAssignment(2, 2)->query()->count());
         $this->assertEquals(1, $this->commandGetObjectAssignment(1, 2)->query()->count());
         
@@ -95,14 +95,14 @@ class ObjectAuthAssignmentTest extends CDbTestCase {
         $objAuth1->objectType = 'Election';
         $objAuth1->objectId = 1;
         
-        $objAuth1->revokeRoleFromUser($userId, 'election_commentModerator');
+        $objAuth1->revokeRoleFromUser($userId, 'election_admin');
         
-        $this->assertEquals(1, $this->commandGetAuthAssignment($userId, 'election_commentModerator')->query()->count());     //we will not delete entry from AuthAssignment
+        $this->assertEquals(1, $this->commandGetAuthAssignment($userId, 'election_admin')->query()->count());     //we will not delete entry from AuthAssignment
         $this->assertEquals(0, $this->commandGetObjectAssignment(2, 2)->query()->count());
         $this->assertEquals(0, $this->commandGetObjectAssignment(1, 2)->query()->count());
     }
     
-    protected function commandGetAuthAssignment($userId = null, $itemname = 'election_commentModerator') {
+    protected function commandGetAuthAssignment($userId = null, $itemname = 'election_creator') {
         $command = Yii::app()->db->createCommand('SELECT * FROM AuthAssignment WHERE userid = :userId AND itemname = :itemname');
         if($userId)
             $command->bindValue (':userId', $userId);

@@ -72,7 +72,12 @@ class ElectionController extends FrontController
      */
     protected function assignRoles($model) {
         
-        $model->assignRoleToUser($model->user_id, 'election_commentModerator');
+        $model->assignRoleToUser($model->user_id, 'election_creator');
         
+        //to assign admins use
+        //$model->assignRoleToUser($user_id, 'election_admin');
+        
+        //to assign commentModerators user
+        //$model->assignRoleToUser($user_id, 'election_commentModerator');
     }
 }
