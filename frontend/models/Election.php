@@ -61,7 +61,7 @@ class Election extends Commentable
 
     public $uploaded_file = null;
 
-    public $_text_status = null;
+    private $_text_status = null;
 
     public function getText_status() {
         if ($this->_text_status === null)
@@ -69,15 +69,23 @@ class Election extends Commentable
         return $this->_text_status;
     }
 
-    /**
-     * Returns the static model of the specified AR class.
-     * @param string $className active record class name.
-     * @return Election the static model class
-     */
-    public static function model($className=__CLASS__)
-    {
-            return parent::model($className);
+    private $_have_pic = null;
+
+    public function getHave_pic() {
+        if ($this->_have_pic === null)
+            $this->_have_pic = (int)is_file(Yii::app()->basePath.'/www/uploads/elections/'.$this->id.'.jpg');
+        return $this->_have_pic;
     }
+
+    /**
+	 * Returns the static model of the specified AR class.
+	 * @param string $className active record class name.
+	 * @return Election the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
 
     /**
      * @return string the associated database table name
@@ -187,5 +195,6 @@ class Election extends Commentable
     public function canUnassignedRead() {
         return ($this->unassigned_access_level >= self::UNASSIGNED_CAN_READ);
     }
+
 
 }

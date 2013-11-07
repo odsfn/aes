@@ -11,6 +11,7 @@ class CommentControllerTest extends CDbTestCase {
     
     protected $fixtures = array(
         'user' => 'userAccount.models.UserAccount',
+        'user_identity' => 'userAccount.models.Identity',
         'user_profile' => 'userAccount.models.Profile',
         'election_comment' => 'ElectionComment',
         'election' => 'Election',
