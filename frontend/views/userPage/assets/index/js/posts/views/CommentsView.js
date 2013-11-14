@@ -30,7 +30,8 @@ var CommentsView = Marionette.CompositeView.extend({
         this.newCommentView = new EditBoxView({
             placeholderText: 'Comment...',
             model: new Post({
-                reply_to: this.model.get('post').get('id')
+                reply_to: this.model.get('post').get('id'),
+                target_id: PostsApp.targetId
             })
         });
         

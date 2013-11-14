@@ -141,15 +141,17 @@ class Post extends CActiveRecord
         $this->createdTs = strtotime($this->created_ts);
         return parent::afterFind();
     }
-    
-    public function onUsersPage($userId) {
+  
+    public function onTarget($targetId) {
+        
         $this->getDbCriteria()->mergeWith(array(
-            'join' => 'INNER JOIN post_placement ON post_placement.post_id = t.id AND post_placement.target_id = '. intval($userId) . ' AND post_placement.target_type = ' . PostPlacement::TYPE_USER_PAGE
+            'condition' => 't.target_id = ' . (int)$targetId
         ));
         
         return $this;
     }
-    
+
+
     public function usersOnly($userId) {
         $this->getDbCriteria()->mergeWith(array(
             'condition' => 't.user_id = ' . (int)$userId
@@ -160,6 +162,9 @@ class Post extends CActiveRecord
         return array(
             'postOnly' => array(
                 'condition' => 't.reply_to IS NULL' 
+            ),
+            'commentOnly' => array(
+                'condition' => 't.reply_to IS NOT NULL'
             )
         );
     }

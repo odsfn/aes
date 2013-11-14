@@ -64,7 +64,10 @@
                 )); 
                 
                 Yii::app()->clientScript->registerScript('setUsersPageId', 
-                        'PostsApp.on("initialize:before", function() { PostsApp.pageUserId = ' . $this->profile->user_id . '; });', 
+                        'PostsApp.on("initialize:before", function() { 
+                            PostsApp.pageUserId = ' . $this->profile->user_id . ';
+                            PostsApp.targetId = ' . $this->profile->target_id . ';
+                        });', 
                         CClientScript::POS_HEAD
                 );
                 

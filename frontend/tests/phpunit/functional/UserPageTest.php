@@ -6,11 +6,11 @@
 class UserPageTest extends WebTestCase {
     
     public $fixtures = array(
+        'target' => ':target',
         'user' => 'userAccount.models.UserAccount',
         'user_identity' => 'userAccount.models.Identity',
         'user_profile' => 'userAccount.models.Profile',
         'post'         => 'Post',
-        'post_placement' => 'PostPlacement',
         'post_rate'      => 'PostRate'
     );
     

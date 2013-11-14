@@ -49,6 +49,7 @@ return array(
 //		    'password' => 'root',
 //		    'initSQLs' => array('SET storage_engine=INNODB; SET time_zone = "Europe/Kiev";'),
 		    
+                    'pdoClass' => 'NestedPDO',
 		    'emulatePrepare' => true,
 		    'charset' => 'utf8',
 		    'tablePrefix' => '',

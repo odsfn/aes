@@ -42,7 +42,18 @@ class Profile extends CActiveRecord {
 	return 'user_profile';
     }
 
-    /**
+    public function behaviors() {
+        return array(
+            'childTable' => array(
+                'class' => 'common.components.ChildTableBehavior',
+                'parentTable'   => 'target',
+                'parentTablePk' => 'target_id',
+                'childConstraint' => 'target_id'
+            )
+        );
+    }
+
+        /**
      * @return array validation rules for model attributes.
      */
     public function rules() {

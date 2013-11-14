@@ -3,7 +3,8 @@ var Posts = FeedCollection.extend({
     url: UrlManager.createUrlCallback('api/post'),
     getFilters: function() {
         return {
-            userPageId: PostsApp.pageUserId
+            userPageId: PostsApp.pageUserId,
+            targetId: PostsApp.targetId
         };
     }
 });

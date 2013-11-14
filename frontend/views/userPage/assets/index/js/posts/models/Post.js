@@ -2,6 +2,7 @@ var Post = Backbone.Model.extend({
     defaults: {
         reply_to: null,
         user_id: null,
+        target_id: null,
         user: {
             user_id: null,
             photo: '',

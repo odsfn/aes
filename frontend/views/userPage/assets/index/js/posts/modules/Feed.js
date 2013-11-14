@@ -30,7 +30,7 @@ App.module('Feed', function(Feed, PostsApp, Backbone, Marionette, $, _) {
     this.initAddPostView = function() {
         this.addPostView = new EditBoxView({
             model: new Post({
-                targetId: PostsApp.pageUserId
+                target_id: PostsApp.targetId
             })
         });
 

@@ -16,6 +16,7 @@
  * @property integer $voter_reg_type
  * @property integer $voter_reg_confirm
  * @property integer $unassigned_access_level Access level for users that were not assigned to this election
+ * @property integet $target_id
  *
  * The followings are the available model relations:
  * @property User $user
@@ -87,6 +88,17 @@ class Election extends Commentable
             return 'election';
     }
 
+    public function behaviors() {
+        return array_merge(parent::behaviors(), array(
+            'childTable' => array(
+                'class' => 'ChildTableBehavior',
+                'parentTable'   => 'target',
+                'parentTablePk' => 'target_id',
+                'childConstraint' => 'target_id'
+            )
+        ));
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -95,10 +107,10 @@ class Election extends Commentable
             // NOTE: you should only define rules for those attributes that
             // will receive user inputs.
             return array(
-                array('user_id, name, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'required'),
+                array('user_id, name, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm, target_id', 'required'),
 
                 array('user_id', 'exist', 'className' => 'UserAccount', 'attributeName' => 'id'),
-
+                
                 array('quote, validity', 'numerical', 'integerOnly'=>true, 'min'=>1),
 
                 array('cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'in', 'range'=>array(0,1)),

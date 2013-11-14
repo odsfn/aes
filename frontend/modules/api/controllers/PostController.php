@@ -39,21 +39,7 @@ class PostController extends RestController {
     public function doRestCreate($data) {
         $data['user_id'] = Yii::app()->user->id;
         
-        $targetId = $data['targetId'];
-        
         $models = $this->saveModel($this->getModel(), $data);
-        
-        $post = $models[0];
-        
-        if(!$post->reply_to) {
-            $placement = new PostPlacement();
-            $placement->post_id = $post->id;
-            $placement->placer_id = $post->user_id;
-            $placement->placed_ts = $post->created_ts;
-            $placement->target_id = $targetId;
-            $placement->target_type = PostPlacement::TYPE_USER_PAGE;
-            $placement->save();
-        }
         
         $this->outputHelper(
             'Record(s) Created',
@@ -66,15 +52,17 @@ class PostController extends RestController {
         
         $criteria = $this->getModel()
                     ->with($this->nestedRelations)
-                    ->onUsersPage($userPageId = $this->plainFilter['userPageId'])
+                    ->onTarget($this->plainFilter['targetId'])
                     ->postOnly();
         
-        $countCriteria = PostPlacement::model()
-            ->postsOnUsersPage($userPageId);
+        $countCriteria = Post::model()
+              ->postOnly()
+              ->onTarget($this->plainFilter['targetId']);
         
         if(isset($this->plainFilter['usersRecordsOnly']) && $this->plainFilter['usersRecordsOnly']) {
             
             if($this->plainFilter['usersRecordsOnly'] !== 'false') {
+                $userPageId = $this->plainFilter['userPageId'];
                 $criteria->usersOnly($userPageId);
                 $countCriteria->usersOnly($userPageId);
             }
