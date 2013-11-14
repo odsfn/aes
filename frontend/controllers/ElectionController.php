@@ -3,6 +3,8 @@
 class ElectionController extends FrontController
 {
 
+    public $breadcrumbs=array();
+
     public function filters(){
         return array(
             'accessControl',
@@ -22,10 +24,18 @@ class ElectionController extends FrontController
         );
     }
 
-
     public function actionIndex()
     {
         $this->render('index');
+    }
+
+    public function actionView($id)
+    {
+        $model = Election::model()->findByPk($id);
+        if (!$model)
+            throw new CHttpException('404', 'Page not found');
+        $this->layout = '//layouts/election';
+        $this->render('view', array('model'=>$model));
     }
 
     public function actionCreate()
@@ -56,7 +66,7 @@ class ElectionController extends FrontController
                     $image->save(Yii::app()->basePath . Election::IMAGE_SAVE_PATH.$model->id.'.jpg');
                 }
                 
-                $this->assignRoles($model);
+                //$this->assignRoles($model);
                 
                 $this->redirect('/election');
             }
