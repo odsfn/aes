@@ -115,7 +115,7 @@ class Election extends Commentable
             // NOTE: you should only define rules for those attributes that
             // will receive user inputs.
             return array(
-                array('user_id, name, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm, target_id', 'required'),
+                array('user_id, name, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'required'),
 
                 array('user_id', 'exist', 'className' => 'UserAccount', 'attributeName' => 'id'),
                 
