@@ -19,8 +19,8 @@ return array(
         'requires' => array(
             'depends' => array('loadmask'),
             'js' => array(
-                'EditBoxView.js',
-                'EditableView.js',
+                'aes:views/EditBoxView.js',
+                'aes:views/EditableView.js',
                 'aes:collections/FeedCollection.js',
                 'aes:views/FeedCountView.js',
                 'aes:views/MoreView.js'
@@ -53,7 +53,18 @@ return array(
         'requires' => array(
             'depends' => array('aes-common'),
             'js' => array(
-                
+//                'models/Post.js',
+//                'models/PostRate.js',
+                'aes:collections/FeedCollection.js',
+//                'collections/Posts.js',
+//                'collections/Comments.js',
+//                'views/PostsTitleView.js',
+                'aes:views/EditBoxView.js',
+//                'views/PostsView.js',
+//                'views/CommentsView.js',
+                'aes:views/EditableView.js',
+                'aes:views/MoreView.js',
+//                'modules/Feed.js'
             )
         )        
     )
