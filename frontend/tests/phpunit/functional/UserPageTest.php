@@ -47,12 +47,13 @@ class UserPageTest extends WebTestCase {
     
     function testOpacityOfRatesChangesWhenMouseEntersAndOuts() {
         $this->openOwnPage();
+        $this->waitForElementPresent('css=div.media.post');
         
-        $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate').css('opacity')"));
+        $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
         $this->mouseOver("css=div.media.post .post-body");
-        $this->assertEquals("1", $this->getEval("window.$('div.media.post .post-rate').css('opacity')"));
+        $this->assertEquals("1", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
         $this->mouseOut("css=div.media.post .post-body");
-        $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate').css('opacity')"));
+        $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
     }
     
     function testControlsNotShowsForUnauthorizedUser() {
@@ -335,10 +336,10 @@ class UserPageTest extends WebTestCase {
         $this->waitForElementPresent('css=div.media.post');
         
         $this->mouseOver("css=div.media.post:nth-of-type(1) .post-body");
-        $this->assertNotVisible('css=span.controls');
+        $this->assertElementNotPresent('css=div.media.post:nth-of-type(1) .post-body span.controls i');
         
         $this->mouseOver("css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(1) .post-body");
-        $this->assertNotVisible('css=span.controls');
+        $this->assertElementNotPresent('css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(1) .post-body span.controls i');
         
     }
 

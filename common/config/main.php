@@ -38,7 +38,7 @@ return array(
                 'authManager'=>array(
                     'class'=>'CDbAuthManager',
                     'connectionID'=>'db',
-                    'defaultRoles' => array('commentReader', 'commentor')
+                    'defaultRoles' => array('commentReader', 'commentor', 'authenticated', 'guest')
                 ),            
             
 		'db'=>array(

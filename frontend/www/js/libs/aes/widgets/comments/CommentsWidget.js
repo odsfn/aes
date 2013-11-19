@@ -13,7 +13,7 @@ var CommentsWidget = (function(){
             user: {
                 user_id: null,
                 photo: '',
-                displayName: '',
+                displayName: ''
             },
             content: '',
             likes: null,
@@ -45,7 +45,7 @@ var CommentsWidget = (function(){
                
         parse: function(rawData) {
             
-            rawData = Backbone.Model.prototype.parse.apply(this, arguments)
+            rawData = Backbone.Model.prototype.parse.apply(this, arguments);
             
             rawData.created_ts = parseInt(rawData.created_ts) * 1000;
             
@@ -200,7 +200,7 @@ var CommentsWidget = (function(){
             this.newCommentView = new EditBoxView({
                 placeholderText: 'Comment...',
                 model: new Comment({
-                    target_id: this.collection.targetId,
+                    target_id: this.collection.targetId
                 },{
                     commentRates: this.collection.createCommentRates()
                 })
@@ -385,7 +385,7 @@ var CommentsWidget = (function(){
                 targetId: config.targetId,
                 targetType: config.targetType,
                 url: config.urls.comments,
-                commentRatesUrl: config.urls.rates,
+                commentRatesUrl: config.urls.rates
             });
             
             if(config.limit) {

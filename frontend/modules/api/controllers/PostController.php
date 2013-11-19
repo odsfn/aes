@@ -82,5 +82,56 @@ class PostController extends RestController {
             (int)$totalCount
         );
     }
+
+    public function accessRules() {
+	return array(
+            array('allow',
+                'actions' => array('restCreate'),
+                'users'   => array('@')
+            ),
+            array('allow',
+                'actions' => array('restDelete', 'restUpdate'),
+                'expression' => array($this, 'checkAccess')
+            ),
+	    array('deny', 
+		'actions' => array('restCreate', 'restDelete', 'restUpdate'),
+		'users' => array('*')
+	    )
+	);
+    }
+
+    protected function getCheckAccessParams() {
+        $id = (int)$_GET['id'];
+        
+        $model = $this->loadOneModel($id);
+        
+        $params = array(
+            'post' => $model
+        );
+        
+        if($model) {
+            $data = $this->data();
+
+            $targetClass = 'Profile';
+            $target = new $targetClass;
+            $target = $target->findByPk($model->target_id);
+
+            $params[lcfirst($targetClass)] = $target;
+        }
+        
+        return $params;
+    }
     
+    public function checkAccess() {
+
+        $params = $this->getCheckAccessParams();
+        
+        if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('updatePost', $params) )
+            return true;
+        
+        if( $this->action->id == 'restDelete' && Yii::app()->user->checkAccess('deletePost', $params) )
+            return true;
+        
+        return false;
+    }    
 }

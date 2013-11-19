@@ -1,29 +1,9 @@
 <?php
 
-class m131029_172859_add_comment_authItems extends EDbMigration
+class m131029_172859_add_comment_and_election_authItems extends EDbMigration
 {
 	public function up()
-	{
-            $this->execute(file_get_contents(Yii::getPathOfAlias('system.web.auth') . '/schema-mysql.sql'));
-            
-            $this->dropTable('AuthAssignment');
-            
-            $this->execute(
-                    "create table `AuthAssignment`
-                    (
-                       `id`                   int(11) not null AUTO_INCREMENT,  
-                       `itemname`             varchar(64) not null,
-                       `userid`               int(11) not null,
-                       `bizrule`              text,
-                       `data`                 text,
-                       primary key (`id`),
-                       foreign key (`itemname`) references `AuthItem` (`name`) on delete cascade on update cascade
-                    ) engine InnoDB;"
-            );
-            
-            $this->createIndex('ux_AuthAssignment_itemname_userid', 'AuthAssignment', 'itemname,userid', true);
-            $this->addForeignKey('fk_AuthAssignment_userid', 'AuthAssignment', 'userid', 'user', 'id', 'CASCADE', 'NO ACTION');
-            
+	{   
             $auth = Yii::app()->authManager;
             
             $auth->createOperation('createComment');
@@ -79,8 +59,17 @@ class m131029_172859_add_comment_authItems extends EDbMigration
 
 	public function down()
 	{   
-            $this->dropTable('AuthAssignment');
-            $this->dropTable('AuthItemChild');
-            $this->dropTable('AuthItem');
+            $auth = Yii::app()->authManager;
+            
+            $authItems = array(
+                'election_creator','election_manageAdmins','election_addAdmin',
+                'election_deleteAdmin','election_admin','election_administration',
+                'election_manage','election_commentModerator','election_participant',
+                'commentor','commentReader','commentation','manageOwnComment',
+                'createComment','readComment','updateComment','deleteComment'
+            );
+            
+            foreach ($authItems as $item)
+                $auth->removeAuthItem($item);
 	}
 }

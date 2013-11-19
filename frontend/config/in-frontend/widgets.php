@@ -51,7 +51,7 @@ return array(
     'PostsMarionetteWidget' => array(
         'widgetName' => 'PostsWidget',
         'requires' => array(
-            'depends' => array('aes-common'),
+            'depends' => array('aes-common', 'loadmask'),
             'js' => array(
 //                'models/Post.js',
 //                'models/PostRate.js',
@@ -63,9 +63,16 @@ return array(
 //                'views/PostsView.js',
 //                'views/CommentsView.js',
                 'aes:views/EditableView.js',
-                'aes:views/MoreView.js',
-//                'modules/Feed.js'
+                'aes:views/MoreView.js'
             )
-        )        
+        ),
+        'dependentWidgets' => array(
+            'RatesMarionetteWidget'
+        ),
+        'checkForRoles' => array(
+            'postsAdmin' => function($params) {
+                return (Yii::app()->user->id && Yii::app()->user->id == $params['widget']->jsConstructorOptions['userPageId']); 
+            }
+        )
     )
 );

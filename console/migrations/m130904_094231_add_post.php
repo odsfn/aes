@@ -32,26 +32,44 @@ class m130904_094231_add_post extends EDbMigration
             $this->addForeignKey('fk_post_user_id', 'post', 'user_id', 'user_profile', 'user_id', 'CASCADE', 'NO ACTION');
             $this->addForeignKey('fk_post_reply_to', 'post', 'reply_to', 'post', 'id', 'CASCADE', 'NO ACTION');
             
-            $this->createTable('post_rate', array(
-                'id' => 'pk',
-                'user_id' => 'int(11) NOT NULL',
-                'post_id' => 'int(11) NOT NULL',
-                'created_ts' => 'timestamp NOT NULL DEFAULT "0000-00-00"',
-                'score' => 'tinyint NOT NULL'
-            ));
-            
-            $this->addForeignKey('fk_post_rate_user_id', 'post_rate', 'user_id', 'user_profile', 'user_id', 'CASCADE', 'NO ACTION');
-            $this->addForeignKey('fk_post_post_id', 'post_rate', 'post_id', 'post', 'id', 'CASCADE', 'NO ACTION');
-            $this->createIndex('ux_post_rate_user_id_post_id', 'post_rate', 'user_id, post_id', $unique = true);
+            RateableDbManagerHelper::createTables('post', $this);
             
             $this->addColumn('user_profile', 'target_id', 'INT(11) NOT NULL');
             $this->addForeignKey('fk_profile_target_id', 'user_profile', 'target_id', 'target', 'target_id', 'CASCADE', 'NO ACTION');
+            
+            //create auth items
+            $auth = Yii::app()->authManager;
+            
+            $auth->createOperation('createPost');
+            $auth->createOperation('readPost');
+            $auth->createOperation('updatePost');
+            $auth->createOperation('deletePost');
+            
+            $task = $auth->createTask('manageOwnPost', '', 'return ($params["userId"]==$params["post"]->user_id);');
+            $task->addChild('updatePost');
+            $task->addChild('deletePost');
+            
+            $role = $auth->createRole('userPageOwner', '', 'return ( isset($params["profile"]) && $params["profile"]->user_id == $params["userId"] );');
+            $role->addChild('deletePost');
+            
+            $authenticatedRole = $auth->getAuthItem('authenticated');
+            $authenticatedRole->addChild('manageOwnPost');
+            $authenticatedRole->addChild('userPageOwner');
 	}
 
 	public function down()
 	{
-            $this->dropColumn('profile', 'target_id');
-            $this->dropTable('post_rate');
+            $auth = Yii::app()->authManager;
+            
+            $authItems = array('userPageOwner', 'manageOwnPost', 'createPost', 'readPost', 'updatePost', 'deletePost');
+            
+            foreach ($authItems as $item)
+                $auth->removeAuthItem($item);
+            
+            $this->dropForeignKey('fk_profile_target_id', 'user_profile');
+            $this->dropColumn('user_profile', 'target_id');
+            RateableDbManagerHelper::dropTables('post', $this);
             $this->dropTable('post');
+            $this->dropTable('target');
 	}
 }

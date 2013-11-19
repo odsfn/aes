@@ -78,7 +78,7 @@ class Post extends CActiveRecord
             'replyTo' => array(self::BELONGS_TO, 'Post', 'reply_to'),
             'comments' => array(self::HAS_MANY, 'Post', 'reply_to'),
             'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
-            'rates' => array(self::HAS_MANY, 'PostRate', 'post_id'),
+            'rates' => array(self::HAS_MANY, 'PostRate', 'target_id'),
             'placements' => array(self::HAS_MANY, 'PostPlacement', 'post_id'),
         );
     }

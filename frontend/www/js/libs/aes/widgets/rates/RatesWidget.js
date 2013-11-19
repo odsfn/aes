@@ -162,8 +162,8 @@ var RatesWidget = (function(){
             this.targetEl = targetEl;
             
             $(this.targetEl)
-                    .mouseenter(onActivate)
-                    .mouseleave(onDeactivate);
+                    .mouseover(onActivate)
+                    .mouseout(onDeactivate);
             
         },       
                 
@@ -253,7 +253,7 @@ var RatesWidget = (function(){
             
             urlManager = config.urlManager;            
             
-            if(!config.urls.rates)
+            if(!config.urls.rates && !config.ratesCollection)
                 config.urls.rates = urlManager.createUrl('api/' + config.targetType + '_rate');
             
             
