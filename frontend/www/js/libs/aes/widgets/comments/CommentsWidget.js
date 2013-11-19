@@ -45,6 +45,8 @@ var CommentsWidget = (function(){
                
         parse: function(rawData) {
             
+            rawData = _.clone(rawData);
+            
             rawData = Backbone.Model.prototype.parse.apply(this, arguments);
             
             rawData.created_ts = parseInt(rawData.created_ts) * 1000;

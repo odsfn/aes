@@ -44,7 +44,7 @@
             <div class="post-body">
                 <h5 class="media-heading">
                     <span class="user"><%= user.displayName %></span> 
-                    <small><a href="#<%= id %>"><%= displayTime %></a></small> 
+                    <small><a href="#<%= id %>"><%= i18n.date(created_ts, 'full', 'full') %></a></small>
                 </h5>
 
                 <div class="post-content">

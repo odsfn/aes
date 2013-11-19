@@ -36,6 +36,24 @@ class PostController extends RestController {
             'targetId'
     );
     
+
+    public function getOutputFormatters() {
+        return array(
+            'created_ts' => array('Formatter', 'toTs'),
+            'last_update_ts' => array('Formatter', 'toTs'),
+            'rates.created_ts' => array('Formatter', 'toTs'),
+            'comments.created_ts' => array('Formatter', 'toTs'),
+            'comments.last_update_ts' => array('Formatter', 'toTs')
+        );
+    }
+
+    public function getInputFormatters() {
+        return array(
+            'created_ts' => array('Formatter', 'fromTs'),
+            'last_update_ts' => array('Formatter', 'fromTs')
+        );
+    }    
+    
     public function doRestCreate($data) {
         $data['user_id'] = Yii::app()->user->id;
         

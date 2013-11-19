@@ -14,9 +14,8 @@
  * The followings are the available model relations:
  * @property Post $replyTo
  * @property Post[] $posts
- * @property UserProfile $user
+ * @property Profile $user
  * @property PostRate[] $rates
- * @property PostPlacement[] $placements
  */
 class Post extends CActiveRecord
 {
@@ -78,8 +77,7 @@ class Post extends CActiveRecord
             'replyTo' => array(self::BELONGS_TO, 'Post', 'reply_to'),
             'comments' => array(self::HAS_MANY, 'Post', 'reply_to'),
             'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
-            'rates' => array(self::HAS_MANY, 'PostRate', 'target_id'),
-            'placements' => array(self::HAS_MANY, 'PostPlacement', 'post_id'),
+            'rates' => array(self::HAS_MANY, 'PostRate', 'target_id')
         );
     }
 
@@ -119,27 +117,6 @@ class Post extends CActiveRecord
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
-    }
-
-    // @TODO: replace it. Add corresponding formatter to the Rest controller
-    public function getAttributes($names = true) {
-        $result = parent::getAttributes($names);
-        $result['displayTime'] = $this->displayTime;
-        $result['createdTs'] = $this->createdTs;
-        return $result;
-    }
-    
-    // @TODO: replace it. Add corresponding formatter to the Rest controller
-    public $displayTime;
-    
-    // @TODO: replace it. Add corresponding formatter to the Rest controller
-    public $createdTs;
-    
-    // @TODO: replace it. Add corresponding formatter to the Rest controller
-    protected function afterFind() {
-        $this->displayTime = Yii::app()->dateFormatter->formatDateTime($this->created_ts, 'medium', 'medium');
-        $this->createdTs = strtotime($this->created_ts);
-        return parent::afterFind();
     }
   
     public function onTarget($targetId) {

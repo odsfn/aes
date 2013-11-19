@@ -3,8 +3,6 @@
  */
 var PostsWidget = {};
 
-//PostsWidget.SomePublicClass = {foo: 'Baz'};
-
 _.extend(PostsWidget, (function(){
     
     var Post = Backbone.Model.extend({
@@ -12,6 +10,8 @@ _.extend(PostsWidget, (function(){
             reply_to: null,
             user_id: null,
             target_id: null,
+            created_ts: null,
+            last_update_ts: null,
             user: {
                 user_id: null,
                 photo: '',
@@ -20,7 +20,6 @@ _.extend(PostsWidget, (function(){
             content: '',
             likes: null,
             dislikes: null,
-            displayTime: null,
             comments: []
         },
 
@@ -45,6 +44,37 @@ _.extend(PostsWidget, (function(){
             this.on('change:id', _.bind(function(){
                 this.rates.target_id = this.id;
             }, this));
+        },
+                
+        parse: function(rawData) {
+            
+            rawData = _.clone(rawData);
+            
+            rawData = Backbone.Model.prototype.parse.apply(this, arguments);
+            
+            rawData.created_ts = parseInt(rawData.created_ts) * 1000;
+            
+            if(rawData.last_update_ts > 0)
+                rawData.last_update_ts = parseInt(rawData.last_update_ts) * 1000;
+            
+            return rawData;
+        },
+                
+        toJSON: function(options) {
+            
+            var attrs = Backbone.Model.prototype.toJSON.call(this);
+            
+            if(options && _.has(options, 'success')) {
+                var created_ts, last_update_ts;
+                
+                if(created_ts = this.get('created_ts'))
+                    attrs.created_ts = created_ts.toString().substr(0, 10);
+                
+                if(last_update_ts = this.get('last_update_ts'))
+                    attrs.last_update_ts = last_update_ts.toString().substr(0, 10);
+            }
+            
+            return attrs;
         }
 
     });    
@@ -156,9 +186,7 @@ _.extend(PostsWidget, (function(){
         ui: {
             rates: '.post-rate',
             body: '.post-body',
-            comments: 'div.comments', 
-            ratePlus: '.post-rate:first span.icon-thumbs-up',
-            rateMinus: '.post-rate:first span.icon-thumbs-down'
+            comments: 'div.comments'
         },
 
         events: {
@@ -174,11 +202,6 @@ _.extend(PostsWidget, (function(){
         onMouseLeave: function() {
             if(!WebUser.isGuest())
                 this.ui.body.removeClass('hovered');
-        },
-
-        render: function() {
-            console.log('In post render');
-            return Marionette.ItemView.prototype.render.apply(this, arguments);
         },
 
         onRender: function() {
@@ -214,7 +237,7 @@ _.extend(PostsWidget, (function(){
 
         initialize: function() {
             this.collection = new Comments();
-            this.collection.reset(this.model.get('post').get('comments'));
+            this.collection.reset(this.model.get('post').get('comments'), {parse: true});
         },
 
         onRender: function() {
@@ -306,10 +329,6 @@ _.extend(PostsWidget, (function(){
             });
 
             this.listenTo(this.addPostView, 'edited', this.addPost);
-        },  
-           
-        onRender: function() {
-            
         },
         
         onShow: function() {
@@ -379,14 +398,59 @@ _.extend(PostsWidget, (function(){
        
     });
     
+    var defaultConfig = {
+
+        targetId: null,
+        
+        userPageId: null,
+        
+        webUser: WebUser || null,
+        
+        urlManager: UrlManager || null, 
+        
+        templates: {
+            postsLayout: '#posts-layout',
+            postView: '#post-tpl',
+            commentView: '#post-tpl',
+            postTitleView: '#post-title-tpl',
+            editBoxView: '#edit-box-tpl',
+            editableView: '#editable-tpl',
+            commentsView: '#comments-tpl',
+            moreView: '#more-btn-tpl'
+        },
+
+//        initData: {
+//            totalCount: 0,
+//            models: []
+//        },
+//        
+//        autoFetch: true,
+//        
+//        urls: {
+//            comments: null,
+//            
+//            rates: null
+//        },
+        
+        limit: 20
+        
+    };
+    
     return {
         create: function(options) {
-//            console.log(PostsWidget.SomePublicClass.foo);
-
-            var view = new PostsLayout();
-            view.posts.targetId = options.targetId;
-            view.posts.userPageId = options.userPageId;
-            view.posts.limit = options.limit || 20;
+            
+            var view, config;
+            
+            config = _.extend({}, defaultConfig, options);
+            
+            view = new PostsLayout({
+                template: config.templates.postsLayout
+            });
+            
+            view.posts.targetId = config.targetId;
+            view.posts.userPageId = config.userPageId;
+            view.posts.limit = config.limit;
+            
             return view;
         }
     };
