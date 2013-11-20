@@ -45,9 +45,25 @@ class m130904_094231_add_post extends EDbMigration
             $auth->createOperation('updatePost');
             $auth->createOperation('deletePost');
             
-            $task = $auth->createTask('manageOwnPost', '', 'return ($params["userId"]==$params["post"]->user_id);');
+            $task = $auth->createTask('manageOwnPost', '', 'return (isset($params["post"]) && $params["post"]->user_id == $params["userId"]);');
             $task->addChild('updatePost');
             $task->addChild('deletePost');
+            
+            $task = $auth->createTask('posting');
+            $task->addChild('readPost');
+            $task->addChild('manageOwnPost');
+            $task->addChild('createPost');            
+            
+            $task = $auth->createTask('postsModeration');
+            $task->addChild('posting');
+            $task->addChild('deletePost');
+            
+            $role = $auth->createRole('postReader', '', 'return (!in_array("postReader", $params["disabledRoles"]));');
+            $role->addChild('readPost');
+            
+            $role = $auth->createRole('poster', '', 'return (!in_array("poster", $params["disabledRoles"]) && !Yii::app()->user->isGuest);');
+            $role->addChild('posting');            
+            
             
             $role = $auth->createRole('userPageOwner', '', 'return ( isset($params["profile"]) && $params["profile"]->user_id == $params["userId"] );');
             $role->addChild('deletePost');
@@ -55,13 +71,20 @@ class m130904_094231_add_post extends EDbMigration
             $authenticatedRole = $auth->getAuthItem('authenticated');
             $authenticatedRole->addChild('manageOwnPost');
             $authenticatedRole->addChild('userPageOwner');
+            $authenticatedRole->addChild('postReader');
+            $authenticatedRole->addChild('poster');
+            
+            $guestRole = $auth->getAuthItem('guest');
+            $guestRole->addChild('postReader');
 	}
 
 	public function down()
 	{
             $auth = Yii::app()->authManager;
             
-            $authItems = array('userPageOwner', 'manageOwnPost', 'createPost', 'readPost', 'updatePost', 'deletePost');
+            $authItems = array('postsModeration','poster','postReader','posting',
+                'userPageOwner', 'manageOwnPost', 'createPost', 
+                'readPost', 'updatePost', 'deletePost');
             
             foreach ($authItems as $item)
                 $auth->removeAuthItem($item);

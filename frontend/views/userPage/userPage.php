@@ -42,13 +42,109 @@
 		
 
                 <?php
-                
-                    $this->widget('PostsMarionetteWidget', array(
+                    $this->createWidget('PostsMarionetteWidget', array(
                         'jsConstructorOptions' => array(
-                            'targetId'      => $profile->target_id,
                             'userPageId'    => $profile->user_id,
-                            'limit'         => (defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) ? 3 : 20
-                        ),
-                        'show' => array('div', array('id' => 'posts', 'class' => 'row-fluid'))
-                    ));
+                        ),        
+                        'checkForRoles' => array(
+                            'postsAdmin' => function($params) {
+                                return (Yii::app()->user->id && Yii::app()->user->id == $params['widget']->jsConstructorOptions['userPageId']); 
+                            }
+                        )
+                    ))->register();
                 ?>
+
+<script type="text/javascript">
+    var UserPagePosts = PostsWidget.Posts.extend({
+        targetType: 'Profile',
+        userPageId: null,
+        url: UrlManager.createUrlCallback('api/userPagePost'),
+        getFilters: function() {
+            return _.extend(
+                PostsWidget.Posts.prototype.getFilters.apply(this, arguments),
+                { userPageId: this.userPageId }
+            );
+        }
+    });
+    
+    var PostsTitleView = PostsWidget.PostsTitleView.extend({
+        template: '#local-posts-title-tpl',
+        
+        ui: {
+            authorSwitcher: 'small.author-switcher a'
+        },
+
+        events: {
+            'click small.author-switcher a': 'switchAuthor'
+        },
+        
+        switchAuthor: function() {
+            this.model.set('allUsers', !this.model.get('allUsers'));
+
+            if(!this.model.get('allUsers')) {
+                this.postsCol.setFilter('usersRecordsOnly', this.postsCol.userPageId);
+            }else{
+                this.postsCol.setFilter('usersRecordsOnly', false);
+            }
+        },
+
+        onBeforeRender: function() {
+            if(this.model.get('allUsers')) {
+                this.model.set('switcherText', 'Show users\' records only');
+            }else{
+                this.model.set('switcherText', 'Show all records');
+            }
+        },        
+        
+        initialize: function() {
+            PostsWidget.PostsTitleView.prototype.initialize.apply(this, arguments);
+            
+            this.model.set('allUsers', true);
+            this.model.set('switcherText', '');
+
+            this.listenTo(this.model, 'change:allUsers', this.render);
+        }
+    });
+</script>           
+
+<?php 
+
+$limit = (defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) ? 3 : 20;
+
+Yii::app()->clientScript->registerScript('initPostsWidget', "
+var userPagePosts = new UserPagePosts();
+userPagePosts.userPageId = {$profile->user_id};
+userPagePosts.limit = $limit;
+
+var postsTitleView = new PostsTitleView({
+    postsCol: userPagePosts
+});
+
+var userPagePostsWidget = PostsWidget.create({
+
+    targetId: {$profile->target_id},    
+    targetType: 'Profile',
+
+    postsCol: userPagePosts,
+    
+    limit: $limit,
+        
+    postsTitleView: postsTitleView
+});
+
+$('#posts').html(userPagePostsWidget.render().el);
+userPagePostsWidget.triggerMethod('show');
+", CClientScript::POS_READY);
+
+?>
+
+<script type="text/template" id="local-posts-title-tpl">
+    <div class="bootstrap-widget" id="title">
+        <div class="bootstrap-widget-header smooth">
+            <h3 id="posts-counter-cont"><span class="posts-count"><%= count %></span> records</h3>
+            <h3 class="pull-right"><small class="author-switcher"><a href="#"><%= t(switcherText) %></a></small></h3>
+        </div>
+    </div>
+</script>
+
+<div id="posts" class="row-fluid"></div>

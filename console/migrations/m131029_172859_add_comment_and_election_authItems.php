@@ -29,17 +29,15 @@ class m131029_172859_add_comment_and_election_authItems extends EDbMigration
             // Election RBAC hierarchy     
             
             $role = $auth->createRole('election_participant', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_participant"));');
-            $role->addChild('commentation');
+            $role->addChild('posting');
             
-            $role = $auth->createRole('election_commentModerator', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_commentModerator"));');
-            $role->addChild('commentation');
-            $role->addChild('deleteComment');
+            $role = $auth->createRole('election_postsModerator', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_postsModerator"));');
+            $role->addChild('postsModeration');
             
             $auth->createTask('election_manage');
             
             $task = $auth->createTask('election_administration');
-            $task->addChild('commentation');
-            $task->addChild('deleteComment');
+            $role->addChild('postsModeration');
             $task->addChild('election_manage');
             
             $role = $auth->createRole('election_admin', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_admin"));');
@@ -64,7 +62,7 @@ class m131029_172859_add_comment_and_election_authItems extends EDbMigration
             $authItems = array(
                 'election_creator','election_manageAdmins','election_addAdmin',
                 'election_deleteAdmin','election_admin','election_administration',
-                'election_manage','election_commentModerator','election_participant',
+                'election_manage','election_postsModerator','election_participant',
                 'commentor','commentReader','commentation','manageOwnComment',
                 'createComment','readComment','updateComment','deleteComment'
             );

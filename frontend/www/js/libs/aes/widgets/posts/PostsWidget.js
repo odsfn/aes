@@ -3,153 +3,134 @@
  */
 var PostsWidget = {};
 
-_.extend(PostsWidget, (function(){
-    
-    var Post = Backbone.Model.extend({
-        defaults: {
-            reply_to: null,
+PostsWidget.Post = Backbone.Model.extend({
+    defaults: {
+        reply_to: null,
+        user_id: null,
+        target_id: null,
+        created_ts: null,
+        last_update_ts: null,
+        user: {
             user_id: null,
-            target_id: null,
-            created_ts: null,
-            last_update_ts: null,
-            user: {
-                user_id: null,
-                photo: '',
-                displayName: '',
-            },
-            content: '',
-            likes: null,
-            dislikes: null,
-            comments: []
+            photo: '',
+            displayName: '',
         },
+        content: '',
+        likes: null,
+        dislikes: null,
+        comments: []
+    },
 
-        urlRoot: UrlManager.createUrlCallback('api/post'),
+//    urlRoot: UrlManager.createUrlCallback('api/post'),
 
-        initialize: function() {
-            var ratesModels = this.get('rates') || [];
+    initialize: function() {
+        var ratesModels = this.get('rates') || [];
 
-            this.rates = new Rates([], {
-                target_id: this.get('id'),
-                url: UrlManager.createUrl('api/Post_rate')
-            });
+        this.rates = new Rates([], {
+            target_id: this.get('id'),
+            url: UrlManager.createUrl('api/Post_rate')
+        });
 
-            if(ratesModels) {
-                this.rates.reset(ratesModels, {parse: true});
-            }
-
-            if(this.id) {
-                this.rates.target_id = this.id;
-            }
-
-            this.on('change:id', _.bind(function(){
-                this.rates.target_id = this.id;
-            }, this));
-        },
-                
-        parse: function(rawData) {
-            
-            rawData = _.clone(rawData);
-            
-            rawData = Backbone.Model.prototype.parse.apply(this, arguments);
-            
-            rawData.created_ts = parseInt(rawData.created_ts) * 1000;
-            
-            if(rawData.last_update_ts > 0)
-                rawData.last_update_ts = parseInt(rawData.last_update_ts) * 1000;
-            
-            return rawData;
-        },
-                
-        toJSON: function(options) {
-            
-            var attrs = Backbone.Model.prototype.toJSON.call(this);
-            
-            if(options && _.has(options, 'success')) {
-                var created_ts, last_update_ts;
-                
-                if(created_ts = this.get('created_ts'))
-                    attrs.created_ts = created_ts.toString().substr(0, 10);
-                
-                if(last_update_ts = this.get('last_update_ts'))
-                    attrs.last_update_ts = last_update_ts.toString().substr(0, 10);
-            }
-            
-            return attrs;
+        if(ratesModels) {
+            this.rates.reset(ratesModels, {parse: true});
         }
 
-    });    
-    
-    var Posts = FeedCollection.extend({
-        targetId: null,
-        userPageId: null,
-        model: Post,
-        url: UrlManager.createUrlCallback('api/post'),
-        getFilters: function() {
-            return {
-                userPageId: this.userPageId,
-                targetId: this.targetId
-            };
+        if(this.id) {
+            this.rates.target_id = this.id;
         }
-    });    
-    
+
+        this.on('change:id', _.bind(function(){
+            this.rates.target_id = this.id;
+        }, this));
+    },
+
+    parse: function(rawData) {
+
+        rawData = _.clone(rawData);
+
+        rawData = Backbone.Model.prototype.parse.apply(this, arguments);
+
+        rawData.created_ts = parseInt(rawData.created_ts) * 1000;
+
+        if(rawData.last_update_ts > 0)
+            rawData.last_update_ts = parseInt(rawData.last_update_ts) * 1000;
+
+        return rawData;
+    },
+
+    toJSON: function(options) {
+
+        var attrs = Backbone.Model.prototype.toJSON.call(this);
+
+        if(options && _.has(options, 'success')) {
+            var created_ts, last_update_ts;
+
+            if(created_ts = this.get('created_ts'))
+                attrs.created_ts = created_ts.toString().substr(0, 10);
+
+            if(last_update_ts = this.get('last_update_ts'))
+                attrs.last_update_ts = last_update_ts.toString().substr(0, 10);
+        }
+
+        return attrs;
+    }
+
+});
+
+/*
+ * Posts collection
+ * 
+ * @type @exp;FeedCollection@call;extend
+ */
+PostsWidget.Posts = FeedCollection.extend({
+    targetId: null,
+    targetType: null,
+    model: PostsWidget.Post,
+    url: function() {
+        return UrlManager.createUrl('api/' + this.targetType + '_post');
+    },
+    getFilters: function() {
+        return {
+            target_id: this.targetId,
+            targetType: this.targetType
+        };
+    }
+});
+
+/* 
+ * View for user's page feed title
+ */
+PostsWidget.PostsTitleView = Marionette.ItemView.extend({
+
+    template: '#posts-title-tpl',
+
+    initialize: function(options) {
+
+        this.postsCol = options.postsCol;
+
+        this.model = new Backbone.Model({
+            count: 0
+        });
+
+        this.listenTo(this.model, 'change:count', this.render);
+    },
+
+    setRecordsCount: function(count) {
+        this.model.set('count', count);
+    }
+});
+
+_.extend(PostsWidget, (function(){
+        
     /* 
      * Collection for posts that are displayed as comments
      */
     var Comments = Backbone.Collection.extend({
-       model: Post,
-       url: UrlManager.createUrlCallback('api/post')
-    });    
-    
-    /* 
-     * View for user's page feed title
-     */
-    var PostsTitleView = Marionette.ItemView.extend({
-
-        template: '#posts-title-tpl',
-
-        ui: {
-            authorSwitcher: 'small.author-switcher a'
-        },
-
-        events: {
-            'click small.author-switcher a': 'switchAuthor'
-        },
-
-        initialize: function(options) {
-            
-            this.postsCol = options.postsCol;
-    
-            this.model = new Backbone.Model({
-                count: 0,
-                allUsers: true,
-                switcherText: ''
-            });
-
-            this.listenTo(this.model, 'change:count change:allUsers', this.render);
-        },
-
-        setRecordsCount: function(count) {
-            this.model.set('count', count);
-        },
-
-        switchAuthor: function() {
-            this.model.set('allUsers', !this.model.get('allUsers'));
-
-            if(!this.model.get('allUsers')) {
-                this.postsCol.setFilter('usersRecordsOnly', this.postsCol.userPageId);
-            }else{
-                this.postsCol.setFilter('usersRecordsOnly', false);
-            }
-        },
-
-        onBeforeRender: function() {
-            if(this.model.get('allUsers')) {
-                this.model.set('switcherText', 'Show users\' records only');
-            }else{
-                this.model.set('switcherText', 'Show all records');
-            }
+        model: PostsWidget.Post,
+        url: function() {
+            return UrlManager.createUrl('api/' + this.targetType + '_post');
         }
-    });    
+    });
     
     /**
      * Renders single post item with like, dislike, edit, delete buttons.
@@ -164,6 +145,7 @@ _.extend(PostsWidget, (function(){
             
             if(!this.model.get('reply_to')) {
                 this.commentsView = new CommentsView({
+                    collection: new Comments([], {url: this.model.collection.url()}),
                     model: new Backbone.Model({post: this.model})
                 });
             }
@@ -236,7 +218,6 @@ _.extend(PostsWidget, (function(){
         },
 
         initialize: function() {
-            this.collection = new Comments();
             this.collection.reset(this.model.get('post').get('comments'), {parse: true});
         },
 
@@ -248,9 +229,11 @@ _.extend(PostsWidget, (function(){
         initNewCommentView: function() {
             this.newCommentView = new EditBoxView({
                 placeholderText: 'Comment...',
-                model: new Post({
+                model: new PostsWidget.Post({
                     reply_to: this.model.get('post').get('id'),
                     target_id: this.model.get('post').get('target_id')
+                }, {
+                    collection: this.collection
                 })
             });
 
@@ -323,8 +306,10 @@ _.extend(PostsWidget, (function(){
 
         initAddPostView: function() {
             this.addPostView = new EditBoxView({
-                model: new Post({
+                model: new PostsWidget.Post({
                     target_id: this.posts.targetId
+                },{
+                    collection: this.posts
                 })
             });
 
@@ -332,9 +317,6 @@ _.extend(PostsWidget, (function(){
         },
         
         onShow: function() {
-            this.titleView = new PostsTitleView({
-                postsCol: this.posts
-            });
             this.feedTitleRegion.show(this.titleView);
             this.resetNewPostRegion();
 
@@ -357,12 +339,14 @@ _.extend(PostsWidget, (function(){
             this.posts.fetch();            
         },
                 
-        initialize: function() {
+        initialize: function(options) {
             /**
              * Posts collection displaying on the user's page
              * @type Posts
              */
-            this.posts = new Posts();
+            this.posts = options.postsCol;
+
+            this.titleView = options.titleView;
 
             this.postsView = new PostsView({
                 collection: this.posts
@@ -402,7 +386,7 @@ _.extend(PostsWidget, (function(){
 
         targetId: null,
         
-        userPageId: null,
+        targetType: null,
         
         webUser: WebUser || null,
         
@@ -439,16 +423,33 @@ _.extend(PostsWidget, (function(){
     return {
         create: function(options) {
             
-            var view, config;
+            var view, config, postsCol, postsTitleView;
             
             config = _.extend({}, defaultConfig, options);
             
+            if(!config.targetType)
+                throw new Error('You should provide targetType option.');
+            
+            if(!config.postsCol) {
+                postsCol = new PostsWidget.Posts();
+            } else 
+                postsCol = config.postsCol;
+            
+            if(!config.postsTitleView) {
+                postsTitleView = new PostsWidget.PostsTitleView({
+                    postsCol: postsCol
+                });
+            }else
+                postsTitleView = config.postsTitleView;
+            
             view = new PostsLayout({
-                template: config.templates.postsLayout
+                template: config.templates.postsLayout,
+                postsCol: postsCol,
+                titleView: postsTitleView
             });
             
             view.posts.targetId = config.targetId;
-            view.posts.userPageId = config.userPageId;
+            view.posts.targetType = config.targetType;
             view.posts.limit = config.limit;
             
             return view;

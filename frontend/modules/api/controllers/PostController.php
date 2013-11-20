@@ -5,10 +5,9 @@
  */
 class PostController extends RestController {
     
-    public $acceptableFilters = array(
-        'plain' => 'userPageId',
-        'model' => 'conversation_id'
-    );    
+    public function getAcceptableFilters() {
+        return array();
+    }
     
     public $nestedModels = array(
         
@@ -32,8 +31,7 @@ class PostController extends RestController {
             'likes',
             'dislikes',
             'comments',
-            'createdTs',
-            'targetId'
+            'createdTs'
     );
     
 
@@ -64,28 +62,22 @@ class PostController extends RestController {
             $models,
             1
         );
-    }
+    }   
     
+    protected function applyCustomFilters($criteria, $countCriteria) {}
+
     public function doRestList() {
         
         $criteria = $this->getModel()
                     ->with($this->nestedRelations)
-                    ->onTarget($this->plainFilter['targetId'])
+                    ->onTarget($this->plainFilter['target_id'])
                     ->postOnly();
         
         $countCriteria = Post::model()
               ->postOnly()
-              ->onTarget($this->plainFilter['targetId']);
+              ->onTarget($this->plainFilter['target_id']);
         
-        if(isset($this->plainFilter['usersRecordsOnly']) && $this->plainFilter['usersRecordsOnly']) {
-            
-            if($this->plainFilter['usersRecordsOnly'] !== 'false') {
-                $userPageId = $this->plainFilter['userPageId'];
-                $criteria->usersOnly($userPageId);
-                $countCriteria->usersOnly($userPageId);
-            }
-            
-        }
+        $this->applyCustomFilters($criteria, $countCriteria);
         
         $criteria->orderBy('created_ts', 'DESC');
         
@@ -101,23 +93,6 @@ class PostController extends RestController {
         );
     }
 
-    public function accessRules() {
-	return array(
-            array('allow',
-                'actions' => array('restCreate'),
-                'users'   => array('@')
-            ),
-            array('allow',
-                'actions' => array('restDelete', 'restUpdate'),
-                'expression' => array($this, 'checkAccess')
-            ),
-	    array('deny', 
-		'actions' => array('restCreate', 'restDelete', 'restUpdate'),
-		'users' => array('*')
-	    )
-	);
-    }
-
     protected function getCheckAccessParams() {
         $id = (int)$_GET['id'];
         
@@ -130,19 +105,86 @@ class PostController extends RestController {
         if($model) {
             $data = $this->data();
 
-            $targetClass = 'Profile';
-            $target = new $targetClass;
-            $target = $target->findByPk($model->target_id);
-
+            $target = $model->target->row;
+            
             $params[lcfirst($targetClass)] = $target;
         }
         
         return $params;
     }
     
-    public function checkAccess() {
+//    public function checkAccess() {
+//
+//        $params = $this->getCheckAccessParams();
+//        
+//        if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('updatePost', $params) )
+//            return true;
+//        
+//        if( $this->action->id == 'restDelete' && Yii::app()->user->checkAccess('deletePost', $params) )
+//            return true;
+//        
+//        return false;
+//    }
+    
+    public function accessRules() {
+	return array(
+            array('allow',
+                'actions' => array('restList', 'restView', 'restCreate', 'restDelete', 'restUpdate'),
+                'expression' => array($this, 'checkAccess')
+            ),
+	    array('deny', 
+		'actions' => array('restList', 'restView', 'restCreate', 'restDelete', 'restUpdate'),
+		'users' => array('*')
+	    )
+	);
+    }
 
-        $params = $this->getCheckAccessParams();
+    protected function getTargetType() {
+        return $_GET['target_type'];
+    }
+    
+    public function checkAccess() {
+        $id = (int)$_GET['id'];
+        
+        $model = $this->loadOneModel($id);
+        
+        $params = array(
+            'post' => $model
+        );
+        
+        if($model) 
+            $target = $model->target->row;
+        else {  //model was not initialized because check is performing during createComment
+            $data = $this->data();
+            
+            if(!$data) 
+                $data = $_GET['filter'];
+            
+            $targetClass = $this->targetType;
+            $target = new $targetClass;
+            $target = $target->findByAttributes(array('target_id'=>$data['target_id']));
+        }
+        
+        if(! $target instanceof iPostable )
+            throw new Exception ('Post target ( post is being added to this object ) should be an instance of iPostable');
+        
+        $params[lcfirst($this->targetType)] = $target;
+        
+        $disabledRoles = array();
+        
+        if(!$target->canUnassignedPost())
+            $disabledRoles[] = 'poster';
+        
+        if(!$target->canUnassignedReadPost())
+            $disabledRoles[] = 'postReader';
+        
+        $params['disabledRoles'] = $disabledRoles;
+        
+        if( ( $this->action->id == 'restList' || $this->action->id == 'restView' ) && Yii::app()->user->checkAccess('readPost', $params) )
+            return true;
+        
+        if( $this->action->id == 'restCreate' && Yii::app()->user->checkAccess('createPost', $params) )
+            return true;
         
         if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('updatePost', $params) )
             return true;

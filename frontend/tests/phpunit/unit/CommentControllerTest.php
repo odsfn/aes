@@ -1,9 +1,16 @@
 <?php
 Yii::import('frontend.modules.api.controllers.CommentController');
 /**
+ * @todo Split this test to CommentControllerTest and PostControllerTest
+ * 
+ * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
 class CommentControllerTest extends CDbTestCase { 
+    
+    protected function setUp() {
+        $this->markTestIncomplete();
+    }
     
     protected $verbose = false;
     

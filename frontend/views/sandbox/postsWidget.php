@@ -18,6 +18,7 @@ You can find the fixtures that you should import to the database in the tests fi
     $this->widget('PostsMarionetteWidget', array(
         'jsConstructorOptions' => array(
             'targetId' => $profile->target_id,
+            'targetType' => 'Profile',
             'userPageId' => $profile->user_id
         ),
         'show' => array('el' => '#posts-container1')
