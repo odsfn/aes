@@ -122,7 +122,7 @@ class Election extends Commentable
 
                 array('name, status', 'safe', 'on'=>'search'),
 
-                array('id, name, status, text_status', 'safe', 'on' => 'rest'),
+                array('id, name, status, text_status, have_pic', 'safe', 'on' => 'rest'),
 
             );
     }
