@@ -2,6 +2,7 @@
 return array(
   array(
       'user_id' => '1',
+      'target_id' => 1,
       'first_name' => 'Vasiliy',
       'last_name' => 'Pedak',
       'birth_place' => 'Ust-Katav, Cheliabinskaia oblast, Russia',
@@ -14,6 +15,7 @@ return array(
       ),
   array(
       'user_id' => '2',
+      'target_id' => 2,
       'first_name' => 'Another',
       'last_name' => 'User',
       'birth_place' => 'tester',
@@ -26,6 +28,7 @@ return array(
   ),
   array(
       'user_id' => '3',
+      'target_id' => 3,
       'first_name' => 'Jhon',
       'last_name' => 'Lenon',
       'birth_place' => 'tester',
@@ -38,6 +41,7 @@ return array(
   ),    
   array(
       'user_id' => '4',
+      'target_id' => 4,
       'first_name' => 'Yetanother',
       'last_name' => 'User',
       'birth_place' => 'tester',
@@ -50,6 +54,7 @@ return array(
   ),    
   array(
       'user_id' => '5',
+      'target_id' => 5,
       'first_name' => 'tester',
       'last_name' => 'tester',
       'birth_place' => 'tester',
@@ -62,6 +67,7 @@ return array(
   ),
   array(
       'user_id' => '6',
+      'target_id' => 6,
       'first_name' => 'tester',
       'last_name' => 'tester',
       'birth_place' => 'tester',
@@ -74,6 +80,7 @@ return array(
   ),
   array(
       'user_id' => '7',
+      'target_id' => 7,
       'first_name' => 'Steve',
       'last_name' => 'Jobs',
       'birth_place' => 'San Francisco, California, US',

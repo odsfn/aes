@@ -6,11 +6,11 @@
 class UserPageTest extends WebTestCase {
     
     public $fixtures = array(
+        'target' => ':target',
         'user' => 'userAccount.models.UserAccount',
         'user_identity' => 'userAccount.models.Identity',
         'user_profile' => 'userAccount.models.Profile',
         'post'         => 'Post',
-        'post_placement' => 'PostPlacement',
         'post_rate'      => 'PostRate'
     );
     
@@ -47,12 +47,13 @@ class UserPageTest extends WebTestCase {
     
     function testOpacityOfRatesChangesWhenMouseEntersAndOuts() {
         $this->openOwnPage();
+        $this->waitForElementPresent('css=div.media.post');
         
-        $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate').css('opacity')"));
+        $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
         $this->mouseOver("css=div.media.post .post-body");
-        $this->assertEquals("1", $this->getEval("window.$('div.media.post .post-rate').css('opacity')"));
+        $this->assertEquals("1", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
         $this->mouseOut("css=div.media.post .post-body");
-        $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate').css('opacity')"));
+        $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
     }
     
     function testControlsNotShowsForUnauthorizedUser() {
@@ -111,13 +112,13 @@ class UserPageTest extends WebTestCase {
         $this->openOwnPage();
         
         $this->assertCssCount('css=div.media.post', 5);
-        $this->assertTextPresent('Aug 8, 2013 7:46:00 PM');
+        $this->assertTextPresent('Aug 08, 2013 07:46:00 PM');
         
         $this->mouseOver("css=.comments div.media.post:nth-of-type(1) .post-body");
         $this->click("css=.comments div.media.post:nth-of-type(1) i.icon-remove");
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
-        $this->waitForTextNotPresent('Aug 8, 2013 7:46:00 PM');
+        $this->waitForTextNotPresent('Aug 08, 2013 07:46:00 PM');
         $this->assertCssCount('css=div.media.post', 4);        
     }
     
@@ -286,13 +287,13 @@ class UserPageTest extends WebTestCase {
         //Can Remove
         
         $this->assertCssCount('css=div.media.post', 5);
-        $this->assertTextPresent('Aug 8, 2013 7:13:00 PM');
+        $this->assertTextPresent('Aug 08, 2013 07:13:00 PM');
         
         $this->mouseOver("css=div.media.post:nth-child(2) .post-body");
         $this->click("css=div.media.post:nth-child(2) i.icon-remove");
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
-        $this->waitForTextNotPresent('Aug 8, 2013 7:13:00 PM');
+        $this->waitForTextNotPresent('Aug 08, 2013 07:13:00 PM');
         //Removed with comments
         $this->assertCssCount('css=div.media.post', 2);
     }
@@ -335,10 +336,10 @@ class UserPageTest extends WebTestCase {
         $this->waitForElementPresent('css=div.media.post');
         
         $this->mouseOver("css=div.media.post:nth-of-type(1) .post-body");
-        $this->assertNotVisible('css=span.controls');
+        $this->assertElementNotPresent('css=div.media.post:nth-of-type(1) .post-body span.controls i');
         
         $this->mouseOver("css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(1) .post-body");
-        $this->assertNotVisible('css=span.controls');
+        $this->assertElementNotPresent('css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(1) .post-body span.controls i');
         
     }
 
@@ -453,13 +454,13 @@ class UserPageTest extends WebTestCase {
         $this->openOwnPage();
         
         $datesOrderAll = array(
-            'Aug 14, 2013 11:42:00 AM', 'Aug 8, 2013 7:13:00 PM', 'Aug 8, 2013 10:42:00 AM',
-            'Aug 7, 2013 10:12:00 AM', 'Aug 7, 2013 10:08:00 AM', 'Aug 7, 2013 10:05:00 AM',
-            'Aug 7, 2013 10:00:00 AM'
+            'Aug 14, 2013 11:42:00 AM', 'Aug 08, 2013 07:13:00 PM', 'Aug 08, 2013 10:42:00 AM',
+            'Aug 07, 2013 10:12:00 AM', 'Aug 07, 2013 10:08:00 AM', 'Aug 07, 2013 10:05:00 AM',
+            'Aug 07, 2013 10:00:00 AM'
         );
         
         $datesOrderUsersOnly = array(
-            'Aug 8, 2013 7:13:00 PM', 'Aug 8, 2013 10:42:00 AM'
+            'Aug 08, 2013 07:13:00 PM', 'Aug 08, 2013 10:42:00 AM'
         );
         
         $this->loadMore();

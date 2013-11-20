@@ -14,9 +14,9 @@
  * The followings are the available model relations:
  * @property Post $replyTo
  * @property Post[] $posts
- * @property UserProfile $user
+ * @property Profile $user
  * @property PostRate[] $rates
- * @property PostPlacement[] $placements
+ * @property Target $target AR from base parent table.
  */
 class Post extends CActiveRecord
 {
@@ -78,8 +78,8 @@ class Post extends CActiveRecord
             'replyTo' => array(self::BELONGS_TO, 'Post', 'reply_to'),
             'comments' => array(self::HAS_MANY, 'Post', 'reply_to'),
             'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
-            'rates' => array(self::HAS_MANY, 'PostRate', 'post_id'),
-            'placements' => array(self::HAS_MANY, 'PostPlacement', 'post_id'),
+            'rates' => array(self::HAS_MANY, 'PostRate', 'target_id'),
+            'target' => array(self::BELONGS_TO, 'Target', 'target_id'),
         );
     }
 
@@ -120,36 +120,17 @@ class Post extends CActiveRecord
             'criteria'=>$criteria,
         ));
     }
-
-    // @TODO: replace it. Add corresponding formatter to the Rest controller
-    public function getAttributes($names = true) {
-        $result = parent::getAttributes($names);
-        $result['displayTime'] = $this->displayTime;
-        $result['createdTs'] = $this->createdTs;
-        return $result;
-    }
-    
-    // @TODO: replace it. Add corresponding formatter to the Rest controller
-    public $displayTime;
-    
-    // @TODO: replace it. Add corresponding formatter to the Rest controller
-    public $createdTs;
-    
-    // @TODO: replace it. Add corresponding formatter to the Rest controller
-    protected function afterFind() {
-        $this->displayTime = Yii::app()->dateFormatter->formatDateTime($this->created_ts, 'medium', 'medium');
-        $this->createdTs = strtotime($this->created_ts);
-        return parent::afterFind();
-    }
-    
-    public function onUsersPage($userId) {
+  
+    public function onTarget($targetId) {
+        
         $this->getDbCriteria()->mergeWith(array(
-            'join' => 'INNER JOIN post_placement ON post_placement.post_id = t.id AND post_placement.target_id = '. intval($userId) . ' AND post_placement.target_type = ' . PostPlacement::TYPE_USER_PAGE
+            'condition' => 't.target_id = ' . (int)$targetId
         ));
         
         return $this;
     }
-    
+
+
     public function usersOnly($userId) {
         $this->getDbCriteria()->mergeWith(array(
             'condition' => 't.user_id = ' . (int)$userId
@@ -160,6 +141,9 @@ class Post extends CActiveRecord
         return array(
             'postOnly' => array(
                 'condition' => 't.reply_to IS NULL' 
+            ),
+            'commentOnly' => array(
+                'condition' => 't.reply_to IS NOT NULL'
             )
         );
     }

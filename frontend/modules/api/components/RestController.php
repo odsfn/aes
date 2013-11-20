@@ -260,4 +260,19 @@ class RestController extends ERestController {
     protected function formatInput($array) {
         return ArrayHelper::format($array, $this->inputFormatters);
     }
+
+    /**
+     * Fix of empty result for secondary read
+     */ 
+    protected $_data = false;
+    
+    public function data() 
+    {
+            $request = $this->requestReader->getContents();
+            if ($request) {
+                $this->_data = CJSON::decode($request);
+            }
+            
+            return $this->_data;
+    }    
 }

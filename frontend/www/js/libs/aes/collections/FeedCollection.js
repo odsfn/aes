@@ -38,7 +38,7 @@ var FeedCollection = Backbone.Collection.extend({
     },
     
     comparator: function(model) {
-        return -model.get('createdTs');
+        return -model.get('created_ts');
     },
     
     parse: function(response, options) {

@@ -80,7 +80,7 @@ class MarionetteWidget extends CWidget {
      */
     public $checkForRoles = array();
     
-    public $roleCheckParams;
+    public $roleCheckParams = array();
     
     public $dependentWidgets = array();
     /**
@@ -312,7 +312,7 @@ class MarionetteWidget extends CWidget {
                     $checker = $params;
                 }
 
-                if($checker && call_user_func($checker, $this->roleCheckParams)) {
+                if($checker && call_user_func($checker, array_merge($this->roleCheckParams, array('widget' => $this)))) {
                     $rolesToAdd[] = $roleName;
                     continue;
                 }

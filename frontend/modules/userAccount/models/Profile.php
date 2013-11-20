@@ -13,6 +13,7 @@
  * @property string $email
  * @property string $birthDayFormated Representation of birth_day cell in current time format
  * @property string $photo_thmbnl_64 Filename with photo thumbnail
+ * @property integer $target_id Id from parent table
  * 
  * The followings are the available model relations:
  * @property UserAccount $user
@@ -42,7 +43,18 @@ class Profile extends CActiveRecord {
 	return 'user_profile';
     }
 
-    /**
+    public function behaviors() {
+        return array(
+            'childTable' => array(
+                'class' => 'common.components.ChildTableBehavior',
+                'parentTable'   => 'target',
+                'parentTablePk' => 'target_id',
+                'childConstraint' => 'target_id'
+            )
+        );
+    }
+
+        /**
      * @return array validation rules for model attributes.
      */
     public function rules() {

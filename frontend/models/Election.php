@@ -16,18 +16,20 @@
  * @property integer $voter_reg_type
  * @property integer $voter_reg_confirm
  * @property integer $unassigned_access_level Access level for users that were not assigned to this election
+ * @property integet $target_id
  *
  * The followings are the available model relations:
  * @property User $user
+ * @property Target $target AR from base parent table.
  */
-class Election extends Commentable
+class Election extends CActiveRecord implements iPostable
 {
     const IMAGE_WIDTH = 400;
     const IMAGE_HEIGHT = 400;
     const IMAGE_QUALITY = 95;
     const IMAGE_SAVE_PATH = '/www/uploads/elections/';
     
-    const UNASSIGNED_CAN_COMMENT = 2;
+    const UNASSIGNED_CAN_POST = 2;
     const UNASSIGNED_CAN_READ = 1;
     const UNASSIGNED_CAN_NONE = 0;
 
@@ -78,14 +80,14 @@ class Election extends Commentable
     }
 
     /**
-	 * Returns the static model of the specified AR class.
-	 * @param string $className active record class name.
-	 * @return Election the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+     * Returns the static model of the specified AR class.
+     * @param string $className active record class name.
+     * @return Election the static model class
+     */
+    public static function model($className=__CLASS__)
+    {
+            return parent::model($className);
+    }
 
     /**
      * @return string the associated database table name
@@ -93,6 +95,18 @@ class Election extends Commentable
     public function tableName()
     {
             return 'election';
+    }
+
+    public function behaviors() {
+        return array(
+            'ObjectAuthAssignmentBehavior',
+            'childTable' => array(
+                'class' => 'ChildTableBehavior',
+                'parentTable'   => 'target',
+                'parentTablePk' => 'target_id',
+                'childConstraint' => 'target_id'
+            )
+        );
     }
 
     /**
@@ -106,7 +120,7 @@ class Election extends Commentable
                 array('user_id, name, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'required'),
 
                 array('user_id', 'exist', 'className' => 'UserAccount', 'attributeName' => 'id'),
-
+                
                 array('quote, validity', 'numerical', 'integerOnly'=>true, 'min'=>1),
 
                 array('cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'in', 'range'=>array(0,1)),
@@ -116,7 +130,7 @@ class Election extends Commentable
                 array('uploaded_file', 'file', 'types' => 'jpg,jpeg,jpe,png,gif', 'maxSize' => 5000000, 'allowEmpty'=>true),
 
                 array('unassigned_access_level', 'numerical', 'integerOnly'=>true, 'min'=>0),
-                array('unassigned_access_level', 'default', 'setOnEmpty'=>true, 'value'=>self::UNASSIGNED_CAN_COMMENT),
+                array('unassigned_access_level', 'default', 'setOnEmpty'=>true, 'value'=>self::UNASSIGNED_CAN_POST),
                 
                 array('id, user_id, name, status, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'safe', 'on'=>'search'),
 
@@ -136,6 +150,7 @@ class Election extends Commentable
             // class name for the relations automatically generated below.
             return array(
                     'user' => array(self::BELONGS_TO, 'UserAccount', 'user_id'),
+                    'target' => array(self::BELONGS_TO, 'Target', 'target_id'),
             );
     }
 
@@ -188,13 +203,12 @@ class Election extends Commentable
             ));
     }
     
-    public function canUnassignedComment() {
-        return ($this->unassigned_access_level >= self::UNASSIGNED_CAN_COMMENT);
+    public function canUnassignedPost() {
+        return ($this->unassigned_access_level >= self::UNASSIGNED_CAN_POST);
     }
 
-    public function canUnassignedRead() {
+    public function canUnassignedReadPost() {
         return ($this->unassigned_access_level >= self::UNASSIGNED_CAN_READ);
     }
-
 
 }

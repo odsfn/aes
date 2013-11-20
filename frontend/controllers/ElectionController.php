@@ -66,7 +66,7 @@ class ElectionController extends FrontController
                     $image->save(Yii::app()->basePath . Election::IMAGE_SAVE_PATH.$model->id.'.jpg');
                 }
                 
-                //$this->assignRoles($model);
+                $this->assignRoles($model);
                 
                 $this->redirect('/election');
             }

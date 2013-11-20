@@ -48,42 +48,10 @@ return array(
 		),
 	    
 		'urlManager' => array(
-			// uncomment the following if you have enabled Apache's Rewrite module.
 			'urlFormat' => 'path',
 			'showScriptName' => false,
 
-			'rules' => array(
-                                // Restfullyii routes
-                            
-                                'api/<target_type:\w+>_<controller:(comment|rate)>'=>array('api/<controller>/restList', 'verb'=>'GET'),
-                                'api/<target_type:\w+>_<controller:(comment|rate)>/<id:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),
-                                array('api/<controller>/restUpdate', 'pattern'=>'api/<target_type:\w+>_<controller:(comment|rate)>/<id:\w*>', 'verb'=>'PUT'),
-                                array('api/<controller>/restDelete', 'pattern'=>'api/<target_type:\w+>_<controller:(comment|rate)>/<id:\w*>', 'verb'=>'DELETE'),
-                                array('api/<controller>/restCreate', 'pattern'=>'api/<target_type:\w+>_<controller:(comment|rate)>', 'verb'=>'POST'),
-                                array('api/<controller>/restCreate', 'pattern'=>'api/<target_type:\w+>_<controller:(comment|rate)>/<id:\w+>', 'verb'=>'POST'),                          
-                            
-                            
-                                'api/<controller:\w+>'=>array('api/<controller>/restList', 'verb'=>'GET'),
-                                'api/<controller:\w+>/<id:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),
-                                'api/<controller:\w+>/<id:\w*>/<var:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),
-                                'api/<controller:\w+>/<id:\w*>/<var:\w*>/<var2:\w*>'=>array('api/<controller>/restView', 'verb'=>'GET'),
-
-                                array('api/<controller>/restUpdate', 'pattern'=>'api/<controller:\w+>/<id:\w*>', 'verb'=>'PUT'),
-                                array('api/<controller>/restUpdate', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<var:\w*>', 'verb'=>'PUT'),
-                                array('api/<controller>/restUpdate', 'pattern'=>'api/<controller:\w*>/<id:\w*>/<var:\w*>/<var2:\w*>', 'verb'=>'PUT'),   
-
-                                array('api/<controller>/restDelete', 'pattern'=>'api/<controller:\w+>/<id:\w*>', 'verb'=>'DELETE'),
-                                array('api/<controller>/restDelete', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<var:\w*>', 'verb'=>'DELETE'),
-                                array('api/<controller>/restDelete', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<var:\w*>/<var2:\w*>', 'verb'=>'DELETE'),
-
-                                array('api/<controller>/restCreate', 'pattern'=>'api/<controller:\w+>', 'verb'=>'POST'),
-                                array('api/<controller>/restCreate', 'pattern'=>'api/<controller:\w+>/<id:\w+>', 'verb'=>'POST'),
-                            
-				// default rules
-				'<controller:\w+>/<id:\d+>' => '<controller>',
-				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
-				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-			),
+			'rules' => require('in-frontend/rules.php')
 		),
 	    
 		'user' => array(
@@ -98,107 +66,15 @@ return array(
             
                 'clientScript' => array(
                     'class' => 'CClientScript',
-                    'packages' => array(
-                        
-                        'aes-common' => array(
-                            'depends' => array('marionette'),
-                            'baseUrl' => 'js/libs/aes',
-                            'js' => array(
-                                'helpers.js',
-                                'WebUser.js',
-                                'i18n.js'
-                            )
-                        ),
-                        
-                        'marionette' => array(
-                            'depends' => array(
-                                'backbone'
-                            ),
-                            
-                            'baseUrl' => 'js/libs/backbone.marionette',
-                            'js' => array(
-                                'backbone.marionette.js'
-                            )
-                        ), 
-                        
-                        'backbone' => array(
-                            'depends' => array('jquery.ui'),
-                            'baseUrl' => 'js/libs/backbone.marionette',
-                            'js' => array(
-                                'json2.js',
-                                'underscore.js',
-                                'backbone.js'
-                            )
-                        ),
-                        
-                        'loadmask' => array(
-                            'depends' => array('jquery'),
-                            'baseUrl' => 'js/libs/loadmask',
-                            'js' => array(
-                                'loadmask.js'
-                            ),
-                            'css' => array(
-                                'loadmask.css'
-                            )
-                        ),
-                        
-                        'backbone.poller' => array(
-                            'depends' => array('backbone'),
-                            
-                            'baseUrl' => 'js/libs/backbone.poller',
-                            'js' => array(
-                                'backbone.poller.js'
-                            )
-                        )
-                    )
+                    'packages' => require('in-frontend/packages.php')
                 ),
             
                 'widgetFactory' => array(
                     
                     'class' => 'AesWidgetFactory',
                     
-                    'widgets' => array(
-                        /**
-                         * Displays Comments Widget to the specified commentable entity.
-                         * Allows to add, edit, delete comments to owner or administrator
-                         * 
-                         * @param int $targetId Required id of the commentable entity
-                         * @param string $targetType Required name of the commentable entity ( Election ... )
-                         * 
-                         * See frontend/views/sandbox/commentsWidget.php for examples
-                         */
-                        'CommentsMarionetteWidget' => array(
-                            'widgetName' => 'CommentsWidget',
-                            'requires' => array(
-                                'depends' => array('loadmask'),
-                                'js' => array(
-                                    'EditBoxView.js',
-                                    'EditableView.js',
-                                    'aes:collections/FeedCollection.js',
-                                    'aes:views/FeedCountView.js',
-                                    'aes:views/MoreView.js'
-                                 )
-                            ),
-                            'dependentWidgets' => array(
-                                'RatesMarionetteWidget'
-                            ),
-                            'checkForRoles' => array(                                        
-                                'commentsAdmin' => array('election_commentModerator', 
-                                    function($widget) {
-                                        return array(
-                                            'targetId' => $widget->jsConstructorOptions['targetId'],
-                                            'targetType' => $widget->jsConstructorOptions['targetType']
-                                        );
-                                    }
-                                )
-                            ),
-                         ),
-                                        
-                        'RatesMarionetteWidget' => array(
-                            'widgetName' => 'RatesWidget'                                        
-                        ),
-                        
-                    )
+                    'widgets' => require('in-frontend/widgets.php')
+
                 )
 	),
     

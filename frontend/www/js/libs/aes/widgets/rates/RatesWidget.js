@@ -12,7 +12,9 @@ var Rate = Backbone.Model.extend({
 
     parse: function(rawData) {
 
-        rawData = Backbone.Model.prototype.parse.apply(this, arguments)
+        rawData = _.clone(rawData);
+
+        rawData = Backbone.Model.prototype.parse.apply(this, arguments);
 
         rawData.created_ts = parseInt(rawData.created_ts) * 1000;
 
@@ -162,8 +164,8 @@ var RatesWidget = (function(){
             this.targetEl = targetEl;
             
             $(this.targetEl)
-                    .mouseenter(onActivate)
-                    .mouseleave(onDeactivate);
+                    .mouseover(onActivate)
+                    .mouseout(onDeactivate);
             
         },       
                 
@@ -253,7 +255,7 @@ var RatesWidget = (function(){
             
             urlManager = config.urlManager;            
             
-            if(!config.urls.rates)
+            if(!config.urls.rates && !config.ratesCollection)
                 config.urls.rates = urlManager.createUrl('api/' + config.targetType + '_rate');
             
             

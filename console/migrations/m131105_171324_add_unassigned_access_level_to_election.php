@@ -6,7 +6,7 @@ class m131105_171324_add_unassigned_access_level_to_election extends EDbMigratio
 {
 	public function up()
 	{
-            $this->addColumn('election', 'unassigned_access_level', 'TINYINT NOT NULL DEFAULT ' . Election::UNASSIGNED_CAN_COMMENT);
+            $this->addColumn('election', 'unassigned_access_level', 'TINYINT NOT NULL DEFAULT ' . Election::UNASSIGNED_CAN_POST);
 	}
 
 	public function down()

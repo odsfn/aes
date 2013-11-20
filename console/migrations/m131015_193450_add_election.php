@@ -8,6 +8,7 @@ class m131015_193450_add_election extends EDbMigration
             <<<EOT
 CREATE TABLE IF NOT EXISTS `election` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `target_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `name` varchar(1000) COLLATE utf8_unicode_ci NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
@@ -26,11 +27,13 @@ ALTER TABLE `election` ADD CONSTRAINT `election_ibfk_1` FOREIGN KEY (`user_id`) 
 EOT;
         ;
         $this->execute($sql);
+        
+        $this->addForeignKey('fk_election_target_id', 'election', 'target_id', 'target', 'target_id', 'CASCADE', 'NO ACTION');
     }
 
 	public function down()
 	{
-        $this->dropTable('election');
+            $this->dropTable('election');
 	}
 
 }

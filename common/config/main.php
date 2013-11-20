@@ -38,7 +38,7 @@ return array(
                 'authManager'=>array(
                     'class'=>'CDbAuthManager',
                     'connectionID'=>'db',
-                    'defaultRoles' => array('commentReader', 'commentor')
+                    'defaultRoles' => array('commentReader', 'commentor', 'authenticated', 'guest')
                 ),            
             
 		'db'=>array(
@@ -49,6 +49,7 @@ return array(
 //		    'password' => 'root',
 //		    'initSQLs' => array('SET storage_engine=INNODB; SET time_zone = "Europe/Kiev";'),
 		    
+                    'pdoClass' => 'NestedPDO',
 		    'emulatePrepare' => true,
 		    'charset' => 'utf8',
 		    'tablePrefix' => '',

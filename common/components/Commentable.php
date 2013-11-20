@@ -24,4 +24,5 @@ abstract class Commentable extends CActiveRecord implements iCommentable {
             $this->getObjectAuthAssignmentBehaviorName()
         );
     }
+    
 }
