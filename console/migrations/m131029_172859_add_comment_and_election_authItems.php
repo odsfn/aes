@@ -37,7 +37,7 @@ class m131029_172859_add_comment_and_election_authItems extends EDbMigration
             $auth->createTask('election_manage');
             
             $task = $auth->createTask('election_administration');
-            $role->addChild('postsModeration');
+            $task->addChild('postsModeration');
             $task->addChild('election_manage');
             
             $role = $auth->createRole('election_admin', '', 'return (isset($params["election"]) && $params["election"]->checkUserInRole($params["userId"], "election_admin"));');
