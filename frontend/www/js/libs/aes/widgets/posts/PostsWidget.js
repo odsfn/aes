@@ -21,8 +21,6 @@ PostsWidget.Post = Backbone.Model.extend({
         comments: []
     },
 
-//    urlRoot: UrlManager.createUrlCallback('api/post'),
-
     initialize: function() {
         var ratesModels = this.get('rates') || [];
 
@@ -248,7 +246,8 @@ _.extend(PostsWidget, (function(){
         addComment: function(post) {
             this.collection.create(post, {
                 success: _.bind(function() {
-                   this.resetNewCommentRegion();
+                    this.model.get('post').get('comments').push(post.toJSON());                    
+                    this.resetNewCommentRegion();
                 }, this),
                 wait: true
             });
