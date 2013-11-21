@@ -1,10 +1,15 @@
 <?php
 
 class ElectionController extends FrontController
-{
-
-    public $breadcrumbs=array();
-
+{   
+    public $election;
+    
+    public function init() {
+        $this->attachBehavior('breadcrumbs', new CrumbsBehaviour);
+        $this->breadcrumbs->setEnabled(true);
+        parent::init();
+    }    
+    
     public function filters(){
         return array(
             'accessControl',
@@ -35,6 +40,7 @@ class ElectionController extends FrontController
         if (!$model)
             throw new CHttpException('404', 'Page not found');
         $this->layout = '//layouts/election';
+        $this->election = $model;
         $this->render('view', array('model'=>$model));
     }
 

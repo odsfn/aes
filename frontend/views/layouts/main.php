@@ -14,7 +14,7 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
 
-        <?php Yii::app()->clientScript->registerCssFile(Yii::app()->getBaseUrl(true) . '/css/main.css'); ?>
+        <?php Yii::app()->clientScript->registerCssFile(Yii::app()->getBaseUrl(true) . '/css/layouts/main.css'); ?>
 	<!--<script src="<?php echo Yii::app()->getBaseUrl(true); ?>/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>-->
 </head>
 <body>
@@ -40,9 +40,9 @@
                                 <?php $this->widget('bootstrap.widgets.TbMenu', array(
                                     'items'=>array(
                                         array('divider'=>'', 'visible'=>!Yii::app()->user->isGuest),
-                                        array('label'=>'Your page', 'url'=>array('/userPage/index'), 'visible'=>!Yii::app()->user->isGuest),
+                                        array('label'=>'Your page', 'url'=>array('/userPage/index', 'id'=>Yii::app()->user->id), 'visible'=>!Yii::app()->user->isGuest),
                                         array('divider'=>''),
-                                        array('label'=>'Elections', 'url'=>array('/election/')),
+                                        array('label'=>'Elections', 'url'=>array('/election/index'), 'active' => $this->id == 'election'),
                                         array('divider'=>''),
                                         array('label'=>'People', 'url'=>array('/people/index')),
                                         array('divider'=>''),

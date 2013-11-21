@@ -75,7 +75,7 @@ class Election extends CActiveRecord implements iPostable
 
     public function getHave_pic() {
         if ($this->_have_pic === null)
-            $this->_have_pic = (int)is_file(Yii::app()->basePath.'/www/uploads/elections/'.$this->id.'.jpg');
+            $this->_have_pic = (int)is_file($this->creratePicPath());
         return $this->_have_pic;
     }
 
@@ -211,4 +211,15 @@ class Election extends CActiveRecord implements iPostable
         return ($this->unassigned_access_level >= self::UNASSIGNED_CAN_READ);
     }
 
+    protected function creratePicPath() {
+        return Yii::app()->basePath.'/www/uploads/elections/'.$this->id.'.jpg';
+    }
+    
+    public function getPicUrl() {
+        if($this->have_pic) {
+            return Yii::app()->getBaseUrl(true) . '/uploads/elections/' . $this->id . '.jpg';
+        }
+        
+        return false;
+    }
 }

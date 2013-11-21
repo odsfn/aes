@@ -113,19 +113,6 @@ class PostController extends RestController {
         return $params;
     }
     
-//    public function checkAccess() {
-//
-//        $params = $this->getCheckAccessParams();
-//        
-//        if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('updatePost', $params) )
-//            return true;
-//        
-//        if( $this->action->id == 'restDelete' && Yii::app()->user->checkAccess('deletePost', $params) )
-//            return true;
-//        
-//        return false;
-//    }
-    
     public function accessRules() {
 	return array(
             array('allow',

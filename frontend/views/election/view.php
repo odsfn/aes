@@ -1,5 +1,5 @@
 <?php
-$this->breadcrumbs = array ('Elections'=>'/election', CHtml::encode($model->name));    
+$this->breadcrumbs->add(CHtml::encode($model->name));
 
 $this->widget('PostsMarionetteWidget', array(
     'jsConstructorOptions' => array(
@@ -23,5 +23,5 @@ $this->widget('PostsMarionetteWidget', array(
 ?>
 
 <div class="row-fluid">
-    <div class="span6" id="posts-container"></div>
+    <div class="span12" id="posts-container"></div>
 </div>

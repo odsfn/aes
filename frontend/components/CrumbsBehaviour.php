@@ -1,6 +1,9 @@
 <?php
-/*
+/**
  * Adds breadcrumbs management functionality to the component
+ * 
+ * It is usefull when you have multiple subpages. So you just use $this->breadcrumbs->add()
+ * to add the crumb of the current hierachy level. It prevents you from code doubling.
  */
 class CrumbsBehaviour extends CBehavior {
     
@@ -11,7 +14,7 @@ class CrumbsBehaviour extends CBehavior {
      * @param mixed $label
      * @param string $url
      */
-    public function add($label, $url = '') {
+    public function add($label, $url = null) {
         
         if(is_array($label)) {
             $insert = array(); 
@@ -32,7 +35,10 @@ class CrumbsBehaviour extends CBehavior {
             }
             
         }else{
-            $insert = array($label => array($url));
+            if(!$url || !is_array($url))
+                $url = array($url);
+            
+            $insert = array($label => $url);
         }
         
         $this->breadcrumbs = array_merge($this->breadcrumbs, $insert);
