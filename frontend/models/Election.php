@@ -105,7 +105,23 @@ class Election extends CActiveRecord implements iPostable
                 'parentTable'   => 'target',
                 'parentTablePk' => 'target_id',
                 'childConstraint' => 'target_id'
-            )
+            ),
+
+            'galleryBehavior' => array(
+                'class' => 'GalleryBehavior',
+                'idAttribute' => 'gallery_id',
+                'versions' => array(
+                    'small' => array(
+                        'centeredpreview' => array(98, 98),
+                    ),
+                    'medium' => array(
+                        'resize' => array(800, null),
+                    )
+                ),
+                'name' => true,
+                'description' => true,
+            ),
+
         );
     }
 
