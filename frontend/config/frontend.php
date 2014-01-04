@@ -30,12 +30,16 @@ return array(
 	'behaviors' => array(),
 
 	// controllers mappings
-	'controllerMap' => array(),
-        
-        'import' => array(
-            'userAccount.models.UserAccount',
-            'userAccount.models.Profile'
-        ),
+	'controllerMap' => array(
+        'gallery'=>'ext.galleryManager.GalleryController',
+    ),
+
+    'import' => array(
+        'userAccount.models.UserAccount',
+        'userAccount.models.Profile',
+        'ext.galleryManager.models.*',
+        'ext.galleryManager.*',
+    ),
     
 	// application components
 	'components' => array(
@@ -75,7 +79,7 @@ return array(
                     
                     'widgets' => require('in-frontend/widgets.php')
 
-                )
+                ),
 	),
     
 	'modules' => array(

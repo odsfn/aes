@@ -1,4 +1,16 @@
 <?php
+if ($model->galleryBehavior->getGallery() === null) {
+    echo '<p>Before add photos to product gallery, you need to save product</p>';
+} else {
+    $this->widget('GalleryManager', array(
+        'gallery' => $model->galleryBehavior->getGallery(),
+        'controllerRoute' => Yii::app()->createUrl('gallery'),
+    ));
+}
+?>
+
+
+<?php
 $this->breadcrumbs->add(CHtml::encode($model->name));
 
 $this->widget('PostsMarionetteWidget', array(
@@ -25,3 +37,6 @@ $this->widget('PostsMarionetteWidget', array(
 <div class="row-fluid">
     <div class="span12" id="posts-container"></div>
 </div>
+
+
+

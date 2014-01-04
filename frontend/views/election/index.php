@@ -18,7 +18,7 @@
 
 
     <div id="posts-app-container" class="span8">
-        <div id="election_summary" class="summary"><?php echo Yii::t('aes','Found'); ?> <span id="total_elections">...</span> <?php echo Yii::t('aes','elections'); ?><a id="a_create_election" href="/election/create">create new</a></div>
+        <div id="election_summary" class="summary"><?php echo Yii::t('aes','Found'); ?> <span id="total_elections">...</span> <?php echo Yii::t('aes','elections'); ?><a id="a_create_election" href="<?php echo Yii::app()->createUrl('election/create'); ?>">create new</a></div>
 
         <div id="election_list"></div>
         <div id="election_more"></div>
@@ -35,7 +35,7 @@
             </div>
 
             <div class="election_block">
-                <a href="/election/view/<%= id %>"><%= name %></a><br>
+                <a href="<?php echo Yii::app()->createUrl('election/view'); ?>/<%= id %>"><%= name %></a><br>
                 <span class="muted"><?php echo Yii::t('aes','Status'); ?>: </span><strong><%= text_status %></strong><br><br>
             </div>
 

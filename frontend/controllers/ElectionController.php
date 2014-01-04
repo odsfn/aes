@@ -65,16 +65,38 @@ class ElectionController extends FrontController
                     $is_image = false;
             }
 
-            if ($model->save()) {
-                if ($model->uploaded_file && $is_image) {
-                    $image = Yii::app()->image->load($model->uploaded_file->tempName);
-                    $image->resize(Election::IMAGE_WIDTH, Election::IMAGE_HEIGHT)->quality(Election::IMAGE_QUALITY);
-                    $image->save(Yii::app()->basePath . Election::IMAGE_SAVE_PATH.$model->id.'.jpg');
-                }
-                
-                $this->assignRoles($model);
-                
-                $this->redirect('/election');
+            if ($model->validate()) {
+                $gallery = new Gallery();
+                $gallery->name = true;
+                $gallery->description = true;
+                $gallery->versions = array(
+                    'small' => array(
+                        'resize' => array(200, null),
+                    ),
+                    'medium' => array(
+                        'resize' => array(800, null),
+                    )
+                );
+
+                $transaction = Yii::app()->db->beginTransaction();
+
+                $gallery->save();
+                $model->gallery_id = $gallery->id;
+                if ($model->save()) {
+                    if ($model->uploaded_file && $is_image) {
+                        $image = Yii::app()->image->load($model->uploaded_file->tempName);
+                        $image->resize(Election::IMAGE_WIDTH, Election::IMAGE_HEIGHT)->quality(Election::IMAGE_QUALITY);
+                        $image->save(Yii::app()->basePath . Election::IMAGE_SAVE_PATH.$model->id.'.jpg');
+                    }
+
+                    $this->assignRoles($model);
+
+                    $transaction->commit();
+
+                    $this->redirect('/election');
+                } else
+                    $transaction->rollback();
+
             }
         }
 
