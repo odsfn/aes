@@ -81,6 +81,19 @@ class ElectionController extends FrontController
         $this->render('create',array('model'=>$model));
     }
     
+    public function actionAdmins($id) {
+        
+        $model = Election::model()->findByPk($id);
+        if (!$model)
+            throw new CHttpException('404', 'Page not found');
+        
+        $this->layout = '//layouts/election';
+        $this->election = $model;
+        
+        $this->render('admins', array('model'=>$model));
+        
+    }
+    
     /**
      * Assigns roles on creatrion of Election
      * 

@@ -52,6 +52,14 @@ class ObjectAuthAssignmentBehavior extends CActiveRecordBehavior implements iObj
         return $this->_oaa->revokeRoleFromUser($userId, $roleName);
     }
     
+    public function fetchAssignedWithAccess($authItem, $traverse = true) {
+        return $this->_oaa->fetchAssignedWithAccess($authItem, $traverse);
+    }
+    
+    public function getFetchAssignedWithAccessCommand($authItem, $traverse = true) {
+        return $this->_oaa->getFetchAssignedWithAccessCommand($authItem, $traverse);
+    }
+    
     public function afterSave($event) {
         if(!$this->objectId)
             $this->setObjectId($this->getObjectIdFromOwner());

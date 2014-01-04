@@ -39,8 +39,8 @@ class ObjectAuthAssignmentTest extends CDbTestCase {
         $getAuthAssignment = $this->commandGetAuthAssignment($userId, 'election_creator');
         
         $this->assertEquals(0, $getAuthAssignment->query()->count());
-        
-        $this->assertTrue($objAuth2->assignRoleToUser($userId, 'election_creator'));
+        $assignment = $objAuth2->assignRoleToUser($userId, 'election_creator');
+        $this->assertInstanceOf('ElectionAuthAssignment', $assignment);
         
         $result = $getAuthAssignment->queryAll();
         $this->assertEquals(1, count($result));

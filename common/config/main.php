@@ -36,7 +36,7 @@ return array(
 	'components' => array(
 	    
                 'authManager'=>array(
-                    'class'=>'CDbAuthManager',
+                    'class'=>'common.components.AuthManager',
                     'connectionID'=>'db',
                     'defaultRoles' => array('commentReader', 'commentor', 'authenticated', 'guest')
                 ),            

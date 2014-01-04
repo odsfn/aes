@@ -262,6 +262,46 @@ class RestController extends ERestController {
     }
 
     /**
+     * Attaches behaviour to the model, sets scenario
+     * 
+     * @param CModel $model
+     */
+    protected function prepareModel() {
+        
+        static $preparedModel;
+        
+        if(!$this->model)
+            return;
+        
+        if($preparedModel && $preparedModel === $this->model)
+            return;
+        
+        $this->_attachBehaviors($this->model);
+
+        if(!is_null($this->restScenario)) {
+            $this->model->scenario = $this->restScenario;
+        }
+        
+        $preparedModel = $this->model;
+    }
+
+    public function createModel() {
+        if ($this->model === null) 
+        {
+                $modelName = str_replace('Controller', '', get_class($this)); 
+                $this->model = new $modelName;
+        }
+        
+        return $this->model;
+    }
+    
+    public function getModel() {
+        $this->model = $this->createModel();
+        $this->prepareModel();
+        return $this->model;
+    }
+
+    /**
      * Fix of empty result for secondary read
      */ 
     protected $_data = false;

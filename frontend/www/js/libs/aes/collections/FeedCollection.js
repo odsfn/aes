@@ -33,6 +33,8 @@ var FeedCollection = Backbone.Collection.extend({
     
     filter: null,
     
+    _requestProcessing: false,
+    
     getFilters: function() {
        return {};
     },
@@ -125,22 +127,38 @@ var FeedCollection = Backbone.Collection.extend({
     
     initialize: function() {
 
+        var restoreIncrCount = _.bind(function() {
+            // @TODO: move this "_.findWhere(this._events['add'], {callback: this.incrementCount})" to the method Backbobe.Events.hasHandler(eventName, callback, context) 
+            if(!_.findWhere(this._events['add'], {callback: this.incrementCount}))
+                this.on('add', this.incrementCount);
+            
+        }, this);
+
         this.filter = {};
 
         this.on('request', function() {
+           this._requestProccessing = true;
+           
            //totalCount will be returned by server
            this.off('add', this.incrementCount);
         });
 
         this.on('sync', function() {
-           // @TODO: move this "_.findWhere(this._events['add'], {callback: this.incrementCount})" to the method Backbobe.Events.hasHandler(eventName, callback, context) 
-           if(!_.findWhere(this._events['add'], {callback: this.incrementCount}))
-                this.on('add', this.incrementCount);
+           restoreIncrCount();
            
            this.sort();
+           
+           this._requestProccessing = false;
         });
         
-        this.on('remove', this.decrementCount);
+        this.on('remove', function() {
+            this.decrementCount();
+            
+            if(this._requestProccessing === true)
+                restoreIncrCount();
+            
+            this._requestProccessing = false;
+        });
         
     }
 });

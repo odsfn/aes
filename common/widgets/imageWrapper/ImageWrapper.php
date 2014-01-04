@@ -39,11 +39,7 @@ class ImageWrapper extends CWidget
             $this->height = $this->width;
         }
         
-        Yii::app()->clientScript->registerCssFile(
-            Yii::app()->assetManager->publish(
-                Yii::getPathOfAlias('common.widgets.imageWrapper.assets').'/image-wrapper.css'
-            )
-        );
+        $this->registerCss();
         
         $htmlOptions = array(
             'class' => 'img-wrapper-tocenter',
@@ -66,5 +62,13 @@ class ImageWrapper extends CWidget
             $htmlOptions = array_merge($htmlOptions, $this->htmlOptions);
         
         echo CHtml::tag('div', $htmlOptions, '<span></span>' . CHtml::image($this->imageSrc . ( $this->noCache ? '?'.microtime() : ''),  $this->imageAlt));
+    }
+    
+    public function registerCss() {
+        Yii::app()->clientScript->registerCssFile(
+            Yii::app()->assetManager->publish(
+                Yii::getPathOfAlias('common.widgets.imageWrapper.assets').'/image-wrapper.css'
+            )
+        );
     }
 }

@@ -94,7 +94,7 @@ class Profile extends CActiveRecord {
 	// NOTE: you may need to adjust the relation name and the related
 	// class name for the relations automatically generated below.
 	return array(
-	    'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+	    'user' => array(self::BELONGS_TO, 'UserAccount', 'user_id'),
 	);
     }
 
@@ -135,10 +135,18 @@ class Profile extends CActiveRecord {
 	$criteria->compare('gender', $this->gender);
 	$criteria->compare('mobile_phone', $this->mobile_phone, true);
 	$criteria->compare('email', $this->email, true);
-
+        
 	return new CActiveDataProvider($this, array(
 	    'criteria' => $criteria,
 	));
+    }   
+    
+    public function scopes() {
+        return array(
+            'activeOnly' => array(
+                'join' => 'INNER JOIN user ON user.id = t.user_id AND user.status = ' . UserAccount::STATUS_ACTIVE
+            ) 
+        );
     }
     
     public function beforeSave() {

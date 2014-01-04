@@ -102,7 +102,7 @@ class ClientApp extends CWidget {
         
         foreach ($this->initializers as $index => $initializer) {
             $this->clientScript->registerScript('intlzr' . $index, 
-                    $fullAppName. '.addInitializer(function(){ ' . $initializer .' });'
+                    'App.addInitializer(function(){ ' . $initializer .' });'
             );
         }
     }

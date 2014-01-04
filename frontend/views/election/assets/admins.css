@@ -1,0 +1,93 @@
+#column-right > div > ul.nav {
+    margin-bottom: 0px;
+}
+
+#column-right .navbar-inner {
+    border-radius: 0px 0px 4px 4px;
+    border-top: none;
+}
+
+#invite-tab-sel {
+    display: none;
+}
+
+.messages-cnt {
+    margin: 20px 0;
+    max-height: 500px;
+    min-height: 500px;
+    overflow-y: scroll;
+}
+
+.get-more > div {
+    text-align: center;
+    margin-top: 15px;
+    
+    line-height: 14px;
+    
+    padding-top: 8px;
+    padding-bottom: 8px;
+    
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    
+    background-color: #f9f9f9;
+}
+
+.get-more > div:hover {
+    background-color: #DDD;
+    cursor: pointer;
+}
+
+.get-more > div.loading:hover {
+    cursor: default;
+}
+
+.get-more > div > span {
+    display: none;
+}
+
+.get-more > div.loading > span {
+    display: inline;
+}
+
+.get-more > div.loading > a {
+    display: none;
+}
+
+.user-info {
+    margin-bottom: 25px;
+    margin-left: 1.5%;
+    width: 45.6239%;
+    border-right: 3px solid #f9f9f9;
+    min-height: 85px;
+    
+    -moz-box-sizing: border-box;
+    display: block;
+}
+
+.user-info .pull-left {
+    margin-right: 15px;
+}
+
+.user-info .body {
+    padding-top: 7px;
+}
+
+.user-info .body > a {
+    font-size: larger;
+}
+
+.user-info span.mark, .user-info .controls {
+    margin: 0 5px 5px 0;
+    opacity: 0.75;
+}
+
+.user-info .controls {
+    display: none;
+    cursor: pointer;
+}
+
+.items {
+    padding-top: 10px;
+}

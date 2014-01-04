@@ -46,14 +46,15 @@ class ObjectAuthAssignment implements iObjectAuthAssignment {
         }
         
         $authAssignmentId = $assignedAuthItem['id'];
+                
+        $authAssignment = $this->createAuthAssignment();
+        $authAssignment->auth_assignment_id = $authAssignmentId;
+        $authAssignment->object_id = $this->objectId;
         
-        $command = $this->db->createCommand('INSERT INTO ' . $this->getTable() . ' (auth_assignment_id, object_id) VALUES(:authAssignmentId, :objectId)');
-        $command->bindValues(array(
-            ':authAssignmentId' => $authAssignmentId,
-            ':objectId' => $this->objectId
-        ));
+        if(!$authAssignment->save())
+            throw new Exception('Can\'t assign role ' . $roleName . ' to user ' . $userId . ' within object ' . $this->objectId . 'Error: ' . print_r($authAssignment->errors, true));
         
-        return (bool)$command->execute();
+        return $authAssignment;
     }
     
     public function revokeRoleFromUser($userId, $roleName) {
@@ -84,6 +85,60 @@ class ObjectAuthAssignment implements iObjectAuthAssignment {
     
     public function getObjectTypeId() {
         return lcfirst($this->objectType);
+    }
+    
+    /**
+     * Return prepared command for fetching users with assigned roles on current object
+     * @param string $authItem
+     * @param boolean $traverse
+     * @return CDbCommand
+     * @throws Exception
+     */
+    public function getFetchAssignedWithAccessCommand($authItem, $traverse = true) {
+        
+        $auth = Yii::app()->authManager;
+        $authItems = array();
+        
+        
+        if(!($item = $auth->getAuthItem($authItem)))
+            throw new Exception ('Specified authItem "'. $authItem .'" was not found');
+        
+        $authItems[] = $authItem;
+        
+        if($traverse) {
+            $ancestors = $auth->getAncestors($authItem);
+            $authItems = array_merge($authItems, $ancestors);
+        }
+        
+        foreach ($authItems as $index => $item) {
+            $authItems[$index] = '"'.$item.'"';
+        }
+        
+        $authItems = implode(',', $authItems);
+
+        $command = Yii::app()->db->createCommand()
+                ->select('aa.id, aa.itemname, aa.userid')
+                ->from($this->getTable() . ' oa')
+                ->join('AuthAssignment aa', 
+                        array('and', 
+                            'aa.itemname IN(' . $authItems . ')',
+                            'oa.auth_assignment_id = aa.id'
+                        )
+                )
+                ->where(array('and', 'oa.object_id = :objectId'), array(':objectId' => $this->objectId));
+        
+        return $command;
+    }
+
+    public function createAuthAssignment() {
+        $assignment = $this->objectType . 'AuthAssignment';
+        return new $assignment();
+    }
+
+    public function fetchAssignedWithAccess($authItem, $traverse = true) {
+        $command = $this->getFetchAssignedWithAccessCommand($authItem, $traverse);
+        
+        return $command->queryAll();
     }
     
     public static function fetchAuthAssignment($userId, $roleName) {

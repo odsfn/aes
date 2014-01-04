@@ -22,19 +22,7 @@ class UsersPhoto extends ImageWrapper
 
     public function run() {
         
-        Yii::app()->clientScript->registerCss('users-photo', 
-            ".users-photo {
-                background-color: #E9E9E9 !important;
-                border: 1px solid #F5F5F5;
-                border-radius: 2px;
-                box-shadow: 1px 1px 10px 0px rgb(201, 201, 201);
-            }
-
-            .users-photo img {
-                display: inline-block;
-                border-radius: 2px;
-            }"
-        );
+        $this->registerCss();
         
         if(!$this->user) {
             $this->user = Yii::app()->user->profile;
@@ -49,5 +37,23 @@ class UsersPhoto extends ImageWrapper
         $this->htmlOptions = array('class' => 'users-photo users-photo-' . $this->user->user_id);
         
         parent::run();
+    }
+    
+    public function registerCss() {
+        Yii::app()->clientScript->registerCss('users-photo', 
+            ".users-photo {
+                background-color: #E9E9E9 !important;
+                border: 1px solid #F5F5F5;
+                border-radius: 2px;
+                box-shadow: 1px 1px 10px 0px rgb(201, 201, 201);
+            }
+
+            .users-photo img {
+                display: inline-block;
+                border-radius: 2px;
+            }"
+        );
+        
+        parent::registerCss();
     }
 }
