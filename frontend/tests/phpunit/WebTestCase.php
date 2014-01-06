@@ -15,4 +15,14 @@ class WebTestCase extends CWebTestCase
 		parent::setUp();
 		$this->setBrowserUrl(TEST_BASE_URL);
 	}
+        
+            
+        protected function login($login, $pass) {
+            $this->open('userAccount/login');
+            $this->waitForPageToLoad("30000");
+            $this->type("css=input#LoginForm_identity", $login);
+            $this->type("css=input#LoginForm_password.span5", $pass);
+            $this->click("id=yw0");
+            $this->waitForPageToLoad("30000");
+        }
 }
