@@ -2,6 +2,83 @@
  * Common client-side helpers
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
+var Aes = (function() {
+    
+    var ajaxFormatCheck = true;
+    
+    var handleAjaxError = function(message, response, xhr) {
+        alert(message);
+    };
+    
+    function onAjaxComplete(e, xhr, options) {
+        
+        if(options.url.match(/^.*\.php\/api\/.*$/)) {
+            
+            if(xhr.status === 200 || xhr.status === 201) {
+                //proccess error message
+                try{
+                    var response = $.parseJSON(xhr.responseText);
+                } catch(e) {
+                    var response = { success: false, result: xhr.responseText };
+                    
+                    if(response.result.match(/id="LoginForm"/m)) {
+                        window.location.href = UrlManager.createUrl('userAccount/login');
+                        return;
+                    }
+                }
+                
+                if(!response.success) {
+                    if(response.message)
+                        handleAjaxError('Error:' + response.message, response, xhr);
+                    else
+                        handleAjaxError('Error: Invalid response format', response, xhr);
+                }
+                
+            } else if(xhr.status === 302) { //redirect
+                
+                var url = xhr.getResponseHeader('Location'); 
+                
+                window.location.replace(url);
+                
+            } else {
+                handleAjaxError('XHR Error: Unexpected response status ('+ xhr.status +')', {}, xhr);
+            }
+            
+        }
+    }
+    
+    function bindErrorHandler() {
+        $(document).bind('ajaxComplete', onAjaxComplete);
+    }
+    
+    
+    if(ajaxFormatCheck)
+        bindErrorHandler();
+    
+    return {
+                
+        enableAjaxErrorsHandling: function() {
+            if(ajaxFormatCheck)
+                return;
+            
+            bindErrorHandler();
+            ajaxFormatCheck = true;
+        },
+                
+        disableAjaxErrorsHandling: function() {
+            if(!ajaxFormatCheck)
+                return;
+            
+            $(document).unbind('ajaxComplete', onAjaxComplete);
+            ajaxFormatCheck = false;
+        },
+                
+        setAjaxErrorHandler: function(handler) {
+            handleAjaxError = handler;
+        }
+        
+    };
+})();
 
 var 
     UrlManager = function() {
@@ -39,13 +116,6 @@ Backbone.Model.prototype.parse = function(rawData, options) {
     if(!_.isObject(response.data))  //Parsing response in context of collection's fetch 
         return response;
     
-    if(!response.success) {
-        if(response.message)
-            throw new Error(response.message);
-        else
-            throw new Error('Invalid response format');
-    }
-    
     var result = {};
     
     if(response.data.totalCount === 1) {
@@ -66,14 +136,5 @@ Backbone.Collection.prototype.parse = function(rawData, options) {
         return rawData;
     }
     
-    var response = rawData;    
-    
-    if(!response.success) {
-        if(response.message)
-            alert('Error: ' + response.message);
-        else
-            alert('Error: Invalid response format');
-    }
-    
-    return response.data.models;
+    return rawData.data.models;
 };
