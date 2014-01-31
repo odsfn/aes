@@ -11,7 +11,7 @@
  * @property integer $status
  *
  * The followings are the available model relations:
- * @property Profile $user
+ * @property Profile $profile
  * @property Candidate $candidate
  */
 class Vote extends CActiveRecord
@@ -70,7 +70,7 @@ class Vote extends CActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
+            'profile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'candidate' => array(self::BELONGS_TO, 'Candidate', 'candidate_id'),
         );
     }

@@ -36,10 +36,14 @@ var MoreView = Marionette.ItemView.extend({
         
         this.listenTo(this.base, 'show', _.bind(function() {
             
-            if(typeof this.appendTo === 'string')
+            var type = typeof this.appendTo;
+            
+            if(type === 'string')
                 $(this.appendTo).append(this.$el);
-            else
+            else if(type === 'function')
                 this.appendTo().append(this.$el);
+            else
+                this.appendTo.append(this.$el);
             
         }, this));
     },

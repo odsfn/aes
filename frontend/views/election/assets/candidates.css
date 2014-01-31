@@ -1,8 +1,8 @@
-#column-right > div > ul.nav {
+#candidates > div > ul.nav, #candidate-details div > ul.nav {
     margin-bottom: 0px;
 }
 
-#column-right .navbar-inner {
+#candidates .navbar-inner, #candidate-details .navbar-inner {
     border-radius: 0px 0px 4px 4px;
     border-top: none;
 }
@@ -129,4 +129,12 @@ div.checkbox.declined {
 div.checkbox.inactive {
     opacity: 0.5;
     cursor: default;
+}
+
+#candidate-details {
+    display: none;
+}
+
+#candidate-details div.status-controls {
+    margin-top: 15px;
 }

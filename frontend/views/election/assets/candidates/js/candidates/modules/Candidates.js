@@ -9,7 +9,8 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         electionId: null,
         canDeprive: false,
         canInvite: false,
-        canVote: false
+        canVote: false,
+        currentCandidateId: null
     };
     
     var CandidatesLayout = Marionette.Layout.extend({
@@ -25,17 +26,9 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         template: '#no-item-tpl'
     });
     
-    var ElectoralCandView = Marionette.ItemView.extend({
-        className: 'user-info',
-        template: '#electoral-list-item-tpl',
+    Candidates.VoteBoxView = Marionette.ItemView.extend({
         
-        _voted: false,
-        
-        _voteBoxActive: true,
-        
-        _voteDeclined: false,
-        
-        activeVote: null,
+        template: '#vote-box-tpl',
         
         ui: {
             voteBox: '.checkbox',
@@ -46,130 +39,97 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             'click .checkbox': 'voteBoxClicked'
         },
         
+        modelEvents: {
+            'change': 'render'
+        },
+        
         onVoteBoxClicked: function() {
-            if(!this._voteBoxActive)
+            if(!this.model.canVote())
                 return;
             
-            var voted = !this._voted;
+            var voted = !this.model.get('voted');
             
             this.$el.mask();
             
             if(voted) {
-                Candidates.votes.create({
-                    user_id: WebUser.getId(),
-                    candidate_id: this.model.get('id')
-                }, {
-                    wait: true,
-                    success: _.bind(function(model) {
-                        this.ui.voteBoxValue.html('&#10003;');
-                        this.trigger('voteAdded');
-                        this._voted = voted;  
-                        this.$el.unmask();
-                        this.activeVote = model;
-                    }, this)
-                });
-            }
-            else {
-                this.activeVote.destroy({
-                    wait: true,
-                    success: _.bind(function(){
-                        this.ui.voteBoxValue.html('');
-                        this.trigger('voteDeleted');
-                        this._voted = voted;
-                        this.$el.unmask();
-                        this.activeVote = null;
-                    }, this)
-                })
+                
+                this.model.passVote(_.bind(function(){
+                    this.ui.voteBoxValue.html('&#10003;');
+                    this.trigger('voteAdded');
+                    this._voted = voted;  
+                    this.$el.unmask();
+                }, this));
+                
+            } else {
+
+                this.model.declineVote(_.bind(function(){
+                    this.ui.voteBoxValue.html('');
+                    this.trigger('voteDeleted');
+                    this._voted = voted;
+                    this.$el.unmask();
+                }, this));
+                
             }
         },
-        
-        activateVoteBox: function() {
-        
-            if(this._voteBoxActive || this._voteDeclined)
+       
+        initialize: function() {
+
+            if(!Candidates.canVote()) {
+                this.model.set('active', false);
                 return;
+            }
+            
+        }       
+    });
     
-            this._voteBoxActive = true;
-            this.ui.voteBox.removeClass('inactive');
-        },
+    var ElectoralCandView = Candidates.ElectoralCandView = Marionette.ItemView.extend({
+        className: 'user-info',
+        template: '#electoral-list-item-tpl',
         
-        inactivateVoteBox: function() {
-    
-            if(!this._voteBoxActive)
-                return;
-    
-            this._voteBoxActive = false;
-            this.ui.voteBox.addClass('inactive');    
+        ui: {
+            voteBoxCntr: 'div.vote-cntr'
         },
         
         serializeData: function() {
             return _.extend(Marionette.ItemView.prototype.serializeData.call(this), {
-                view: this,
                 statusText: this.model.getStatusText()
             });
         },
                 
+        onRender: function() {
+            this._voteBoxView.render();
+        },
+                
+        onShow: function() {
+            this.ui.voteBoxCntr.append(this._voteBoxView.$el);
+        },
+                
         initialize: function() {
-            var candidateVote = Candidates.votes.findWhere({candidate_id: this.model.get('id')});
+
+            var model, candId = this.model.get('id');
             
-            this.activeVote = candidateVote;
-            
-            if(candidateVote) {
-                var voteStatus = candidateVote.get('status');
+            model = Candidates.voteBoxModels.findWhere({candidate_id: candId});
+
+            if(!model) {
+                model = new Candidates.VoteBoxModel({
+                    candidate_id: candId
+                });
                 
-                if(voteStatus === 0)
-                    this._voted = true;
-                else if(voteStatus === 1) {
-                    this._voted = true;
-                    this._voteBoxActive = false;
-                } else {
-                    this._voteDeclined = true;
-                    this._voteBoxActive = false;
-                }
-            } else {
-                var voted = Candidates.votes.findWhere({status: 0}) || Candidates.votes.findWhere({status: 1});
-                
-                if(voted)
-                    this._voteBoxActive = false;
+                Candidates.voteBoxModels.add(model);
             }
             
-            if(!Candidates.canVote())
-                this._voteBoxActive = false;
+            var candidateVote = Candidates.votes.findWhere({candidate_id: this.model.get('id')});
+            
+            if(candidateVote)
+                model.set('vote', candidateVote);
+            
+            this._voteBoxView = new Candidates.VoteBoxView({model: model });
         }
     });
     
     var CandItemView = Marionette.ItemView.extend({
         className: 'user-info',
         template: '#cand-list-item-tpl',
-        
-        ui: {
-            controls: 'span.controls',
-            depriveBtn: 'span.controls > small'
-        },
-                
-        triggers: {
-            'mouseenter': 'mouseEnter',
-            'mouseleave': 'mouseLeave'
-//            'click span.controls > small': 'depriveBtnClick'
-        },
-        
-        onMouseEnter: function() {
-//            if(!Candidates.canDeprive())
-//                return;
-//            
-//            if(this.model.get('authAssignment').itemname !== 'election_creator')
-//                this.ui.controls.show();
-        },
-                
-        onMouseLeave: function() {
-//            this.ui.controls.hide();
-        },
-                
-        onDepriveBtnClick: function() {
-            this.$el.mask();
-            this.model.destroy({
-                wait: true
-            });
-        },
                 
         serializeData: function() {
             return _.extend(Marionette.ItemView.prototype.serializeData.call(this), {
@@ -237,27 +197,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
     });
     
     var ElectoralList = Candidates.FeedView.extend({
-        
-        itemView: ElectoralCandView,
-        
-        initialize: function() {
-            
-            this.on('itemview:voteAdded', function(votedItemView) {
-               this.children.each(function(itemView){
-                   if(itemView !== votedItemView)
-                       itemView.inactivateVoteBox();
-               }); 
-            });
-            
-            this.on('itemview:voteDeleted', function(votedItemView) {
-                this.children.each(function(itemView){
-                    itemView.activateVoteBox();
-                });
-            });
-            
-            Candidates.FeedView.prototype.initialize.apply(this, arguments);
-        }
-        
+        itemView: ElectoralCandView
     });
     
     var CandsListView = Candidates.FeedView.extend({
@@ -342,7 +282,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         }
     });
     
-    var Vote = Backbone.Model.extend({
+    Candidates.Vote = Backbone.Model.extend({
         parse: function() {
             var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
 
@@ -354,19 +294,138 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             attrs.status = parseInt(attrs.status);
 
             return attrs;
+        },
+                
+        isVoted: function() {
+            return (this.get('user_id') && this.get('candidate_id'));
+        },
+         
+        isDeclined: function() {
+            return (this.get('status') === 1);
+        },
+                
+        canVote: function() {
+            var passedVote = Candidates.votes.getPassedVote();
+            
+            return (!passedVote || _.isEqual(passedVote, this));
         }
     });
     
-    var Votes = FeedCollection.extend({
+    Candidates.VoteBoxModel = Backbone.Model.extend({
+        defaults: {
+            voted: false,
+            active: false,
+            declined: false,
+            vote: null,
+            
+            candidate_id: null
+        },
+                
+        passVote: function(success) {
+            Candidates.votes.create(
+                {
+                    user_id: WebUser.getId(),
+                    candidate_id: this.get('candidate_id')
+                }, 
+                {
+                    wait: true,
+                    success: _.bind(function(model) {
+                        this.set('vote', model);
+                        success();
+                    }, this)
+                }
+            );    
+        },
+                
+        declineVote: function(success) {
+            var vote = this.get('vote');
+            
+            if(!vote)
+                return;
+            
+            vote.destroy({
+                wait: true,
+                success: success
+            });
+        },
+                
+        updateAttrs: function() {
+    
+            var vote = this.get('vote');
+            
+            if(vote) {
+                var declined = vote.isDeclined();
+                
+                this.set({
+                   voted: true,
+                   active:  (!declined && vote.canVote()),
+                   declined: declined
+                });                
+            } else {
+                var hasPassedVote = false;
+                
+                if(Candidates.votes.getPassedVote())
+                    hasPassedVote = true;
+                
+                this.set({
+                    voted: false,
+                    active: !hasPassedVote,
+                    declined: false
+                });
+            }
+        },        
+             
+        canVote: function() {
+            return this.get('active');
+        },
+                
+        initialize: function() {
+            this.on('change:vote', _.bind(function(m, v, o) {
+                
+                var vote = this.get('vote'); 
+                
+                if(vote) {
+                    
+                    this.listenTo(vote, 'destroy', function() {
+                        this.set({
+                            voted: false,
+                            active: true,
+                            declined: false,
+                            vote: null
+                        });
+                    });
+                }
+                
+                this.updateAttrs();
+                
+            }, this));
+            
+            this.listenTo(Candidates.votes, 'sync remove', this.updateAttrs);
+            
+            this.updateAttrs();
+        }
+    });
+    
+    Candidates.Votes = FeedCollection.extend({
        limit: 2000,
-       model: Vote,
+       model: Candidates.Vote,
        url: UrlManager.createUrlCallback('api/vote'),
        
        electionId: null,
        
        setElectionId: function(value) {
-        this.electionId = value;
-        this.filter.election_id = value;
+            this.electionId = value;
+            this.filter.election_id = value;
+       },
+               
+       /**
+        * Returns the vote that had benn passed by current user and had not been declined by candidate 
+        * @returns {Vote}
+        */
+       getPassedVote: function() {
+            return this.find(function(m) {
+                return ( m.isVoted() && m.get('status') !== 1); 
+            });
        }
     });
     
@@ -378,6 +437,10 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         return config.canDeprive;
     };
     
+    this.canDecline = function() {
+        return config.canDecline;
+    };
+    
     this.canInvite = function() {
         return config.canInvite;
     };
@@ -386,13 +449,48 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         return config.canVote;
     };
     
+    this.getElectionId = function() {
+        return config.electionId;
+    };
+    
+    this.getCurrentCandidateId = function() {
+        return config.currentCandidateId;
+    };
+    
+    this.viewDetails = function(candId) {
+        
+        var cand = this.cands.findWhere({id: parseInt(candId)});
+        
+        this.Details.viewCandidate(cand);
+        
+        $('ul.breadcrumbs li').last().find('a').addClass('route').attr('href', '');
+        
+        $('<li><a>' + cand.get('profile').displayName + '</a></li>').appendTo('ul.breadcrumbs').attr('href', '#');
+        
+        $('#candidate-details').show();
+        $('#candidates').hide();
+        
+        this._detailsViewing = true;
+    };
+    
+    this.viewCandidates = function() {
+        
+        if(this._detailsViewing)
+            $('ul.breadcrumbs li').last().remove();
+        
+        $('#candidate-details').hide();
+        $('#candidates').show();
+        
+        this._detailsViewing = false;
+    };
+    
     this.addInitializer(function() {
         this.cands = new Cands();
         
         this.approvedCands = new Cands();
         this.approvedCands.filter.status = 2;
         
-        this.votes = new Votes();
+        this.votes = new Candidates.Votes();
         
         this.layout = new CandidatesLayout();
         
@@ -417,6 +515,8 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
     });
     
     App.on('start', function() {
+        Candidates.voteBoxModels = new Backbone.Collection();
+        
         Candidates.cands.setElectionId(config.electionId);
         Candidates.votes.setElectionId(config.electionId);
         Candidates.votes.filter.user_id = WebUser.getId() || 0;
@@ -435,8 +535,16 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             
             if(Candidates.canInvite())
                 Candidates.Invite.users.fetch();
-            
+
+            Candidates.Details.start();
+
+            Backbone.history.start({
+                pushState: true,
+                root: UrlManager.createUrl('election/candidates/' + Candidates.getElectionId())
+            });                
+                
         }});
+    
     });
 });
 

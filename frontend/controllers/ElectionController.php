@@ -125,7 +125,16 @@ class ElectionController extends FrontController
         $this->layout = '//layouts/election';
         $this->election = $model;
         
-        $this->render('candidates', array('model'=>$model));        
+        $candidate = false;
+        
+        if(Yii::app()->user->id) {
+            $candidate = Candidate::model()->findByAttributes(array(
+                'user_id'    => Yii::app()->user->id,
+                'election_id'=> $model->id
+            ));
+        }
+        
+        $this->render('candidates', array('model'=>$model, 'candidate'=>$candidate));        
     }
     
     /**

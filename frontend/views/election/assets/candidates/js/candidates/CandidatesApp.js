@@ -4,13 +4,26 @@
 var App = new Backbone.Marionette.Application(),
     AdminsApp = App;
 
-App.on('initialize:before', function() {
-
+App.Router = Marionette.AppRouter.extend({
+    appRoutes: {
+        "": 'viewCandidates',
+        "details/:candId": 'viewDetails'
+    }
 });
 
 App.on('start', function() {
+    
     var modCands = App.module('Candidates');
     
-    $('#column-right').prepend(modCands.layout.render().el);
+    this.router = new App.Router({
+        controller: modCands
+    });
+    
+    $('#candidates').prepend(modCands.layout.render().el);
     modCands.layout.triggerMethod('show');
+    
+    $('#column-right, #title').on('click', 'a.route', function(e) {
+        e.preventDefault();
+        App.router.navigate($(this).attr('href'), {trigger: true});
+    });
 });

@@ -7,8 +7,12 @@ class VoteController extends RestController {
     public $nestedModels = array();
     
     public $acceptFilters = array(
-        'plain' => 'election_id,user_id'
+        'plain' => 'election_id,user_id,candidate_id,with_profile,name'
     );
+    
+    public $virtualAttrs = array(
+        'profile'
+    );  
     
     public function getOutputFormatters() {
         return array(
@@ -43,6 +47,19 @@ class VoteController extends RestController {
         
         if(isset($this->plainFilter['user_id']))
             $criteria->mergeWith(array('condition' => 't.user_id = ' . (int)$this->plainFilter['user_id']));
+        
+        if(isset($this->plainFilter['candidate_id']))
+            $criteria->mergeWith(array('condition' => 't.candidate_id = ' . (int)$this->plainFilter['candidate_id']));
+        
+        if(!empty($this->plainFilter['name']))
+            $criteria->mergeWith(PeopleSearch::getCriteriaFindByName($this->plainFilter['name'], 'profile'));        
+        
+        if(!empty($this->plainFilter['with_profile']))
+            $this->nestedModels = array(
+                'profile' => array(
+                    'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64, birth_place, birth_day'
+                )                
+            );
         
         $results = $this->getModel()
                 ->with($this->nestedRelations)
