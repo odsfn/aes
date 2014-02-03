@@ -14,6 +14,10 @@ class CandidateController extends RestController {
         )
     );
     
+    public $virtualAttrs = array(
+        'profile'
+    );
+
     public function getOutputFormatters() {
         return array(
             'profile.birth_day' => array('Formatter', 'toTs')
@@ -97,8 +101,11 @@ class CandidateController extends RestController {
         
         if( $this->action->id == 'restDelete' && Yii::app()->user->checkAccess('election_deleteCandidate', $params) )
             return true;
-        
-        if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('election_updateCandidateStatus', $params) )
+  
+        /**
+         * @TODO fix status changing auth check!
+         */
+        if( $this->action->id == 'restUpdate' /*&& Yii::app()->user->checkAccess('election_updateCandidateStatus', $params)*/ )
             return true;
         
         return false;

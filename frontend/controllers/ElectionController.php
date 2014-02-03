@@ -36,9 +36,8 @@ class ElectionController extends FrontController
 
     public function actionView($id)
     {
-        $model = Election::model()->findByPk($id);
-        if (!$model)
-            throw new CHttpException('404', 'Page not found');
+        $model = $this->getModel($id);
+        
         $this->layout = '//layouts/election';
         $this->election = $model;
         $this->render('view', array('model'=>$model));
@@ -103,11 +102,30 @@ class ElectionController extends FrontController
         $this->render('create',array('model'=>$model));
     }
     
+    public function actionManagement($id) {
+        $model = $this->getModel($id);
+        $this->layout = '//layouts/election';
+        $this->election = $model;
+        
+        if(!Yii::app()->user->checkAccess('election_administration', array('election' => $this->election)))
+            throw new CHttpException(403, 'You have no rights to perform this action');
+        
+        if (isset($_POST['Election'])) {
+
+            $model->attributes = $_POST['Election'];
+
+            if($model->save()) {
+                $this->redirect(array('/election/view/' . $model->id));
+            }
+            
+        }
+        
+        $this->render('management', array('model'=>$model));
+    }
+    
     public function actionAdmins($id) {
         
-        $model = Election::model()->findByPk($id);
-        if (!$model)
-            throw new CHttpException('404', 'Page not found');
+        $model = $this->getModel($id);
         
         $this->layout = '//layouts/election';
         $this->election = $model;
@@ -118,9 +136,7 @@ class ElectionController extends FrontController
     
     
     public function actionCandidates($id) {
-        $model = Election::model()->findByPk($id);
-        if (!$model)
-            throw new CHttpException('404', 'Page not found');
+        $model = $this->getModel($id);
         
         $this->layout = '//layouts/election';
         $this->election = $model;
@@ -135,6 +151,15 @@ class ElectionController extends FrontController
         }
         
         $this->render('candidates', array('model'=>$model, 'candidate'=>$candidate));        
+    }
+    
+    protected function getModel($id) {
+        $model = Election::model()->findByPk($id);
+        
+        if (!$model)
+            throw new CHttpException('404', 'Page not found');
+        
+        return $model;
     }
     
     /**

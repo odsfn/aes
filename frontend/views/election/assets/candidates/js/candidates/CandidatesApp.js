@@ -12,7 +12,7 @@ App.Router = Marionette.AppRouter.extend({
 });
 
 App.on('start', function() {
-    
+    console.log('CandidatesApp.start');
     var modCands = App.module('Candidates');
     
     this.router = new App.Router({

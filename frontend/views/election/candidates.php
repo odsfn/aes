@@ -30,13 +30,12 @@ $this->widget('application.widgets.ClientApp', array(
 ));
 
 Yii::app()->clientScript->registerScript('starter',
-    "App.module('Candidates').setOptions({
+    "App.start({
         electionId: ". $model->id .",
         canInvite: $canUserManage," 
         . ( (!empty($candidate)) ? "currentCandidateId: {$candidate->id}," : "" ) .
         "canVote: $canUserVote
-     }); 
-     App.start();"
+     });"
 );
 
 $this->createWidget('application.widgets.UsersPhoto')->registerCss();
@@ -44,20 +43,20 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
 <div id="candidates"></div>
 
-<div id="candidate-details">Here is the candidates details</div>
+<div id="candidate-details"></div>
 
 <script id="cands-layout-tpl" type="text/template">
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#electoral-list-tab" data-toggle="tab">Electoral list</a></li>
-        <li><a href="#all-cands-tab" data-toggle="tab">All candidates</a></li>
+        <li id="electoral-list-tab-sel"><a href="#electoral-list-tab" data-toggle="tab">Electoral list</a></li>
+        <li class="active"><a href="#all-cands-tab" data-toggle="tab">All candidates</a></li>
         <li id="invite-tab-sel"><a href="#invite-tab" data-toggle="tab">Invite</a></li>
     </ul>
     
     <div class="tab-content">
     
-        <div id="electoral-list-tab" class="tab-pane active"></div>
+        <div id="electoral-list-tab" class="tab-pane"></div>
     
-        <div id="all-cands-tab" class="tab-pane"></div>
+        <div id="all-cands-tab" class="tab-pane active"></div>
         
         <div id="invite-tab" class="tab-pane"></div> 
         
@@ -212,16 +211,12 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
                 <span></span>
                 <img alt="<%= profile.displayName %>" src="<%= profile.photoThmbnl64 %>">
             </div>
-            
-            <div class="status-controls">
-                <button class="btn">Foo bar</button>
-            </div>
         </div>
 
         <div class="pull-right vote-cntr"></div>
 
         <div class="body">
-            <a href="<%= profile.pageUrl %>" target="_blank"><%= profile.displayName %></a> <b>№<%= electoral_list_pos %></b> <br>
+            <a href="<%= profile.pageUrl %>" target="_blank"><%= profile.displayName %></a> <% if(statusText === 'Registered') { %> <b>№<%= electoral_list_pos %></b> <% } %> <br>
 
             <div><b>Birth Day: </b><%= i18n.date(profile.birth_day, 'full') %></div>
 
@@ -229,17 +224,23 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
             <div><b>Status: </b> <%= t(statusText) %></div>
             
+            <% if(statusText === 'Registered' && electionStatusText == 'Election') { %>
             <div><b>Votes count: </b> 1234</div>
+            <% } %>
         </div>
 </script>
 
 <script type="text/template" id="candidate-details-layout">
-    <div id="candidate-info"></div>
+    
+    <div class="row-fluid">
+        <div id="candidate-info" class="span6"></div>
+        <div id="controls" class="pull-right span6"></div>
+    </div>
     
     <div class="tabs-container">
         <ul class="nav nav-tabs">
             <li><a href="#docs-tab">Documents</a></li>
-            <li class="active"><a href="#votes-tab" data-toggle="tab">Votes</a></li>
+            <li id="details-votes-tab-sel"><a href="#votes-tab" data-toggle="tab">Votes</a></li>
             <li><a href="#mandates-tab"></a></li>
         </ul>
 
@@ -247,7 +248,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
             
             <div id="docs-tab"></div>
         
-            <div id="votes-tab" class="tab-pane active"></div>
+            <div id="votes-tab" class="tab-pane"></div>
             
             <div id="mandates-tab"></div>
 

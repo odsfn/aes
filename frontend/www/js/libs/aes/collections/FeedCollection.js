@@ -64,7 +64,7 @@ var FeedCollection = Backbone.Collection.extend({
     fetchNext: function(options) {
         this.offset = this.models.length;
         _.extend(options, {remove: false});
-        this.fetch(options);
+        return this.fetch(options);
     },        
     
     /**
@@ -94,7 +94,7 @@ var FeedCollection = Backbone.Collection.extend({
         
         _.extend(options, { data: params});
         
-        Backbone.Collection.prototype.fetch.apply(this, [options]);
+        return Backbone.Collection.prototype.fetch.apply(this, [options]);
     },
             
     reset: function(models, options) {

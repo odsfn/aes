@@ -28,7 +28,7 @@ class ElectionAdminsTest extends WebTestCase {
         $this->assertVisible($adminsListTabsel);
         $this->assertNotVisible('css=a[href="#invite-tab"]');
         
-        $this->assertCssCount('css=#all-admins-tab .user-info', 3);
+        $this->waitForCssCount('css=#all-admins-tab .user-info', 3);
         $this->assertElementContainsText('css=#all-admins-tab .items', 'Jhon Lenon');
         $this->assertElementContainsText('css=#all-admins-tab .items', 'Another User');
         $this->assertElementContainsText('css=#all-admins-tab .items', 'Yetanother User');

@@ -7,7 +7,7 @@
     border-top: none;
 }
 
-#invite-tab-sel {
+#invite-tab-sel, #electoral-list-tab-sel {
     display: none;
 }
 
@@ -137,4 +137,8 @@ div.checkbox.inactive {
 
 #candidate-details div.status-controls {
     margin-top: 15px;
+}
+
+#candidate-info .user-info {
+    width: 100%;
 }

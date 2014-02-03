@@ -151,7 +151,7 @@ class RestController extends ERestController {
          
         foreach ($data as $key => $value) {
              
-             if(empty($value)) {
+             if(empty($value) && $value !== '0' && $value !== 0) {
                  unset($data[$key]);
                  continue;
              }

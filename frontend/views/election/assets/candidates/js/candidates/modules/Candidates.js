@@ -13,6 +13,13 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         currentCandidateId: null
     };
     
+    /**
+     * Current election
+     * 
+     * @type Election
+     */
+    var election;
+    
     var CandidatesLayout = Marionette.Layout.extend({
         template: '#cands-layout-tpl',
         regions: {
@@ -86,6 +93,10 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         className: 'user-info',
         template: '#electoral-list-item-tpl',
         
+        modelEvents: {
+            'change': 'render'
+        },
+        
         ui: {
             voteBoxCntr: 'div.vote-cntr'
         },
@@ -97,11 +108,13 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         },
                 
         onRender: function() {
-            this._voteBoxView.render();
+            if( this._voteBoxView )
+                this._voteBoxView.render();
         },
                 
         onShow: function() {
-            this.ui.voteBoxCntr.append(this._voteBoxView.$el);
+            if( this._voteBoxView )
+                this.ui.voteBoxCntr.append(this._voteBoxView.$el);
         },
                 
         initialize: function() {
@@ -123,13 +136,20 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             if(candidateVote)
                 model.set('vote', candidateVote);
             
-            this._voteBoxView = new Candidates.VoteBoxView({model: model });
+            if(this.model.getStatusText() === 'Registered' && Candidates.getElection().checkStatus('Election'))
+                this._voteBoxView = new Candidates.VoteBoxView({model: model });
+            else
+                this._voteBoxView = false;
         }
     });
     
     var CandItemView = Marionette.ItemView.extend({
         className: 'user-info',
         template: '#cand-list-item-tpl',
+        
+        modelEvents: {
+            'change': 'render'
+        },
                 
         serializeData: function() {
             return _.extend(Marionette.ItemView.prototype.serializeData.call(this), {
@@ -230,6 +250,36 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         }
     });
     
+    var Election = Backbone.Model.extend({
+        urlRoot: UrlManager.createUrlCallback('api/election'),
+                
+        getStatusText: function() {
+            return Election.getStatuses()[this.get('status')];
+        },
+                
+        checkStatus: function(statusText) {
+            var statuses = Election.getStatuses();
+            
+            if(_.indexOf(statuses, statusText) === -1)
+                throw new Error('Status "' + statusText + '" does not exist');
+            
+            return (statuses[this.get('status')] === statusText);
+        },
+                
+        parse: function() {
+            var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
+
+            attrs.status = parseInt(attrs.status);
+            attrs.id = parseInt(attrs.id);
+
+            return attrs;
+        }                
+    }, {
+        getStatuses: function() {
+            return ['Published', 'Registration', 'Election', 'Finished', 'Canceled'];
+        }
+    });
+    
     var Candidate = Backbone.Model.extend({
         
         parse: function() {
@@ -252,11 +302,37 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 
         getStatusText: function() {
             return Candidate.getStatuses()[this.get('status')];
+        },
+                
+        setStatus: function(statusText) {
+            this.set('status', this.getStatusId(statusText));
+        },
+                
+        checkStatus: function(statusText) {
+            
+            this.getStatusId(statusText);
+            
+            var statuses = Candidate.getStatuses();
+            
+            return (statuses[this.get('status')] === statusText);
+        },
+                
+        getStatusId: function(statusText) {
+            var id = false;
+
+            var statuses = Candidate.getStatuses();
+
+            id = _.indexOf(statuses, statusText);
+            
+            if(id === -1)
+                throw new Error('Status "' + statusText + '" does not exist');            
+            
+            return id;
         }
         
     }, {
         getStatuses: function() {
-            return ['Invited', 'Awaiting registration confirmation', 'Registered'];
+            return ['Invited', 'Awaiting registration confirmation', 'Registered', 'Refused', 'Blocked'];
         }
     });
     
@@ -457,6 +533,10 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         return config.currentCandidateId;
     };
     
+    this.getElection = function() {
+        return election;
+    };
+    
     this.viewDetails = function(candId) {
         
         var cand = this.cands.findWhere({id: parseInt(candId)});
@@ -481,10 +561,17 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         $('#candidate-details').hide();
         $('#candidates').show();
         
+        Candidates.Details.layout.votes.close();
+        Candidates.Details.layout.controls.close();
+        Candidates.Details.layout.info.close();
+        
         this._detailsViewing = false;
     };
     
-    this.addInitializer(function() {
+    this.addInitializer(function(options) {
+        console.log('candidates initializer');
+        this.setOptions(options);
+        
         this.cands = new Cands();
         
         this.approvedCands = new Cands();
@@ -494,27 +581,39 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         
         this.layout = new CandidatesLayout();
         
-        this.electoralList = new ElectoralList({
-            collection: this.approvedCands
+        election = new Election({
+            id: config.electionId
         });
         
-        this.candsList = new CandsListView({
-            collection: this.cands
-        });
+        var layoutShowDef = $.Deferred();
         
         this.layout.on('show', function() {
+            layoutShowDef.resolve();
+        });
+        
+        $.when(election.fetch(), layoutShowDef).then(_.bind(function() {
             
-            this.electoralList.show(Candidates.electoralList);
-            
-            this.candsList.show(Candidates.candsList);
-           
-            if(Candidates.canInvite()) {
-                $('#invite-tab-sel').show();
+            if(election.checkStatus('Election')) {
+                this.electoralList = new ElectoralList({
+                    collection: this.approvedCands
+                });
+
+                this.layout.electoralList.show(Candidates.electoralList);
+                $('#electoral-list-tab-sel').show();
+                $('#electoral-list-tab-sel > a').tab('show');
             }
-        });        
+
+            this.candsList = new CandsListView({
+                collection: this.cands
+            });
+
+            this.layout.candsList.show(Candidates.candsList);
+            
+        }, this));        
     });
     
     App.on('start', function() {
+        console.log('app start');
         Candidates.voteBoxModels = new Backbone.Collection();
         
         Candidates.cands.setElectionId(config.electionId);
@@ -522,29 +621,45 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         Candidates.votes.filter.user_id = WebUser.getId() || 0;
         
         Candidates.approvedCands.setElectionId(config.electionId);
-        Candidates.votes.fetch({success: function(){
-            Candidates.approvedCands.fetch();
-        }});
         
-        if(Candidates.canInvite()) {
-            Candidates.Invite.start();
-            Candidates.layout.invite.show(Candidates.Invite.usersList);
-        }
-        
-        Candidates.cands.fetch({success: function() {
-            
-            if(Candidates.canInvite())
-                Candidates.Invite.users.fetch();
+        Candidates.votes.fetch()
+          .done(function() {
+              $.when(
+                    Candidates.approvedCands.fetch(),
+                    Candidates.cands.fetch()
+              ).then(function(){
 
-            Candidates.Details.start();
+                Candidates.Details.start();
 
-            Backbone.history.start({
-                pushState: true,
-                root: UrlManager.createUrl('election/candidates/' + Candidates.getElectionId())
-            });                
-                
-        }});
-    
+                if(Candidates.canInvite() && Candidates.getElection().checkStatus('Registration')) {
+                    Candidates.Invite.start();
+                    Candidates.layout.invite.show(Candidates.Invite.usersList);
+                    Candidates.Invite.users.fetch();
+                    $('#invite-tab-sel').show();
+                }
+
+
+//                Candidates.layout.on('show', function() {
+//                    if(election.checkStatus('Election')) {
+//                        this.electoralList = new ElectoralList({
+//                            collection: this.approvedCands
+//                        });
+//
+//                        this.electoralList.show(Candidates.electoralList);
+//                        $('#electoral-list-tab-sel').show();
+//                        $('#electoral-list-tab-sel > a').tab('show');
+//                    }
+//
+//                    this.candsList.show(Candidates.candsList);
+//                });
+
+                Backbone.history.start({
+                    pushState: true,
+                    root: UrlManager.createUrl('election/candidates/' + Candidates.getElectionId())
+                });
+
+              });
+          });
     });
 });
 

@@ -23,7 +23,11 @@ class Candidate extends CActiveRecord
     
     const STATUS_AWAITING_CONFIRMATION = 1;
     
-    const STATUS_APPROVED = 2;
+    const STATUS_REGISTERED = 2;
+    
+    const STATUS_REFUSED = 3;
+    
+    const STATUS_BLOCKED = 4;
     
     /**
      * Returns the static model of the specified AR class.
@@ -111,18 +115,18 @@ class Candidate extends CActiveRecord
         ));
     }
     
-    protected function beforeSave() {
-        
-        $this->appointer_id  = Yii::app()->user->id;
-        
-        if($this->election->cand_reg_confirm == 0) {
-            if($this->appointer_id == $this->user_id)
-                $this->status = self::STATUS_APPROVED;
-        
-        }
-        
-        return parent::beforeSave();
-    }
+//    protected function beforeSave() {
+//        
+//        $this->appointer_id  = Yii::app()->user->id;
+//        
+//        if($this->election->cand_reg_confirm == 0) {
+//            if($this->appointer_id == $this->user_id)
+//                $this->status = self::STATUS_REGISTERED;
+//        
+//        }
+//        
+//        return parent::beforeSave();
+//    }
     
     public function criteriaWithStatusOnly($status) {
         
