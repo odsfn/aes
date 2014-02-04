@@ -28,7 +28,8 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
        serializeData: function() {
            return _.extend(Candidates.ElectoralCandView.prototype.serializeData.apply(this, arguments),
                {
-                   electionStatusText: Candidates.getElection().getStatusText()
+                   electionStatusText: Candidates.getElection().getStatusText(),
+                   votesCount: Candidates.Details.votes ? Candidates.Details.votes.getAcceptedVotesCount() : 0
                }
            );
        }
@@ -185,6 +186,8 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             this.votes.fetch();
             $('#details-votes-tab-sel').show();
             $('#details-votes-tab-sel a').tab('show');
+            
+            this.listenTo(this.votes, 'changed:acceptedVotesCount', this.detailesView.render);
         } else
             $('#details-votes-tab-sel').hide();
     };

@@ -16,6 +16,8 @@
  */
 class Vote extends CActiveRecord
 {
+    const STATUS_PASSED = 0;
+    const STATUS_DECLINED = 1;
     
     public function behaviors() {
         return array(
@@ -24,6 +26,9 @@ class Vote extends CActiveRecord
                 'fields' => array(
                     'create'=> array('date')
                 )
+            ),
+            'AttrsChangeHandlerBehavior' => array(
+                'class' => 'AttrsChangeHandlerBehavior'
             )
         );
     }
@@ -109,5 +114,30 @@ class Vote extends CActiveRecord
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
+    }
+    
+    protected function beforeSave() {
+        
+        if($this->candidate->status != Candidate::STATUS_REGISTERED)
+            throw new Exception('Vote can\'t be passed or changed for not registered candidate');
+        
+        if($this->candidate->election->status != Election::STATUS_ELECTION)
+            throw new Exception ('Vote can\'t be created or changed for inactive election');
+        
+        if(!$this->isNewRecord && ($this->isAttrChanged('user_id') || $this->isAttrChanged('candidate_id')) )
+            throw new Exception ('Vote can\'t be reassigned');
+        
+        if(!$this->isNewRecord && $this->isAttrChanged('status') && $this->status != Vote::STATUS_DECLINED)
+            throw new Exception ('Declined vote can\'t be re-accepted');
+        
+        return parent::beforeSave();
+    }
+    
+    protected function beforeDelete() {
+        
+        if($this->candidate->election->status != Election::STATUS_ELECTION)
+            throw new Exception ('Vote can\'t be deleted for inactive election');
+        
+        return parent::beforeDelete();
     }
 }

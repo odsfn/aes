@@ -33,12 +33,18 @@ class Election extends CActiveRecord implements iPostable
     const UNASSIGNED_CAN_READ = 1;
     const UNASSIGNED_CAN_NONE = 0;
 
+    const STATUS_PUBLISHED = 0;
+    const STATUS_REGISTRATION = 1;
+    const STATUS_ELECTION = 2;
+    const STATUS_FINISHED = 3;
+    const STATUS_CANCELED = 4;
+    
     public static $statuses = array(
-        '0'=>'Published',
-        '1'=>'Registration',
-        '2'=>'Election',
-        '3'=>'Finished',
-        '4'=>'Canceled',
+        Election::STATUS_PUBLISHED    => 'Published',
+        Election::STATUS_REGISTRATION => 'Registration',
+        Election::STATUS_ELECTION => 'Election',
+        Election::STATUS_FINISHED => 'Finished',
+        Election::STATUS_CANCELED => 'Canceled',
     );
 
     public static $cand_reg_types = array(

@@ -29,6 +29,8 @@ class Candidate extends CActiveRecord
     
     const STATUS_BLOCKED = 4;
     
+    protected $transaction;
+    
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -46,7 +48,7 @@ class Candidate extends CActiveRecord
     {
         return 'candidate';
     }
-
+    
     /**
      * @return array validation rules for model attributes.
      */
@@ -115,7 +117,21 @@ class Candidate extends CActiveRecord
         ));
     }
     
-//    protected function beforeSave() {
+    protected function beforeSave() {
+        
+        if($this->status == Candidate::STATUS_REGISTERED && !$this->electoral_list_pos) {
+            
+            $db = Yii::app()->db;
+            
+            $this->transaction = $db->beginTransaction();
+            
+            $maxListPos = $db->createCommand(
+                    'SELECT MAX(electoral_list_pos) FROM candidate WHERE election_id = ' . $this->election_id
+                        . ' LOCK IN SHARE MODE'
+            )->queryScalar();
+            
+            $this->electoral_list_pos = ++$maxListPos;
+        }
 //        
 //        $this->appointer_id  = Yii::app()->user->id;
 //        
@@ -125,9 +141,17 @@ class Candidate extends CActiveRecord
 //        
 //        }
 //        
-//        return parent::beforeSave();
-//    }
+        return parent::beforeSave();
+    }
     
+    protected function afterSave() {
+        
+        if(isset($this->transaction))
+            $this->transaction->commit();
+        
+        return parent::afterSave();
+    }
+
     public function criteriaWithStatusOnly($status) {
         
         $this->getDbCriteria()->mergeWith(self::getCriteriaWithStatusOnly($status));

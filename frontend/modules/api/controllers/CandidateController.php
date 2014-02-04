@@ -74,6 +74,11 @@ class CandidateController extends RestController {
     }
     
     public function checkAccess() {
+        
+        Yii::app()->authManager->defaultRoles = array_merge(Yii::app()->authManager->defaultRoles, array('election_updateCandidateOwnStatus'));
+        
+        $data = $this->data();
+        
         if(!empty($_GET['id'])) {
             
             $id = $_GET['id'];
@@ -85,7 +90,6 @@ class CandidateController extends RestController {
             $election = $model->election;
             
         } else {
-            $data = $this->data();
             $election = Election::model()->findByPk((int)$data['election_id']);
         }
         
@@ -93,8 +97,12 @@ class CandidateController extends RestController {
             throw new Exception('Related Election can\'t be fetched');
         
         $params['election'] = $election;
-        if($model)
+        if($model) {
             $params['candidate'] = $model;
+            
+            if(isset($data['status']))
+                $params['status'] = $data['status'];
+        }
         
         if( $this->action->id == 'restCreate' && Yii::app()->user->checkAccess('election_createCandidate', $params) )
             return true;
@@ -102,10 +110,7 @@ class CandidateController extends RestController {
         if( $this->action->id == 'restDelete' && Yii::app()->user->checkAccess('election_deleteCandidate', $params) )
             return true;
   
-        /**
-         * @TODO fix status changing auth check!
-         */
-        if( $this->action->id == 'restUpdate' /*&& Yii::app()->user->checkAccess('election_updateCandidateStatus', $params)*/ )
+        if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('election_updateCandidateStatus', $params) )
             return true;
         
         return false;

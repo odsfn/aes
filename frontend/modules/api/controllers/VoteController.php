@@ -48,9 +48,6 @@ class VoteController extends RestController {
         if(isset($this->plainFilter['user_id']))
             $criteria->mergeWith(array('condition' => 't.user_id = ' . (int)$this->plainFilter['user_id']));
         
-        if(isset($this->plainFilter['candidate_id']))
-            $criteria->mergeWith(array('condition' => 't.candidate_id = ' . (int)$this->plainFilter['candidate_id']));
-        
         if(!empty($this->plainFilter['name']))
             $criteria->mergeWith(PeopleSearch::getCriteriaFindByName($this->plainFilter['name'], 'profile'));        
         
@@ -61,18 +58,34 @@ class VoteController extends RestController {
                 )                
             );
         
+        if(isset($this->plainFilter['candidate_id']))
+            $criteria->mergeWith(array('condition' => 't.candidate_id = ' . (int)$this->plainFilter['candidate_id']));
+        
         $results = $this->getModel()
                 ->with($this->nestedRelations)
                 ->limit($this->restLimit)
                 ->offset($this->restOffset)
         ->findAll($criteria);
         
+        $totalCount = $this->getModel()
+            ->with($this->nestedRelations)
+            ->count($criteria);
+        
+        $extraData = $totalCount;
+        
+        if(isset($this->plainFilter['candidate_id'])) {
+            $extraData = array(
+                'totalCount'    => $totalCount,
+                'declinedCount' => $this->getModel()
+                    ->with($this->nestedRelations)
+                    ->count($criteria->addCondition('t.status = ' . Vote::STATUS_DECLINED))
+            );
+        }
+        
         $this->outputHelper( 
             'Records Retrieved Successfully',
             $results,
-            $this->getModel()
-                    ->with($this->nestedRelations)
-            ->count($criteria)
+            $extraData
         );
     }
     
@@ -81,12 +94,67 @@ class VoteController extends RestController {
             array('allow',
                 'actions' => array('restCreate', 'restUpdate', 'restDelete'),
                 'users' => array('@'),
-//                'expression' => array($this, 'checkAccess')
+                'expression' => array($this, 'checkAccess')
             ),
 	    array('deny', 
 		'actions' => array('restCreate', 'restDelete', 'restUpdate'),
 		'users' => array('*')
 	    )
 	);
+    }
+    
+    public function checkAccess() {
+        
+        Yii::app()->authManager->defaultRoles = 
+                array_merge(
+                        Yii::app()->authManager->defaultRoles, 
+                        array('election_elector', 'election_updateVoteStatus')
+                );
+        
+        $data = $this->data();
+        
+        if(!empty($_GET['id'])) {
+            
+            $id = $_GET['id'];
+            $model = $this->loadOneModel((int)$id);
+
+            if(!$model)
+                throw new Exception ('Vote with id = ' . $id . ' was not found');
+            
+            $candidate = $model->candidate;
+            $election = $candidate->election;
+            
+        } else {
+            $candidate = Candidate::model()->findByPk($data['candidate_id']);
+            $election = $candidate->election;
+        }
+        
+        if(!$candidate)
+            throw new Exception ('Related Candidate was not found');
+        
+        if(!$election)
+            throw new Exception('Related Election was not found');
+        
+        $params['election'] = $election;
+        $params['candidate'] = $candidate;
+        if($model) {
+            $params['vote'] = $model;
+            
+            if(isset($data['status']))
+                $params['status'] = $data['status'];
+        }
+        /**
+         * @TODO Provide access check to allow vote only electorate
+         */
+        if( $this->action->id == 'restCreate' && Yii::app()->user->checkAccess('election_createVote', $params) )
+            return true;
+        
+        if( $this->action->id == 'restDelete' && Yii::app()->user->checkAccess('election_deleteVote', $params) )
+            return true;
+  
+        if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('election_updateVoteStatus', $params) )
+            return true;
+        
+        return false;
     }    
 }

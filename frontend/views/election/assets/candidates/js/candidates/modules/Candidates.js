@@ -194,6 +194,16 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             this.collection.reset();
         },
         
+        appendHtml: function(collectionView, itemView, index){
+            var childrenContainer = collectionView.itemViewContainer ? collectionView.$(collectionView.itemViewContainer) : collectionView.$el;
+            var children = childrenContainer.children();
+            if (children.size() <= index) {
+              childrenContainer.append(itemView.el);
+            } else {
+              children.eq(index).before(itemView.el);
+            }
+        },        
+        
         initialize: function() {
             this.listenTo(this.collection, 'totalCountChanged', _.bind(function(actualValue) {
                 this.ui.itemsCounter.html(actualValue);
@@ -273,7 +283,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             attrs.id = parseInt(attrs.id);
 
             return attrs;
-        }                
+        }
     }, {
         getStatuses: function() {
             return ['Published', 'Registration', 'Election', 'Finished', 'Canceled'];
@@ -288,6 +298,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             attrs.id = parseInt(attrs.id);
             attrs.user_id = parseInt(attrs.user_id);
             attrs.election_id = parseInt(attrs.election_id);
+            attrs.electoral_list_pos = parseInt(attrs.electoral_list_pos);
             attrs.profile.birth_day = parseInt(attrs.profile.birth_day) * 1000;
             attrs.profile.user_id = parseInt(attrs.profile.user_id);
 
@@ -356,6 +367,12 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             this.electionId = value;
             this.filter.election_id = value;
         }
+    });
+    
+    var ApprovedCands = Cands.extend({       
+        comparator: function(model) {
+            return model.get('electoral_list_pos');
+        }       
     });
     
     Candidates.Vote = Backbone.Model.extend({
@@ -483,26 +500,57 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
     });
     
     Candidates.Votes = FeedCollection.extend({
-       limit: 2000,
-       model: Candidates.Vote,
-       url: UrlManager.createUrlCallback('api/vote'),
-       
-       electionId: null,
-       
-       setElectionId: function(value) {
+        
+        limit: 50,
+        
+        model: Candidates.Vote,
+        url: UrlManager.createUrlCallback('api/vote'),
+
+        electionId: null,
+
+        _acceptedVotesCount: 0,
+                
+        setAcceptedVotesCount: function(count) {
+            var prevCount = this._acceptedVotesCount;
+
+            if(count == prevCount) 
+                return;
+
+            this._acceptedVotesCount = count;
+            this.trigger('changed:acceptedVotesCount', this._acceptedVotesCount, prevCount);
+        },
+
+        getAcceptedVotesCount: function() {
+            return this._acceptedVotesCount;
+        },
+
+        setElectionId: function(value) {
             this.electionId = value;
             this.filter.election_id = value;
-       },
-               
-       /**
+        },
+
+        parse: function(response, options) {
+    
+            var result = FeedCollection.prototype.parse.apply(this, arguments);
+    
+            var totalVotes = this.totalCount;
+            var declinedVotes = parseInt(response.data.declinedCount);
+            
+            this.setAcceptedVotesCount(totalVotes - declinedVotes);
+    
+            return result;
+            
+        }, 
+
+        /**
         * Returns the vote that had benn passed by current user and had not been declined by candidate 
         * @returns {Vote}
         */
-       getPassedVote: function() {
+        getPassedVote: function() {
             return this.find(function(m) {
                 return ( m.isVoted() && m.get('status') !== 1); 
             });
-       }
+        }
     });
     
     this.setOptions = function(options) {
@@ -569,12 +617,12 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
     };
     
     this.addInitializer(function(options) {
-        console.log('candidates initializer');
+        
         this.setOptions(options);
         
         this.cands = new Cands();
         
-        this.approvedCands = new Cands();
+        this.approvedCands = new ApprovedCands();
         this.approvedCands.filter.status = 2;
         
         this.votes = new Candidates.Votes();
@@ -613,7 +661,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
     });
     
     App.on('start', function() {
-        console.log('app start');
+        
         Candidates.voteBoxModels = new Backbone.Collection();
         
         Candidates.cands.setElectionId(config.electionId);
@@ -637,21 +685,6 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                     Candidates.Invite.users.fetch();
                     $('#invite-tab-sel').show();
                 }
-
-
-//                Candidates.layout.on('show', function() {
-//                    if(election.checkStatus('Election')) {
-//                        this.electoralList = new ElectoralList({
-//                            collection: this.approvedCands
-//                        });
-//
-//                        this.electoralList.show(Candidates.electoralList);
-//                        $('#electoral-list-tab-sel').show();
-//                        $('#electoral-list-tab-sel > a').tab('show');
-//                    }
-//
-//                    this.candsList.show(Candidates.candsList);
-//                });
 
                 Backbone.history.start({
                     pushState: true,

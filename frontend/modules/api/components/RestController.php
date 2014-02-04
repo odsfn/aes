@@ -125,10 +125,29 @@ class RestController extends ERestController {
     
     /**
      * This output helper has been overriden for compability with Backbone.parse method
+     * 
+     * @param int|array $extraData If int - will be considered as totalCount, if array will be merged with data
      */
-    public function outputHelper($message, $results, $totalCount = 0, $model = null) {
-        parent::outputHelper($message, $results, (int)$totalCount, $model = 'models');
-    }
+    public function outputHelper($message, $results, $extraData=0, $model= 'models' )
+    {
+            if(is_null($model))
+                    $model = lcfirst(get_class($this->model));
+            else
+                    $model = lcfirst($model);	
+
+            $data = array($model=>$this->allToArray($results));
+            
+            if(!is_array($extraData)) 
+                $extraData = array('totalCount'=>$extraData);
+            
+            $data = array_merge($data, $extraData);
+            
+            $this->renderJson(array(
+                    'success'=>true, 
+                    'message'=>$message, 
+                    'data'=> $data
+            ));
+    }    
     
     /**
      * Overrides method to provide formatting of specified attributes
