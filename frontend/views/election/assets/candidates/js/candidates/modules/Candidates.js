@@ -348,7 +348,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
     });
     
     var Cands = FeedCollection.extend({
-        limit: 20,
+        limit: 30,
         model: Candidate,
         url: UrlManager.createUrlCallback('api/candidate'),
         
@@ -641,7 +641,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         
         $.when(election.fetch(), layoutShowDef).then(_.bind(function() {
             
-            if(election.checkStatus('Election')) {
+            if(election.checkStatus('Election') || election.checkStatus('Finished')) {
                 this.electoralList = new ElectoralList({
                     collection: this.approvedCands
                 });

@@ -170,7 +170,7 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
         this.layout.info.show(this.detailesView);
         this.layout.controls.show(this.controlsView);
         
-        if(Candidates.getElection().checkStatus('Election') && candidate.checkStatus('Registered'))
+        if((Candidates.getElection().checkStatus('Election') || Candidates.getElection().checkStatus('Finished')) && candidate.checkStatus('Registered'))
         {
             this.votesFeedView = new VotesFeedView({
                 collection: this.votes

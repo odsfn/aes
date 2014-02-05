@@ -224,7 +224,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
             <div><b>Status: </b> <%= t(statusText) %></div>
             
-            <% if(statusText === 'Registered' && electionStatusText == 'Election') { %>
+            <% if(statusText === 'Registered' && (electionStatusText == 'Election' || electionStatusText == 'Finished')) { %>
             <div><b>Accepted votes count: </b> <%= votesCount %></div>
             <% } %>
         </div>
