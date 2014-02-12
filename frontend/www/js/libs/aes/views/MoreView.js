@@ -1,11 +1,14 @@
 /*
  * More button for feeds
- *  
+ * 
+ * @depends Aes.ItemView
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
-var MoreView = Marionette.ItemView.extend({
+var MoreView = Aes.ItemView.extend({
     
-    template: '#more-btn-tpl',
+    getTplStr: function() {
+        return MoreView.getTpl();
+    },
     
     events: {
         'click': 'onClick'
@@ -85,5 +88,9 @@ var MoreView = Marionette.ItemView.extend({
         this.loading = false;
         this.ui.body.removeClass('loading');
         this.trigger('loaded');
+    }
+}, {
+    getTpl: function() {
+        return '<div class="row-fluid get-more"><div class="span12"><a><%= t(view.moreMsg) %></a><span><img src="/img/loader-circle-16.gif" class="loader" />Loading...</span></div></div>';
     }
 });

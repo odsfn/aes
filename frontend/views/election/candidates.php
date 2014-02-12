@@ -8,6 +8,7 @@ $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
 
 $js = array(
     'aes:collections/FeedCollection.js',
+    'aes:views/ItemView.js',
     'aes:views/MoreView.js',
     'aes:views/FeedCountView.js',
     'modules/Candidates.js',
@@ -193,12 +194,6 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
             <div><b>Birth Place: </b><%= profile.birth_place %></div>                               
         </div>
-</script>
-
-<script type="text/template" id="more-btn-tpl">
-    <div class="row-fluid get-more">
-	<div class="span12"><a><%= t(view.moreMsg) %></a><span><img src="/img/loader-circle-16.gif" class="loader" />Loading...</span></div>
-    </div>
 </script>
 
 <script type="text/template" id="no-item-tpl">

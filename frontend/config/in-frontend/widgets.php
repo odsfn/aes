@@ -19,6 +19,7 @@ return array(
         'requires' => array(
             'depends' => array('loadmask'),
             'js' => array(
+                'aes:views/ItemView.js',
                 'aes:views/EditBoxView.js',
                 'aes:views/EditableView.js',
                 'aes:collections/FeedCollection.js',
@@ -54,6 +55,7 @@ return array(
             'depends' => array('aes-common', 'loadmask'),
             'js' => array(
                 'aes:collections/FeedCollection.js',
+                'aes:views/ItemView.js',
                 'aes:views/EditBoxView.js',
                 'aes:views/EditableView.js',
                 'aes:views/MoreView.js'

@@ -16,6 +16,7 @@ $this->widget('application.widgets.ClientApp', array(
             'aes:collections/FeedCollection.js',
             'collections/Conversations.js',
             'collections/Messages.js',
+            'aes:views/ItemView.js',
             'aes:views/MoreView.js',
             'aes:views/FeedCountView.js',
             'modules/Messaging.js',
