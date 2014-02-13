@@ -153,6 +153,15 @@ class ElectionController extends FrontController
         $this->render('candidates', array('model'=>$model, 'candidate'=>$candidate));        
     }
     
+    public function actionElectorate($id) {
+        $model = $this->getModel($id);
+        
+        $this->layout = '//layouts/election';
+        $this->election = $model;
+        
+        $this->render('electorate', array('model'=>$model));
+    }
+    
     protected function getModel($id) {
         $model = Election::model()->findByPk($id);
         

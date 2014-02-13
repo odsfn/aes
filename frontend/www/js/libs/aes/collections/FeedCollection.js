@@ -72,7 +72,30 @@ var FeedCollection = Backbone.Collection.extend({
      * throwed out, navigation will be reset to the begining
      */
     setFilter: function(name, value) {
+        
         this.filter[name] = value;
+                
+        this.sinceTs = null;
+        this.offset = 0;
+        
+        this.reset();
+        this.fetch();
+    },
+    
+    setFilters: function(filters) {
+        
+        _.extend(this.filter, filters);
+
+        this.sinceTs = null;
+        this.offset = 0;
+        
+        this.reset();
+        this.fetch();
+    },
+            
+    resetFilters: function(filters) {
+        this.filter = filters;
+
         this.sinceTs = null;
         this.offset = 0;
         
