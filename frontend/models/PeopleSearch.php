@@ -18,6 +18,8 @@ class PeopleSearch extends CFormModel{
     
     public $birth_day;
     
+    public $applyScopes;
+    
     public function rules() {
 	return array(
 //	    array('name', 'match', 'pattern'=>'/^[:alpha:]{2,}$/u'),
@@ -93,6 +95,15 @@ class PeopleSearch extends CFormModel{
         
 	$criteria->compare('gender', $this->gender);
 
+        if($this->applyScopes) {
+            $scopes = $this->applyScopes;
+            
+            foreach ($scopes as $scopeName => $params) {
+                $criteria->mergeWith($this->getScope($scopeName, $params));
+            }
+            
+        }
+        
 	return new CActiveDataProvider(new Profile, array(
 	    'criteria' => $criteria,
 	));
@@ -122,7 +133,7 @@ class PeopleSearch extends CFormModel{
      * @param CDbCriteria $criteria
      * @return \CDbCriteria
      */
-    public static function getCriteriaFindByName($name, $columnPrefix = null, $criteria = null) {
+    public static function getCriteriaFindByName($name, $columnPrefix = 't', $criteria = null) {
         
         if(empty($criteria))
             $criteria = new CDbCriteria;
@@ -144,5 +155,23 @@ class PeopleSearch extends CFormModel{
         }
         
         return $criteria;
+    }
+    
+    public function getScope($scopeName, $params = null) {
+        $scopes = $this->scopes();
+        $criteria = new CDbCriteria($scopes[$scopeName]);
+        if($params)
+            $criteria->params = $params;
+        
+        return $criteria;
+    }
+    
+    public function scopes() {
+        return array(
+            'notElector' => array(
+                'join' => 'LEFT JOIN elector AS e ON e.user_id = t.user_id AND e.election_id = :election_id',
+                'condition' => 'e.user_id IS NULL'
+            )
+        );
     }
 }

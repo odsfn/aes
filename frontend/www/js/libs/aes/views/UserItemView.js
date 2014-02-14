@@ -40,7 +40,9 @@ Aes.UserItemView = Aes.ItemView.extend({
                 var curControl = this.controls[controlName];
                 if(curControl.shouldBeShown(this)) 
                 {
-                    curControl.render();   
+                    curControl.render();
+                    this.ui.controls.append(curControl.$el);
+                    curControl.delegateEvents();
                 }
             }
         }
@@ -48,12 +50,10 @@ Aes.UserItemView = Aes.ItemView.extend({
     
     onShow: function() {
         if(this.controls) {
-            this.ui.controls.html('');
             for(var controlName in this.controls) {
                 var curControl = this.controls[controlName];
                 if(curControl.shouldBeShown(this))
                 {
-                    this.ui.controls.append(curControl.$el);
                     curControl.trigger('show');
                 }
             }

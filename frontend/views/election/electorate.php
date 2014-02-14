@@ -26,7 +26,7 @@ $this->widget('application.widgets.ClientApp', array(
     )
 ));
 
-$canUserManage = (int)Yii::app()->user->checkAccess('election_manage', array('election'=>$model));
+$canUserManage = (int)(Yii::app()->user->checkAccess('election_manage', array('election'=>$model)) && $model->status == Election::STATUS_REGISTRATION);
 
 Yii::app()->clientScript->registerScript('starter',
     "App.start({
@@ -94,39 +94,4 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
         <div id="load-btn" class="load-btn-cntr"></div>
     </div>
         
-</script>
-
-<script id="user-item-tpl" type="text/template">
-        <div class="pull-left">
-            <div style="width: 96px; height: 96px; background-color: #000;" class="img-wrapper-tocenter users-photo">
-                <span></span>
-                <img alt="<%= profile.displayName %>" src="<%= profile.photoThmbnl64 %>">
-            </div>
-        </div>
-
-        <div class="pull-right right-top-panel">
-            <!-- TODO: move it to subview
-            <span class="controls">
-                <small>Deprive of powers&nbsp;<i class="icon-remove"></i></small>
-            </span>
-            
-            <span class="controls">
-                <small>Empower&nbsp;<i class="icon-plus-sign"></i></small>
-            </span>
-            
-            </% if(empovered) { %>
-            <span class="mark">
-                <small>Empovered&nbsp;<i class="icon-ok"></i></small>
-            </span>
-            </% } %> 
-            -->
-        </div>                        
-
-        <div class="body">
-            <a href="<%= profile.pageUrl %>"><%= profile.displayName %></a> <br>
-
-            <div><b>Birth Day: </b><%= i18n.date(profile.birth_day, 'full') %></div>
-
-            <div><b>Birth Place: </b><%= profile.birth_place %></div>                               
-        </div>
 </script>

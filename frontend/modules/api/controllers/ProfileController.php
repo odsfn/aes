@@ -11,7 +11,7 @@ class ProfileController extends RestController {
     public $nestedModels = array();
 
     public $acceptFilters = array(
-        'plain' => 'name'
+        'plain' => 'name,election_id,ageFrom,ageTo,birth_place,gender,applyScopes'
     );
     
     public function getOutputFormatters() {
@@ -23,10 +23,34 @@ class ProfileController extends RestController {
     public function doRestList() {
         
         $model = $this->getModel();
-        $model->activeOnly();
-        $model->getDbCriteria()->mergeWith(PeopleSearch::getCriteriaFindByName($this->plainFilter['name']));
-        $model->getDbCriteria()->select = 'user_id, first_name, last_name, photo, photo_thmbnl_64, birth_place, birth_day';
         
+        $peopleSearch = new PeopleSearch();
+        
+        if($name = $this->plainFilter['name'])
+            $peopleSearch->name = $name;
+        
+        if($ageFrom = $this->plainFilter['ageFrom'])
+            $peopleSearch->ageFrom = $ageFrom;
+        
+        if($ageTo = $this->plainFilter['ageTo'])
+            $peopleSearch->ageTo = $ageTo;
+        
+        if($birth_place = $this->plainFilter['birth_place'])
+            $peopleSearch->birth_place = $birth_place;
+        
+        if($gender = $this->plainFilter['gender'])
+            $peopleSearch->gender = $gender;
+        
+        if($scopes = $this->plainFilter['applyScopes']) {
+            $scopes = CJSON::decode($scopes);
+            $peopleSearch->applyScopes = $scopes;
+        }
+        
+        $arProvCriteria = $peopleSearch->search()->criteria;
+        
+        $model->getDbCriteria()->mergeWith($arProvCriteria);
+        
+        $model->getDbCriteria()->select = 't.user_id, first_name, last_name, photo, photo_thmbnl_64, birth_place, birth_day';
         
         $results = $model->with($this->nestedRelations)
             ->orderBy($this->restSort)
@@ -34,9 +58,7 @@ class ProfileController extends RestController {
             ->findAll();
         
         $forCount = $this->getModel();
-        $forCount->activeOnly();
-        $forCount->getDbCriteria()
-            ->mergeWith(PeopleSearch::getCriteriaFindByName($this->plainFilter['name']));
+        $forCount->getDbCriteria()->mergeWith($arProvCriteria);
         
         $this->outputHelper( 
                 'Records Retrieved Successfully', 
