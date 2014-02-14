@@ -108,7 +108,7 @@ class VoteController extends RestController {
         Yii::app()->authManager->defaultRoles = 
                 array_merge(
                         Yii::app()->authManager->defaultRoles, 
-                        array('election_elector', 'election_updateVoteStatus')
+                        array('election_updateVoteStatus')
                 );
         
         $data = $this->data();

@@ -77,6 +77,7 @@ class Vote extends CActiveRecord
         return array(
             'profile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'candidate' => array(self::BELONGS_TO, 'Candidate', 'candidate_id'),
+            'elector' => array(self::BELONGS_TO, 'Elector', 'user_id')
         );
     }
 

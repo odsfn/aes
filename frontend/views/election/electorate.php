@@ -81,7 +81,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
                 <select id="PeopleSearch_gender" name="gender" class="filter span12">
                     <option selected="selected" value="">Any</option>
                     <option value="1">Male</option>
-                    <option value="2">Famale</option>
+                    <option value="2">Female</option>
                 </select>
 
                 <div class="form-actions">

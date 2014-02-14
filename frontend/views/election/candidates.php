@@ -16,7 +16,7 @@ $js = array(
 );
 
 $canUserManage = (int)Yii::app()->user->checkAccess('election_administration', array('election'=>$model));
-$canUserVote = (int)Yii::app()->user->getId();
+$canUserVote = (int)Yii::app()->user->checkAccess('election_electing', array('election'=>$model));
 
 if($canUserManage)
     $js[] = 'modules/Invite.js';
