@@ -61,7 +61,7 @@ class ElectorController extends RestController {
         if($gender = $this->plainFilter['gender'])
             $peopleSearch->gender = $gender;
         
-        $arProvCriteria = $peopleSearch->search()->criteria;
+        $arProvCriteria = $peopleSearch->search('')->criteria;
         if($arProvCriteria)
             $criteria->mergeWith($arProvCriteria);
         

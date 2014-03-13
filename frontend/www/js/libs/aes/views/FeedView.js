@@ -19,38 +19,6 @@ Aes.FeedView = Marionette.CompositeView.extend({
         loader: 'img.loader'
     },
 
-    onFilterApplyBtnClick: function(e) {
-        e.preventDefault();
-
-        var filters = {};
-
-        $('.filter', this.$el).each(function(i, el) {
-            var $el = $(el);
-            var filterName = $el.attr('name');
-            var filterVal = $el.val() || '';
-            
-            filters[filterName] = filterVal;
-        });
-
-        this.collection.setFilters(filters);
-    },
-
-    onFilterResetBtnClick: function(e) {
-        e.preventDefault();
-
-        var filters = {};
-
-        $('.filter', this.$el).each(function(i, el) {
-            var $el = $(el);
-            var filterName = $el.attr('name');
-            $el.val('');
-            
-            filters[filterName] = '';
-        });
-        
-        this.collection.setFilters(filters);
-    },
-
     appendHtml: function(collectionView, itemView, index){
         var childrenContainer = collectionView.itemViewContainer ? collectionView.$(collectionView.itemViewContainer) : collectionView.$el;
         var children = childrenContainer.children();
@@ -59,23 +27,42 @@ Aes.FeedView = Marionette.CompositeView.extend({
         } else {
           children.eq(index).before(itemView.el);
         }
-    },        
+    },
 
-    initFilters: function(o) {
-        var defaults = {
-            filterApplyClassName: 'filter-apply',
-            filterResetClassName: 'filter-reset'
-        };
+    initFilters: function(options) {
         
-        o = _.extend(defaults, o);
+        options = _.clone(options);
         
-        var events = {};
-        events['click .' + o.filterApplyClassName] = 'onFilterApplyBtnClick';
-        events['click .' + o.filterResetClassName] = 'onFilterResetBtnClick';
+        delete options.enabled;
         
-        this.events = this.events || {};
+        var appendTo = '.filter-container';
         
-        _.extend(this.events, events);
+        delete options.appendTo;
+        
+        var that = this;
+        
+        _.extend(options, {
+            
+           onSubmit: function() {
+               that.collection.setFilters(this.getValues());
+           },
+
+           onReset: function() {
+               that.collection.setFilters(this.getValues());
+           }
+           
+        });
+        
+        this._filter = new Aes.FormView(options);
+        
+        this.on('render', function() {
+            this._filter.render();
+        });
+        
+        this.on('show', function() {
+            $(appendTo, this.$el).append(this._filter.$el);
+            this._filter.trigger('show');
+        });
     },
 
     initialize: function(options) {
@@ -112,6 +99,8 @@ Aes.FeedView = Marionette.CompositeView.extend({
                 + '</ul>'
             + '</div>'
         + '</div>'        
+
+        + '<div class="filter-container"></div>'
 
         + '<div class="items"></div>'
 

@@ -6,6 +6,12 @@
  */
 return array(
 
+    'qunit' => array(
+        'baseUrl' => '//code.jquery.com/qunit/',
+        'js' => array('qunit-1.14.0.js'),
+        'css'=> array('qunit-1.14.0.css')
+    ),
+    
     'aes-common' => array(
         'depends' => array('marionette'),
         'baseUrl' => 'js/libs/aes',
@@ -37,6 +43,15 @@ return array(
         )
     ),
 
+    'backbone.validation' => array(
+        'depends' => array('backbone'),
+        'baseUrl' => 'js/libs/backbone.validation',
+        'js' => array(
+            'backbone-validation.js',
+            'aes-validators.js'
+        )
+    ),
+    
     'loadmask' => array(
         'depends' => array('jquery'),
         'baseUrl' => 'js/libs/loadmask',

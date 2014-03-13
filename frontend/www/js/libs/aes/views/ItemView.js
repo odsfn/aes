@@ -26,6 +26,39 @@ Aes.ItemView = Marionette.ItemView.extend({
             
     getTplStr: function() {
         return this.tpl;
+    },
+            
+    /**
+     * Binds attributes for child ui elements which are defined in "ui" property.
+     * Attributes are reading from "uiAttributes" property.
+     */
+    bindUIElAttributes: function() {
+        _.each(this.options.uiAttributes, function(attrs, attrName) {
+            var uiEl = this.ui[attrName];
+            
+            if(!uiEl)
+                return;
+            
+            uiEl.attr(attrs);
+        }, this);
+    },
+          
+    render: function() {
+        Marionette.ItemView.prototype.render.apply(this, arguments);
+        
+        if(this.options.uiAttributes)
+            this.bindUIElAttributes();
+        
+        return this;
+    },        
+            
+    initialize: function() {
+        if(this.options.el)
+        {
+            this.bindUIElements();
+            
+            if(this.options.uiAttributes)
+                this.bindUIElAttributes();
+        }
     }
-    
 });

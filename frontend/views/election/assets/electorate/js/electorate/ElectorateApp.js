@@ -52,7 +52,6 @@ ElectorateApp.UserItemView = Aes.UserItemView.extend({
 });
 
 ElectorateApp.FeedView = Aes.FeedView.extend({
-    template: '#source-list-tpl',
     itemView: ElectorateApp.UserItemView 
 });
 
@@ -122,7 +121,62 @@ var Electorate = FeedCollection.extend({
 });
 
 App.addInitializer(function(options) {
-   
+    
+    var filter = {
+           
+        enabled: true,
+        
+        attributes: {
+            class: 'search-form pull-right span4'
+        },
+        
+        uiAttributes: {
+           inputs: {
+                class: 'span12'
+           }
+        },
+        
+        fields: {
+                name: {
+                    label: 'Name',
+                    type: 'text',
+                },
+                birth_place: {
+                    label: 'Birth Place'
+                },
+                ageFrom: {
+                    label: 'Age From',
+                    validator: {
+                        required: false,
+                        min: 1,
+                        max: 100
+                    }
+                },
+                ageTo: {
+                    label: 'Age To',
+                    validator: {
+                        required: false,
+                        min: 1,
+                        max: 100,
+                        greaterThan: {
+                            attr: 'ageFrom',
+                            validOnEqual: true
+                        }
+                    }
+                },
+                gender: {
+                    label: 'Gender',
+                    type: 'select',
+                    options: [
+                        {label: 'Any', value: '', selected: true},
+                        {label: 'Male', value: '1'},
+                        {label: 'Female', value: '2'}
+                    ]
+                }
+         }
+        
+       };
+    
     this.getOption = function(optName) {
         return options[optName];
     };
@@ -132,9 +186,7 @@ App.addInitializer(function(options) {
     this.users.filter.applyScopes = '{notElector: {election_id: '+ options.electionId +'}}';
     this.usersView = new ElectorateApp.FeedView({
        collection: this.users,
-       filters: {
-        enabled: true
-       }
+       filters: filter
     });
     
     this.electorate = new Electorate();
@@ -142,9 +194,7 @@ App.addInitializer(function(options) {
     
     this.electorateView = new ElectorateApp.ElectorateFeedView({
         collection: this.electorate,
-        filters: {
-            enabled: true
-        }
+        filters: filter
     });
 });
 

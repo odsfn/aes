@@ -60,7 +60,7 @@ class PeopleSearch extends CFormModel{
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
-    public function search() {
+    public function search($prefix = null) {
 	// Warning: Please modify the following code to remove attributes that
 	// should not be searched.
 
@@ -69,7 +69,7 @@ class PeopleSearch extends CFormModel{
             'join' => 'INNER JOIN user ON user.id = t.user_id AND user.status = ' . UserAccount::STATUS_ACTIVE
         ));
 
-        $criteria->mergeWith(self::getCriteriaFindByName($this->name));
+        $criteria->mergeWith(self::getCriteriaFindByName($this->name, $prefix));
         
 	$criteria->compare('birth_place', $this->birth_place, true);
         
