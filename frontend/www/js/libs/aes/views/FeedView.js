@@ -71,9 +71,25 @@ Aes.FeedView = Marionette.CompositeView.extend({
             this.initFilters(options.filters);
         }
 
+        this.model = new Backbone.Model();
+        
         this.listenTo(this.collection, 'totalCountChanged', _.bind(function(actualValue) {
-            this.ui.itemsCounter.html(actualValue);
+            this.model.set('totalCount', actualValue);
         }, this));
+        
+        this.moreBtnView = new this.moreView({
+            view: this,
+            appendTo: _.bind(function() { return $('div.load-btn-cntr', this.$el);}, this)
+        });        
+    },
+            
+    onShow: function() {
+        
+        this.ui.itemsCounter.html(this.model.get('totalCount'));
+        
+        this.listenTo(this.model, 'change:totalCount', function() {
+            this.ui.itemsCounter.html(this.model.get('totalCount'));
+        }, this);
 
         this.listenTo(this.collection, 'request', function() {
             this.$el.mask();
@@ -84,11 +100,6 @@ Aes.FeedView = Marionette.CompositeView.extend({
             this.$el.unmask();
             this.ui.loader.hide();
         }, this));
-
-        this.moreBtnView = new this.moreView({
-            view: this,
-            appendTo: _.bind(function() { return $('div.load-btn-cntr', this.$el);}, this)
-        });
     }
 }, {
     getTpl: function() {

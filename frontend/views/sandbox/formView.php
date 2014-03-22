@@ -91,6 +91,16 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
             </div>
         </div>
     </div>
+    
+    <div class="qfix-19">
+        <div class="navbar head">
+            <div class="navbar-inner">
+                <ul class="nav pull-right">
+                    <li><a id="items-count"><img style="display: none;" src="/img/loader-circle-16.gif" class="loader">Found <span class="items-count">2</span> </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
     

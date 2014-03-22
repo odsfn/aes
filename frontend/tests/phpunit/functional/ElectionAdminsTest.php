@@ -69,7 +69,7 @@ class ElectionAdminsTest extends WebTestCase {
         $this->login('tester1@mail.ru', 'qwerty');
         $this->open('election/admins/1');
         $this->waitForPageToLoad();
-        $this->waitForElementPresent('css=#all-admins-tab .user-info');
+        $this->waitForCssCount('css=#all-admins-tab .user-info', 3);
         
         $this->assertNotVisible('css=a[href="#invite-tab"]');
         $this->mouseOver('css=#all-admins-tab .user-info:nth-of-type(3)');

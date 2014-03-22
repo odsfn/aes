@@ -10,4 +10,11 @@ class UserPageController extends SocialController {
     public function actionIndex() {
         $this->render('userPage');
     }
+    
+    public function actionNominations() {
+        
+        $canControl = ($this->profile->user_id == Yii::app()->user->id);
+        
+        $this->render('nominations', array('canControl' => (int)$canControl, 'userId' => $this->profile->user_id));
+    }    
 }

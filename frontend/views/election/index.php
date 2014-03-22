@@ -3,6 +3,7 @@
     'requires' => array(
         'js' => array(
             'aes:collections/FeedCollection.js',
+            'aes:models/Election.js'
         )
     )
 ));

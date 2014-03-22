@@ -49,6 +49,10 @@ class Candidate extends CActiveRecord
         return 'candidate';
     }
     
+    public function behaviors() {
+        return array('AttrsChangeHandlerBehavior');
+    }
+    
     /**
      * @return array validation rules for model attributes.
      */
@@ -90,6 +94,7 @@ class Candidate extends CActiveRecord
             'appointer_id ' => 'Appointer Id',
             'election_id' => 'Election',
             'status' => 'Status',
+            'status_changed_ts' => 'Status Changed Time',
             'electoral_list_pos' => 'Electoral List Pos',
         );
     }
@@ -141,6 +146,9 @@ class Candidate extends CActiveRecord
 //        
 //        }
 //        
+        if($this->isNewRecord || $this->isAttrChanged('status'))
+            $this->status_changed_ts = date('Y-m-d H:i:s');
+        
         return parent::beforeSave();
     }
     

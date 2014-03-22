@@ -44,9 +44,9 @@ class SocialController extends FrontController {
 	$this->profile = $user->profile;        
     }
     
-    public function render($view, $data = null, $return = false) {
+    public function render($view, $data = array(), $return = false) {
         
-        $data = array_merge(array(
+        $data = array_merge($data, array(
             'profile' => $this->profile, 'self' => $this->self
         ));
         

@@ -1,0 +1,64 @@
+.nomination {
+    border-left: 10px solid #999999;
+    padding: 5px 10px 10px;
+    margin-bottom: 15px;
+}
+
+.nomination.status-registration {
+    border-color: #468847;
+}
+
+.nomination.status-election {
+    border-color: #C09853;
+}
+
+.nomination.status-finished {
+    border-color: #999999;
+}
+
+.nomination.status-canceled {
+    border-color: #B94A48;
+}
+
+.nomination.status-election .controls, 
+.nomination.status-finished .controls, 
+.nomination.status-canceled .controls {
+    display: none;
+}
+
+.get-more > div {
+    text-align: center;
+    margin-top: 15px;
+    
+    line-height: 14px;
+    
+    padding-top: 8px;
+    padding-bottom: 8px;
+    
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    
+    background-color: #f9f9f9;
+}
+
+.get-more > div:hover {
+    background-color: #DDD;
+    cursor: pointer;
+}
+
+.get-more > div.loading:hover {
+    cursor: default;
+}
+
+.get-more > div > span {
+    display: none;
+}
+
+.get-more > div.loading > span {
+    display: inline;
+}
+
+.get-more > div.loading > a {
+    display: none;
+}

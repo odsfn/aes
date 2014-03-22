@@ -6,9 +6,6 @@ App.addRegions({
     more: '#election_more'
 });
 
-var Election = Backbone.Model.extend({
-});
-
 var Elections = FeedCollection.extend({//Backbone.Collection.extend({//FeedCollection.extend({
     model: Election,
     url: UrlManager.createUrlCallback('api/election'),
