@@ -29,7 +29,7 @@ class CommentableDbManagerHelper {
         $migration->addForeignKey('fk_' . $newTableName . '_user_id', $newTableName, 'user_id', 'user_profile', 'user_id', 'CASCADE', 'NO ACTION');
         $migration->addForeignKey('fk_' . $newTableName . '_target_id', $newTableName, 'target_id', $commentableTableName, 'id', 'CASCADE', 'NO ACTION');
         
-        RateableDbManagerHelper::createTables('election_comment', $migration);
+        RateableDbManagerHelper::createTables($newTableName, $migration);
     }
     
     /**

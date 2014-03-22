@@ -40,12 +40,14 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
     
     var NominationView = Aes.ItemView.extend({
         template: '#nomination-tpl',
-        attributes: {
-            class: 'nomination'
-        },
+//        attributes: {
+//            class: 'nomination'
+//        },
         
         ui: {
             controls: '.controls',
+            rates: '.rates-container',
+            comments: '.comments-container',
             acceptBtn: '.accept-btn',
             declineBtn: '.decline-btn'
         },
@@ -80,7 +82,7 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
                 
         onRender: function() {
             this.$el.removeClass();
-            this.$el.addClass(this.attributes.class + ' ' + this.getStatusClass());
+            this.$el.addClass(/*this.attributes.class + ' ' + */this.getStatusClass());
             
             if(!this.canControl() || this.model.checkStatus('Refused') || this.model.checkStatus('Blocked'))
                 this.ui.controls.hide();
@@ -89,6 +91,32 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
                 if(this.model.checkStatus('Registered'))
                     this.ui.acceptBtn.hide();
             }
+            
+            if(!this._rates)
+            {
+                this._rates = RatesWidget.create({
+                    targetId: this.model.get('id'),
+                    targetType: 'Candidate',
+                    targetEl: this.ui.rates
+                });
+            }
+            
+            this.ui.rates.prepend(this._rates.render().$el);
+            
+            if(!this._comments)
+            {
+                this._comments = CommentsWidget.create({
+                    targetId: this.model.get('id'),
+                    targetType: 'Candidate'
+                });
+            }
+            
+            this.ui.comments.prepend(this._comments.render().$el);
+        },
+          
+        onShow: function() {
+            this._rates.trigger('show');
+            this._comments.trigger('show');
         },
                 
         onAcceptClick: function() {

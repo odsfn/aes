@@ -6,8 +6,6 @@
  * If you want to provide new commentable entity in the system you should follow such steps:
  * 1. Create tables for comments using CommentableDbManagerHelper in the migration script
  * 2. Create models for new tables extending them from Comment model.
- * 3. Fix the urlManager route in the frontend/config/frontend.php to map new entities to the existing
- *    comment rest controller (frontend/modules/api/controllers/CommentController.php)
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */

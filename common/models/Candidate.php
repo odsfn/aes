@@ -16,7 +16,7 @@
  * @property Profile $user
  * @property Vote[] $votes
  */
-class Candidate extends CActiveRecord
+class Candidate extends CActiveRecord implements iCommentable
 {
     
     const STATUS_INVITED = 0;
@@ -170,4 +170,18 @@ class Candidate extends CActiveRecord
     public static function getCriteriaWithStatusOnly($status) {
         return new CDbCriteria(array('condition' => 'status = ' . (int)$status));
     }
+    
+    /**
+     * @return bool 
+     */
+    public function canUnassignedComment(){
+        return true;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function canUnassignedRead(){
+        return true;
+    }    
 }

@@ -12,6 +12,12 @@ $js = array(
     'aes:views/MoreView.js',
     'aes:views/FeedCountView.js',
     'aes:views/FeedView.js',
+
+    // @TODO: Fix the bug. Next two files should be loaded by CommentsMarionetteWidget
+    'aes:views/EditBoxView.js',
+    'aes:views/EditableView.js',
+
+    
     'aes:models/Election.js',
     'aes:models/Candidate.js',
     'modules/Nominations.js'
@@ -25,6 +31,9 @@ $this->widget('application.widgets.ClientApp', array(
     )
 ));
 
+//$this->createWidget('RatesMarionetteWidget')->register();
+$this->createWidget('CommentsMarionetteWidget')->register();
+
 Yii::app()->clientScript->registerScript('starter',
     "App.start({
         userId: ". $userId .",
@@ -37,20 +46,23 @@ Yii::app()->clientScript->registerScript('starter',
 <div id="nominations"></div>
 
 <script type="text/template" id="nomination-tpl">
-    <h4><a href="<%= UrlManager.createUrl('election/view/' + election.id) %>" target="_blank"><%= election.name %></a></h4>
-    <div>
-        <div class="date-time"><b>Date:</b>&nbsp;<span><%= i18n.date(status_changed_ts, 'full', 'full') %></span></div>
-    </div>
-    <div>
-        <div class="span11"><b>Status:</b>&nbsp;<%= t(statusText) %></span>&nbsp;
-        <span class="controls"><b>
-            <a href="#" class="text-success accept-btn">Accept</a>&nbsp;
-            <a href="#" class="text-error decline-btn">Decline</a>
-        </b></span></div>
-        <div class="rates-container">
-            <span>&nbsp;</span>
+    <div class="nomination">
+        <h4><a href="<%= UrlManager.createUrl('election/view/' + election.id) %>" target="_blank"><%= election.name %></a></h4>
+        <div>
+            <div class="date-time"><b>Date:</b>&nbsp;<span><%= i18n.date(status_changed_ts, 'full', 'full') %></span></div>
+        </div>
+        <div>
+            <div class="span11"><b>Status:</b>&nbsp;<%= t(statusText) %></span>&nbsp;
+            <span class="controls"><b>
+                <a href="#" class="text-success accept-btn">Accept</a>&nbsp;
+                <a href="#" class="text-error decline-btn">Decline</a>
+            </b></span></div>
+            <div class="rates-container">
+                <span>&nbsp;</span>
+            </div>
         </div>
     </div>
+    <div class="comments-container"></div>
 </script>
 
 <script type="text/template" id="nominations-feed-tpl">

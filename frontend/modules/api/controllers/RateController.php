@@ -5,9 +5,7 @@
  * 
  * If you want to provide new rateable entity in the system you should follow such steps:
  * 1. Create table for rates using CommentableDbManagerHelper in the migration script
- * 2. Create models for new tables extending them from Rate model.
- * 3. Fix the urlManager route in the frontend/config/frontend.php to map new entities to the existing
- *    rate rest controller (frontend/modules/api/controllers/RateController.php)
+ * 2. Create model for new table extending them from Rate model.
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
