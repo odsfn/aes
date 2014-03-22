@@ -273,12 +273,14 @@ class MarionetteWidget extends CWidget {
             }
         }
         
-        $this->clientScript->addPackage($commonPack, array(
+        $packName = uniqid();
+        
+        $this->clientScript->addPackage($packName, array(
             'baseUrl' => 'js/libs/aes',
             'js' => $commonPathes
         ));
         
-        $requires['depends'][] = $commonPack;
+        $requires['depends'][] = $packName;
         
         return $requires;
     }

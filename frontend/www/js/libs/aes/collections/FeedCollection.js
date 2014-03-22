@@ -3,6 +3,8 @@
  * navigation through infinite models feed - like posts.
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
+ * @todo Extend it from Aes.FilterableCollection. Note: you should rename "filter" property call
+ * to "filters" in every places
  */
 var FeedCollection = Backbone.Collection.extend({
 

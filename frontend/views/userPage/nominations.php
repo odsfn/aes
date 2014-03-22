@@ -11,13 +11,7 @@ $js = array(
     'aes:views/TableItemView.js',
     'aes:views/MoreView.js',
     'aes:views/FeedCountView.js',
-    'aes:views/FeedView.js',
-
-    // @TODO: Fix the bug. Next two files should be loaded by CommentsMarionetteWidget
-    'aes:views/EditBoxView.js',
-    'aes:views/EditableView.js',
-
-    
+    'aes:views/FeedView.js',    
     'aes:models/Election.js',
     'aes:models/Candidate.js',
     'modules/Nominations.js'
@@ -31,7 +25,6 @@ $this->widget('application.widgets.ClientApp', array(
     )
 ));
 
-//$this->createWidget('RatesMarionetteWidget')->register();
 $this->createWidget('CommentsMarionetteWidget')->register();
 
 Yii::app()->clientScript->registerScript('starter',

@@ -41,18 +41,6 @@ class NominationController extends CandidateController
     
     public function doRestList() {
         
-//        if(empty($this->plainFilter['election_id']))
-//            throw new Exception ('Election id filter property missed');
-//        
-//        $election = Election::model()->findByPk($this->plainFilter['election_id']);
-//        
-//        if(!$election)
-//            throw new Exception('Election was not found');
-//        
-//        $criteria = new CDbCriteria(array(
-//            'condition' => 't.election_id = ' . $election->id
-//        ));
-        
         $criteria = new CDbCriteria(array('condition' => 't.user_id = ' . $this->plainFilter['user_id']));
         
         if(!empty($this->plainFilter['name']))

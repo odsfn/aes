@@ -28,17 +28,20 @@ var Rate = Backbone.Model.extend({
     }                
 });
 
-var Rates = Backbone.Collection.extend({
+var Rates = Aes.FilterableCollection.extend({
 
     target_id: null,
 
     model: Rate,
 
     initialize: function(models, options) {
+        Aes.FilterableCollection.prototype.initialize.apply(this, arguments);
+
         var options = options || {};
 
         this.url = options.url;
         this.target_id = options.target_id;
+        this.filters.target_id = this.target_id;
     },
 
     getLikes: function() {

@@ -45,7 +45,10 @@ return array(
     'RatesMarionetteWidget' => array(
         'widgetName' => 'RatesWidget',
         'requires' => array(
-            'depends' => array('aes-common')
+            'depends' => array('aes-common'),
+            'js' => array(
+                'aes:collections/FilterableCollection.js'
+            )
         )
     ),
                     

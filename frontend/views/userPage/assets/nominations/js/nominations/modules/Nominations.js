@@ -40,9 +40,6 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
     
     var NominationView = Aes.ItemView.extend({
         template: '#nomination-tpl',
-//        attributes: {
-//            class: 'nomination'
-//        },
         
         ui: {
             controls: '.controls',
@@ -82,7 +79,7 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
                 
         onRender: function() {
             this.$el.removeClass();
-            this.$el.addClass(/*this.attributes.class + ' ' + */this.getStatusClass());
+            this.$el.addClass(this.getStatusClass());
             
             if(!this.canControl() || this.model.checkStatus('Refused') || this.model.checkStatus('Blocked'))
                 this.ui.controls.hide();
