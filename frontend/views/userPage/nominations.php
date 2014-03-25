@@ -45,7 +45,7 @@ Yii::app()->clientScript->registerScript('starter',
             <div class="date-time"><b>Date:</b>&nbsp;<span><%= i18n.date(status_changed_ts, 'full', 'full') %></span></div>
         </div>
         <div>
-            <div class="span11"><b>Status:</b>&nbsp;<%= t(statusText) %></span>&nbsp;
+            <div class="span status"><b>Status:</b>&nbsp;<%= t(statusText) %></span>&nbsp;
             <span class="controls"><b>
                 <a href="#" class="text-success accept-btn">Accept</a>&nbsp;
                 <a href="#" class="text-error decline-btn">Decline</a>

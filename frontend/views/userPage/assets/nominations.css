@@ -26,6 +26,10 @@
     display: none;
 }
 
+.nomination .status {
+    width: 90.4%
+}
+
 .comments-container{
     margin-left: 20px;
     margin-bottom: 15px;

@@ -9,7 +9,7 @@ var Aes = (function() {
     var defaultHandleErrorOutput = 'console';
     
     var handleAjaxError = function(message, response, xhr) {
-        if(defaultHandleErrorOutput != 'console')
+        if(defaultHandleErrorOutput !== 'console')
             alert(message);
         else
             console.log(message);

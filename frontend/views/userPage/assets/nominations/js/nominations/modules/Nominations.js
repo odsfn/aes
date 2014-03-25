@@ -99,6 +99,8 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
             }
             
             this.ui.rates.prepend(this._rates.render().$el);
+            this._rates.delegateEvents();
+            this._rates.bindEventsToTarget($('.rates', this.$el));
             
             if(!this._comments)
             {
@@ -109,6 +111,7 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
             }
             
             this.ui.comments.prepend(this._comments.render().$el);
+            this._comments.delegateEvents();
         },
           
         onShow: function() {
