@@ -6,8 +6,13 @@ var Aes = (function() {
     
     var ajaxFormatCheck = true;
     
+    var defaultHandleErrorOutput = 'console';
+    
     var handleAjaxError = function(message, response, xhr) {
-        alert(message);
+        if(defaultHandleErrorOutput != 'console')
+            alert(message);
+        else
+            console.log(message);
     };
     
     function onAjaxComplete(e, xhr, options) {
