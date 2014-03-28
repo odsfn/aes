@@ -225,7 +225,19 @@ class MarionetteWidget extends CWidget {
         $this->clientScript->registerScriptFile('/js/libs/bootstrap.button.js', CClientScript::POS_END);
         $this->clientScript->registerScript('resolveBtnConflict', 
            '$(function(){ var btn = $.fn.button.noConflict();
-            $.fn.bButton = btn; });', CClientScript::POS_END);
+            $.fn.bButton = btn;
+            });', CClientScript::POS_END);
+
+        $this->clientScript->registerScriptFile('/js/libs/bootstrap.tooltip.js', CClientScript::POS_END);
+        $this->clientScript->registerScript('resolveTooltipConflict', 
+           '$(function(){
+               var bTooltip = $.fn.tooltip;
+
+               $.fn.tooltip.noConflict();
+               $.fn.jqTooltip = $.fn.tooltip;
+
+               $.fn.tooltip = bTooltip;
+            });', CClientScript::POS_END);        
         
         $user = Yii::app()->user;
         

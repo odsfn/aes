@@ -11,6 +11,8 @@ Aes.FormField = Aes.ItemView.extend({
      */
     showLabel: false,
     
+    errorPopUp: false,
+    
     /**
      * Event name after which internal value will be changed and validated
      */
@@ -87,12 +89,24 @@ Aes.FormField = Aes.ItemView.extend({
         
         Backbone.Validation.bind(this, {
             valid: function(view, attr) {
-                view.$el.next('.error').remove();
+                view.$el.removeClass('invalid');
+                view.$el.find('.error').remove();
+                
+                if(Marionette.getOption(view, 'errorPopUp') == true) {
+                    view.ui.input.tooltip('destroy');
+                }
             },
                     
             invalid: function(view, attr, error) {
-                view.$el.next('.error').remove();
-                view.$el.after('<span class="help-block error">' + error + '</span>');
+                view.$el.find('.error').remove();
+                view.$el.addClass('invalid');
+                view.$el.append('<span class="help-block error">' + error + '</span>');
+                
+                if(Marionette.getOption(view, 'errorPopUp') == true) {
+                    view.ui.input.tooltip({
+                        title: error
+                    });
+                }
             }
         });
         
@@ -134,14 +148,24 @@ Aes.FormField = Aes.ItemView.extend({
 
 Aes.TextFormField = Aes.FormField.extend({
     
+    inputType: 'text',
+    
+    labelInPlaceholder: false,
+    
     getTplStr: function() {
         return Aes.TextFormField.getTpl();
     }
     
 },{
     getTpl: function() {
-        return '<% if(view.options.label) { %><label for="<%= view.cid %>"><%= view.options.label %></label> <% } %>'
-            + '<input id="<%= view.cid %>" type="text" name="<%= view.options.name %>" value="">';
+        return '<% if(!view.options.labelInPlaceholder && view.options.label) { %><label for="<%= view.cid %>"><%= view.options.label %></label> <% } %>'
+            + '<input ' 
+                + 'id="<%= view.cid %>" ' 
+                + 'type="<%= view.inputType %>" '
+                + 'name="<%= view.options.name %>" '
+                + '<% if(view.options.labelInPlaceholder) { %> placeholder="<%= view.options.label %>" <% } %>'
+                + 'value="" '
+            + '>';
     }
 });
 
@@ -301,25 +325,29 @@ Aes.FormView = Aes.ItemView.extend({
         this.triggerMethod('reset', event);
     },
     
+    parseFieldConf: function(fieldName, fieldConf) {
+        if(!fieldConf.name)
+            fieldConf.name = fieldName;
+
+        fieldConf.showLabel = Marionette.getOption(this, 'showLabels');
+
+        if(this.options.uiAttributes && this.options.uiAttributes.inputs)
+        {
+            if(!fieldConf.uiAttributes) 
+               fieldConf.uiAttributes = {};
+
+            if(!fieldConf.uiAttributes.input)
+                fieldConf.uiAttributes['input'] = this.options.uiAttributes.inputs;
+        }
+        
+        return fieldConf;
+    },
+    
     setFields: function(fields) {
         this._fields = {};
 
         for(var fieldName in fields) {
-            var fieldConf = fields[fieldName];
-            
-            if(!fieldConf.name)
-                fieldConf.name = fieldName;
-            
-            fieldConf.showLabel = Marionette.getOption(this, 'showLabels');
-            
-            if(this.options.uiAttributes && this.options.uiAttributes.inputs)
-            {
-                if(!fieldConf.uiAttributes) 
-                   fieldConf.uiAttributes = {};
-               
-                if(!fieldConf.uiAttributes.input)
-                    fieldConf.uiAttributes['input'] = this.options.uiAttributes.inputs;
-            }
+            var fieldConf = this.parseFieldConf(fieldName, fields[fieldName]);
             
             this._fields[fieldName] = Aes.FormField.create(fieldConf);
         }
@@ -373,6 +401,26 @@ Aes.FormView = Aes.ItemView.extend({
     getTpl: function() {
         return '<form class="form-vertical well"><div class="form-actions">'
             + '<input type="button" class="btn btn-primary form-submit" value="<%= submitBtnText %>">'
+            + '&nbsp;<input type="button" class="btn form-reset" value="<%= resetBtnText %>">'
+        + '</div></form>';
+    }
+});
+
+Aes.NavbarFormView = Aes.FormView.extend({
+    getTplStr: function() {
+        return Aes.NavbarFormView.getTpl();
+    },
+            
+    parseFieldConf: function(fieldName, fieldConf) {
+        fieldConf = Aes.FormView.prototype.parseFieldConf.apply(this, arguments);
+        fieldConf.labelInPlaceholder = true;
+        fieldConf.errorPopUp = true;
+        return fieldConf;
+    }
+},{
+    getTpl: function() {
+        return '<form class="form-inline navbar-search"><div class="btn-group">'
+            + '<input type="button" class="btn form-submit" value="<%= submitBtnText %>">'
             + '&nbsp;<input type="button" class="btn form-reset" value="<%= resetBtnText %>">'
         + '</div></form>';
     }

@@ -28,7 +28,16 @@ Aes.FeedView = Marionette.CompositeView.extend({
           children.eq(index).before(itemView.el);
         }
     },
-
+            
+    getFiltersConfig: function() {
+        var handler = this.options.getFiltersConfig;
+        
+        if(handler && typeof handler === 'function')
+            return handler.apply(this, arguments);
+        else
+            return false;
+    },
+            
     initFilters: function(options) {
         
         options = _.clone(options);
@@ -36,6 +45,9 @@ Aes.FeedView = Marionette.CompositeView.extend({
         delete options.enabled;
         
         var appendTo = '.filter-container';
+        
+        if(options.type == 'inTopPanel')
+            appendTo = '.top-filter-container';
         
         delete options.appendTo;
         
@@ -53,7 +65,10 @@ Aes.FeedView = Marionette.CompositeView.extend({
            
         });
         
-        this._filter = new Aes.FormView(options);
+        if(options.type == 'inTopPanel')
+            this._filter = new Aes.NavbarFormView(options);
+        else    
+            this._filter = new Aes.FormView(options);
         
         this.on('render', function() {
             this._filter.render();
@@ -69,6 +84,8 @@ Aes.FeedView = Marionette.CompositeView.extend({
 
         if(options.filters && options.filters.enabled) {
             this.initFilters(options.filters);
+        }else if(this.getFiltersConfig() && this.getFiltersConfig().enabled) {
+            this.initFilters(this.getFiltersConfig());
         }
 
         this.model = new Backbone.Model();
@@ -105,6 +122,7 @@ Aes.FeedView = Marionette.CompositeView.extend({
     getTpl: function() {
         return '<div class="navbar head">' 
             + '<div class="navbar-inner">'
+                + '<div class="top-filter-container"></div>'
                 + '<ul class="nav pull-right">'
                     + '<li><a id="items-count"><img class="loader" src="/img/loader-circle-16.gif" style="display: none;">Found <span class="items-count">0</span> </a></li>'
                 + '</ul>'

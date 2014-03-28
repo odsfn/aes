@@ -8,6 +8,7 @@ $this->breadcrumbs->add('Nominations', 'userPage/nominations/' . $profile->user_
 $js = array(
     'aes:collections/FeedCollection.js',
     'aes:views/ItemView.js',
+    'aes:views/FormView.js',
     'aes:views/TableItemView.js',
     'aes:views/MoreView.js',
     'aes:views/FeedCountView.js',
@@ -20,7 +21,7 @@ $js = array(
 $this->widget('application.widgets.ClientApp', array(
     'appName' => 'nominations',
     'requires' => array(
-        'depends' => array('loadmask'),
+        'depends' => array('loadmask', 'backbone.validation'),
         'js' => $js
     )
 ));
@@ -61,17 +62,7 @@ Yii::app()->clientScript->registerScript('starter',
 <script type="text/template" id="nominations-feed-tpl">
 <div class="navbar head">
     <div class="navbar-inner">
-        <form class="navbar-search pull-left span4">
-
-            <div class="input-append span12">
-
-                <input type="text" placeholder="Type election title" class="span12" name="name">
-                <button class="btn filter-apply">Find</button>
-                <button class="btn filter-reset">Reset filter</button>
-            </div>
-
-        </form>    
-    
+        <div class="top-filter-container"></div>
         <ul class="nav pull-right">
             <li><a id="items-count"><img class="loader" src="/img/loader-circle-16.gif" style="display: none;">Found <span class="items-count">0</span> </a></li>
         </ul>

@@ -25,3 +25,24 @@ form.center{
 .help-block.error {
     color: #B94A48;
 }
+
+form.navbar-search.form-inline div {
+    display: inline;
+    margin-left: 5px;
+}
+
+form span.error {
+    display: none;
+}
+
+form div.invalid span.error {
+    display: inline;
+}
+
+form.navbar-search.form-inline div.invalid span.error {
+    display: none;
+}
+
+div.invalid input {
+    background-color: #ffd7d7;
+}

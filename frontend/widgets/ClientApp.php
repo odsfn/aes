@@ -66,6 +66,17 @@ class ClientApp extends CWidget {
            '$(function(){ var btn = $.fn.button.noConflict();
             $.fn.bButton = btn; });', CClientScript::POS_END);
         
+        $this->clientScript->registerScriptFile('/js/libs/bootstrap.tooltip.js', CClientScript::POS_END);
+        $this->clientScript->registerScript('resolveTooltipConflict', 
+           '$(function(){
+               var bTooltip = $.fn.tooltip;
+
+               $.fn.tooltip.noConflict();
+               $.fn.jqTooltip = $.fn.tooltip;
+
+               $.fn.tooltip = bTooltip;
+            });', CClientScript::POS_END);
+        
         $user = Yii::app()->user;
         
         /**

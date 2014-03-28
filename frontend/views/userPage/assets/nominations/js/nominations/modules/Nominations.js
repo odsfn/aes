@@ -152,41 +152,33 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
         template: '#nominations-feed-tpl',
         itemView: NominationView,
         
-        onFilterBtnClicked: function(e) {
-            e.preventDefault();
-    
-            var value = this.ui.filter.val();
-            if(!value)
-                return;
-            
-            this.collection.setFilter('name', value);
-        },
-        
-        onResetBtnClicked: function(e) {
-            e.preventDefault();
-            
-            this.ui.filter.val('');
-            this.collection.setFilter('name', '');
-            this.collection.reset();
-        },
+        getFiltersConfig: function() {
+            return {
+                type: 'inTopPanel',
                 
-        initialize: function() {
-            
-            Aes.FeedView.prototype.initialize.apply(this, arguments);
-    
-            _.extend(this.ui, {
-                filter: 'input[name="name"]',
-                filterBtn: 'button.filter-apply',
-                filterResetBtn: 'button.filter-reset',
-            });
-            
-            if(!this.events)
-                this.events = {};
-            
-            _.extend(this.events, {
-                'click button.filter-apply': 'onFilterBtnClicked',
-                'click button.filter-reset': 'onResetBtnClicked'
-            });
+                enabled: true,
+
+                submitBtnText: 'Filter',
+                
+                uiAttributes: {
+                    form: {
+                        class: 'navbar-search form-inline span4'
+                    }
+                },
+
+                fields: {
+                    name: {
+                        label: 'Type election title',
+                        type: 'text',
+                        
+                        uiAttributes: {
+                            input: {
+                                class: 'span6'
+                            }
+                        }
+                    }
+                }  
+            };
         }
     });
     

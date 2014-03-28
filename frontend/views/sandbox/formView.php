@@ -15,6 +15,18 @@ $clientScript->registerScript('resolveBtnConflict',
    '$(function(){ var btn = $.fn.button.noConflict();
     $.fn.bButton = btn; });', CClientScript::POS_END);
 
+
+$clientScript->registerScriptFile('/js/libs/bootstrap.tooltip.js', CClientScript::POS_END);
+$clientScript->registerScript('resolveTooltipConflict', 
+   '$(function(){
+       var bTooltip = $.fn.tooltip;
+       
+       $.fn.tooltip.noConflict();
+       $.fn.jqTooltip = $.fn.tooltip;
+       
+       $.fn.tooltip = bTooltip;
+    });', CClientScript::POS_END); 
+
 $clientScript->registerScriptFile('/js/libs/aes/views/ItemView.js');
 $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
 ?>
@@ -546,6 +558,37 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
        equal($('#qunit-fixture select').val(), '3');
     });
 
+    test('Navbar Form', function() {
+        var form = new Aes.NavbarFormView({
+            fields: {
+                a: {
+                    validator: {
+                        required: true
+                    },
+                    uiAttributes: {
+                        input: {
+                            class: 'span2'
+                        }
+                    }
+                },
+                b: {
+                    validator: {
+                        required: true
+                    },
+                    uiAttributes: {
+                        input: {
+                            class: 'span4'
+                        }
+                    }                
+                }
+            }
+        });
+        
+        $('#qunit-fixture .navbar-inner').prepend(form.render().$el);
+        equal($('#qunit-fixture form.form-inline.navbar-search').length, 1);
+        
+    });
+    
 //    test('MultySelect field');
 
 //    test('Checkbox field', function(){

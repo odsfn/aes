@@ -99,9 +99,9 @@ class NominationsTest extends WebTestCase {
         $this->waitForTextPresent('Election 1');
         $this->assertTextPresent('Election 2');
         $this->type("name=name", "2");
-        $this->click("css=button.btn.filter-apply");
+        $this->click("css=.btn.form-submit");
         $this->assertTextNotPresent('Election 1');
-        $this->click("css=button.btn.filter-reset");
+        $this->click("css=.btn.form-reset");
         $this->waitForTextPresent('Election 1');
         $this->assertTextPresent('Election 2');
         
