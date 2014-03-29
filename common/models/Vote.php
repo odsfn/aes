@@ -14,7 +14,7 @@
  * @property Profile $profile
  * @property Candidate $candidate
  */
-class Vote extends CActiveRecord
+class Vote extends CActiveRecord implements iCommentable
 {
     const STATUS_PASSED = 0;
     const STATUS_DECLINED = 1;
@@ -141,4 +141,18 @@ class Vote extends CActiveRecord
         
         return parent::beforeDelete();
     }
+    
+    /**
+     * @return bool 
+     */
+    public function canUnassignedComment(){
+        return true;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function canUnassignedRead(){
+        return true;
+    }    
 }

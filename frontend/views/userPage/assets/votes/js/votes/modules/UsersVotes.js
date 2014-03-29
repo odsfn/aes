@@ -95,36 +95,36 @@ App.module('UsersVotes', function(UsersVotes, App, Backbone, Marionette, $, _) {
             comments: '.comments-container'
         },        
         
-//        onRender: function() {            
-//            if(!this._rates)
-//            {
-//                this._rates = RatesWidget.create({
-//                    targetId: this.model.get('id'),
-//                    targetType: 'Candidate',
-//                    targetEl: this.ui.rates
-//                });
-//            }
-//            
-//            this.ui.rates.prepend(this._rates.render().$el);
-//            this._rates.delegateEvents();
-//            this._rates.bindEventsToTarget($('.rates', this.$el));
-//            
-//            if(!this._comments)
-//            {
-//                this._comments = CommentsWidget.create({
-//                    targetId: this.model.get('id'),
-//                    targetType: 'Candidate'
-//                });
-//            }
-//            
-//            this.ui.comments.prepend(this._comments.render().$el);
-//            this._comments.delegateEvents();
-//        },
-//          
-//        onShow: function() {
-//            this._rates.trigger('show');
-//            this._comments.trigger('show');
-//        }        
+        onRender: function() {            
+            if(!this._rates)
+            {
+                this._rates = RatesWidget.create({
+                    targetId: this.model.get('vote_id'),
+                    targetType: 'Vote',
+                    targetEl: this.ui.rates
+                });
+            }
+            
+            this.ui.rates.prepend(this._rates.render().$el);
+            this._rates.delegateEvents();
+            this._rates.bindEventsToTarget($('.rates', this.$el));
+            
+            if(!this._comments)
+            {
+                this._comments = CommentsWidget.create({
+                    targetId: this.model.get('vote_id'),
+                    targetType: 'Vote'
+                });
+            }
+            
+            this.ui.comments.prepend(this._comments.render().$el);
+            this._comments.delegateEvents();
+        },
+          
+        onShow: function() {
+            this._rates.trigger('show');
+            this._comments.trigger('show');
+        }        
     });
     
     var VotedCandidatesView = Marionette.CollectionView.extend({
