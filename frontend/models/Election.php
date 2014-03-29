@@ -173,6 +173,7 @@ class Election extends CActiveRecord implements iPostable
             return array(
                     'user' => array(self::BELONGS_TO, 'UserAccount', 'user_id'),
                     'target' => array(self::BELONGS_TO, 'Target', 'target_id'),
+                    'candidates' => array(self::HAS_MANY, 'Candidate', 'election_id')
             );
     }
 

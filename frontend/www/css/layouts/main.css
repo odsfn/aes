@@ -17,6 +17,10 @@ div.flash-messages div.alert{
     box-shadow: 0 2px 11px rgba(0, 0, 0, 0.25) 
 }
 
+/*
+ *  FormView
+ */
+
 form.center{
     margin-left: auto;
     margin-right: auto;
@@ -45,4 +49,45 @@ form.navbar-search.form-inline div.invalid span.error {
 
 div.invalid input {
     background-color: #ffd7d7;
+}
+
+/*
+ *  MoreView
+ */
+
+.get-more > div {
+    text-align: center;
+    margin-top: 15px;
+    
+    line-height: 14px;
+    
+    padding-top: 8px;
+    padding-bottom: 8px;
+    
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    
+    background-color: #f9f9f9;
+}
+
+.get-more > div:hover {
+    background-color: #DDD;
+    cursor: pointer;
+}
+
+.get-more > div.loading:hover {
+    cursor: default;
+}
+
+.get-more > div > span {
+    display: none;
+}
+
+.get-more > div.loading > span {
+    display: inline;
+}
+
+.get-more > div.loading > a {
+    display: none;
 }

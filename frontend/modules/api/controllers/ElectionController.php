@@ -1,24 +1,38 @@
 <?php
 
-class ElectionController extends ERestController {
+class ElectionController extends RestController {
 
     public $nestedModels = array();
+    
+    public $acceptFilters = array('plain' => 'voter_id', 'model' => 'name,status');
 
-    public function outputHelper($message, $results, $totalCount = 0, $model = null) {
-        parent::outputHelper($message, $results, (int)$totalCount, $model = 'models');
-    }
-
-    public function filterRestAccessRules($c) {
-        Yii::app()->clientScript->reset(); //Remove any scripts registered by Controller Class
-        $c->run();
-    }
-
-    public function _filters(){
+    public function getOutputFormatters() {
         return array(
-            'accessControl'
+            'candidates.votes.date' => array('Formatter', 'toTs')
         );
     }
-
+    
+    public function onPlainFilter_voter_id($filterName, $filterValue, $criteria) {
+        $this->nestedModels = array(
+            
+            'candidates.profile' => array(
+                'select' => 'user_id, first_name, last_name'
+            ),
+            
+            'candidates.votes' => array(
+                'joinType' => 'INNER JOIN',
+                'on'       => 'votes.election_id = t.id AND votes.user_id = :voterId',
+                'params' => array(':voterId' => $filterValue)
+            )
+            
+        );
+        
+        $criteria->mergeWith(array(
+            'join' => 'INNER JOIN vote ON vote.election_id = t.id AND vote.user_id = :voterId',
+            'params' => array(':voterId' => $filterValue)
+        ));
+    }
+    
     public function accessRules() {
         return array(
             array('allow',
@@ -31,6 +45,5 @@ class ElectionController extends ERestController {
             )
         );
     }
-
 
 }

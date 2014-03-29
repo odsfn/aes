@@ -333,5 +333,57 @@ class RestController extends ERestController {
             }
             
             return $this->_data;
-    }    
+    }
+    
+    public function doRestList() {
+        
+        $criteria = $this->processFilters();
+        
+        $results = $this->getResults($criteria);
+        $resultsCount = $this->getResultsCount($criteria);
+        
+        $this->outputHelper( 
+            'Records Retrieved Successfully',
+            $results,
+            $resultsCount
+        );
+        
+    }
+    
+    protected function getResults($criteria) {
+        return $this->getModel()
+                ->with($this->nestedRelations)
+                ->filter($this->restFilter)
+                ->orderBy($this->restSort)
+                ->limit($this->restLimit)
+                ->offset($this->restOffset)
+                ->findAll($criteria);
+    }
+    
+    protected function getResultsCount($criteria) {
+        return $this->getModel()
+                ->with($this->nestedRelations)
+                ->filter($this->restFilter)
+                ->count($criteria);
+    }
+    
+    /**
+     * @return CDbCriteria
+     */
+    protected function processFilters() {
+        $criteria = new CDbCriteria;
+        
+        foreach ($this->plainFilter as $filterName => $filterValue) {
+            $method_name = 'onPlainFilter_' . $filterName;
+            
+            if(!method_exists($this, $method_name))
+                continue;
+            
+//            call_user_method($method_name, $this, $criteria);
+            
+            $this->$method_name($filterName, $filterValue, $criteria);
+        }
+        
+        return $criteria;
+    }
 }
