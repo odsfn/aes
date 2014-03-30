@@ -47,16 +47,17 @@ Yii::app()->clientScript->registerScript('starter',
 </script>
 
 <script type="text/template" id="voted-candidate-tpl">
-    <h5>Vote for the candidate</h5>
-    <b><a href="<%= UrlManager.createUrl('election/candidates/' + election_id + '/details/' + id) %>" target="_blank">№<%= electoral_list_pos %>&nbsp;<%= profile.displayName %></a></b>
-    <div class="row-fluid">
-        <div class="span5"><span class="muted">Given: <%= i18n.date(vote_date, 'full', 'full') %></span></div>
-        <div class="span5"><% if(vote_declined) { %><span class="label label-important declined-marker"><i class="icon-ban-circle"></i>&nbsp;Declined</span><% } %></span>
-        <div class="rates-container">
+    <div>
+        <b>Vote for the candidate <a href="<%= UrlManager.createUrl('election/candidates/' + election_id + '/details/' + id) %>" target="_blank">№<%= electoral_list_pos %>&nbsp;<%= profile.displayName %></a></b>
+    </div>
+    <div class="last">
+        <div class="span11"><% if(vote_declined) { %><span class="label label-important declined-marker"><i class="icon-ban-circle"></i>&nbsp;Declined</span>&nbsp;<% } %><span class="muted">Given: <%= i18n.date(vote_date, 'full', 'full') %></span></div>
+        <div class="rates-container span1">
             <span>&nbsp;</span>
         </div>
     </div>
     <div class="comments-container"></div>
+    <hr>
 </script>
  
 <script type="text/template" id="votes-layout">

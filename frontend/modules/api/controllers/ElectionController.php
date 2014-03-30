@@ -22,7 +22,8 @@ class ElectionController extends RestController {
             'candidates.votes' => array(
                 'joinType' => 'INNER JOIN',
                 'on'       => 'votes.election_id = t.id AND votes.user_id = :voterId',
-                'params' => array(':voterId' => $filterValue)
+                'order'    => 'votes.date DESC',
+                'params' => array(':voterId' => $filterValue),
             )
             
         );

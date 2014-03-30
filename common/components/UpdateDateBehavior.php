@@ -9,7 +9,7 @@
 class UpdateDateBehavior extends CActiveRecordBehavior {
     
     /**
-     * Filds to fill with current datetime in Mysql format. 
+     * Fields to fill with current datetime in Mysql format. 
      * 
      * It can be plain array. In this case specified fields as arrays' values will
      * be updated on every save.

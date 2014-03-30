@@ -23,9 +23,7 @@ class Vote extends CActiveRecord implements iCommentable
         return array(
             'UpdateDateBehavior' => array(
                 'class' => 'UpdateDateBehavior',
-                'fields' => array(
-                    'create'=> array('date')
-                )
+                'fields' => array('date')
             ),
             'AttrsChangeHandlerBehavior' => array(
                 'class' => 'AttrsChangeHandlerBehavior'
