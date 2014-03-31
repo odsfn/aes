@@ -32,7 +32,7 @@ return array(
         'components'=>array(
             
             'fixture'=>array(
-                'class'=>'system.test.CDbFixtureManager',
+                'class'=>'common.components.DbFixtureManager',
                 'basePath'=>__DIR__.'/../tests/phpunit/fixtures'
             ),
             
