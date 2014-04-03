@@ -11,7 +11,8 @@ class ElectionAdminsTest extends WebTestCase {
         'user_profile' => 'userAccount.models.Profile',
         'election'     => 'Election',
         'AuthAssignment' => 'AuthAssignment',
-        'election_auth_assignment' => ':election_auth_assignment'
+        'election_auth_assignment' => ':election_auth_assignment',
+        'election_comment' => array('ElectionComment', 'functional/electionAdmins/election_comment')
     );
     
     public function testAdminsManagementShowsForUnauthorized() {
@@ -94,5 +95,102 @@ class ElectionAdminsTest extends WebTestCase {
         $this->assertElementContainsText('css=#all-admins-tab .items', 'Jhon Lenon');
         $this->assertElementContainsText('css=#all-admins-tab .items', 'Another User');
         $this->assertElementContainsText('css=#all-admins-tab .items', 'Yetanother User');
+    }
+    
+    public function testProvisionsShowsForUnauthorized() {
+        $this->checkProvisionsShowsForNotAdmin(0);
+        
+        $newPostBoxSel = 'css=input[name="new-post"]';
+        $this->assertElementPresent($newPostBoxSel);
+        $this->assertNotVisible($newPostBoxSel);
+    }
+    
+    public function testProvisionsShowsForAuthorizedNotAdmin() {
+        $this->login('truvazia@gmail.com', 'qwerty');
+        $this->checkProvisionsShowsForNotAdmin(0);
+        
+        $newPostBoxSel = 'css=input[name="new-post"]';
+        $this->assertElementPresent($newPostBoxSel);
+        $this->assertVisible($newPostBoxSel);
+    }
+    
+    public function testProvisionsShowsForAdmin() {
+        $this->login('truvazia@gmail.com', 'qwerty');
+        $this->checkProvsionsShows(1, true);
+        
+        $newPostBoxSel = 'css=input[name="new-post"]';
+        $this->assertElementPresent($newPostBoxSel);
+        $this->assertVisible($newPostBoxSel);
+        
+        $this->waitForElementPresent('css=.comments-feed .post .post-body', 3000);
+        
+        //Check that admin can edit not own comments
+        $this->assertElementContainsText('css=.comments-feed .post span.user', 'Jhon Lenon');
+        $this->mouseOver('css=.comments-feed .post .post-body');
+        $this->assertVisible('css=.comments-feed .post .post-body .icon-remove');
+    }
+    
+    public function testAuthorizedNotAdminCantEditNotOwnComments() {
+        $this->login('tester3@mail.ru', 'qwerty');
+        $election = $this->getFixtureManager()->getRecord('election', 1);
+        $this->open('election/provisions/' . $election->id);
+        
+        $this->waitForElementPresent('css=.comments-feed .post .post-body', 3000);
+        
+        //Check that admin can not edit not own comments
+        $this->assertElementContainsText('css=.comments-feed .post span.user', 'Jhon Lenon');
+        $this->mouseOver('css=.comments-feed .post .post-body');
+        $this->assertElementPresent('css=.comments-feed .post .post-body .icon-remove');
+        $this->assertNotVisible('css=.comments-feed .post .post-body .icon-remove');
+    }
+    
+    public function testProvisionsEditByAdmin() {
+        $this->login('truvazia@gmail.com', 'qwerty');
+        
+        $election = $this->getFixtureManager()->getRecord('election', 1);
+                
+        $this->open('election/provisions/' . $election->id);
+        $this->click('css=#election-info h5 a');
+        $this->waitForPageToLoad(3000);
+        
+        $newMandate = $election->mandate . ' edited';
+        $mandateFieldSel = 'css=input[name="Election[mandate]"]';
+        
+        $this->type($mandateFieldSel, $newMandate);
+        $this->click('css=#ElectionForm .form-actions button.btn-primary');
+        $this->waitForPageToLoad(3000);
+        
+        $this->assertElementPresent('css=.flash-messages .alert-success');
+        $this->assertVisible('css=.flash-messages .alert-success');
+        
+        $this->assertValue($mandateFieldSel, $newMandate);
+    }
+    
+    protected function checkProvisionsShowsForNotAdmin($electionIndex) 
+    {
+        $this->checkProvsionsShows($electionIndex);
+    }
+    
+    protected function checkProvsionsShows($electionIndex, $editable = false) {
+        $election = $this->getFixtureManager()->getRecord('election', $electionIndex);
+        
+        $this->open('election/view/' . $election->id);
+        $this->waitForPageToLoad(3000);
+        
+        $this->assertElementPresent('link=Provisions');
+        
+        $this->click("link=Provisions");
+        $this->waitForPageToLoad("3000");
+
+        $this->assertTextPresent('Mandate');
+        $this->assertTextPresent('Candidate registraion options');
+        $this->assertTextPresent('Electorate registraion options');
+        
+        if(!$editable)
+            $this->assertElementNotPresent('css=#election-info h5 a');
+        else
+            $this->assertElementPresent('css=#election-info h5 a');
+        
+        $this->assertElementContainsText('css=table tbody tr td', $election->mandate);        
     }
 }

@@ -92,7 +92,8 @@ class ElectionController extends FrontController
 
                     $transaction->commit();
 
-                    $this->redirect('/election');
+                    Yii::app()->user->setFlash('success', Yii::t('aes', 'Election created'));
+                    $this->redirect(array('/election/view/' . $model->id));
                 } else
                     $transaction->rollback();
 
@@ -115,7 +116,8 @@ class ElectionController extends FrontController
             $model->attributes = $_POST['Election'];
 
             if($model->save()) {
-                $this->redirect(array('/election/view/' . $model->id));
+                Yii::app()->user->setFlash('success', Yii::t('aes', 'Changes saved'));
+                $this->redirect(array('/election/management/' . $model->id));
             }
             
         }
