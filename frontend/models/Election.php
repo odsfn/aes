@@ -22,7 +22,7 @@
  * @property User $user
  * @property Target $target AR from base parent table.
  */
-class Election extends CActiveRecord implements iPostable
+class Election extends CActiveRecord implements iPostable, iCommentable
 {
     const IMAGE_WIDTH = 400;
     const IMAGE_HEIGHT = 400;
@@ -232,6 +232,14 @@ class Election extends CActiveRecord implements iPostable
 
     public function canUnassignedReadPost() {
         return ($this->unassigned_access_level >= self::UNASSIGNED_CAN_READ);
+    }
+    
+    public function canUnassignedComment() {
+        return true;
+    }
+
+    public function canUnassignedRead() {
+        return true;
     }
 
     protected function creratePicPath() {

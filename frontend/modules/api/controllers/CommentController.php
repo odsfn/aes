@@ -132,6 +132,7 @@ class CommentController extends RestController {
             throw new Exception ('Comment target ( object which is being commented ) should be an instance of iCommentable');
         
         $params[lcfirst($this->targetType)] = $target;
+        $params['target'] = $target;
         
         $disabledRoles = array();
         

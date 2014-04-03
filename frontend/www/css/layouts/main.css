@@ -91,3 +91,18 @@ div.invalid input {
 .get-more > div.loading > a {
     display: none;
 }
+
+/**
+ * grouped-model-info
+ */
+
+.grouped-model-info table th {
+    width: 25%;
+    color: #BBB;
+}
+
+.grouped-model-info table th, .grouped-model-info table td {
+    border: none;
+    font-size: 12px;
+    line-height: 14px;
+}

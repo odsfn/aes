@@ -31,12 +31,12 @@ return array(
             'RatesMarionetteWidget'
         ),
         'checkForRoles' => array(                                        
-            'commentsAdmin' => array('election_commentModerator', 
+            'commentsAdmin' => array('commentModeration',
                 function($widget) {
-                    return array(
+                    return array_merge(array(
                         'targetId' => $widget->jsConstructorOptions['targetId'],
                         'targetType' => $widget->jsConstructorOptions['targetType']
-                    );
+                    ), is_array($widget->roleCheckParams) ? $widget->roleCheckParams : array());
                 }
             )
         ),

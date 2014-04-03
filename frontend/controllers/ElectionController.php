@@ -123,6 +123,16 @@ class ElectionController extends FrontController
         $this->render('management', array('model'=>$model));
     }
     
+    public function actionProvisions($id) {
+        $model = $this->getModel($id);
+        $this->layout = '//layouts/election';
+        $this->election = $model;
+        
+        $canManage = Yii::app()->user->checkAccess('election_administration', array('election' => $this->election));
+        
+        $this->render('provisions', array('model'=>$model, 'canManage' => $canManage));
+    }
+    
     public function actionAdmins($id) {
         
         $model = $this->getModel($id);
@@ -133,8 +143,7 @@ class ElectionController extends FrontController
         $this->render('admins', array('model'=>$model));
         
     }
-    
-    
+     
     public function actionCandidates($id) {
         $model = $this->getModel($id);
         

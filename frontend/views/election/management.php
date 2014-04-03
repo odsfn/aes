@@ -1,5 +1,8 @@
 <?php
 
+$this->breadcrumbs->add('Management', '/election/management/' . $model->id);
+$this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
+
 $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     'id'=>'ElectionForm',
     'enableClientValidation'=>true,
