@@ -36,8 +36,8 @@ class RegistrationTest extends WebTestCase
         $this->select("id=RegistrationForm_gender", "label=Male");
         
         $this->click("id=yw1");
-        $this->setSpeed(1000);
-        $this->waitForPageToLoad("30000");
+//        $this->setSpeed(1000);
+        $this->waitForPageToLoad("15000");
         $this->waitForTextPresent("We have created account especially for you! Please check your mail, and confirm registration");
         $this->assertTrue($this->isTextPresent("Log in"));
         

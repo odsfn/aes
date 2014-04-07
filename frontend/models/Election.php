@@ -21,6 +21,8 @@
  * The followings are the available model relations:
  * @property User $user
  * @property Target $target AR from base parent table.
+ * @property Candidate[] $candidates Candidates
+ * @property Elector[] $electors Electors
  */
 class Election extends CActiveRecord implements iPostable, iCommentable
 {
@@ -128,6 +130,7 @@ class Election extends CActiveRecord implements iPostable, iCommentable
                 'description' => true,
             ),
 
+            'AttrsChangeHandlerBehavior'
         );
     }
 
@@ -173,7 +176,12 @@ class Election extends CActiveRecord implements iPostable, iCommentable
             return array(
                     'user' => array(self::BELONGS_TO, 'UserAccount', 'user_id'),
                     'target' => array(self::BELONGS_TO, 'Target', 'target_id'),
-                    'candidates' => array(self::HAS_MANY, 'Candidate', 'election_id')
+                    'candidates' => array(self::HAS_MANY, 'Candidate', 'election_id'),
+                    'candidatesWithVotes' => array(self::HAS_MANY, 'Candidate', 'election_id',
+                        'condition' => 'status = ' . Candidate::STATUS_REGISTERED,
+                        'with' => 'acceptedVotesCount'
+                    ),
+                    'electors' => array(self::HAS_MANY, 'Elector', 'election_id')
             );
     }
 
@@ -194,7 +202,7 @@ class Election extends CActiveRecord implements iPostable, iCommentable
                     'cand_reg_confirm' => 'Candidate Registration Confirmation',
                     'voter_reg_type' => 'Voter Registration Type',
                     'voter_reg_confirm' => 'Voter Registration Confirmation',
-        'uploaded_file'=>'Image',
+                    'uploaded_file'=>'Image',
             );
     }
 
@@ -252,5 +260,43 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         }
         
         return false;
+    }
+    
+    protected function afterSave() {
+        if($this->isAttrChanged('status') && $this->status == self::STATUS_FINISHED)
+            $this->finish();
+            
+        return parent::afterSave();
+    }
+    
+    /**
+     * @param Candidate $candidate
+     * @return Mandate Mandate created for candidate
+     */
+    public function createMandate($candidate) {
+        $mandate = new Mandate();
+        $mandate->name = $this->mandate;
+        $mandate->validity = $this->validity;
+        $mandate->election_id = $this->id;
+        $mandate->candidate_id = $candidate->id;
+        $mandate->votes_count = $candidate->acceptedVotesCount;
+        $mandate->submiting_ts = date('Y-m-d');
+        
+        $exp = new DateTime;
+        $exp->add(new DateInterval('P' . $this->validity . 'M'));
+        $mandate->expiration_ts = $exp->format('Y-m-d');
+        
+        if(!$mandate->save())
+            throw new Exception('Can\'t create mandate. Validation errors: ' . print_r($mandate->getErrors(), true));
+        
+        return $mandate;
+    }
+
+    public function finish() {
+        $candidates = $this->candidatesWithVotes;
+        
+        foreach ($candidates as $candidate)
+            if($candidate->acceptedVotesCount >= $this->quote)
+                $this->createMandate($candidate);
     }
 }

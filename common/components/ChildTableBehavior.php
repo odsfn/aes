@@ -61,6 +61,7 @@ class ChildTableBehavior extends CActiveRecordBehavior {
             return;
         
         $this->transaction->commit();
+        $this->transaction = null;
     }
 
     public function afterDelete() {

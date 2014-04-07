@@ -139,11 +139,13 @@ class DbFixtureManager extends CDbFixtureManager {
         foreach($fixtures as $fixtureName=>$params)
         {
             $mergePath = null;
+            $withSubfolders = false;
             
             if(is_array($params))
             {
                 $tableName = array_shift($params);
                 $mergePath = $params;
+                $withSubfolders = true;
             }
             else
                 $tableName = $params;
@@ -161,7 +163,13 @@ class DbFixtureManager extends CDbFixtureManager {
             if(($prefix=$this->getDbConnection()->tablePrefix)!==null)
                 $tableName=preg_replace('/{{(.*?)}}/',$prefix.'\1',$tableName);
             $this->resetTable($tableName);
-            $rows=$this->loadFixture($tableName, true, $mergePath);
+            
+            try{
+                $rows=$this->loadFixture($tableName, $withSubfolders, $mergePath);
+            }catch(Exception $e){
+                throw new Exception('Loading of fixture "' . $tableName . '" failed. ' . print_r($mergePath, true), null, $e);
+            }
+            
             if(is_array($rows) && is_string($tableName))
             {
                 $this->_rows[$fixtureName]=$rows;

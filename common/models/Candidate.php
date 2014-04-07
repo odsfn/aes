@@ -15,6 +15,7 @@
  * @property Election $election
  * @property Profile $user
  * @property Vote[] $votes
+ * @property int $acceptedVotesCount Votes count that were passed to this candidate
  */
 class Candidate extends CActiveRecord implements iCommentable
 {
@@ -80,6 +81,7 @@ class Candidate extends CActiveRecord implements iCommentable
             'election' => array(self::BELONGS_TO, 'Election', 'election_id'),
             'profile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'votes' => array(self::HAS_MANY, 'Vote', 'candidate_id'),
+            'acceptedVotesCount' => array(self::STAT, 'Vote', 'candidate_id', 'condition' => 'status <> ' . Vote::STATUS_DECLINED)
         );
     }
 
