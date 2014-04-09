@@ -42,7 +42,8 @@ class RestController extends ERestController {
     
     protected $plainFilter = array();
 
-
+    protected $convertRestFilters = false;
+    
     public function beforeAction($event) {
         $result = parent::beforeAction($event);
         
@@ -66,17 +67,23 @@ class RestController extends ERestController {
                 foreach ($this->restFilter as $key => $value) {
                     if(!in_array($key, $acceptableKeys))
                         unset($this->restFilter[$key]);
+                    elseif ($value == '') {
+                        $this->restFilter[$key] = null;
+                    }
                 }
             }
             
-            //Convert filters to acceptable format
-            $convertedFilter = array();
-            
-            foreach ($this->restFilter as $filterName => $value) {
-                $convertedFilter[] = array('property' => $filterName, 'value' => $value);
+            if($this->convertRestFilters)
+            {
+                //Convert filters to acceptable format
+                $convertedFilter = array();
+
+                foreach ($this->restFilter as $filterName => $value) {
+                    $convertedFilter[] = array('property' => $filterName, 'value' => $value);
+                }
+
+                $this->restFilter = $convertedFilter;
             }
-            
-            $this->restFilter = $convertedFilter;
             
         } else {                                        //Filters are in acceptable format
             
@@ -376,10 +383,8 @@ class RestController extends ERestController {
         foreach ($this->plainFilter as $filterName => $filterValue) {
             $method_name = 'onPlainFilter_' . $filterName;
             
-            if(!method_exists($this, $method_name))
+            if(!method_exists($this, $method_name) || !$filterValue)
                 continue;
-            
-//            call_user_method($method_name, $this, $criteria);
             
             $this->$method_name($filterName, $filterValue, $criteria);
         }

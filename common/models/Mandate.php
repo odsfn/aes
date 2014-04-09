@@ -19,6 +19,11 @@
  */
 class Mandate extends CActiveRecord
 {
+    
+    const STATUS_ACTIVE = 0;
+    const STATUS_EXPIRED = 1;
+    const STATUS_REVOKED = 2;
+
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -82,6 +87,7 @@ class Mandate extends CActiveRecord
             'expiration_ts' => 'Expiration Date',
             'validity' => 'Validity',
             'votes_count' => 'Votes Count',
+            'status'      => 'Status'
         );
     }
 

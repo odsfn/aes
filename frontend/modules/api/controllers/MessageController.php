@@ -7,6 +7,8 @@ class MessageController extends RestController {
     
     public $nestedModels = false;
     
+    protected $convertRestFilters = true;
+    
     public $acceptableFilters = array(
         'plain' => 'conversation_id',
         'model' => 'conversation_id'

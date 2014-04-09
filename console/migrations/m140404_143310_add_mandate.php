@@ -12,7 +12,8 @@ class m140404_143310_add_mandate extends EDbMigration
                 'submiting_ts' => 'timestamp not null default "0000-00-00 00:00:00"',
                 'expiration_ts'=> 'timestamp not null default "0000-00-00 00:00:00"',
                 'validity'     => 'tinyint not null',
-                'votes_count'  => 'int(11) not null'
+                'votes_count'  => 'int(11) not null',
+                'status'       => 'tinyint not null default 0'
             ));
             
             $this->createIndex('ix_mandate_submiting_ts', 'mandate', 'submiting_ts');

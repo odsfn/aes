@@ -13,6 +13,8 @@ class RateController extends RestController {
     
     public $nestedModels = array();
 
+    protected $convertRestFilters = true;
+
     public function getOutputFormatters() {
         return array(
             'created_ts' => array('Formatter', 'toTs')

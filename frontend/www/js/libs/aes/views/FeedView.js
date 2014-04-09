@@ -53,14 +53,56 @@ Aes.FeedView = Marionette.CompositeView.extend({
         
         var that = this;
         
+        var filterOptions = {};
+        
+        for(var filterName in options.fields) {
+            var fOpts = options.fields[filterName].filterOptions || false;
+            
+            if(fOpts && fOpts.extendedFormat){
+                filterOptions[filterName] = fOpts;
+                delete options.fields[filterName].filterOptions;
+            }
+        }
+        
+        var formatFilters = function(filterValues, options) {
+            
+            for(var filterName in options) {
+                var config = options[filterName];
+                var filterValue = filterValues[filterName];
+                
+                if(filterValue == '') {
+                    continue;
+                }
+                
+                if(config.value && typeof config.value == 'string' && config.value.search('{value}') != -1)
+                    filterValue = config.value.replace('{value}', filterValue);
+                else if(config.value && typeof config.value == 'function')
+                    filterValue = config.value(filterValue);
+                        
+                filterValues[filterName] = {property: filterName, value: filterValue};
+                
+                if(config.operator)
+                    filterValues[filterName].operator = config.operator;
+            }
+            
+            return filterValues;
+        };
+        
+        var applyFilters = function() {
+            var filters = formatFilters(this.getValues(), filterOptions)
+            that.collection.setFilters(filters);
+        };
+        
         _.extend(options, {
             
            onSubmit: function() {
-               that.collection.setFilters(this.getValues());
+               applyFilters.apply(this, arguments);
+//                that.collection.setFilters(this.getValues());
            },
 
            onReset: function() {
-               that.collection.setFilters(this.getValues());
+               applyFilters.apply(this, arguments);
+//                that.collection.setFilters(this.getValues());
            }
            
         });

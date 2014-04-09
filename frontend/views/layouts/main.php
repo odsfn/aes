@@ -40,11 +40,13 @@
                                 <?php $this->widget('bootstrap.widgets.TbMenu', array(
                                     'items'=>array(
                                         array('divider'=>'', 'visible'=>!Yii::app()->user->isGuest),
-                                        array('label'=>'Your page', 'url'=>array('/userPage/index', 'id'=>Yii::app()->user->id), 'visible'=>!Yii::app()->user->isGuest),
+                                        array('label'=>'Your page', 'url'=>array('/userPage/index', 'id'=>Yii::app()->user->id), 'visible'=>!Yii::app()->user->isGuest, 'active' => ( $this->id == 'userPage' && $this->profile->user_id == Yii::app()->user->id)),
                                         array('divider'=>''),
                                         array('label'=>'Elections', 'url'=>array('/election/index'), 'active' => $this->id == 'election'),
                                         array('divider'=>''),
-                                        array('label'=>'People', 'url'=>array('/people/index')),
+                                        array('label'=>'Mandates', 'url'=>array('/mandate/index'), 'active' => $this->id == 'mandate'),
+                                        array('divider'=>''),                                        
+                                        array('label'=>'People', 'url'=>array('/people/index'), 'active' => ( $this->id == 'people' || ( $this->id == 'userPage' && $this->profile->user_id != Yii::app()->user->id ))),
                                         array('divider'=>''),
                                         array('label'=>'About', 'url'=>'#'),
                                     ),
