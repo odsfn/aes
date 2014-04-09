@@ -152,5 +152,9 @@ class Vote extends CActiveRecord implements iCommentable
      */
     public function canUnassignedRead(){
         return true;
+    }
+    
+    public function checkUserInRole($userId, $role) {
+        return false;
     }    
 }
