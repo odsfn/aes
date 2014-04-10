@@ -147,6 +147,16 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
        itemView: VoteView
     });
     
+    var MandatesView = Aes.ItemView.extend({
+        getTplStr: function() {
+            return '<ul>'
+                + '<% _.each(items, function(item){ %>'
+                + '<li><a href="<%= UrlManager.createUrl("mandate/index/details/" + item.id) %>" target="_blank"><%= item.name %></a></li>'
+                + '<% }); %>'
+            + '</ul>';
+        }
+    });
+    
     this.setCandStatus = function(cand, status, success) {
         var success = success || function() {};
         
@@ -188,6 +198,16 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             $('#details-votes-tab-sel a').tab('show');
             
             this.listenTo(this.votes, 'changed:acceptedVotesCount', this.detailesView.render);
+            
+            if(Candidates.getElection().checkStatus('Finished')) 
+            {
+                $('#mandates-tab-sel').show();
+                
+                this.layout.mandates.show(new MandatesView({
+                    collection: Candidates.mandates
+                }));
+            }
+            
         } else
             $('#details-votes-tab-sel').hide();
     };

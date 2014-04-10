@@ -238,7 +238,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
         <ul class="nav nav-tabs">
             <li><a href="#docs-tab">Documents</a></li>
             <li id="details-votes-tab-sel"><a href="#votes-tab" data-toggle="tab">Votes</a></li>
-            <li><a href="#mandates-tab"></a></li>
+            <li id="mandates-tab-sel"><a href="#mandates-tab" data-toggle="tab">Mandate</a></li>
         </ul>
 
         <div class="tab-content">
@@ -247,7 +247,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
         
             <div id="votes-tab" class="tab-pane"></div>
             
-            <div id="mandates-tab"></div>
+            <div id="mandates-tab" class="tab-pane"></div>
 
         </div>    
     </div>

@@ -552,7 +552,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             layoutShowDef.resolve();
         });
         
-        $.when(election.fetch(), layoutShowDef).then(_.bind(function() {
+        $.when(election.fetch(), layoutShowDef).then(_.bind(function() {            
             
             if(election.checkStatus('Election') || election.checkStatus('Finished')) {
                 this.electoralList = new ElectoralList({
@@ -564,6 +564,20 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 $('#electoral-list-tab-sel > a').tab('show');
             }
 
+            if(election.checkStatus('Finished')) {
+                this.mandates = new Backbone.Collection([], {
+                    url: UrlManager.createUrl('api/mandate')
+                });
+                
+                this.mandates.fetch({
+                   params: {
+                       filters: {
+                           election_id: config.electionId
+                       }
+                   } 
+                });          
+            }
+            
             this.candsList = new CandsListView({
                 collection: this.cands
             });
