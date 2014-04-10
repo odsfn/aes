@@ -42,6 +42,34 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
         url: UrlManager.createUrlCallback('api/mandate')
     });
     
+    var Elector = Backbone.Model.extend({
+        parse: function() {
+            var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
+
+            attrs.id = parseInt(attrs.id);
+            attrs.election_id = parseInt(attrs.election_id);
+            attrs.candidate_id = parseInt(attrs.candidate_id);
+            attrs.user_id = parseInt(attrs.user_id);
+            attrs.date = parseInt(attrs.date) * 1000;
+            attrs.status = parseInt(attrs.status);
+
+            return attrs;
+        }    
+    });
+    
+    var ElectorsCollection = FeedCollection.extend({
+       limit: 30,
+       model: Elector,
+       url: UrlManager.createUrlCallback('api/vote'),
+       
+       getFilters: function() {
+            return {
+                accepted_only: true,
+                with_profile: true
+            };
+       }
+    });
+    
     var MandateView = Aes.ItemView.extend({
         template: '#mandate-tpl',
 //        
@@ -71,6 +99,11 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
             this.$el.removeClass();
             this.$el.addClass(this.getStatusClass());
         }
+    });
+    
+    var ElectorView = Aes.ItemView.extend({
+        className: 'user-info',
+        template: '#electorfeed-item-tpl'
     });
     
     var MandatesFeedView = Aes.FeedView.extend({
@@ -129,12 +162,110 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
     
     var Layout = Marionette.Layout.extend({
        regions: {
-           mandates: '#mandates-feed-container'
+           mandates: '#mandates-feed-container',
+           mandateDetails: '#mandate-details'
        } 
+    });
+    
+    var DetailsLayout = Marionette.Layout.extend({
+        template: '#mandate-details-layout-tpl',
+        regions: {
+            mandateInfo: '#mandate-info',
+            electorsTabContent: '#electors-tab'
+        }
     });
     
     this.setOptions = function(options) {
         config = _.extend(config, _.pick(options, _.keys(config)));
+    };
+    
+    this.viewMandates = function() {
+        this.layout.mandateDetails.close();
+        this.layout.mandates.$el.show();
+        $('#mandate-details li.node-viewDetails').remove();
+    };
+    
+    this.viewDetails = function(mandateId) {
+        var mandate = this.mandates.findWhere({id: mandateId});
+        
+        var electors = new ElectorsCollection();
+        electors.setFilters({
+           election_id: mandate.get('election_id'),
+           candidate_id: mandate.get('candidate_id')
+        });
+        
+        electors.fetch();
+        
+        this.layout.mandates.$el.hide();
+        
+        this.layout.mandateDetails.show(this.detailsLayout);
+        this.detailsLayout.mandateInfo.show(new MandateView({
+            template: '#mandate-detailed-tpl',
+            model: mandate
+        }));
+        
+        this.detailsLayout.electorsTabContent.show(new Aes.FeedView({
+            itemView: ElectorView,
+            collection: electors,
+            
+            filters: {
+           
+                enabled: true,
+
+                attributes: {
+                    class: 'search-form pull-right span4'
+                },
+
+                uiAttributes: {
+                   inputs: {
+                        class: 'span12'
+                   }
+                },
+
+                fields: {
+                        name: {
+                            label: 'Name',
+                            type: 'text',
+                        },
+                        birth_place: {
+                            label: 'Birth Place'
+                        },
+                        ageFrom: {
+                            label: 'Age From',
+                            validator: {
+                                required: false,
+                                min: 1,
+                                max: 100
+                            }
+                        },
+                        ageTo: {
+                            label: 'Age To',
+                            validator: {
+                                required: false,
+                                min: 1,
+                                max: 100,
+                                greaterThan: {
+                                    attr: 'ageFrom',
+                                    validOnEqual: true
+                                }
+                            }
+                        },
+                        gender: {
+                            label: 'Gender',
+                            type: 'select',
+                            options: [
+                                {label: 'Any', value: '', selected: true},
+                                {label: 'Male', value: '1'},
+                                {label: 'Female', value: '2'}
+                            ]
+                        }
+                 }
+
+               }
+        }));
+        
+        
+        $('#mandate-details ul.breadcrumbs').append('<li class="node-viewDetails"><a href="#">' + mandate.get('name') + ' - ' + mandate.get('candidate').profile.displayName + '</a></li>');
     };
     
     this.addInitializer(function(options) {
@@ -151,12 +282,14 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
            template: config.layoutTpl
         });
         
+        this.detailsLayout = new DetailsLayout();
     });
     
     this.on('start', function() {
         
         this.mandates.fetch().done(function(){
-           MandatesList.layout.mandates.show(MandatesList.mandatesFeedView); 
+           MandatesList.layout.mandates.show(MandatesList.mandatesFeedView);
+           MandatesList.trigger('ready');
         });
         
     });

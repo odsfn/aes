@@ -7,7 +7,7 @@ class VoteController extends RestController {
     public $nestedModels = array();
     
     public $acceptFilters = array(
-        'plain' => 'election_id,user_id,candidate_id,with_profile,name'
+        'plain' => 'election_id,user_id,candidate_id,with_profile,name,accepted_only,ageFrom,ageTo,birth_place,gender'
     );
     
     public $virtualAttrs = array(
@@ -46,10 +46,28 @@ class VoteController extends RestController {
         ));
         
         if(isset($this->plainFilter['user_id']))
-            $criteria->mergeWith(array('condition' => 't.user_id = ' . (int)$this->plainFilter['user_id']));
+            $criteria->mergeWith(array('condition' => 't.user_id = ' . (int)$this->plainFilter['user_id']));       
         
-        if(!empty($this->plainFilter['name']))
-            $criteria->mergeWith(PeopleSearch::getCriteriaFindByName($this->plainFilter['name'], 'profile'));        
+        $peopleSearch = new PeopleSearch();
+        
+        if($name = $this->plainFilter['name'])
+            $peopleSearch->name = $name;
+        
+        if($ageFrom = $this->plainFilter['ageFrom'])
+            $peopleSearch->ageFrom = $ageFrom;
+        
+        if($ageTo = $this->plainFilter['ageTo'])
+            $peopleSearch->ageTo = $ageTo;
+        
+        if($birth_place = $this->plainFilter['birth_place'])
+            $peopleSearch->birth_place = $birth_place;
+        
+        if($gender = $this->plainFilter['gender'])
+            $peopleSearch->gender = $gender;
+        
+        $arProvCriteria = $peopleSearch->search('profile')->criteria;
+        if($arProvCriteria)
+            $criteria->mergeWith($arProvCriteria);        
         
         if(!empty($this->plainFilter['with_profile']))
             $this->nestedModels = array(
@@ -60,6 +78,9 @@ class VoteController extends RestController {
         
         if(isset($this->plainFilter['candidate_id']))
             $criteria->mergeWith(array('condition' => 't.candidate_id = ' . (int)$this->plainFilter['candidate_id']));
+        
+        if(isset($this->plainFilter['accepted_only']) && $this->plainFilter['accepted_only'])
+            $criteria->addCondition ('t.status = ' . Vote::STATUS_PASSED);
         
         $results = $this->getModel()
                 ->with($this->nestedRelations)
