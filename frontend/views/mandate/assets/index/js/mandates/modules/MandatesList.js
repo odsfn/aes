@@ -72,13 +72,6 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
     
     var MandateView = Aes.ItemView.extend({
         template: '#mandate-tpl',
-//        
-//        ui: {
-//        },
-//        
-//        events: {
-//            'click .body': 'onBodyClick'
-//        },
                 
         getStatusClass: function() {
             var status = this.model.getStatusText();

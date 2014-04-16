@@ -36,7 +36,7 @@ $this->widget('bootstrap.widgets.TbMenu', array(
         array('label'=> Yii::t('userPage', 'Write message'), 'url'=> array('/messaging/index/chat_with/' . $this->profile->user_id), 'visible' => (!Yii::app()->user->isGuest && !$this->self)),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My votes' : 'Votes'), 'url'=> array('/userPage/votes', 'id'=>$this->profile->user_id)),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My nominations' : 'Nominations'), 'url'=> array('/userPage/nominations', 'id'=>$this->profile->user_id)),
-        array('label'=> Yii::t('userPage', ($this->self) ? 'My mandates' : 'Mandates'), 'url'=> array('/userPage/mandates')),
+        array('label'=> Yii::t('userPage', ($this->self) ? 'My mandates' : 'Mandates'), 'url'=> array('/userPage/mandates', 'id'=>$this->profile->user_id)),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My photos' : 'Photos'), 'url'=> array('/userPage/photos')),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My videos' : 'Videos'), 'url'=> array('/userPage/videos')),
     )

@@ -17,7 +17,7 @@
  * @property Candidate $candidate
  * @property Election $election
  */
-class Mandate extends CActiveRecord
+class Mandate extends CActiveRecord implements iCommentable
 {
     
     const STATUS_ACTIVE = 0;
@@ -115,4 +115,16 @@ class Mandate extends CActiveRecord
             'criteria'=>$criteria,
         ));
     }
+    
+    public function canUnassignedComment() {
+        return true;
+    }
+    
+    public function canUnassignedRead() {
+        return true;
+    }
+    
+    public function checkUserInRole($userId, $role) {
+        return false;
+    }    
 }

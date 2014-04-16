@@ -97,12 +97,10 @@ Aes.FeedView = Marionette.CompositeView.extend({
             
            onSubmit: function() {
                applyFilters.apply(this, arguments);
-//                that.collection.setFilters(this.getValues());
            },
 
            onReset: function() {
                applyFilters.apply(this, arguments);
-//                that.collection.setFilters(this.getValues());
            }
            
         });

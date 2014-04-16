@@ -21,4 +21,8 @@ class UserPageController extends SocialController {
     public function actionVotes() {
         $this->render('votes', array('canControl' => (int)$canControl, 'userId' => $this->profile->user_id));
     }
+    
+    public function actionMandates() {
+        $this->render('mandates');
+    }
 }
