@@ -53,7 +53,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     <?= Yii::t('election', 'Status'); ?>
 </h5><hr>
 
-<?php echo $form->dropDownListRow($model, 'status', AESHelper::arrTranslated(Election::$statuses), array('class'=>'span6')); ?>
+<?php echo $form->dropDownListRow($model, 'status', AESHelper::arrTranslated($model->getAvailableStatuses()), array('class'=>'span6')); ?>
 
 <?php endif; ?>
 

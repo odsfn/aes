@@ -1,7 +1,7 @@
 {
     "name": "odsf/aes",
     "description": "Automated election system engine.",
-    "keywords": ["election"],
+    "keywords": ["elections","democracy"],
     "homepage": "http://odsf.net/",
     "type": "yii-application",
     "license": "BSD-3-Clause",
@@ -24,11 +24,16 @@
 	{
 	    "type": "vcs",
 	    "url": "https://github.com/vasiliy-pdk/YiiBooster.git"
-	}
+	},
+        {
+	    "type": "vcs",
+	    "url": "https://github.com/vasiliy-pdk/YiiStateMachine.git"
+        }
     ],
     "require": {
         "yiisoft/yii":"1.1.13",
-	"vasiliy-pdk/YiiBooster": "dev-master"
+	"vasiliy-pdk/YiiBooster": "dev-master",
+        "vasiliy-pdk/YiiStateMachine": "dev-master"
     },
     "autoload": {
         "psr-0": {

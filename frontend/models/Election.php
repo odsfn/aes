@@ -1,5 +1,5 @@
 <?php
-
+Yii::import('stateMachine.*');
 /**
  * This is the model class for table "election".
  *
@@ -79,6 +79,10 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         return $this->_text_status;
     }
 
+    public function getStatusName() {
+        return self::$statuses[$this->status];
+    }
+    
     private $_have_pic = null;
 
     public function getHave_pic() {
@@ -130,7 +134,40 @@ class Election extends CActiveRecord implements iPostable, iCommentable
                 'description' => true,
             ),
 
-            'AttrsChangeHandlerBehavior'
+            'attrsChangeHandler' => array(
+                'class'=>'AttrsChangeHandlerBehavior',
+                'track'=> array('status')
+            ),
+            
+            "statusState" => array(
+                "class" => "AStateMachine",
+                "states" => array(
+                    array(
+                        'name'=>'not_saved',
+                        'transitsTo'=>'Published'
+                    ),
+                    array(
+                        'name'=>'Published',
+                        'transitsTo'=>'Registration, Canceled'
+                    ),
+                    array(
+                        'name'=>'Registration',
+                        'transitsTo'=>'Published, Election, Canceled'
+                    ),
+                    array(
+                        'name'=>'Election',
+                        'transitsTo'=>'Finished, Canceled'
+                    ),
+                    array(
+                        'name'=>'Finished',
+                        'class'=>'ElectionFinishedState'
+                    ),
+                    array('name'=>'Canceled')
+                ),
+                "defaultStateName" => "not_saved",
+                "checkTransitionMap" => true,
+                "stateName" => $this->statusName,
+            )
         );
     }
 
@@ -261,12 +298,49 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         
         return false;
     }
+
+    public function afterStoredAttrChanged_status($currentValue, $oldValue, $attrName) {
+        $this->transition($this->getStatusName());
+    }
     
-    protected function afterSave() {
-        if($this->isAttrChanged('status') && $this->status == self::STATUS_FINISHED)
-            $this->finish();
-            
-        return parent::afterSave();
+    public function getAvailableStatuses() {
+        
+        $result = array();
+        
+        $statesAllowed = $this->availableStates;
+        
+        //remove default state
+        $index = array_search($this->statusState->defaultStateName, $statesAllowed);
+        if($index !== FALSE)
+            unset($statesAllowed[$index]);
+        
+        //add current state if not present
+        $currentStatus = $this->getStatusName();
+        $index = array_search($currentStatus, $statesAllowed);
+        if($index === FALSE && $currentStatus != $this->statusState->defaultStateName)
+            array_unshift($statesAllowed, $currentStatus);
+        
+        //transform to select options acceptable format
+        foreach ($statesAllowed as $stateName) {
+            $statusId = array_search($stateName, self::$statuses);
+            $result["$statusId"] = $stateName;
+        }
+        
+        return $result;
+    }
+}
+
+class ElectionFinishedState extends AState {
+    
+    public function finish() {
+        
+        $election = $this->getMachine()->getOwner();
+        
+        $candidates = $election->candidatesWithVotes;
+        
+        foreach ($candidates as $candidate)
+            if($candidate->acceptedVotesCount >= $election->quote)
+                $this->createMandate($candidate);
     }
     
     /**
@@ -274,16 +348,19 @@ class Election extends CActiveRecord implements iPostable, iCommentable
      * @return Mandate Mandate created for candidate
      */
     public function createMandate($candidate) {
+        
+        $election = $this->getMachine()->getOwner();
+        
         $mandate = new Mandate();
-        $mandate->name = $this->mandate;
-        $mandate->validity = $this->validity;
-        $mandate->election_id = $this->id;
+        $mandate->name = $election->mandate;
+        $mandate->validity = $election->validity;
+        $mandate->election_id = $election->id;
         $mandate->candidate_id = $candidate->id;
         $mandate->votes_count = $candidate->acceptedVotesCount;
         $mandate->submiting_ts = date('Y-m-d');
         
         $exp = new DateTime;
-        $exp->add(new DateInterval('P' . $this->validity . 'M'));
+        $exp->add(new DateInterval('P' . $election->validity . 'M'));
         $mandate->expiration_ts = $exp->format('Y-m-d');
         
         if(!$mandate->save())
@@ -291,12 +368,9 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         
         return $mandate;
     }
-
-    public function finish() {
-        $candidates = $this->candidatesWithVotes;
-        
-        foreach ($candidates as $candidate)
-            if($candidate->acceptedVotesCount >= $this->quote)
-                $this->createMandate($candidate);
-    }
+    
+    public function afterEnter(AState $from) {
+        parent::afterEnter($from);
+        $this->getMachine()->getOwner()->finish();
+    }    
 }

@@ -148,7 +148,7 @@ class Candidate extends CActiveRecord implements iCommentable
 //        
 //        }
 //        
-        if($this->isNewRecord || $this->isAttrChanged('status'))
+        if($this->isNewRecord || $this->isStoredDiffers('status'))
             $this->status_changed_ts = date('Y-m-d H:i:s');
         
         return parent::beforeSave();

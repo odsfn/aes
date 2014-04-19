@@ -123,10 +123,10 @@ class Vote extends CActiveRecord implements iCommentable
         if($this->candidate->election->status != Election::STATUS_ELECTION)
             throw new Exception ('Vote can\'t be created or changed for inactive election');
         
-        if(!$this->isNewRecord && ($this->isAttrChanged('user_id') || $this->isAttrChanged('candidate_id')) )
+        if($this->isStoredDiffers('user_id') || $this->isStoredDiffers('candidate_id'))
             throw new Exception ('Vote can\'t be reassigned');
         
-        if(!$this->isNewRecord && $this->isAttrChanged('status') && $this->status != Vote::STATUS_DECLINED)
+        if($this->isStoredDiffers('status') && $this->status != Vote::STATUS_DECLINED)
             throw new Exception ('Declined vote can\'t be re-accepted');
         
         return parent::beforeSave();

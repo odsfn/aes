@@ -17,6 +17,7 @@ return array(
 		'backend' => dirname(__FILE__) . '/../..' . '/backend',
                 'console' => dirname(__FILE__) . '/../..' . '/console',
 		'vendor' => dirname(__FILE__) . '/../..' . '/common/lib/vendor',
+		'stateMachine' => dirname(__FILE__) . '/../..' . '/common/lib/vendor/vasiliy-pdk/YiiStateMachine',
 	),
 	'import' => array(
 		'common.extensions.components.*',

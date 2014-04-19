@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "00b93c651fecfa56c0c2c17ca78f400f",
+    "hash": "3eb26c6d1d3315b6687bead7ea4aaef4",
     "packages": [
         {
             "name": "vasiliy-pdk/YiiBooster",
@@ -33,6 +33,33 @@
             "time": "2013-07-01 15:45:54"
         },
         {
+            "name": "vasiliy-pdk/YiiStateMachine",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vasiliy-pdk/YiiStateMachine.git",
+                "reference": "a530ae3b8562a86d590365bbdcb02441d5fc88dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vasiliy-pdk/YiiStateMachine/zipball/a530ae3b8562a86d590365bbdcb02441d5fc88dc",
+                "reference": "a530ae3b8562a86d590365bbdcb02441d5fc88dc",
+                "shasum": ""
+            },
+            "type": "yii-extension",
+            "description": "State machine behavior for Yii framework.",
+            "keywords": [
+                "FSM",
+                "finite-state machine",
+                "state machine",
+                "yii"
+            ],
+            "support": {
+                "source": "https://github.com/vasiliy-pdk/YiiStateMachine/tree/master"
+            },
+            "time": "2014-04-19 09:48:07"
+        },
+        {
             "name": "yiisoft/yii",
             "version": "1.1.13",
             "source": {
@@ -59,7 +86,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "vasiliy-pdk/yiibooster": 20
+        "vasiliy-pdk/yiibooster": 20,
+        "vasiliy-pdk/yiistatemachine": 20
     },
     "platform": [
 
