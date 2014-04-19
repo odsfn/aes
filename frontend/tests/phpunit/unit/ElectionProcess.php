@@ -10,6 +10,7 @@ class ElectionProcessTest extends CDbTestCase {
         'user_profile' => 'userAccount.models.Profile',
         'target'       => 'Target',
         'election'     => 'Election',
+        'mandate'      => 'Mandate',
         'candidate'    => array('Candidate', 'unit/electionProcess/candidate'),
         'elector'    => array('Elector', 'unit/electionProcess/elector'),
         'vote'       => array('Vote')
@@ -36,7 +37,7 @@ class ElectionProcessTest extends CDbTestCase {
         unset($statusStateConf['states']);
         
         $behaviorMock = Yii::createComponent($statusStateConf);
-        $electFinishedStateConf = $statesConf[3];
+        $electFinishedStateConf = $statesConf[4];
         
         
         $this->electionFinishedStateMock = $this->getMock('ElectionFinishedState', 
@@ -52,7 +53,7 @@ class ElectionProcessTest extends CDbTestCase {
         foreach ($electFinishedStateConf as $name => $value)
             $this->electionFinishedStateMock->$name = $value;
         
-        $statesConf[3] = $this->electionFinishedStateMock;
+        $statesConf[4] = $this->electionFinishedStateMock;
         
         $behaviorMock->setStates($statesConf);
         
@@ -111,6 +112,9 @@ class ElectionProcessTest extends CDbTestCase {
         
         $election = Election::model()->findByPk($candidate->election_id);
         $election->quote = 1;
+        $election->status = Election::STATUS_REGISTRATION;
+        $this->assertTrue($election->save());
+        
         $election->status = Election::STATUS_ELECTION;
         $this->assertTrue($election->save());
         

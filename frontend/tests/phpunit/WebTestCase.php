@@ -25,4 +25,17 @@ class WebTestCase extends CWebTestCase
             $this->click("id=yw0");
             $this->waitForPageToLoad("30000");
         }
+        
+        protected function checkSelectOptions($expected, $selector) {
+
+            if(is_string($expected) && strstr($expected, ',') !== FALSE)
+                $expected = explode(',', preg_replace ('/\s+/', '', $expected));
+            elseif(is_string($expected))
+                $expected = array($expected);
+
+            $options = $this->getSelectOptions($selector);
+            $this->assertCount(count($expected), $options);
+            foreach ($expected as $expOption)
+                $this->assertContains($expOption, $options);
+        }        
 }

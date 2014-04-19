@@ -24,6 +24,8 @@ return array(
     
     'params'=>array(
 	
+        'php.error_reporting' => E_ERROR,    // USE this to hide warning and notices in PHPUnit_test. Comment it for another effect
+        
 	'noreplyAddress'=>'vptester@mail.ru',
 	
 	'YiiMailer'=>array(
