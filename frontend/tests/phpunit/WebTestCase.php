@@ -37,5 +37,18 @@ class WebTestCase extends CWebTestCase
             $this->assertCount(count($expected), $options);
             foreach ($expected as $expOption)
                 $this->assertContains($expOption, $options);
-        }        
+        }
+        
+        protected function waitForPresent($elementSel, $time = 3000, $interval = 250) {
+        
+            for ($passedTime = 0; ; $passedTime+=$interval) {
+                if ($passedTime >= $time) 
+                    $this->fail("timeout");
+                
+                try {
+                    if ($this->isElementPresent($elementSel)) break;
+                } catch (Exception $e) {}
+                    usleep($interval * 1000);
+            }            
+        }
 }
