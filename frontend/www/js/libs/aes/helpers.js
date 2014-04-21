@@ -80,6 +80,10 @@ var Aes = (function() {
                 
         setAjaxErrorHandler: function(handler) {
             handleAjaxError = handler;
+        },
+                
+        escapeTags: function(inputStr) {
+            return $("<div></div>").text(inputStr).html();
         }
         
     };

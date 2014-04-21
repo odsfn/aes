@@ -78,7 +78,7 @@ var EditBoxView = Marionette.ItemView.extend({
     },
             
     onFocusOut: function() {
-        if(!this.editingView && this.ui.input.val() === '')
+        if(!this.editingView && this.getInput() === '')
             this.simplify();
     },
             
@@ -97,7 +97,7 @@ var EditBoxView = Marionette.ItemView.extend({
     },
             
     onPost: function() {
-        var value = this.ui.input.val();
+        var value = this.getInput();
         if(value !== '' && value !== this.model.get(this.editingAttr)) {
             this.ui.postBtn.bButton().bButton('loading');
             this.ui.input.attr('disabled', 'disabled');
@@ -105,9 +105,21 @@ var EditBoxView = Marionette.ItemView.extend({
             this.trigger('edited', this.model);
         }
     },
+          
+    getInput: function() {
+        var inputStr = this.ui.input.val();
+        
+        inputStr = this._filterUnacceptableChars(inputStr);
+        
+        return inputStr;
+    },
+            
+    _filterUnacceptableChars: function(str) {
+        return Aes.escapeTags(str);
+    },
             
     onCancel: function() {
-        var value = this.ui.input.val();
+        var value = this.getInput();
 
         if(value !== '' 
             && ( (!this.editingView && !confirm(i18n.t('All entered text will be lost. Are you sure that you want to cancel?')))
