@@ -15,6 +15,8 @@
  */
 class Rate extends CActiveRecord
 {
+    const SCORE_POSITIVE = 1;
+    const SCORE_NEGATIVE = -1;
     
     public function behaviors() {
         return array(
