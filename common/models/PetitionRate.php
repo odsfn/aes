@@ -66,12 +66,7 @@ class PetitionRate extends Rate
     }
     
     protected function checkCreatorIsAdherent() {
-        
-        $votes = $this->target->mandate->candidate->votes(array('condition' => 'status = ' . Vote::STATUS_PASSED . ' AND user_id = ' . $this->user_id));
-        if($votes && count($votes) > 0)
-            return true;
-        
-        return false;
+        return $this->target->mandate->acceptsPetitionFrom($this->user_id);
     }    
 }
 

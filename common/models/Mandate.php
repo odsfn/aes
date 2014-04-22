@@ -126,5 +126,29 @@ class Mandate extends CActiveRecord implements iCommentable
     
     public function checkUserInRole($userId, $role) {
         return false;
-    }    
+    }
+    
+    public function isActive() {
+        
+        $expDate = new DateTime($this->expiration_ts);
+        $curDate = new DateTime;
+        
+        if($this->status == self::STATUS_ACTIVE && $expDate > $curDate)
+            return true;
+        
+        return false;
+    }
+    
+    /**
+     * Checks whether specified user can create petition for this mandate
+     * @param int $userId
+     * @return boolean
+     */
+    public function acceptsPetitionFrom($userId) {
+        
+        if($this->isActive() && $this->candidate->isAdherent($userId))
+            return true;
+        
+        return false;
+    }
 }

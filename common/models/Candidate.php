@@ -190,4 +190,17 @@ class Candidate extends CActiveRecord implements iCommentable
     public function checkUserInRole($userId, $role) {
         return false;
     }
+    
+    /**
+     * Checks whether specified user has voted for candidate
+     * @param int $userId
+     * @return boolean
+     */
+    public function isAdherent($userId) {
+        $votes = $this->votes(array('condition' => 'status = ' . Vote::STATUS_PASSED . ' AND user_id = ' . (int)$userId));
+        if($votes && count($votes) > 0)
+            return true;
+        
+        return false;
+    }    
 }

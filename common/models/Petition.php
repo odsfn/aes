@@ -137,12 +137,7 @@ class Petition extends CActiveRecord
     }
     
     protected function checkCreatorIsAdherent() {
-        
-        $votes = $this->mandate->candidate->votes(array('condition' => 'status = ' . Vote::STATUS_PASSED . ' AND user_id = ' . $this->creator_id));
-        if($votes && count($votes) > 0)
-            return true;
-        
-        return false;
+        return $this->mandate->acceptsPetitionFrom($this->creator_id);
     }
 }
 

@@ -6,9 +6,10 @@ class PetitionTest extends CDbTestCase {
     
     public $fixtures = array(
         'user_profile' => 'userAccount.models.Profile',
+        'petition'     => 'Petition',
+        'petition_rate'=> 'PetitionRate',        
         'election'     => 'Election',
         'mandate'      => array('Mandate', 'unit/petition/mandate'),
-//        'elector'    => array('Elector', 'unit/electionProcess/elector'),
         'vote'       => array('Vote', 'unit/petition/vote')
     );
     
@@ -52,5 +53,26 @@ class PetitionTest extends CDbTestCase {
 
        $this->assertFalse($petition->save());
        $this->assertContains('Petition can be created by mandate\'s adherents only', $petition->getErrors('creator_id'), 'Actual errors: ' . print_r($petition->getErrors('creator_id'), true));
+    }
+    
+    public function testCantCreateIfMandateIsExpired() {
+        
+        Yii::app()->db->createCommand()->update('mandate', 
+                array(
+                    'expiration_ts' => '2014-04-21 00:00:00'
+                ),
+                'id = 1'
+        );
+        
+        $mandate = Mandate::model()->findByPk(1);
+        $this->assertFalse($mandate->isActive());
+        
+        $petition = new Petition;
+        $petition->title = 'Some petition';
+        $petition->content = 'Petition content';       
+        $petition->mandate_id = 1;
+        $petition->creator_id = 2;
+
+        $this->assertFalse($petition->save());
     }
 }
