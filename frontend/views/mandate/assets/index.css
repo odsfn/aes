@@ -55,3 +55,12 @@
     border-radius: 0px 0px 4px 4px;
     border-top: none;
 }
+
+.petition .details .person-photo {
+    padding-left: 0.5%;
+}
+
+.petition .img-wrapper-tocenter {
+    width: 64px;
+    height: 64px;
+}

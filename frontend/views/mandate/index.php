@@ -9,7 +9,8 @@ $js = array(
     'aes:views/FormView.js',
     'aes:views/NoItemView.js',
     'aes:views/FeedView.js',
-    'modules/MandatesList.js'
+    'modules/MandatesList.js',
+    'modules/PetitionsList.js'
 );
 
 $this->widget('application.widgets.ClientApp', array(
@@ -26,7 +27,7 @@ Yii::app()->clientScript->registerScript('starter',
 
 Yii::app()->bootstrap->registerAssetCss('bootstrap-box.css');
 Yii::app()->clientScript->registerCssFile(Yii::app()->getBaseUrl(true) . '/css/layouts/core.css');
-
+$this->createWidget('CommentsMarionetteWidget')->register();
 $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 ?>
 
@@ -114,15 +115,15 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
     <div class="row-fluid">
         <div class="tabs-container">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#electors-tab">Electors</a></li>
-                <li><a href="#petitions-tab">Petitions</a></li>
+                <li class="active"><a data-toggle="tab" href="#electors-tab">Electors</a></li>
+                <li><a data-toggle="tab" href="#petitions-tab">Petitions</a></li>
             </ul>
 
             <div class="tab-content">
 
                 <div id="electors-tab" class="tab-pane active"></div>
 
-                <div id="petitions-tab"></div>
+                <div id="petitions-tab" class="tab-pane"></div>
 
             </div>    
         </div>
@@ -144,4 +145,35 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
         <div><b>Birth Place: </b><%= profile.birth_place %></div>                        
     </div>
+</script>
+
+<script type="text/template" id="petitions-list-layout-tpl">
+    <div id="petitions-feed-container"></div>
+    <div id="petitions-details"></div>
+</script>
+
+<script type="text/template" id="petition-tpl">
+    <div class="petition">
+        <h4><a href="petition_details/<%= id %>" class="route"><%= title %></a></h4>
+        <p class="short-text"><%= shortContent %></p>
+        <div class="details row-fluid">
+            <div class="person-photo span1">
+                <div class="img-wrapper-tocenter users-photo">
+                    <span></span>
+                    <a href="<%= person.pageUrl %>"><img src="<%= person.photoThmbnl64 %>" alt="<%= person.displayName %>"></a>
+                </div>
+            </div>
+            <div class="span5">
+                <h5><a href="<%= person.pageUrl %>" target="_blank"><%= person.displayName %></a></h5>
+                <p>
+                    <b><% if(personType == 'creator') { %>Created<% } else { %>Addressed<% } %>:</b> 
+                    <span><%= i18n.date(created_ts, 'full', 'full') %></span>
+                </p>
+            </div>
+            <div class="support span2 offset4">
+                <div class="petition-rates pull-right"></div>
+            </div>
+        </div>
+    </div>
+    <hr>
 </script>

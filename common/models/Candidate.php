@@ -196,8 +196,14 @@ class Candidate extends CActiveRecord implements iCommentable
      * @param int $userId
      * @return boolean
      */
-    public function isAdherent($userId) {
-        $votes = $this->votes(array('condition' => 'status = ' . Vote::STATUS_PASSED . ' AND user_id = ' . (int)$userId));
+    public function isAdherent($userId) {        
+        /**
+         * Note! Should be like this $votes = $this->votes(array('condition' => 'status = ' . Vote::STATUS_PASSED . ' AND user_id = ' . (int)$userId));
+         * but it is not work during creation PetitionRate from Rest controller.
+         * 
+         * Quick fix for unexplained bug. 
+         */
+        $votes = $this->getRelated('votes', $this->isNewRecord, array('condition' => 'status = ' . Vote::STATUS_PASSED . ' AND user_id = ' . (int)$userId));
         if($votes && count($votes) > 0)
             return true;
         

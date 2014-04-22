@@ -6,7 +6,7 @@ class PetitionRateTest extends CDbTestCase {
     
     public $fixtures = array(
         'user_profile' => 'userAccount.models.Profile',
-        'petition'     => 'Petition',
+        'petition'     => array('Petition', 'unit/petition/petition'),
         'petition_rate'     => 'PetitionRate',
         'election'     => 'Election',
         'mandate'      => array('Mandate', 'unit/petition/mandate'),
@@ -66,4 +66,23 @@ class PetitionRateTest extends CDbTestCase {
        $this->assertFalse($pRate->save());
        $this->assertContains('Petition can be rated by mandate\'s adherents only', $pRate->getErrors('user_id'), 'Actual errors: ' . print_r($petition->getErrors('user_id'), true));
     }
+    
+    public function testRateSavesAfterValidation() {
+       $petition = new Petition;
+       $petition->title = 'Some petition';
+       $petition->content = 'Petition content';        
+       $petition->mandate_id = 1;
+       $petition->creator_id = 2; 
+       $petition->save();
+       
+       $petitionRate = new PetitionRate;
+       $petitionRate->target_id = $petition->id;
+       $petitionRate->user_id = 2;
+       $petitionRate->score = PetitionRate::SCORE_POSITIVE;
+       
+       $this->assertTrue($petitionRate->validate());
+       $this->assertTrue($petitionRate->save());        
+    }
+    //validate()
+    //save()
 }

@@ -6,7 +6,7 @@ class PetitionTest extends CDbTestCase {
     
     public $fixtures = array(
         'user_profile' => 'userAccount.models.Profile',
-        'petition'     => 'Petition',
+        'petition'     => array('Petition', 'unit/petition/petition'),
         'petition_rate'=> 'PetitionRate',        
         'election'     => 'Election',
         'mandate'      => array('Mandate', 'unit/petition/mandate'),

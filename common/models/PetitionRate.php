@@ -66,7 +66,8 @@ class PetitionRate extends Rate
     }
     
     protected function checkCreatorIsAdherent() {
-        return $this->target->mandate->acceptsPetitionFrom($this->user_id);
+        $result = $this->target->mandate->acceptsPetitionFrom($this->user_id);
+        return $result;
     }    
 }
 

@@ -164,7 +164,8 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
         template: '#mandate-details-layout-tpl',
         regions: {
             mandateInfo: '#mandate-info',
-            electorsTabContent: '#electors-tab'
+            electorsTabContent: '#electors-tab',
+            petitionsTabContent: '#petitions-tab'
         }
     });
     
@@ -188,6 +189,11 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
         });
         
         electors.fetch();
+        
+        this.modPetitions = App.module('PetitionsList');
+        this.modPetitions.start({
+            mandateId: mandate.get('id')
+        });
         
         this.layout.mandates.$el.hide();
         
@@ -256,7 +262,7 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
 
                }
         }));
-        
+        this.detailsLayout.petitionsTabContent.show(this.modPetitions.layout);
         
         $('#mandate-details ul.breadcrumbs').append('<li class="node-viewDetails"><a href="#">' + mandate.get('name') + ' - ' + mandate.get('candidate').profile.displayName + '</a></li>');
     };
