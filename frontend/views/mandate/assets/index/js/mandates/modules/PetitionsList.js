@@ -9,6 +9,7 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
     
     var config = {
         mandateId: null,
+        petitionsCanBeRated: false,
         layoutTpl: '#petitions-list-layout-tpl'
     };
     
@@ -44,7 +45,11 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
                 this._rates = RatesWidget.create({
                     targetId: this.model.get('id'),
                     targetType: 'Petition',
-                    targetEl: this.ui.rates
+                    targetEl: this.ui.rates,
+                    
+                    canRateChecker: function() {
+                        return PetitionsList.getPetitionsCanBeRated();
+                    }
                 });
             }
 
@@ -156,6 +161,10 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         config = _.extend(config, _.pick(options, _.keys(config)));
     };
     
+    this.getPetitionsCanBeRated = function() {
+        return config.petitionsCanBeRated;
+    };
+    
 //    this.viewPetitions = function() {
 //        this.layout.petitionDetails.close();
 //        this.layout.petitions.$el.show();
@@ -194,7 +203,9 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
     
     this.on('start', function() {
         
-        this.petitions.fetch().done(function(){
+        $.when(
+            this.petitions.fetch()
+        ).done(function(){
            PetitionsList.layout.petitions.show(PetitionsList.petitionsFeedView);
            PetitionsList.trigger('ready');
         });

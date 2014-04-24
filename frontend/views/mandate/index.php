@@ -117,6 +117,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#electors-tab">Electors</a></li>
                 <li><a data-toggle="tab" href="#petitions-tab">Petitions</a></li>
+                <li class="petition-create-btn"><a href="<%= UrlManager.createUrl('petition/create/mandateId/' + App.module('MandatesList').getActiveMandate().get('id')) %>">Create new petition</a></li>
             </ul>
 
             <div class="tab-content">

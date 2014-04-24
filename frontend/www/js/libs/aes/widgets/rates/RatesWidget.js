@@ -104,9 +104,18 @@ var RatesWidget = (function(){
             
         },
 
+        canRateChecker: function() {
+            return WebUser.hasAccess('RatesView.rate', this);
+        },
+
+        canRate: function() {
+            console.log('In canRate() body');
+            return Marionette.getOption(this, 'canRateChecker').apply(this, arguments);
+        },
+
         rate: function(score) {
 
-            if(!WebUser.hasAccess('RatesView.rate', this))
+            if(!this.canRate())
                 return;
 
             if(score === 'up') {
@@ -140,8 +149,8 @@ var RatesWidget = (function(){
         },
 
         onActivate: function() {
-            if(WebUser.hasAccess('RatesView.rate', this))
-                this.$el.addClass('active');    
+            if(this.canRate())
+                this.$el.addClass('active');
         },
 
         onDeactivate: function() {
@@ -217,6 +226,8 @@ var RatesWidget = (function(){
         
         targetEl: null,
         
+        canRateChecker: false,
+        
         webUser: WebUser || null,
         
         urlManager: UrlManager || null, 
@@ -276,10 +287,15 @@ var RatesWidget = (function(){
                 var ratesCol = config.ratesCollection;
             }
             
-            view = new RatesView({
-               targetEl: config.targetEl,
-               ratesCollection: ratesCol
-            });
+            var ratesViewOptions = {
+                targetEl: config.targetEl,
+                ratesCollection: ratesCol
+            };
+            
+            if(typeof config.canRateChecker === 'function')            
+                ratesViewOptions.canRateChecker = config.canRateChecker;
+            
+            view = new RatesView(ratesViewOptions);
             
             if(config.autoFetch && config.initData.models.length == 0)            
                 view.once('show', function() {

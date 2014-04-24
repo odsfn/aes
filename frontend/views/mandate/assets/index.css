@@ -56,6 +56,13 @@
     border-top: none;
 }
 
+/*
+ * Petitions
+ */
+.petition-create-btn {
+    display: none;
+}
+
 .petition .details .person-photo {
     padding-left: 0.5%;
 }
