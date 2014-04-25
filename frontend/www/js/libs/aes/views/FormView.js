@@ -344,19 +344,26 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
                 radio.check();
         });
     },
-//    
-//    pickUpValue: function() {
-//        this.setValue(this.getUiValue());
-//    },
-//    
+    
+    pickUpValue: function() {
+        this.model.set('value', this.getUiValue());
+    },
+    
     reset: function() {
         this.setValue('');
     },
-//    
-//    validate: function() {
+            
+    /**
+     * Note: Validation is not supported for the current moment by this type of field
+     * @TODO: Implement validation
+     */
+    validate: function() {  
+        
+        return true;
+        
 //        this.model.validate();
 //        return this.model.isValid();
-//    },
+    },
 
     render: function() {
         Aes.ItemView.prototype.render.apply(this, arguments);
@@ -410,6 +417,8 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
         }
         
         this.radios = new Backbone.ChildViewContainer(radios);
+        
+        this.model = new Backbone.Model();
     }    
 }, {
     getTpl: function() {
