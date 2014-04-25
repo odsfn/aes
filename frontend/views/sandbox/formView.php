@@ -556,8 +556,8 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
        equal($('#qunit-fixture option[value="3"][selected="selected"]').text(), 'Three');
        
        equal($('#qunit-fixture select').val(), '3');
-    });
-
+    });    
+    
     test('Navbar Form', function() {
         var form = new Aes.NavbarFormView({
             fields: {
@@ -589,6 +589,90 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
         
     });
     
+    test('Radio Field', function() {
+        var radio = new Aes.RadioFormField({
+            name: 'foo_radio',
+            value: 'foo_radio_value',
+            label: 'Foo radio'
+        });
+        
+        $('#qunit-fixture').append(radio.render().$el);
+        
+        ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]').length === 1);
+        ok($('#qunit-fixture input[name="foo_radio"]:checked').length === 0);
+        
+        equal(radio.getValue(), false);
+        
+        radio.check();
+        equal(radio.getValue(), 'foo_radio_value');
+        ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 1);
+        
+        radio.uncheck();
+        equal(radio.getValue(), false);
+        ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 0);
+        
+        $('#qunit-fixture label.radio').click();
+        equal(radio.getValue(), 'foo_radio_value');
+        ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 1);
+        
+        radio.uncheck();
+        equal(radio.getValue(), false);
+        ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 0);
+        
+        $('#qunit-fixture label.radio > input').click();
+        equal(radio.getValue(), 'foo_radio_value');
+        ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 1);        
+    });
+    
+    test('Radio Field Cheked By default', function() {
+        var radio = new Aes.RadioFormField({
+            name: 'foo_radio1',
+            value: 'foo_radio1_value',
+            label: 'Foo radio 1',
+            checked: true
+        });
+        
+        $('#qunit-fixture').append(radio.render().$el);
+        
+        ok($('#qunit-fixture input[type="radio"][name="foo_radio1"][value="foo_radio1_value"]:checked').length === 1);
+    });
+    
+    test('Radio Fields As Part Of Form', function() {
+        var form = new Aes.FormView({
+            fields: {
+                bar_radio: {
+                    type: 'radio-group',
+                    options: [
+                        {label: 'Option A', value: 'Value A'},
+                        {label: 'Option B', value: 'Value B'}
+                    ]
+                }
+            }
+        });
+        
+        $('#qunit-fixture').append(form.render().$el);
+        
+        ok($('#qunit-fixture label.radio > input[type="radio"][name="bar_radio"][value="Value A"]').not(':checked').length === 1);
+        ok($('#qunit-fixture label.radio > input[type="radio"][name="bar_radio"][value="Value B"]').not(':checked').length === 1);
+        
+        var values = form.getValues();
+        equal(values.bar_radio, false);
+        
+        $('#qunit-fixture input[name="bar_radio"][value="Value B"]').click();
+        ok($('#qunit-fixture input[name="bar_radio"][value="Value B"]:checked').length === 1);
+        
+        var values = form.getValues();
+        equal(values.bar_radio, 'Value B');
+        
+        form.reset();
+        equal(form.getValues().bar_radio, false);
+        ok($('#qunit-fixture input[name="bar_radio"]:checked').length === 0);
+        
+        form.getField('bar_radio').setValue('Value A');
+        ok($('#qunit-fixture input[name="bar_radio"]:checked').length === 1);
+        ok($('#qunit-fixture input[name="bar_radio"][value="Value A"]:checked').length === 1);
+        equal(form.getValues().bar_radio, 'Value A');
+    });
 //    test('MultySelect field');
 
 //    test('Checkbox field', function(){

@@ -140,6 +140,10 @@ Aes.FormField = Aes.ItemView.extend({
         {
             case 'select':
                 return new Aes.SelectFormField(opts);
+            case 'radio':
+                return new Aes.RadioFormField(opts);
+            case 'radio-group':
+                return new Aes.RadioGroupFormField(opts);
             default: 
                 return new Aes.TextFormField(opts);
         }
@@ -240,6 +244,154 @@ Aes.SelectFormField = Aes.FormField.extend({
     }
 });
 
+Aes.RadioFormField = Aes.FormField.extend({
+    
+    getTplStr: function() {
+        return Aes.RadioFormField.getTpl();
+    },
+            
+    getUiValue: function() {
+        var result = false;
+        
+        if(this.ui.input.is(':checked'))
+            result = this.ui.input.val();
+        
+        return result;
+    },
+    
+    getValue: function() {
+        return this.getUiValue();
+    },
+
+    check: function() {
+        this.ui.input.prop('checked', true);
+    },
+            
+    uncheck: function() {
+        this.ui.input.attr('checked', false);
+    },
+
+    initialize: function(options) {
+        Aes.FormField.prototype.initialize.apply(this, arguments);
+        
+        this.model.set('value', options.value || false)
+        
+        this.once('render', function() {
+            this.setValue(this.model.get('value'));
+            if(options.checked)
+                this.check();
+        });
+    }
+    
+},{
+    getTpl: function() {
+        return '<label for="<%= view.cid %>" class="radio">'
+            + '<input ' 
+                + 'id="<%= view.cid %>" ' 
+                + 'type="radio" '
+                + 'name="<%= view.options.name %>" '
+                + 'value="<%= view.options.value %>" '
+            + '>'
+            +'<%= view.options.label %>' 
+        + '</label>';
+    }
+});
+
+Aes.RadioGroupFormField = Aes.ItemView.extend({
+    
+    getUiValue: function() {
+        return this.getValue();
+    },
+    
+    setUiValue: function(val) {
+        this.setValue(val);
+    },
+    
+    getValue: function() {
+        var checkedRadio = this.getChecked();
+        
+        if(checkedRadio)
+            return checkedRadio.getValue();
+        else
+            return false;
+    },
+            
+    getChecked: function() {
+        return this.radios.find(function(radio) {
+           if(radio.getValue() !== false)
+               return true;
+        });
+    },
+    
+    setValue: function(value) {
+        this.radios.each(function(radio) {
+            if(value === '' || value === false || value === undefined)
+                radio.uncheck();
+            else if(value === radio.options.value)
+                radio.check();
+        });
+    },
+//    
+//    pickUpValue: function() {
+//        this.setValue(this.getUiValue());
+//    },
+//    
+    reset: function() {
+        this.setValue('');
+    },
+//    
+//    validate: function() {
+//        this.model.validate();
+//        return this.model.isValid();
+//    },
+
+    render: function() {
+        Aes.ItemView.prototype.render.apply(this, arguments);
+        if(!this.radios.length)
+            return;
+        
+        this.radios.each(function(radio){
+            this.$el.append(radio.render().$el);
+            radio.delegateEvents();
+        }, this);
+        
+        return this;
+    },
+      
+    onShow: function() {
+        if(!this.radios.length)
+            return;
+        
+        this.radios.each(function(radio) {
+            radio.trigger('show');
+        });
+    },
+
+    initialize: function(options) {
+        Marionette.ItemView.prototype.initialize.apply(this, arguments);
+        
+        var radios = [];
+        
+        for(var i = 0; i < options.options.length; i++) {
+            var radioConf = options.options[i];
+            
+            var radio = Aes.FormField.create(
+                _.extend(
+                    {}, 
+                    radioConf, 
+                    {
+                       type: 'radio',
+                       name: options.name
+                    }
+                )
+            );
+            radios.push(radio);
+        }
+        
+        this.radios = new Backbone.ChildViewContainer(radios);
+    }    
+});
+
 Aes.FormView = Aes.ItemView.extend({
     
     showLabels: true,
@@ -294,6 +446,10 @@ Aes.FormView = Aes.ItemView.extend({
             
     getErrors: function() {
         return {};
+    },
+            
+    getField: function(fieldName) {
+        return this._fields[fieldName];
     },
             
     validate: function() {
