@@ -299,6 +299,8 @@ Aes.RadioFormField = Aes.FormField.extend({
 
 Aes.RadioGroupFormField = Aes.ItemView.extend({
     
+    ui: {},
+    
     attributes: function() {
         return {
             class: 'radios-group-form-field ' + this.options.name,

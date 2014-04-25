@@ -153,6 +153,23 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
     <div id="petitions-details"></div>
 </script>
 
+<script type="text/template" id="petitions-feed-tpl">
+<div class="navbar head">
+    <div class="navbar-inner">
+        <div class="top-filter-container"></div>
+        <ul class="nav pull-right">
+            <li><a id="items-count"><img class="loader" src="/img/loader-circle-16.gif" style="display: none;">Found <span class="items-count">0</span> </a></li>
+        </ul>
+    </div>
+</div>     
+
+<div class="filter-container"></div>
+
+<div class="petitions-items items span9"></div>
+
+<div id="load-btn" class="load-btn-cntr"></div>
+</script>
+
 <script type="text/template" id="petition-tpl">
     <div class="petition">
         <h4><a href="petition_details/<%= id %>" class="route"><%= title %></a></h4>
@@ -171,7 +188,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
                     <span><%= i18n.date(created_ts, 'full', 'full') %></span>
                 </p>
             </div>
-            <div class="support span2 offset4">
+            <div class="support span2 pull-right">
                 <div class="petition-rates pull-right"></div>
             </div>
         </div>

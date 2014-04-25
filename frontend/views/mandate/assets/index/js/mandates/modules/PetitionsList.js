@@ -91,55 +91,59 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
     });
     
     var PetitionsFeedView = Aes.FeedView.extend({
-//        template: '#petitions-feed-tpl',
+        template: '#petitions-feed-tpl',
         itemView: PetitionView,
         
-//        getFiltersConfig: function() {
-//            return {
-//                
-//                enabled: true,
-//
-//                submitBtnText: 'Filter',
-//
-//                uiAttributes: {
-//                    form: {
-//                        class: 'span3 well'
-//                    },
-//                    inputs: {
-//                        class: 'span12'
-//                    }
-//                },
-//
-//                fields: {
-//                    name: {
-//                        label: 'Petition name',
-//                        type: 'text',
-//                        
-//                        filterOptions: {
-//                            extendedFormat: true
-//                        }
-//                    },
-//                    owner_name: {
-//                        label: 'Owner name',
-//                        type: 'text'
-//                    },
-//                    status: {
-//                        label: 'Status',
-//                        type: 'select',
-//                        options: [
-//                            {label: 'Any', value: '', selected: true},
-//                            {label: 'Active', value: 0},
-//                            {label: 'Expired', value: 1},
-//                            {label: 'Revoked', value: 2},
-//                        ],
-//                                
-//                        filterOptions: {
-//                            extendedFormat: true
-//                        }
-//                    }
-//                }  
-//            };
-//        }
+        getFiltersConfig: function() {
+            return {
+                
+                enabled: true,
+
+                submitBtnText: 'Filter',
+
+                uiAttributes: {
+                    form: {
+                        class: 'span3 well'
+                    },
+                    inputs: {
+                        class: 'span12'
+                    }
+                },
+
+                fields: {
+                    name: {
+                        label: 'Petition name',
+                        type: 'text',
+                        
+                        filterOptions: {
+                            extendedFormat: true
+                        }
+                    },
+                    creator_name: {
+                        label: 'Authored by'
+                    },
+                    support: {
+                        label: 'Support type',
+                        type: 'radio-group',
+                        options: [
+                            {label: 'Any', value: '', checked: true},
+                            {label: 'Created by me', value: 'created_by_user'},
+                            {label: 'Supported by me', value: 'supported_by_user'}
+                        ]
+                    },
+                    creation_date: {
+                        label: 'Creation date',
+                        type: 'radio-group',
+                        options: [
+                            {label: 'Any', value: '', checked: true},
+                            {label: 'Today', value: 'today'},
+                            {label: 'This week', value: 'week'},
+                            {label: 'This month', value: 'month'}
+                        ]
+                    }
+                }  
+            };
+        }
     });
     
     var Layout = Marionette.Layout.extend({

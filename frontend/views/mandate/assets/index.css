@@ -71,3 +71,11 @@
     width: 64px;
     height: 64px;
 }
+
+.petition .person-photo.span1 {
+    width: 75px;
+}
+
+.petition .details > .span5 {
+    margin-left: 1%;
+}
