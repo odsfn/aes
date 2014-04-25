@@ -111,8 +111,8 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
                 },
 
                 fields: {
-                    name: {
-                        label: 'Petition name',
+                    title: {
+                        label: 'Petition title',
                         type: 'text',
                         
                         filterOptions: {

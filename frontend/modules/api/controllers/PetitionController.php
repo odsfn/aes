@@ -11,7 +11,7 @@ class PetitionController extends RestController {
         )
     );
     
-    public $acceptFilters = array('plain' => 'owner_name,user_id', 'model' => 'name,status');
+    public $acceptFilters = array('plain' => 'creator_name,support,creation_date', 'model' => 'title');
 
     public function getOutputFormatters() {
         return array(
@@ -19,17 +19,39 @@ class PetitionController extends RestController {
         );
     }
     
-//    public function onPlainFilter_owner_name($filterName, $filterValue, $criteria) {        
-//        $criteria->mergeWith(PeopleSearch::getCriteriaFindByName($filterValue, 'profile'));
-//    }
-//    
-//    public function onPlainFilter_user_id($filterName, $filterValue, $criteria) {        
-//        $criteria->mergeWith(array(
-//            'join' => 'INNER JOIN candidate c ON c.user_id = :userId AND t.candidate_id = c.id',
-//            'params' => array(':userId' => $filterValue)
-//        ));
-//    }
+    public function onPlainFilter_creator_name($filterName, $filterValue, $criteria) {        
+        $criteria->mergeWith(PeopleSearch::getCriteriaFindByName($filterValue, 'creator'));
+    }
     
+    public function onPlainFilter_support($filterName, $filterValue, $criteria) {
+        
+        $userId = Yii::app()->user->id;
+        
+        if(!$userId)
+            return;
+        
+        if($filterValue === 'created_by_user')
+            $criteria->mergeWith(array('condition' => 'creator_id = ' . $userId));
+        elseif($filterValue === 'supported_by_user')
+            $criteria->mergeWith(array('join' => 'INNER JOIN petition_rate pr ON pr.target_id = t.id AND user_id = ' . $userId));
+    }
+    
+    public function onPlainFilter_creation_date($filterName, $filterValue, $criteria) {
+        
+        $curDate = new DateTime;
+        
+        if($filterValue === 'today')
+            $condition = 'created_ts >= "' . $curDate->format('Y-m-d') . '"';
+        elseif($filterValue === 'week') {
+            $condition = 'created_ts >= "' . $curDate->sub(new DateInterval('P1W'))->format('Y-m-d') . '"';
+        } elseif ($filterValue === 'month')
+            $condition = 'created_ts >= "' . $curDate->sub(new DateInterval('P1M'))->format('Y-m-d') . '"';
+        else
+            return;
+        
+        $criteria->mergeWith(array('condition' => $condition));
+    }
+
     public function accessRules() {
         return array(
             array('allow',
