@@ -673,6 +673,27 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
         ok($('#qunit-fixture input[name="bar_radio"][value="Value A"]:checked').length === 1);
         equal(form.getValues().bar_radio, 'Value A');
     });
+    
+    test('RadioFields has top-level lable', function() {
+        var form = new Aes.FormView({
+            fields: {
+                bar_radio: {
+                    type: 'radio-group',
+                    label: 'Bar Radio',
+                    options: [
+                        {label: 'Option A', value: 'Value A'},
+                        {label: 'Option B', value: 'Value B'}
+                    ]
+                }
+            }
+        });
+        
+        $('#qunit-fixture').append(form.render().$el);
+        
+        ok($('#qunit-fixture form > div > div > label.radio > input[type="radio"][name="bar_radio"][value="Value A"]').not(':checked').length === 1);
+        ok($('#qunit-fixture form > div > div > label.radio > input[type="radio"][name="bar_radio"][value="Value B"]').not(':checked').length === 1);
+        equal($('#qunit-fixture form > div > span.radios-heading').text(), 'Bar Radio');
+    });
 //    test('MultySelect field');
 
 //    test('Checkbox field', function(){

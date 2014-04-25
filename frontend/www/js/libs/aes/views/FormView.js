@@ -299,6 +299,17 @@ Aes.RadioFormField = Aes.FormField.extend({
 
 Aes.RadioGroupFormField = Aes.ItemView.extend({
     
+    attributes: function() {
+        return {
+            class: 'radios-group-form-field ' + this.options.name,
+            id: this.cid
+        };
+    },
+    
+    getTplStr: function() {
+        return Aes.RadioGroupFormField.getTpl();
+    },    
+    
     getUiValue: function() {
         return this.getValue();
     },
@@ -367,6 +378,14 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
         });
     },
 
+    serializeData: function() {
+        var serialized = Aes.ItemView.prototype.serializeData.apply(this, arguments);
+        
+        return _.extend(serialized, {
+           view: this
+        });
+    },
+
     initialize: function(options) {
         Marionette.ItemView.prototype.initialize.apply(this, arguments);
         
@@ -390,6 +409,10 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
         
         this.radios = new Backbone.ChildViewContainer(radios);
     }    
+}, {
+    getTpl: function() {
+        return '<% if(view.options.label) { %><span class="radios-heading"><%= view.options.label %></span><% } %>';
+    }
 });
 
 Aes.FormView = Aes.ItemView.extend({
