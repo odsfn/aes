@@ -694,6 +694,32 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
         ok($('#qunit-fixture form > div > div > label.radio > input[type="radio"][name="bar_radio"][value="Value B"]').not(':checked').length === 1);
         equal($('#qunit-fixture form > div > span.radios-heading').text(), 'Bar Radio');
     });
+    
+    test('RadioFields validation pass without check', function() { // TODO: Realize validation! 
+    
+        var form = new Aes.FormView({
+            fields: {
+                bar_radio: {
+                    type: 'radio-group',
+                    label: 'Bar Radio',
+                    options: [
+                        {label: 'Option A', value: 'Value A'},
+                        {label: 'Option B', value: 'Value B'}
+                    ],
+                    
+                    validator: {
+                        required: true
+                    }                    
+                }
+            }
+        });
+        
+        $('#qunit-fixture').append(form.render().$el);
+        
+        ok(form.validate());
+        
+        ok($('#qunit-fixture .error').length === 0);
+    });
 //    test('MultySelect field');
 
 //    test('Checkbox field', function(){
