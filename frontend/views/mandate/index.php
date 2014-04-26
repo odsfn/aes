@@ -195,3 +195,5 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
     </div>
     <hr>
 </script>
+
+<?php $this->renderPartial('frontend.views.jsTemplates.petitionRates'); ?>

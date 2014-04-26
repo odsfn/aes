@@ -43,6 +43,9 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
             if(!this._rates)
             {
                 this._rates = RatesWidget.create({
+                    
+                    rateViewTemplate: '#petition-rates-tpl',
+                    
                     targetId: this.model.get('id'),
                     targetType: 'Petition',
                     targetEl: this.ui.rates,

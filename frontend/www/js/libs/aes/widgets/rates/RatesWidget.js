@@ -92,16 +92,27 @@ var RatesWidget = (function(){
 
         onRender: function() {
 
-            var rate;
+            var rate = this.getCurrentUserRate();
             //Mark user's vote
-            if(!WebUser.isGuest() && (rate = this.ratesCollection.getRate(WebUser.getId()))) {
-                 if(rate.get('score') == 1) {
-                     this.ui.ratePlus.addClass('chosen');
-                 }else{
-                     this.ui.rateMinus.addClass('chosen');
-                 }
+            
+            if(rate !== false)
+            {
+                if(rate === 1) {
+                    this.ui.ratePlus.addClass('chosen');
+                }else{
+                    this.ui.rateMinus.addClass('chosen');
+                }
             }
             
+        },
+
+        getCurrentUserRate: function() {
+            var rate;
+            
+            if(WebUser.isGuest() || !(rate = this.ratesCollection.getRate(WebUser.getId())))
+                return false;
+            
+            return parseInt(rate.get('score'));
         },
 
         canRateChecker: function() {
@@ -143,10 +154,10 @@ var RatesWidget = (function(){
 
         },
 
-        updateRates: function() {
-            this.ui.ratePlus.html(this.ratesCollection.getLikes());
-            this.ui.rateMinus.html(this.ratesCollection.getDislikes());
-        },
+//        updateRates: function() {
+//            this.ui.ratePlus.html(this.ratesCollection.getLikes());
+//            this.ui.rateMinus.html(this.ratesCollection.getDislikes());
+//        },
 
         onActivate: function() {
             if(this.canRate())
@@ -162,7 +173,8 @@ var RatesWidget = (function(){
 
             _.extend(serializedData, {
                 likes: this.ratesCollection.getLikes(),
-                dislikes: this.ratesCollection.getDislikes()
+                dislikes: this.ratesCollection.getDislikes(),
+                currentUserRate: this.getCurrentUserRate()
             });
 
             return serializedData;
@@ -203,7 +215,8 @@ var RatesWidget = (function(){
                 else
                     this.ui.rateMinus.addClass('chosen');
 
-                this.updateRates();
+//                this.updateRates();
+                this.render();
             }, this));
 
             this.listenTo(this.ratesCollection, 'remove', _.bind(function(rate, collection){
@@ -213,7 +226,8 @@ var RatesWidget = (function(){
                 else
                     this.ui.rateMinus.removeClass('chosen');
 
-                this.updateRates();
+//                this.updateRates();
+                this.render();
             }, this));     
         }
     });
@@ -225,6 +239,8 @@ var RatesWidget = (function(){
         targetType: null,
         
         targetEl: null,
+        
+        rateViewTemplate: '#rates-tpl',
         
         canRateChecker: false,
         
@@ -288,6 +304,7 @@ var RatesWidget = (function(){
             }
             
             var ratesViewOptions = {
+                template: config.rateViewTemplate,
                 targetEl: config.targetEl,
                 ratesCollection: ratesCol
             };
