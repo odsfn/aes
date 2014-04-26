@@ -48,7 +48,6 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
                     
                     targetId: this.model.get('id'),
                     targetType: 'Petition',
-                    targetEl: this.ui.rates,
                     
                     canRateChecker: function() {
                         return PetitionsList.getPetitionsCanBeRated();
@@ -58,7 +57,6 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
 
             this.ui.rates.prepend(this._rates.render().$el);
             this._rates.delegateEvents();
-            this._rates.bindEventsToTarget($('.rates', this.$el));
         },
                 
         onShow: function() {

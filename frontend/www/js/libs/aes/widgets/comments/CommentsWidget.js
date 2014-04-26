@@ -170,7 +170,6 @@ var CommentsWidget = (function(){
 
              this.ui.rates.html(this.ratesView.render().el);
              this.ratesView.delegateEvents();
-             this.ratesView.bindEventsToTarget(this.$el);
              
         }
     });

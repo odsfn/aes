@@ -191,7 +191,6 @@ _.extend(PostsWidget, (function(){
 
             this.ui.rates.html(this.ratesView.render().el);
             this.ratesView.delegateEvents();
-            this.ratesView.bindEventsToTarget($('.post-body:first', this.$el));
 
         }
         

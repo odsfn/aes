@@ -78,6 +78,8 @@ var RatesWidget = (function(){
         },
 
         events: {
+            'mouseenter .rate-control': 'onActivate',
+            'mouseleave .rate-control': 'onDeactivate',
             'click span.icon-thumbs-up': 'onRatePlus',
             'click span.icon-thumbs-down': 'onRateMinus'
         },
@@ -115,12 +117,20 @@ var RatesWidget = (function(){
             return parseInt(rate.get('score'));
         },
 
+        /**
+         * Determines whether the RateView allow current user to rate.
+         * 
+         * This is default implementation. You can override it through extension
+         * or by passing canRateChecker attribute ( should be a function ) to the
+         * constructor options.
+         * 
+         * @returns {Boolean}
+         */
         canRateChecker: function() {
             return WebUser.hasAccess('RatesView.rate', this);
         },
 
         canRate: function() {
-            console.log('In canRate() body');
             return Marionette.getOption(this, 'canRateChecker').apply(this, arguments);
         },
 
@@ -154,11 +164,6 @@ var RatesWidget = (function(){
 
         },
 
-//        updateRates: function() {
-//            this.ui.ratePlus.html(this.ratesCollection.getLikes());
-//            this.ui.rateMinus.html(this.ratesCollection.getDislikes());
-//        },
-
         onActivate: function() {
             if(this.canRate())
                 this.$el.addClass('active');
@@ -178,35 +183,11 @@ var RatesWidget = (function(){
             });
 
             return serializedData;
-        }, 
-            
-        bindEventsToTarget:  function(targetEl) {
-    
-            var onActivate = _.bind(this.onActivate, this),
-                onDeactivate = _.bind(this.onDeactivate, this);
-    
-            this.targetEl = targetEl;
-            
-            $(this.targetEl)
-                    .mouseover(onActivate)
-                    .mouseout(onDeactivate);
-            
-        },       
+        },   
                 
         initialize: function(options) {
     
             this.ratesCollection = options.ratesCollection;
-    
-            if(options.targetEl) {
-                
-                if( typeof(options.targetEl) === 'string' )
-                    var targetEl = $(options.targetEl);
-                else
-                    var targetEl = options.targetEl;
-                
-                this.bindEventsToTarget(targetEl);
-                
-            }
             
             this.listenTo(this.ratesCollection, 'add', _.bind(function(rate, collection){
                 if(rate.get('score') == 1) {
@@ -215,7 +196,6 @@ var RatesWidget = (function(){
                 else
                     this.ui.rateMinus.addClass('chosen');
 
-//                this.updateRates();
                 this.render();
             }, this));
 
@@ -226,7 +206,6 @@ var RatesWidget = (function(){
                 else
                     this.ui.rateMinus.removeClass('chosen');
 
-//                this.updateRates();
                 this.render();
             }, this));     
         }
@@ -237,8 +216,6 @@ var RatesWidget = (function(){
         targetId: null,
         
         targetType: null,
-        
-        targetEl: null,
         
         rateViewTemplate: '#rates-tpl',
         
@@ -305,7 +282,6 @@ var RatesWidget = (function(){
             
             var ratesViewOptions = {
                 template: config.rateViewTemplate,
-                targetEl: config.targetEl,
                 ratesCollection: ratesCol
             };
             

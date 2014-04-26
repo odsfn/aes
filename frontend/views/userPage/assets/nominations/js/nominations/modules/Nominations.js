@@ -93,14 +93,12 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
             {
                 this._rates = RatesWidget.create({
                     targetId: this.model.get('id'),
-                    targetType: 'Candidate',
-                    targetEl: this.ui.rates
+                    targetType: 'Candidate'
                 });
             }
             
             this.ui.rates.prepend(this._rates.render().$el);
             this._rates.delegateEvents();
-            this._rates.bindEventsToTarget($('.rates', this.$el));
             
             if(!this._comments)
             {

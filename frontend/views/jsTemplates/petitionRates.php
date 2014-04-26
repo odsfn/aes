@@ -8,7 +8,7 @@
 ?>
 <script type="text/template" id="petition-rates-tpl">
     <div class="support-count-info"><?= Yii::t('aes','Petition supporters') ?>: <%= likes %></div>
-    <div>
+    <div class="rate-control">
         <span 
             class="icon-thumbs-up pull-right" 
             <% if(currentUserRate !== false) { %>

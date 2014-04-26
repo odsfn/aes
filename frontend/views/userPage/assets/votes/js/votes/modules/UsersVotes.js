@@ -100,14 +100,12 @@ App.module('UsersVotes', function(UsersVotes, App, Backbone, Marionette, $, _) {
             {
                 this._rates = RatesWidget.create({
                     targetId: this.model.get('vote_id'),
-                    targetType: 'Vote',
-                    targetEl: this.ui.rates
+                    targetType: 'Vote'
                 });
             }
             
             this.ui.rates.prepend(this._rates.render().$el);
             this._rates.delegateEvents();
-            this._rates.bindEventsToTarget($('.rates', this.$el));
             
             if(!this._comments)
             {

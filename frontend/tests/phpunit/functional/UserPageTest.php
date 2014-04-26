@@ -50,9 +50,9 @@ class UserPageTest extends WebTestCase {
         $this->waitForElementPresent('css=div.media.post');
         
         $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
-        $this->mouseOver("css=div.media.post .post-body");
+        $this->mouseEnter("css=div.media.post .post-body .rate-control");
         $this->assertEquals("1", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
-        $this->mouseOut("css=div.media.post .post-body");
+        $this->mouseLeave("css=div.media.post .post-body .rate-control");
         $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
     }
     

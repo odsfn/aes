@@ -41,14 +41,12 @@ App.module('Mandates', function(Mandates, App, Backbone, Marionette, $, _) {
             {
                 this._rates = RatesWidget.create({
                     targetId: this.model.get('id'),
-                    targetType: 'Mandate',
-                    targetEl: this.ui.rates
+                    targetType: 'Mandate'
                 });
             }
             
             this.ui.rates.prepend(this._rates.render().$el);
             this._rates.delegateEvents();
-            this._rates.bindEventsToTarget($('.rates', this.$el));
             
             if(!this._comments)
             {

@@ -51,4 +51,35 @@ class WebTestCase extends CWebTestCase
                     usleep($interval * 1000);
             }            
         }
+        
+        protected function waitForElementContainsText($elementSel, $text, $time = 3000, $interval = 250) {
+            for ($passedTime = 0; ; $passedTime+=$interval) {
+                if ($passedTime >= $time) 
+                    $this->fail("timeout");
+                
+                try {
+                    if (strpos($this->getText($elementSel), $text) !== false) break;
+                } catch (Exception $e) {}
+                    usleep($interval * 1000);
+            }            
+        }
+        
+        protected function mouseEnter($selector) {
+//            $this->fireEvent($selector, 'mouseenter');
+            $this->triggerJqueryEvent($selector, 'mouseenter');
+        }
+        
+        protected function mouseLeave($selector) {
+//            $this->fireEvent($selector, 'mouseleave');
+            $this->triggerJqueryEvent($selector, 'mouseleave');
+        }
+        
+        protected function triggerJqueryEvent($selector, $event) {
+            if(strpos($selector, 'css=') === FALSE)
+                throw new Exception ('Only css selectors supported by mouseEnter method');
+            
+            $selector = str_replace('css=', '', $selector);
+            
+            $this->runScript('$("' . $selector . '").trigger("' . $event . '");');
+        }
 }
