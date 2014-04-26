@@ -59,6 +59,7 @@ class MandateListingTest extends WebTestCase {
         $count = count($aliases);
         
         $this->assertCssCount('css=div.mandate', $count);
+        $this->waitForNotVisible('css=#mandates-feed-container .nav img.loader');
         $this->assertElementContainsText('css=#mandates-feed-container .nav a#items-count', 'Found ' . $count);
         
         foreach ($aliases as $alias)
