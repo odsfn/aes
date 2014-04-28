@@ -103,8 +103,6 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
         template: '#mandates-feed-tpl',
         itemView: MandateView,
         
-        
-        
         getFiltersConfig: function() {
             return {
                 
@@ -203,6 +201,33 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
         $('#mandate-details li.node-viewDetails').remove();
     };
     
+    
+    this.openCreatePetitionForm = function() {
+        $('#create-petition-tab').html('Loading...');
+        
+        $('#create-petition-tab').load(
+            UrlManager.createUrl("petition/ajaxCreate"),
+            {
+                mandateId: this.getActiveMandate().get('id'),
+                ajax: true
+            }
+        );
+    };
+    
+    this.onPetitionCreationFailed = function(response) {
+        console.log('Petition creation failed');
+        $('#create-petition-tab').html(response.responseHtml);
+    };
+    
+    this.onPetitionCreated = function() {
+        console.log('Petition created');
+        App.module('PetitionsList').petitions.offset = 0;
+        App.module('PetitionsList').petitions.fetch();
+        
+        $('a[href="#petitions-tab"]').tab('show');
+        $('#create-petition-tab').html('Loading...');
+    };
+    
     this.viewDetails = function(mandateId) {
         
         var mandate = this.mandates.findWhere({id: mandateId});
@@ -231,9 +256,11 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
             electors.fetch(),
             this.checkMandateAcceptsPetitions(mandate.get('id'))
         ).done(_.bind(function() {
-            if(this._mandateAcceptsPetitions)
+            if (this._mandateAcceptsPetitions) {
                 this.detailsLayout.ui.createPetitionBtn.show();
-                
+                $('a[href="#create-petition-tab"]').click(_.bind(this.openCreatePetitionForm, this));
+            }
+            
             this.modPetitions = App.module('PetitionsList');
             this.modPetitions.start({
                 mandateId: mandate.get('id'),
@@ -327,6 +354,13 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
            MandatesList.trigger('ready');
         });
         
+        var that = this;
+        $('body').on('petitionCreated', function(event, response) {
+            that.onPetitionCreated(response);
+        });
+        $('body').on('petitionCreationFailed', function(event, response) { 
+            that.onPetitionCreationFailed(response);
+        });
     });
     
 });

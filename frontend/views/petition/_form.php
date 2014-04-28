@@ -1,6 +1,7 @@
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     'id'=>'petition-form',
-    'enableAjaxValidation'=>false,
+    'enableAjaxValidation'  => false,
+    'enableClientValidation'=> true
 )); ?>
 
 <p class="help-block">Fields with <span class="required">*</span> are required.</p>
@@ -20,11 +21,33 @@
     <?php // echo $form->textFieldRow($model,'creator_id',array('class'=>'span5')); ?>
 
 <div class="form-actions">
-    <?php $this->widget('bootstrap.widgets.TbButton', array(
-            'buttonType'=>'submit',
-            'type'=>'primary',
-            'label'=>$model->isNewRecord ? Yii::t('aes', 'Create') : Yii::t('aes', 'Save'),
-        )); ?>
+    <?php
+        $btnText = $model->isNewRecord ? Yii::t('aes', 'Create') : Yii::t('aes', 'Save');
+    
+        if (empty($forAjax)) {
+            $this->widget('bootstrap.widgets.TbButton', array(
+                'buttonType'=>'submit',
+                'type'=>'primary',
+                'label'=>$btnText,
+            )); 
+        } else {
+            echo CHtml::ajaxSubmitButton($btnText, array('petition/ajaxCreate'), 
+                array(
+                    'dataType'=> 'json',
+                    'success' => 'function(response) {
+                        if(response.success === true) {
+                            $("body").trigger("petitionCreated", [response]);
+                        } else {
+                            $("body").trigger("petitionCreationFailed", [response]);
+                        }
+                    }'
+                ), 
+                array(
+                    'class' => 'btn btn-primary'
+                )
+            );
+        }
+    ?>
 </div>
 
 <?php $this->endWidget(); ?>

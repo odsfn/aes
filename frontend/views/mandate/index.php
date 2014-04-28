@@ -37,6 +37,19 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
     </div>
 </div>
 
+<div id="create-petition" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="create-petition-label" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="create-petition-label">Create new petition</h3>
+    </div>
+    <div class="modal-body">
+        <p>One fine body…</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
 <script type="text/template" id="mandates-list-layout">
     <div id="mandates-feed-container"></div>
     <div id="mandate-details"></div>
@@ -117,7 +130,8 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#electors-tab">Electors</a></li>
                 <li><a data-toggle="tab" href="#petitions-tab">Petitions</a></li>
-                <li class="petition-create-btn"><a href="<%= UrlManager.createUrl('petition/create/mandateId/' + App.module('MandatesList').getActiveMandate().get('id')) %>">Create new petition</a></li>
+                <!--<li class="petition-create-btn"><a href="<%= UrlManager.createUrl('petition/create/mandateId/' + App.module('MandatesList').getActiveMandate().get('id')) %>">Create new petition</a></li>-->
+                <li class="petition-create-btn"><a data-toggle="tab" href="#create-petition-tab">Create new petition</a></li>
             </ul>
 
             <div class="tab-content">
@@ -125,7 +139,11 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
                 <div id="electors-tab" class="tab-pane active"></div>
 
                 <div id="petitions-tab" class="tab-pane"></div>
-
+                
+                <div id="create-petition-tab" class="tab-pane">
+                    <?= $this->renderPartial('frontend.views.petition._form', array('model'=>new Petition, 'forAjax' => true)); ?>
+                </div>
+                
             </div>    
         </div>
     </div>

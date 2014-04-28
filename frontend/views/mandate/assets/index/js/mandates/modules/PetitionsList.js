@@ -17,7 +17,7 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         
         parse: function(attrs) {
             
-            attrs.created_ts = parseInt(attrs.submiting_ts) * 1000;
+            attrs.created_ts = parseInt(attrs.created_ts) * 1000;
             
             return attrs;
         }
