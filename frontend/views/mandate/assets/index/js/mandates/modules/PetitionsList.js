@@ -127,7 +127,7 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
                         label: 'Support type',
                         type: 'radio-group',
                         options: [
-                            {label: 'Any', value: '', checked: true},
+                            {label: 'Any', value: 'any', checked: true},
                             {label: 'Created by me', value: 'created_by_user'},
                             {label: 'Supported by me', value: 'supported_by_user'}
                         ]
@@ -136,7 +136,7 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
                         label: 'Creation date',
                         type: 'radio-group',
                         options: [
-                            {label: 'Any', value: '', checked: true},
+                            {label: 'Any', value: 'any', checked: true},
                             {label: 'Today', value: 'today'},
                             {label: 'This week', value: 'week'},
                             {label: 'This month', value: 'month'}

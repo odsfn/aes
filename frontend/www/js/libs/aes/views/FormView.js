@@ -350,7 +350,13 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
     },
     
     reset: function() {
-        this.setValue('');
+        var options = this.options.options || [];
+        var checkedOption = _.findWhere(options, {checked: true});
+        var checkedVal = '';
+        if(checkedOption)
+            checkedVal = checkedOption.value;
+        
+        this.setValue(checkedVal);
     },
             
     /**

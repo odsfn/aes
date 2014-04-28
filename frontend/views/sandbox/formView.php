@@ -716,9 +716,30 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
         
         $('#qunit-fixture').append(form.render().$el);
         
-        ok(form.validate());
+        ok(form.validate() === true);
         
         ok($('#qunit-fixture .error').length === 0);
+    });
+    
+    test('Checked radiofields still checked even after form reset', function() {
+        var form = new Aes.FormView({
+            fields: {
+                bar_radio: {
+                    type: 'radio-group',
+                    label: 'Bar Radio',
+                    options: [
+                        {label: 'Option A', value: 'Value A', checked: true},
+                        {label: 'Option B', value: 'Value B'}
+                    ]                   
+                }
+            }
+        });
+        
+        $('#qunit-fixture').append(form.render().$el);
+        ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
+        
+        form.reset();
+        ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
     });
 //    test('MultySelect field');
 
