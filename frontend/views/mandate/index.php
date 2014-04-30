@@ -9,6 +9,7 @@ $js = array(
     'aes:views/FormView.js',
     'aes:views/NoItemView.js',
     'aes:views/FeedView.js',
+    'aes:views/TabsView.js',
     'modules/PetitionsList.js',
     'modules/MandateDetails.js',
     'modules/MandatesList.js'
@@ -131,7 +132,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#electors-tab">Electors</a></li>
                 <li><a data-toggle="tab" href="#petitions-tab">Petitions</a></li>
-                <!--<li class="petition-create-btn"><a href="<%= UrlManager.createUrl('petition/create/mandateId/' + App.module('MandateDetails').getActiveMandate().get('id')) %>">Create new petition</a></li>-->
+                <li class="petition-create-btn"><a href="<%= UrlManager.createUrl('petition/create/mandateId/' + App.module('MandateDetails').getActiveMandate().get('id')) %>">Create new petition</a></li>
                 <li class="petition-create-btn"><a data-toggle="tab" href="#create-petition-tab">Create new petition</a></li>
             </ul>
 
@@ -142,12 +143,16 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
                 <div id="petitions-tab" class="tab-pane"></div>
                 
                 <div id="create-petition-tab" class="tab-pane">
-                    <?= $this->renderPartial('frontend.views.petition._form', array('model'=>new Petition, 'forAjax' => true)); ?>
+                    
                 </div>
                 
             </div>    
         </div>
     </div>
+</script>
+
+<script type="text/template" id="create-petition-form-tpl">
+<?= $this->renderPartial('frontend.views.petition._form', array('model'=>new Petition, 'forAjax' => true)); ?>
 </script>
 
 <script type="text/template" id="electorfeed-item-tpl">

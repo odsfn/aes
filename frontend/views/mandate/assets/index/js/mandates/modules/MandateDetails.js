@@ -38,48 +38,15 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
         className: 'user-info',
         template: '#electorfeed-item-tpl'
     });
-    
+
     var DetailsLayout = Marionette.Layout.extend({
-        
-        ui: {
-            createPetitionBtn: '.petition-create-btn'
-        },
-        
         template: '#mandate-details-layout-tpl',
+                
         regions: {
             mandateInfo: '#mandate-info',
-            electorsTabContent: '#electors-tab',
-            petitionsTabContent: '#petitions-tab'
+            tabs: '#mandate-tabs'
         }
     });
-
-//    var DetailsLayout = Marionette.Layout.extend({
-//        template: '#mandate-details-layout-tpl',
-//        regions: {
-//            mandateInfo: '#mandate-info',
-//            tabs: '#mandate-tabs'
-//        },
-//        
-//        _initTabs: function() {
-//            this.tabsView = new TabsView({
-//               tabs: {
-//                   electors: {
-//                       title: 'Electors',
-//                   },
-//                   petitions: {
-//                       title: 'Petitions'
-//                   },
-//                   createPetition: {
-//                       title: 'Create new petition'
-//                   }
-//               } 
-//            });
-//        },
-//                 
-//        initialize: function() {
-//            this._initTabs();
-//        }
-//    });
 
     this._mandateAcceptsPetitions = false;
     
@@ -104,9 +71,9 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
     };
     
     this.openCreatePetitionForm = function() {
-        $('#create-petition-tab').html('Loading...');
+        $('#createPetition-tab').html('Loading...');
         
-        $('#create-petition-tab').load(
+        $('#createPetition-tab').load(
             UrlManager.createUrl("petition/ajaxCreate"),
             {
                 mandateId: this.getActiveMandate().get('id'),
@@ -116,17 +83,15 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
     };
     
     this.onPetitionCreationFailed = function(response) {
-        console.log('Petition creation failed');
-        $('#create-petition-tab').html(response.responseHtml);
+        $('#createPetition-tab').html(response.responseHtml);
     };
     
     this.onPetitionCreated = function() {
-        console.log('Petition created');
         App.module('PetitionsList').petitions.offset = 0;
         App.module('PetitionsList').petitions.fetch();
         
         $('a[href="#petitions-tab"]').tab('show');
-        $('#create-petition-tab').html('Loading...');
+        $('#createPetition-tab').html('Loading...');
     };
     
     this.loadDetails = function(mandateId) {
@@ -219,16 +184,44 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
             });  
     };
     
+    this.initDetailsTabs = function() {
+        
+        var that = this;
+        
+        var tabsConfig = {
+            electors: {
+               title: 'Electors',
+               content: this.initElectorsFeedView()
+            },
+            petitions: {
+               title: 'Petitions',
+               content: this.modPetitions.layout
+            },
+            createPetition: {
+               title: 'Create new petition',
+               content: 'Loading...',
+               onBeforeSelect: function(tab) {
+                   that.openCreatePetitionForm();
+                   return true;
+               }
+            }
+        };
+        
+        if(!this._mandateAcceptsPetitions)
+            delete tabsConfig.createPetition;
+        
+        return new Aes.TabsView({
+            tabs: tabsConfig
+        });
+    };
+    
     this.viewDetails = function(mandateId) {
         this.loadDetails(mandateId);
     };
     
     this.onDetailsReady = function() {
-        console.log('MandateDetails.onDetailsReady');
         
         var mandate = this._activeMandate;
-        
-        this.detailsLayout.ui.createPetitionBtn.hide();
         
         this.detailsLayout.mandateInfo.show(new this.options.mandateView({
             template: '#mandate-detailed-tpl',
@@ -236,15 +229,8 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
         }));
         
         $('#mandate-details ul.breadcrumbs').append('<li class="node-viewDetails"><a href="#">' + mandate.get('name') + ' - ' + mandate.get('candidate').profile.displayName + '</a></li>');
-        
-        if (this._mandateAcceptsPetitions) {
-            this.detailsLayout.ui.createPetitionBtn.show();
-            $('a[href="#create-petition-tab"]').click(_.bind(this.openCreatePetitionForm, this));
-        }
-        
-        this.detailsLayout.electorsTabContent.show(this.initElectorsFeedView());
-        
-        this.detailsLayout.petitionsTabContent.show(this.modPetitions.layout);
+  
+        this.detailsLayout.tabs.show(this.initDetailsTabs());
         
     };
     

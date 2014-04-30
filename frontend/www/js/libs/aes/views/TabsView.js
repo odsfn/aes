@@ -201,6 +201,10 @@ Aes.TabsView = (function() {
         contentView: null,
 
         select: function() {
+            var shouldSelect = this.triggerMethod('before:select');
+            if(!shouldSelect)
+                return;
+            
             var selectedTab = this.options.tabsContainer.getSelected();
             if(selectedTab)
                 selectedTab.selected = false;
@@ -228,6 +232,15 @@ Aes.TabsView = (function() {
             if (this.contentView) {
                 this.contentView.triggerMethod('show');
             }
+        },
+
+        onBeforeSelect: function() {
+            var handler;
+            
+            if(handler = this.options.onBeforeSelect)
+                return handler.apply(this);
+                
+            return true;
         },
 
         initialize: function(options) {
@@ -270,8 +283,9 @@ Aes.TabsView = (function() {
            'mouseleave': 'mouseLeaved'
         },
 
-        clicked: function() {
-           this.options.tabContentView.select();
+        clicked: function(event) {
+            event.preventDefault();
+            this.options.tabContentView.select();
         },
 
         closeClicked: function() {
