@@ -223,7 +223,7 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
   
       tabs.select('second');
       
-      tabs.remove('second');
+      tabs.removeTab('second');
       
       ok($('#qunit-fixture .tabs-container .tab-content > div').length === 1);
       ok($('#qunit-fixture .tabs-container li').length === 1);
@@ -262,7 +262,36 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
       ok($('#qunit-fixture .tabs-container li').length === 1);
       ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
       ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
-  });
+    });
+    
+    test('Removing first active tab', function() {
+      
+      var tabs = new Aes.TabsView({
+          tabs: {
+              first: {
+                  title: '<b>First</b> tab title',
+                  content: 'First tab <b>content</b>',
+                  closable: true
+              },
+              second: {
+                  title: '<b>Second</b> tab title',
+                  content: 'Second tab <b>content</b>',
+                  closable: true
+              }
+          }
+      });
+      
+      $('#qunit-fixture').append(tabs.render().el);
+      tabs.triggerMethod('show');  
+      
+      $('#qunit-fixture .tabs-container li:eq(0) span.icon-remove').click();
+      
+      ok($('#qunit-fixture .tabs-container .tab-content > div').length === 1);
+      ok($('#qunit-fixture .tabs-container li').length === 1);
+      ok($('#qunit-fixture .tabs-container li:eq(0).active').length === 1);
+      ok($('#qunit-fixture div.tab-content > div:eq(0)[id="second-tab"].active').length === 1);
+      
+    });
   
   test('Close icon shows on selected tab and when mouse is enetered', function() {
       var tabs = new Aes.TabsView({
