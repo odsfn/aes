@@ -42,34 +42,6 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
         url: UrlManager.createUrlCallback('api/mandate')
     });
     
-    var Elector = Backbone.Model.extend({
-        parse: function() {
-            var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
-
-            attrs.id = parseInt(attrs.id);
-            attrs.election_id = parseInt(attrs.election_id);
-            attrs.candidate_id = parseInt(attrs.candidate_id);
-            attrs.user_id = parseInt(attrs.user_id);
-            attrs.date = parseInt(attrs.date) * 1000;
-            attrs.status = parseInt(attrs.status);
-
-            return attrs;
-        }    
-    });
-    
-    var ElectorsCollection = FeedCollection.extend({
-       limit: 30,
-       model: Elector,
-       url: UrlManager.createUrlCallback('api/vote'),
-       
-       getFilters: function() {
-            return {
-                accepted_only: true,
-                with_profile: true
-            };
-       }
-    });
-    
     var MandateView = Aes.ItemView.extend({
         template: '#mandate-tpl',
                 
@@ -92,11 +64,6 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
             this.$el.removeClass();
             this.$el.addClass(this.getStatusClass());
         }
-    });
-    
-    var ElectorView = Aes.ItemView.extend({
-        className: 'user-info',
-        template: '#electorfeed-item-tpl'
     });
     
     var MandatesFeedView = Aes.FeedView.extend({
@@ -158,41 +125,9 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
        } 
     });
     
-    var DetailsLayout = Marionette.Layout.extend({
-        
-        ui: {
-            createPetitionBtn: '.petition-create-btn'
-        },
-        
-        template: '#mandate-details-layout-tpl',
-        regions: {
-            mandateInfo: '#mandate-info',
-            electorsTabContent: '#electors-tab',
-            petitionsTabContent: '#petitions-tab'
-        }
-    });
-
-    this._mandateAcceptsPetitions = false;
-    
-    this.checkMandateAcceptsPetitions = function(mandateId) {
-        return $.ajax(UrlManager.createUrl('mandate/checkPetitionAcceptence/mandateId/' + mandateId), {
-            success: function(response) {
-                if(response.result === true)
-                    MandatesList._mandateAcceptsPetitions = true;
-                else
-                    MandatesList._mandateAcceptsPetitions = false;
-            },
-            dataType: 'json'
-        });
-    };
-    
     this.setOptions = function(options) {
         config = _.extend(config, _.pick(options, _.keys(config)));
     };
-    
-    this.getActiveMandate = function() {
-        return this._activeMandate;
-    }
     
     this.viewMandates = function() {
         this._activeMandate = null;
@@ -201,133 +136,13 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
         $('#mandate-details li.node-viewDetails').remove();
     };
     
-    
-    this.openCreatePetitionForm = function() {
-        $('#create-petition-tab').html('Loading...');
-        
-        $('#create-petition-tab').load(
-            UrlManager.createUrl("petition/ajaxCreate"),
-            {
-                mandateId: this.getActiveMandate().get('id'),
-                ajax: true
-            }
-        );
-    };
-    
-    this.onPetitionCreationFailed = function(response) {
-        console.log('Petition creation failed');
-        $('#create-petition-tab').html(response.responseHtml);
-    };
-    
-    this.onPetitionCreated = function() {
-        console.log('Petition created');
-        App.module('PetitionsList').petitions.offset = 0;
-        App.module('PetitionsList').petitions.fetch();
-        
-        $('a[href="#petitions-tab"]').tab('show');
-        $('#create-petition-tab').html('Loading...');
-    };
-    
     this.viewDetails = function(mandateId) {
-        
-        var mandate = this.mandates.findWhere({id: mandateId});
-        
-        this._activeMandate = mandate;
-        
-        var electors = new ElectorsCollection();
-        electors.setFilters({
-           election_id: mandate.get('election_id'),
-           candidate_id: mandate.get('candidate_id')
-        });
-
+        App.module('MandateDetails').viewDetails(mandateId);
+    };
+    
+    this.onDetailsReady = function() {
+        this.layout.mandateDetails.show(this.modDetails.detailsLayout);
         this.layout.mandates.$el.hide();
-        this.layout.mandateDetails.show(this.detailsLayout);
-        
-        this.detailsLayout.ui.createPetitionBtn.hide();
-        
-        this.detailsLayout.mandateInfo.show(new MandateView({
-            template: '#mandate-detailed-tpl',
-            model: mandate
-        }));        
-        
-        $('#mandate-details ul.breadcrumbs').append('<li class="node-viewDetails"><a href="#">' + mandate.get('name') + ' - ' + mandate.get('candidate').profile.displayName + '</a></li>');        
-        
-        $.when(
-            electors.fetch(),
-            this.checkMandateAcceptsPetitions(mandate.get('id'))
-        ).done(_.bind(function() {
-            if (this._mandateAcceptsPetitions) {
-                this.detailsLayout.ui.createPetitionBtn.show();
-                $('a[href="#create-petition-tab"]').click(_.bind(this.openCreatePetitionForm, this));
-            }
-            
-            this.modPetitions = App.module('PetitionsList');
-            this.modPetitions.start({
-                mandateId: mandate.get('id'),
-                petitionsCanBeRated: this._mandateAcceptsPetitions
-            });
-            
-            this.detailsLayout.electorsTabContent.show(new Aes.FeedView({
-                itemView: ElectorView,
-                collection: electors,
-
-                filters: {
-
-                    enabled: true,
-
-                    attributes: {
-                        class: 'search-form pull-right span4'
-                    },
-
-                    uiAttributes: {
-                       inputs: {
-                            class: 'span12'
-                       }
-                    },
-
-                    fields: {
-                            name: {
-                                label: 'Name',
-                                type: 'text',
-                            },
-                            birth_place: {
-                                label: 'Birth Place'
-                            },
-                            ageFrom: {
-                                label: 'Age From',
-                                validator: {
-                                    required: false,
-                                    min: 1,
-                                    max: 100
-                                }
-                            },
-                            ageTo: {
-                                label: 'Age To',
-                                validator: {
-                                    required: false,
-                                    min: 1,
-                                    max: 100,
-                                    greaterThan: {
-                                        attr: 'ageFrom',
-                                        validOnEqual: true
-                                    }
-                                }
-                            },
-                            gender: {
-                                label: 'Gender',
-                                type: 'select',
-                                options: [
-                                    {label: 'Any', value: '', selected: true},
-                                    {label: 'Male', value: '1'},
-                                    {label: 'Female', value: '2'}
-                                ]
-                            }
-                     }
-
-                   }
-            }));
-            this.detailsLayout.petitionsTabContent.show(this.modPetitions.layout);            
-        }, this));
     };
     
     this.addInitializer(function(options) {
@@ -343,8 +158,16 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
         this.layout = new Layout({
            template: config.layoutTpl
         });
+
+        this.modDetails = App.module('MandateDetails');
+        this.modDetails.start({
+            getMandates: _.bind(function() {
+                return this.mandates;
+            }, this),
+            mandateView: MandateView
+        });
         
-        this.detailsLayout = new DetailsLayout();
+        this.listenTo(this.modDetails, 'detailsReady', this.onDetailsReady);
     });
     
     this.on('start', function() {
@@ -354,13 +177,6 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
            MandatesList.trigger('ready');
         });
         
-        var that = this;
-        $('body').on('petitionCreated', function(event, response) {
-            that.onPetitionCreated(response);
-        });
-        $('body').on('petitionCreationFailed', function(event, response) { 
-            that.onPetitionCreationFailed(response);
-        });
     });
     
 });

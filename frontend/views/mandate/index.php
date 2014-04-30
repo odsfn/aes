@@ -9,8 +9,9 @@ $js = array(
     'aes:views/FormView.js',
     'aes:views/NoItemView.js',
     'aes:views/FeedView.js',
-    'modules/MandatesList.js',
-    'modules/PetitionsList.js'
+    'modules/PetitionsList.js',
+    'modules/MandateDetails.js',
+    'modules/MandatesList.js'
 );
 
 $this->widget('application.widgets.ClientApp', array(
@@ -125,12 +126,12 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
         <div id="mandate-info" class="span12"></div>
     </div>
     
-    <div class="row-fluid">
+    <div id="mandate-tabs" class="row-fluid">
         <div class="tabs-container">
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#electors-tab">Electors</a></li>
                 <li><a data-toggle="tab" href="#petitions-tab">Petitions</a></li>
-                <!--<li class="petition-create-btn"><a href="<%= UrlManager.createUrl('petition/create/mandateId/' + App.module('MandatesList').getActiveMandate().get('id')) %>">Create new petition</a></li>-->
+                <!--<li class="petition-create-btn"><a href="<%= UrlManager.createUrl('petition/create/mandateId/' + App.module('MandateDetails').getActiveMandate().get('id')) %>">Create new petition</a></li>-->
                 <li class="petition-create-btn"><a data-toggle="tab" href="#create-petition-tab">Create new petition</a></li>
             </ul>
 

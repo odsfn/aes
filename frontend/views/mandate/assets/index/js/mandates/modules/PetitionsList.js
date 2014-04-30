@@ -211,8 +211,8 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         $.when(
             this.petitions.fetch()
         ).done(function(){
-           PetitionsList.layout.petitions.show(PetitionsList.petitionsFeedView);
-           PetitionsList.trigger('ready');
+            PetitionsList.layout.petitions.show(PetitionsList.petitionsFeedView);
+            PetitionsList.trigger('ready');
         });
         
     });
