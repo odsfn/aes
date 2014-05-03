@@ -205,7 +205,7 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
   });
   
   test('Tabs can be removed', function() {
-      var tabs = new Aes.TabsView({
+        var tabs = new Aes.TabsView({
           tabs: {
               first: {
                   title: '<b>First</b> tab title',
@@ -214,25 +214,49 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
               second: {
                   title: '<b>Second</b> tab title',
                   content: 'Second tab <b>content</b>'
+              },
+              third: {
+                  title: '<b>Third</b> tab title',
+                  content: 'Third tab <b>content</b>'
               }
           }
-      });
+        });
+
+        $('#qunit-fixture').append(tabs.render().el);
+        tabs.triggerMethod('show');
+
+        tabs.select('third');
+
+        tabs.removeTab('third');
+
+        ok($('#qunit-fixture .tabs-container .tab-content > div').length === 2);
+        ok($('#qunit-fixture .tabs-container li').length === 2);
+        ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(1) > a[href="#second-tab"]').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(1)[id="second-tab"]').length === 1);
+
+        //checks that first reselected
+        ok($('#qunit-fixture .tabs-container li:eq(0)').hasClass('active'));
+        ok($('#qunit-fixture .tab-content > div.active').html() === 'First tab <b>content</b>');
       
-      $('#qunit-fixture').append(tabs.render().el);
-      tabs.triggerMethod('show');
-  
-      tabs.select('second');
-      
-      tabs.removeTab('second');
-      
-      ok($('#qunit-fixture .tabs-container .tab-content > div').length === 1);
-      ok($('#qunit-fixture .tabs-container li').length === 1);
-      ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
-      ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
-      
-      //checks that first reselected
-      ok($('#qunit-fixture .tabs-container li:eq(0)').hasClass('active'));
-      ok($('#qunit-fixture .tab-content > div.active').html() === 'First tab <b>content</b>');
+        //check that we can select other tab
+        $('#qunit-fixture .tabs-container li:eq(1) > a').click();
+        
+        ok(!$('#qunit-fixture .tabs-container li:first').hasClass('active'));
+        ok($('#qunit-fixture .tabs-container li:eq(1)').hasClass('active'));
+        
+        ok($('#qunit-fixture #first-tab:visible').length === 0);
+        ok($('#qunit-fixture #second-tab:visible').length === 1);
+        ok($('#qunit-fixture #second-tab').hasClass('active'));
+        
+        tabs.select('first');
+        ok(!$('#qunit-fixture #second-tab').hasClass('active'));
+        ok($('#qunit-fixture #first-tab').hasClass('active'));
+        
+        tabs.select(tabs.tabViews.findByCustom('second'));
+        ok($('#qunit-fixture #second-tab').hasClass('active'));
+        ok(!$('#qunit-fixture #first-tab').hasClass('active'));
   });
   
   test('Closable tab is removed', function() {
@@ -265,8 +289,8 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
     });
     
     test('Removing first active tab', function() {
-      
-      var tabs = new Aes.TabsView({
+
+        var tabs = new Aes.TabsView({
           tabs: {
               first: {
                   title: '<b>First</b> tab title',
@@ -279,22 +303,22 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
                   closable: true
               }
           }
-      });
-      
-      $('#qunit-fixture').append(tabs.render().el);
-      tabs.triggerMethod('show');  
-      
-      $('#qunit-fixture .tabs-container li:eq(0) span.icon-remove').click();
-      
-      ok($('#qunit-fixture .tabs-container .tab-content > div').length === 1);
-      ok($('#qunit-fixture .tabs-container li').length === 1);
-      ok($('#qunit-fixture .tabs-container li:eq(0).active').length === 1);
-      ok($('#qunit-fixture div.tab-content > div:eq(0)[id="second-tab"].active').length === 1);
-      
+        });
+
+        $('#qunit-fixture').append(tabs.render().el);
+        tabs.triggerMethod('show');  
+
+        $('#qunit-fixture .tabs-container li:eq(0) span.icon-remove').click();
+
+        ok($('#qunit-fixture .tabs-container .tab-content > div').length === 1);
+        ok($('#qunit-fixture .tabs-container li').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(0).active').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(0)[id="second-tab"].active').length === 1);
+
     });
   
-  test('Close icon shows on selected tab and when mouse is enetered', function() {
-      var tabs = new Aes.TabsView({
+    test('Close icon shows on selected tab and when mouse is enetered', function() {
+        var tabs = new Aes.TabsView({
           tabs: {
               first: {
                   title: '<b>First</b> tab title',
@@ -307,27 +331,105 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
                   closable: true
               }
           }
-      });
-      
-      $('#qunit-fixture').append(tabs.render().el);
-      tabs.triggerMethod('show');
-      
-      ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 1);
-      ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 0);
-      
-      $('#qunit-fixture .tabs-container li:eq(0) span.icon-remove').mouseleave();
-      
-      ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 1);
-      ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 0);
-      
-      $('#qunit-fixture .tabs-container li:eq(1) span.icon-remove').mouseenter();
-      
-      ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 1);
-      ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 1);
-      
-      $('#qunit-fixture .tabs-container li:eq(1) span.icon-remove').mouseleave();
-      
-      ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 1);
-      ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 0);        
-  });
+        });
+
+        $('#qunit-fixture').append(tabs.render().el);
+        tabs.triggerMethod('show');
+
+        ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 0);
+
+        $('#qunit-fixture .tabs-container li:eq(0) span.icon-remove').mouseleave();
+
+        ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 0);
+
+        $('#qunit-fixture .tabs-container li:eq(1) span.icon-remove').mouseenter();
+
+        ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 1);
+
+        $('#qunit-fixture .tabs-container li:eq(1) span.icon-remove').mouseleave();
+
+        ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 0);        
+    });
+  
+    test('Close icon does not show after rendered selected closable tab deselects', function(){
+        var tabs = new Aes.TabsView({
+          tabs: {
+              first: {
+                  title: '<b>First</b> tab title',
+                  content: 'First tab <b>content</b>',
+                  closable: true
+              },
+              second: {
+                  title: '<b>Second</b> tab title',
+                  content: 'Second tab <b>content</b>',
+                  closable: true
+              }
+          }
+        });
+
+        $('#qunit-fixture').append(tabs.render().el);
+        tabs.triggerMethod('show');
+        
+        ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 0);
+        
+        $('#qunit-fixture .tabs-container li:eq(1) > a').mouseenter().click();
+        
+        ok($('#qunit-fixture .tabs-container li:eq(0) span.icon-remove:visible').length === 0);
+        ok($('#qunit-fixture .tabs-container li:eq(1) span.icon-remove:visible').length === 1);
+        
+    });
+    
+    test('Renders subviews', function() {
+        var layoutView = new SomeLayoutView();
+        layoutView.firstRegion.show(new Aes.ItemView({tpl: '<b>First region</b> internal view'}));
+        layoutView.secondRegion.show(new Aes.ItemView({tpl: '<b>Second region</b> internal view'}));
+        
+        $('#qunit-fixture').append('<h6>Layout view exanple</h6><div id="layoutCntr"></div>');
+        $('#qunit-fixture #layoutCntr').append(layoutView.render().el);
+        
+        var tabs = new Aes.TabsView({
+          tabs: {
+              first: {
+                  title: '<b>First</b> tab title',
+                  content: 'First tab <b>content</b>',
+                  closable: true
+              },
+              second: {
+                  title: '<b>Second</b> tab title',
+                  content: new Aes.ItemView({tpl: '<b>Subview content</b>'}),
+                  closable: true
+              },
+              third: {
+                  title: 'Third',
+                  content: layoutView,
+                  closable: true
+              }
+          }
+        });
+
+        $('#qunit-fixture').append(tabs.render().el);
+        tabs.triggerMethod('show');
+        
+        ok(false);
+    });
+    
+    var SomeLayoutView = Marionette.Layout.extend({
+        template: '#some-layout-tpl',
+        regions: {
+            firstRegion: '#first',
+            secondRegion: '#second'
+        }
+    });
+</script>
+
+<script type="text/template" id="some-layout-tpl">
+<div>
+    <div id="first">View should be rendered here</div>
+    <div id="second">View should be rendered here</div>
+</div>
 </script>

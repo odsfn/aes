@@ -137,7 +137,12 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
     };
     
     this.viewDetails = function(mandateId) {
-        App.module('MandateDetails').viewDetails(mandateId);
+        this.modDetails.viewDetails(mandateId);
+    };
+    
+    this.viewPetitionDetails = function(mandId, petitionId) {
+        console.log('viewPetitionDetails for ' + petitionId + ' and mandate id: ' + mandId);
+        this.modDetails.viewPetitionDetails(mandId, petitionId);
     };
     
     this.onDetailsReady = function() {

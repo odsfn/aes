@@ -29,7 +29,7 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         url: UrlManager.createUrlCallback('api/petition')
     });
     
-    var PetitionView = Aes.ItemView.extend({
+    PetitionsList.PetitionView = Aes.ItemView.extend({
         
         personType: 'creator',
         
@@ -93,7 +93,7 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
     
     var PetitionsFeedView = Aes.FeedView.extend({
         template: '#petitions-feed-tpl',
-        itemView: PetitionView,
+        itemView: PetitionsList.PetitionView,
         
         getFiltersConfig: function() {
             return {
@@ -154,11 +154,11 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
        } 
     });
     
-    var DetailsLayout = Marionette.Layout.extend({
+    PetitionsList.DetailsLayout = Marionette.Layout.extend({
         template: '#petition-details-layout-tpl',
         regions: {
             petitionInfo: '#petition-info',
-            supportersTabContent: '#supporters-tab'
+            tabs: '#petition-tabs'
         }
     });
     
@@ -187,6 +187,18 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
 //            model: petition
 //        }));
 //    };
+    
+    this.initPetitionDetails = function(petition, callback) {
+        var details = new PetitionsList.DetailsLayout();
+        
+        var petitionView = new PetitionsList.PetitionView({
+            model: petition
+        });
+        
+//        details.render();
+        details.petitionInfo.show(petitionView);
+        callback(details);
+    };
     
     this.addInitializer(function(options) {
         

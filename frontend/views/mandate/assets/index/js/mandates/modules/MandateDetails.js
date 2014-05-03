@@ -219,6 +219,42 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
         this.loadDetails(mandateId);
     };
     
+    this.viewPetitionDetails = function(mandateId, petitionId) {
+        
+        $.when(
+            $.Deferred(function() {
+                var self = this;
+            
+                MandateDetails.once('detailsReady', function() {
+                    self.resolve();
+                });
+            }),
+            $.Deferred(function() {
+                var self = this;
+            
+                MandateDetails.modPetitions.once('ready', function() {
+                    self.resolve();
+                });
+            })
+        ).done(function() {
+            var petition = MandateDetails.modPetitions.petitions.findWhere({id: petitionId});
+            
+            if(!petition)
+                return;
+            
+            MandateDetails.modPetitions.initPetitionDetails(petition, function(detailsView) {
+                MandateDetails.detailsLayout.tabs.currentView.add({
+                   tabId: 'petition-' + petitionId,
+                   title: petition.get('title'),
+                   content: detailsView,
+                   closable: true
+                }).select();
+            });
+        });
+
+        this.loadDetails(mandateId);
+    };
+    
     this.onDetailsReady = function() {
         
         var mandate = this._activeMandate;

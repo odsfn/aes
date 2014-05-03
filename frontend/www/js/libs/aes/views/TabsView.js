@@ -96,6 +96,8 @@ Aes.TabsView = (function() {
             }
 
             this.trigger('added', newTab);
+            
+            return newTab;
         },
 
         /**
@@ -146,7 +148,9 @@ Aes.TabsView = (function() {
 
         _renderTab: function(tab) {
             tab.titleView.render();
+            tab.titleView.delegateEvents();
             tab.render();
+            tab.delegateEvents();
         },
 
         _appendTabView: function(tabView) {
@@ -207,12 +211,17 @@ Aes.TabsView = (function() {
             
             var selectedTab = this.options.tabsContainer.getSelected();
             if(selectedTab)
-                selectedTab.selected = false;
+                selectedTab.unselect();
 
             this.titleView.select();
             this.selected = true;
 
             this.options.tabsContainer.trigger('selected', this);
+        },
+
+        unselect: function() {
+            this.selected = false;
+            this.titleView.unselect();
         },
 
         remove: function() {
@@ -303,13 +312,18 @@ Aes.TabsView = (function() {
         },
 
         onRender: function() {
-            if(!this.options.tabContentView.selected) {
+            if(!this.options.tabContentView.selected && !this.options.tabContentView.selected) {
                 this.$('.icon-remove').hide();
             }
         },
 
         select: function() {
            this.ui.anchor.tab('show');
+           this.$('.icon-remove').show();
+        },
+
+        unselect: function() {
+           this.$('.icon-remove').hide();    
         },
 
         tagName: 'li',
