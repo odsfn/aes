@@ -34,21 +34,26 @@ var MoreView = Aes.ItemView.extend({
         
         this.listenTo(this.base, 'render', _.bind(function() {
             this.render();
-            this.delegateEvents();           
+            this.delegateEvents();
+            
+            if(this.base._isShown) {
+                this._appendToBase();
+            }
+            
         }, this));
         
-        this.listenTo(this.base, 'show', _.bind(function() {
-            
-            var type = typeof this.appendTo;
-            
-            if(type === 'string')
-                $(this.appendTo).append(this.$el);
-            else if(type === 'function')
-                this.appendTo().append(this.$el);
-            else
-                this.appendTo.append(this.$el);
-            
-        }, this));
+        this.listenTo(this.base, 'show', this._appendToBase);
+    },
+    
+    _appendToBase: function() {
+        var type = typeof this.appendTo;
+
+        if(type === 'string')
+            $(this.appendTo).append(this.$el);
+        else if(type === 'function')
+            this.appendTo().append(this.$el);
+        else
+            this.appendTo.append(this.$el);        
     },
     
     serializeData: function() {
