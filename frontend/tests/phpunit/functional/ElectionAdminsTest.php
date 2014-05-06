@@ -80,7 +80,7 @@ class ElectionAdminsTest extends WebTestCase {
     public function testEveryCanFilter() {
         $this->open('election/admins/1');
         
-        $this->assertCssCount('css=#all-admins-tab .user-info', 3);
+        $this->waitForCssCount('css=#all-admins-tab .user-info', 3);
         $this->assertElementContainsText('css=#all-admins-tab .items', 'Jhon Lenon');
         $this->assertElementContainsText('css=#all-admins-tab .items', 'Another User');
         $this->assertElementContainsText('css=#all-admins-tab .items', 'Yetanother User');

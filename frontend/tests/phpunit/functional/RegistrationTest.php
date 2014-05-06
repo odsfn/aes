@@ -10,9 +10,13 @@ class RegistrationTest extends WebTestCase
     
     function testRegistration() {
         
+        Yii::app()->db->createCommand('SET foreign_key_checks = 0;')->execute();
+        
         Yii::app()->db->createCommand('TRUNCATE user')->execute();
         Yii::app()->db->createCommand('TRUNCATE user_identity')->execute();
         Yii::app()->db->createCommand('TRUNCATE user_profile')->execute();
+        
+        Yii::app()->db->createCommand('SET foreign_key_checks = 1;')->execute();
         
         $appLogger = Yii::app()->getComponent('log')->routes['info_log'];
         $logFilePath = $appLogger->logPath . '/' . $appLogger->logFile;
