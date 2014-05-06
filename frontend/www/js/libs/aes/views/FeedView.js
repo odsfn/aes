@@ -112,10 +112,19 @@ Aes.FeedView = Marionette.CompositeView.extend({
         
         this.on('render', function() {
             this._filter.render();
+            
+            // this call is required to delegate dom events after lossing them 
+            // affected by re-rendering parent view
+            this._filter.delegateEvents();
+            
+            $(appendTo, this.$el).append(this._filter.$el);
+            
+            if (this._isShown) {
+                this._filter.trigger('show');
+            }
         });
         
         this.on('show', function() {
-            $(appendTo, this.$el).append(this._filter.$el);
             this._filter.trigger('show');
         });
     },
