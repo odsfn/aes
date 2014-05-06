@@ -37,7 +37,9 @@ class MandateListingTest extends WebTestCase {
         $this->click("//input[@value='Reset']");
         
         $this->type('name=owner_name', 'Pedak Vasiliy');
+        usleep(250000);
         $this->click("//input[@value='Filter']");
+        usleep(250000);
         $this->assertMandatesPresent('0');
     }
     
@@ -60,7 +62,7 @@ class MandateListingTest extends WebTestCase {
         
         $this->assertCssCount('css=div.mandate', $count);
         $this->waitForNotVisible('css=#mandates-feed-container .nav img.loader');
-        $this->waitForElementContainsText('css=#mandates-feed-container .nav a#items-count', 'Found ' . $count);
+        $this->waitForElementContainsText('css=#mandates-feed-container .nav a#items-count', 'Found ' . $count, 4000, 500);
         
         foreach ($aliases as $alias)
             $this->assertMandatePresent($alias);        
