@@ -131,7 +131,6 @@ Aes.TabsView = (function() {
             this.tabViews.each(_.bind(function(tab) {
                this._appendTabView(tab);
             },this));
-
         },
 
         onBeforeSelect: function(tab) {
@@ -157,6 +156,11 @@ Aes.TabsView = (function() {
             this._renderTab(tabView);
             this.ui.tabTitles.append(tabView.titleView.$el);
             this.ui.tabBodies.append(tabView.$el);
+            
+            if (this._isShown) {
+                tabView.titleView.triggerMethod('show');
+                tabView.triggerMethod('show');
+            }
         },
 
         onShow: function() {

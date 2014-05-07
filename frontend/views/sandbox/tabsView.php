@@ -5,6 +5,8 @@ $clientScript = Yii::app()->clientScript;
 
 $clientScript->registerPackage('qunit');
 
+$clientScript->registerScriptFile('/js/libs/sinon-1.9.0.js');
+
 $clientScript->registerPackage('aes-common');
 $clientScript->registerPackage('backbone.validation');
 $clientScript->registerPackage('marionette');
@@ -171,7 +173,7 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
   });
   
   test('Tabs can be added and removed', function() {
-      var tabs = new Aes.TabsView({
+        var tabs = new Aes.TabsView({
           tabs: {
               first: {
                   title: '<b>First</b> tab title',
@@ -182,26 +184,39 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
                   content: 'Second tab <b>content</b>'
               }
           }
-      });
-      
-      $('#qunit-fixture').append(tabs.render().el);
-      tabs.triggerMethod('show');
-      
-      tabs.add({
+        });
+
+        $('#qunit-fixture').append(tabs.render().el);
+        tabs.triggerMethod('show');
+
+        tabs.add({
           tabId: 'third',
           title: 'Third',
           content: '<b>Third</b> tab content'
-      });
+        });
+
+        ok($('#qunit-fixture .tabs-container > ul.nav.nav-tabs > li').length === 3);
+
+        ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(1) > a[href="#second-tab"]').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(1)[id="second-tab"]').length === 1);        
+
+        ok($('#qunit-fixture .tabs-container li:eq(2) > a[href="#third-tab"]').html() === 'Third');
+        ok($('#qunit-fixture #third-tab').html() === '<b>Third</b> tab content');
+
+        tabs.add({
+         tabId: 'fourth',
+         title: 'Fourth',
+         content: '<b>Fourth</b> tab content'
+        });
+
+        ok($('#qunit-fixture .tabs-container > ul.nav.nav-tabs > li').length === 4);
+        ok($('#qunit-fixture .tabs-container li:eq(2) > a[href="#third-tab"]').html() === 'Third');
+        ok($('#qunit-fixture #third-tab').html() === '<b>Third</b> tab content');
       
-      ok($('#qunit-fixture .tabs-container > ul.nav.nav-tabs > li').length === 3);
-      
-      ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
-      ok($('#qunit-fixture .tabs-container li:eq(1) > a[href="#second-tab"]').length === 1);
-      ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
-      ok($('#qunit-fixture div.tab-content > div:eq(1)[id="second-tab"]').length === 1);        
-      
-      ok($('#qunit-fixture .tabs-container li:eq(2) > a[href="#third-tab"]').html() === 'Third');
-      ok($('#qunit-fixture #third-tab').html() === '<b>Third</b> tab content');
+        ok($('#qunit-fixture .tabs-container li:eq(3) > a[href="#fourth-tab"]').html() === 'Fourth');
+        ok($('#qunit-fixture #fourth-tab').html() === '<b>Fourth</b> tab content');
   });
   
   test('Tabs can be removed', function() {
@@ -389,9 +404,6 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
         layoutView.firstRegion.show(new Aes.ItemView({tpl: '<b>First region</b> internal view'}));
         layoutView.secondRegion.show(new Aes.ItemView({tpl: '<b>Second region</b> internal view'}));
         
-        $('#qunit-fixture').append('<h6>Layout view exanple</h6><div id="layoutCntr"></div>');
-        $('#qunit-fixture #layoutCntr').append(layoutView.render().el);
-        
         var tabs = new Aes.TabsView({
           tabs: {
               first: {
@@ -415,14 +427,29 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
         $('#qunit-fixture').append(tabs.render().el);
         tabs.triggerMethod('show');
         
-        ok(false);
+        ok($('#qunit-fixture div.tabs-container #first > div').html() === '<b>First region</b> internal view');
+        ok($('#qunit-fixture div.tabs-container #second > div').html() === '<b>Second region</b> internal view');        
     });
     
     var SomeLayoutView = Marionette.Layout.extend({
         template: '#some-layout-tpl',
+
         regions: {
             firstRegion: '#first',
             secondRegion: '#second'
+        },
+        
+        render: function() {
+            if (!this._wasRendered) {
+                Marionette.Layout.prototype.render.apply(this, arguments);
+                this._wasRendered = true;
+            }
+            
+            return this;
+        },
+        
+        initialize: function() {
+            this.render();
         }
     });
 </script>

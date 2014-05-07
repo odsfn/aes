@@ -221,27 +221,12 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
     
     this.viewPetitionDetails = function(mandateId, petitionId) {
         
-        $.when(
-            $.Deferred(function() {
-                var self = this;
-            
-                MandateDetails.once('detailsReady', function() {
-                    self.resolve();
-                });
-            }),
-            $.Deferred(function() {
-                var self = this;
-            
-                MandateDetails.modPetitions.once('ready', function() {
-                    self.resolve();
-                });
-            })
-        ).done(function() {
+        var initPetitionDetailsTab = function() {
             var petition = MandateDetails.modPetitions.petitions.findWhere({id: petitionId});
-            
+
             if(!petition)
                 return;
-            
+
             MandateDetails.modPetitions.initPetitionDetails(petition, function(detailsView) {
                 MandateDetails.detailsLayout.tabs.currentView.add({
                    tabId: 'petition-' + petitionId,
@@ -250,9 +235,34 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
                    closable: true
                 }).select();
             });
-        });
+        };
+        
+        if (!this._activeMandate || this._activeMandate.get('id') !== mandateId) {
+        
+            $.when(
+                $.Deferred(function() {
+                    var self = this;
 
-        this.loadDetails(mandateId);
+                    MandateDetails.once('detailsReady', function() {
+                        self.resolve();
+                    });
+                }),
+                $.Deferred(function() {
+                    var self = this;
+
+                    MandateDetails.modPetitions.once('ready', function() {
+                        self.resolve();
+                    });
+                })
+            ).done(function() {
+                initPetitionDetailsTab();
+            });
+
+            this.loadDetails(mandateId);
+            
+        } else {
+            initPetitionDetailsTab();
+        }
     };
     
     this.onDetailsReady = function() {

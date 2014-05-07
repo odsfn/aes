@@ -148,17 +148,47 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
     });
     
     var Layout = Marionette.Layout.extend({
-       regions: {
+        regions: {
            petitions: '#petitions-feed-container',
            petitionDetails: '#petition-details'
-       } 
+        },
+       
+        render: function() {
+            if (!this._wasRendered) {
+                Marionette.Layout.prototype.render.apply(this, arguments);
+                this._wasRendered = true;
+            } else {
+                this.regionManager.each(function(region) {
+                    if(!region.currentView) return;
+                    
+                    region.currentView.render();
+                    region.currentView.delegateEvents();
+                });
+            }
+            
+            return this;
+        },       
     });
     
     PetitionsList.DetailsLayout = Marionette.Layout.extend({
         template: '#petition-details-layout-tpl',
+        
         regions: {
             petitionInfo: '#petition-info',
             tabs: '#petition-tabs'
+        },
+        
+        render: function() {
+            if (!this._wasRendered) {
+                Marionette.Layout.prototype.render.apply(this, arguments);
+                this._wasRendered = true;
+            }
+            
+            return this;
+        },
+        
+        initialize: function() {
+            this.render();
         }
     });
     
@@ -195,7 +225,6 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
             model: petition
         });
         
-//        details.render();
         details.petitionInfo.show(petitionView);
         callback(details);
     };
