@@ -101,12 +101,12 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
        ok($('#qunit-fixture .tabs-container > ul.nav.nav-tabs').length === 1);
        ok($('#qunit-fixture .tabs-container > ul.nav.nav-tabs > li').length === 2);
        ok($('#qunit-fixture .tabs-container li:first').hasClass('active'));
-       ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
-       ok($('#qunit-fixture .tabs-container li:eq(1) > a[href="#second-tab"]').length === 1);
+       ok($('#qunit-fixture .tabs-container li:eq(0) > a[href^="#first"]').length === 1);
+       ok($('#qunit-fixture .tabs-container li:eq(1) > a[href^="#second"]').length === 1);
        ok($('#qunit-fixture .tabs-container > div.tab-content').length === 1);
-       ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
-       ok($('#qunit-fixture div.tab-content > div:eq(1)[id="second-tab"]').length === 1);
-       ok($('#qunit-fixture #first-tab:visible').hasClass('active'));
+       ok($('#qunit-fixture div.tab-content > div:eq(0)[id^="first"]').length === 1);
+       ok($('#qunit-fixture div.tab-content > div:eq(1)[id^="second"]').length === 1);
+       ok($('#qunit-fixture div[id^="first"]:visible').hasClass('active'));
        
    });
     
@@ -132,17 +132,17 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
         ok(!$('#qunit-fixture .tabs-container li:first').hasClass('active'));
         ok($('#qunit-fixture .tabs-container li:eq(1)').hasClass('active'));
         
-        ok($('#qunit-fixture #first-tab:visible').length === 0);
-        ok($('#qunit-fixture #second-tab:visible').length === 1);
-        ok($('#qunit-fixture #second-tab').hasClass('active'));
+        ok($('#qunit-fixture div[id^="first"]:visible').length === 0);
+        ok($('#qunit-fixture div[id^="second"]:visible').length === 1);
+        ok($('#qunit-fixture div[id^="second"]').hasClass('active'));
         
         tabs.select('first');
-        ok(!$('#qunit-fixture #second-tab').hasClass('active'));
-        ok($('#qunit-fixture #first-tab').hasClass('active'));
+        ok(!$('#qunit-fixture div[id^="second"]').hasClass('active'));
+        ok($('#qunit-fixture div[id^="first"]').hasClass('active'));
         
         tabs.select(tabs.tabViews.findByCustom('second'));
-        ok($('#qunit-fixture #second-tab').hasClass('active'));
-        ok(!$('#qunit-fixture #first-tab').hasClass('active'));
+        ok($('#qunit-fixture div[id^="second"]').hasClass('active'));
+        ok(!$('#qunit-fixture div[id^="first"]').hasClass('active'));
     });
   
   test('Tabs with nested views', function() {
@@ -164,12 +164,12 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
       
       ok($('#qunit-fixture .tabs-container > ul.nav.nav-tabs > li').length === 2);
       ok($('#qunit-fixture .tabs-container li:first').hasClass('active'));
-      ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
-      ok($('#qunit-fixture .tabs-container li:eq(1) > a[href="#second-tab"]').length === 1);
-      ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
-      ok($('#qunit-fixture div.tab-content > div:eq(1)[id="second-tab"]').length === 1);
+      ok($('#qunit-fixture .tabs-container li:eq(0) > a[href^="#first"]').length === 1);
+      ok($('#qunit-fixture .tabs-container li:eq(1) > a[href^="#second"]').length === 1);
+      ok($('#qunit-fixture div.tab-content > div:eq(0)[id^="first"]').length === 1);
+      ok($('#qunit-fixture div.tab-content > div:eq(1)[id^="second"]').length === 1);
       
-      ok($('#qunit-fixture #second-tab > div').html() === 'Second tab <b>content</b>');
+      ok($('#qunit-fixture div[id^="second"] > div').html() === 'Second tab <b>content</b>');
   });
   
   test('Tabs can be added and removed', function() {
@@ -197,13 +197,13 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
 
         ok($('#qunit-fixture .tabs-container > ul.nav.nav-tabs > li').length === 3);
 
-        ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
-        ok($('#qunit-fixture .tabs-container li:eq(1) > a[href="#second-tab"]').length === 1);
-        ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
-        ok($('#qunit-fixture div.tab-content > div:eq(1)[id="second-tab"]').length === 1);        
+        ok($('#qunit-fixture .tabs-container li:eq(0) > a[href^="#first"]').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(1) > a[href^="#second"]').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(0)[id^="first"]').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(1)[id^="second"]').length === 1);        
 
-        ok($('#qunit-fixture .tabs-container li:eq(2) > a[href="#third-tab"]').html() === 'Third');
-        ok($('#qunit-fixture #third-tab').html() === '<b>Third</b> tab content');
+        ok($('#qunit-fixture .tabs-container li:eq(2) > a[href^="#third"]').html() === 'Third');
+        ok($('#qunit-fixture div[id^="third"]').html() === '<b>Third</b> tab content');
 
         tabs.add({
          tabId: 'fourth',
@@ -212,11 +212,11 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
         });
 
         ok($('#qunit-fixture .tabs-container > ul.nav.nav-tabs > li').length === 4);
-        ok($('#qunit-fixture .tabs-container li:eq(2) > a[href="#third-tab"]').html() === 'Third');
-        ok($('#qunit-fixture #third-tab').html() === '<b>Third</b> tab content');
+        ok($('#qunit-fixture .tabs-container li:eq(2) > a[href^="#third"]').html() === 'Third');
+        ok($('#qunit-fixture div[id^="third"]').html() === '<b>Third</b> tab content');
       
-        ok($('#qunit-fixture .tabs-container li:eq(3) > a[href="#fourth-tab"]').html() === 'Fourth');
-        ok($('#qunit-fixture #fourth-tab').html() === '<b>Fourth</b> tab content');
+        ok($('#qunit-fixture .tabs-container li:eq(3) > a[href^="#fourth"]').html() === 'Fourth');
+        ok($('#qunit-fixture div[id^="fourth"]').html() === '<b>Fourth</b> tab content');
   });
   
   test('Tabs can be removed', function() {
@@ -246,10 +246,10 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
 
         ok($('#qunit-fixture .tabs-container .tab-content > div').length === 2);
         ok($('#qunit-fixture .tabs-container li').length === 2);
-        ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
-        ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
-        ok($('#qunit-fixture .tabs-container li:eq(1) > a[href="#second-tab"]').length === 1);
-        ok($('#qunit-fixture div.tab-content > div:eq(1)[id="second-tab"]').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(0) > a[href^="#first"]').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(0)[id^="first"]').length === 1);
+        ok($('#qunit-fixture .tabs-container li:eq(1) > a[href^="#second"]').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(1)[id^="second"]').length === 1);
 
         //checks that first reselected
         ok($('#qunit-fixture .tabs-container li:eq(0)').hasClass('active'));
@@ -261,17 +261,17 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
         ok(!$('#qunit-fixture .tabs-container li:first').hasClass('active'));
         ok($('#qunit-fixture .tabs-container li:eq(1)').hasClass('active'));
         
-        ok($('#qunit-fixture #first-tab:visible').length === 0);
-        ok($('#qunit-fixture #second-tab:visible').length === 1);
-        ok($('#qunit-fixture #second-tab').hasClass('active'));
+        ok($('#qunit-fixture div[id^="first"]:visible').length === 0);
+        ok($('#qunit-fixture div[id^="second"]:visible').length === 1);
+        ok($('#qunit-fixture div[id^="second"]').hasClass('active'));
         
         tabs.select('first');
-        ok(!$('#qunit-fixture #second-tab').hasClass('active'));
-        ok($('#qunit-fixture #first-tab').hasClass('active'));
+        ok(!$('#qunit-fixture div[id^="second"]').hasClass('active'));
+        ok($('#qunit-fixture div[id^="first"]').hasClass('active'));
         
         tabs.select(tabs.tabViews.findByCustom('second'));
-        ok($('#qunit-fixture #second-tab').hasClass('active'));
-        ok(!$('#qunit-fixture #first-tab').hasClass('active'));
+        ok($('#qunit-fixture div[id^="second"]').hasClass('active'));
+        ok(!$('#qunit-fixture div[id^="first"]').hasClass('active'));
   });
   
   test('Closable tab is removed', function() {
@@ -299,8 +299,8 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
       
       ok($('#qunit-fixture .tabs-container .tab-content > div').length === 1);
       ok($('#qunit-fixture .tabs-container li').length === 1);
-      ok($('#qunit-fixture .tabs-container li:eq(0) > a[href="#first-tab"]').length === 1);
-      ok($('#qunit-fixture div.tab-content > div:eq(0)[id="first-tab"]').length === 1);
+      ok($('#qunit-fixture .tabs-container li:eq(0) > a[href^="#first"]').length === 1);
+      ok($('#qunit-fixture div.tab-content > div:eq(0)[id^="first"]').length === 1);
     });
     
     test('Removing first active tab', function() {
@@ -328,7 +328,7 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
         ok($('#qunit-fixture .tabs-container .tab-content > div').length === 1);
         ok($('#qunit-fixture .tabs-container li').length === 1);
         ok($('#qunit-fixture .tabs-container li:eq(0).active').length === 1);
-        ok($('#qunit-fixture div.tab-content > div:eq(0)[id="second-tab"].active').length === 1);
+        ok($('#qunit-fixture div.tab-content > div:eq(0)[id^="second"].active').length === 1);
 
     });
   
@@ -429,6 +429,80 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
         
         ok($('#qunit-fixture div.tabs-container #first > div').html() === '<b>First region</b> internal view');
         ok($('#qunit-fixture div.tabs-container #second > div').html() === '<b>Second region</b> internal view');        
+    });
+    
+    test('triggersMethod "show" when rendering subview', function() {
+        
+        var tab1View = new Marionette.ItemView({
+            template: function() {
+                return 'Whatever';
+            }
+        });
+        
+        var onShowSpy = sinon.spy(tab1View, 'triggerMethod');
+        onShowSpy.withArgs('show');
+        
+        var tabs = new Aes.TabsView({
+            tabs: {
+                tab1: {
+                    title: 'tab1',
+                    content: tab1View
+                }
+            }
+        });
+        
+        $('#qunit-fixture').append(tabs.render().el);
+        equal(onShowSpy.withArgs('show').callCount, 0);
+        
+        tabs.triggerMethod('show');
+        
+        equal(onShowSpy.withArgs('show').callCount, 1);
+        
+        tabs.render();
+        equal(onShowSpy.withArgs('show').callCount, 2);
+    });
+    
+    test('Displays content of subtab view', function() {
+        var tab1View = new Marionette.ItemView({
+            template: function() {
+                return 'Whatever';
+            }
+        });
+        
+        var onShowSpy = sinon.spy(tab1View, 'triggerMethod');
+        onShowSpy.withArgs('show');
+        
+        var tabs2 = new Aes.TabsView({
+            tabs: {
+                tab0: {
+                    title: 'tab20',
+                    content: 'SubTab 0 of tabs2'
+                },
+                tab1: {
+                    title: 'tab21',
+                    content: tab1View
+                }
+            }
+        });
+        
+        var tabs = new Aes.TabsView({
+            tabs: {
+                tab0: {
+                    title: 'tab0',
+                    content: 'Tab 0'
+                },
+                tab1: {
+                    title: 'tab1',
+                    content: tabs2
+                }
+            }
+        });
+        
+        $('#qunit-fixture').append(tabs.render().el);
+        tabs.triggerMethod('show');
+        
+        ok($('#qunit-fixture > .tabs-container .tabs-container > .nav > li:eq(0)').hasClass('active'));
+        ok($('#qunit-fixture > .tabs-container .tabs-container > .tab-content > div:first').hasClass('active'));
     });
     
     var SomeLayoutView = Marionette.Layout.extend({

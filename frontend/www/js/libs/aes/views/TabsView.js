@@ -244,6 +244,7 @@ Aes.TabsView = (function() {
         onShow: function() {
             if (this.contentView) {
                 this.contentView.triggerMethod('show');
+                console.log('Tabs content view have been shown');
             }
         },
 
@@ -257,10 +258,14 @@ Aes.TabsView = (function() {
         },
 
         initialize: function(options) {
-            this.$el.attr('id', options.tabId + '-tab');
+            
+            var domTabId = options.tabId + '-' + this.cid;
+            
+            this.$el.attr('id', domTabId + '-tab');
 
             var modelAttrs = {
                 id: options.tabId,
+                domTabId: domTabId,
                 title: options.title,
                 closable: options.closable || false,
                 content: ''
@@ -278,7 +283,7 @@ Aes.TabsView = (function() {
                tabsContainer: options.tabsContainer,
                tabContentView: this,
                model: this.model,
-               tabId: options.tabId
+               tabId: domTabId
             });
         }
 
@@ -332,7 +337,7 @@ Aes.TabsView = (function() {
 
         tagName: 'li',
 
-        tpl: '<a href="#<%= id %>-tab"><%= title %><% if(closable === true) { %>&nbsp;<span class="icon-remove"></span><% } %></a>'
+        tpl: '<a href="#<%= domTabId %>-tab"><%= title %><% if(closable === true) { %>&nbsp;<span class="icon-remove"></span><% } %></a>'
     });
 
     return TabsView;
