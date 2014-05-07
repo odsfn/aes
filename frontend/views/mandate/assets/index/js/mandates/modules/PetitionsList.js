@@ -30,6 +30,10 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
     });
     
     PetitionsList.PetitionView = Aes.ItemView.extend({
+        /*
+         * Whether to shorten content
+         */
+        shortContent: true,
         
         personType: 'creator',
         
@@ -72,8 +76,14 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
                 person = this.model.get('creator');
             }
     
+            var shortContent = false;
+            
+            if (Marionette.getOption(this, 'shortContent')) {
+                shortContent = this.getShortContent();
+            }
+    
             return _.extend(Aes.ItemView.prototype.serializeData.apply(this, arguments), {
-               shortContent: this.getShortContent(),
+               shortContent: shortContent,
                personType: personType,
                person: person
             });
@@ -187,6 +197,10 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
             return this;
         },
         
+        onShow: function() {
+            this.options.onShow.call(this);
+        },
+        
         initialize: function() {
             this.render();
         }
@@ -219,13 +233,36 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
 //    };
     
     this.initPetitionDetails = function(petition, callback) {
-        var details = new PetitionsList.DetailsLayout();
-        
         var petitionView = new PetitionsList.PetitionView({
+            shortContent: false,
             model: petition
         });
         
-        details.petitionInfo.show(petitionView);
+        var petitionTabsView = new Aes.TabsView({
+            tabs: {
+                discussion: {
+                    title: 'Discussion',
+                    content: CommentsWidget.create({
+                        targetId: petition.get('id'),
+                        targetType: 'Petition'
+                    })
+                },
+                supporters: {
+                    title: 'Supporters',
+                    content: 'Supporters here...'
+                }
+            }
+        });        
+        
+        var details = new PetitionsList.DetailsLayout({
+            petitionView: petitionView,
+            petitionTabsView: petitionTabsView,
+            onShow: function() {
+                this.petitionInfo.show(this.options.petitionView);
+                this.tabs.show(this.options.petitionTabsView);
+            }
+        });
+        
         callback(details);
     };
     
