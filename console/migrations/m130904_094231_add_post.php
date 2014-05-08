@@ -1,5 +1,7 @@
 <?php
 
+Yii::import('console.helpers.*');
+
 class m130904_094231_add_post extends EDbMigration
 {
 	public function up()
