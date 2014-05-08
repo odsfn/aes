@@ -110,6 +110,11 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         }
     });
     
+    PetitionsList.PetitionDetailedView = PetitionsList.PetitionView.extend({
+        template: '#petition-detailed-tpl',
+        shortContent: false
+    });
+    
     var PetitionsFeedView = Aes.FeedView.extend({
         template: '#petitions-feed-tpl',
         itemView: PetitionsList.PetitionView,
@@ -167,7 +172,8 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
     });
     
     var SupporterView = Aes.ItemView.extend({
-       template: '#electorfeed-item-tpl'
+        className: 'user-info',
+        template: '#electorfeed-item-tpl'
     });
     
     var Layout = Marionette.Layout.extend({
@@ -228,7 +234,8 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
     };
     
     this.initPetitionDetails = function(petition, callback) {
-        var petitionView = new PetitionsList.PetitionView({
+        
+        var petitionView = new PetitionsList.PetitionDetailedView({
             shortContent: false,
             model: petition
         });
@@ -262,16 +269,17 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         
         var petitionTabsView = new Aes.TabsView({
             tabs: {
-                discussion: {
-                    title: 'Discussion',
-                    content: CommentsWidget.create({
-                        targetId: petition.get('id'),
-                        targetType: 'Petition'
-                    })
-                },
                 supporters: {
                     title: 'Supporters',
                     content: supportersFeedView
+                },
+                discussion: {
+                    title: 'Discussion',
+                    content: CommentsWidget.create({
+                        emptyView: true,
+                        targetId: petition.get('id'),
+                        targetType: 'Petition'
+                    })
                 }
             }
         });        

@@ -203,6 +203,31 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
     <hr>
 </script>
 
+<script type="text/template" id="petition-detailed-tpl">
+    <div class="petition">
+        <h4><%= title %></h4>
+        <p class="text"><%= content %></p>
+        <div class="details row-fluid">
+            <div class="person-photo span1">
+                <div class="img-wrapper-tocenter users-photo">
+                    <span></span>
+                    <a href="<%= person.pageUrl %>"><img src="<%= person.photoThmbnl64 %>" alt="<%= person.displayName %>"></a>
+                </div>
+            </div>
+            <div class="span5">
+                <h5><a href="<%= person.pageUrl %>" target="_blank"><%= person.displayName %></a></h5>
+                <p>
+                    <b><% if(personType == 'creator') { %>Created<% } else { %>Addressed<% } %>:</b> 
+                    <span><%= i18n.date(created_ts, 'full', 'full') %></span>
+                </p>
+            </div>
+            <div class="support span2 pull-right">
+                <div class="petition-rates pull-right"></div>
+            </div>
+        </div>
+    </div>
+</script>
+
 <script type="text/template" id="petition-details-layout-tpl">
     <div class="row-fluid">
         <div id="petition-info" class="span12"></div>
