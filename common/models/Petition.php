@@ -18,7 +18,7 @@
  * @property int $positiveRatesCount
  * @property int $negativeRatesCount
  */
-class Petition extends CActiveRecord
+class Petition extends CActiveRecord implements iCommentable
 {
     /**
      * Returns the static model of the specified AR class.
@@ -138,6 +138,18 @@ class Petition extends CActiveRecord
     
     protected function checkCreatorIsAdherent() {
         return $this->mandate->acceptsPetitionFrom($this->creator_id);
+    }
+    
+    public function canUnassignedComment() {
+        return true;
+    }
+    
+    public function canUnassignedRead() {
+        return true;
+    }
+    
+    public function checkUserInRole($userId, $role) {
+        return false;
     }
 }
 

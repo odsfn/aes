@@ -9,8 +9,10 @@ $js = array(
     'aes:views/FormView.js',
     'aes:views/NoItemView.js',
     'aes:views/FeedView.js',
-    'modules/MandatesList.js',
-    'modules/PetitionsList.js'
+    'aes:views/TabsView.js',
+    'modules/PetitionsList.js',
+    'modules/MandateDetails.js',
+    'modules/MandatesList.js'
 );
 
 $this->widget('application.widgets.ClientApp', array(
@@ -74,7 +76,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
 <script type="text/template" id="mandate-tpl">
     <div class="mandate">
-        <h4><a href="details/<%= id %>" class="route"><%= name %></a></h4>
+        <h4><a href="details/<%= id %>/" class="route"><%= name %></a></h4>
         <div>
             <div><b>Owner</b>: <%= candidate.profile.displayName %></div>
             <div class="election-name"><b>Election name: </b><%= election.name %></div>
@@ -125,28 +127,11 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
         <div id="mandate-info" class="span12"></div>
     </div>
     
-    <div class="row-fluid">
-        <div class="tabs-container">
-            <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#electors-tab">Electors</a></li>
-                <li><a data-toggle="tab" href="#petitions-tab">Petitions</a></li>
-                <!--<li class="petition-create-btn"><a href="<%= UrlManager.createUrl('petition/create/mandateId/' + App.module('MandatesList').getActiveMandate().get('id')) %>">Create new petition</a></li>-->
-                <li class="petition-create-btn"><a data-toggle="tab" href="#create-petition-tab">Create new petition</a></li>
-            </ul>
+    <div id="mandate-tabs" class="row-fluid"></div>
+</script>
 
-            <div class="tab-content">
-
-                <div id="electors-tab" class="tab-pane active"></div>
-
-                <div id="petitions-tab" class="tab-pane"></div>
-                
-                <div id="create-petition-tab" class="tab-pane">
-                    <?= $this->renderPartial('frontend.views.petition._form', array('model'=>new Petition, 'forAjax' => true)); ?>
-                </div>
-                
-            </div>    
-        </div>
-    </div>
+<script type="text/template" id="create-petition-form-tpl">
+<?= $this->renderPartial('frontend.views.petition._form', array('model'=>new Petition, 'forAjax' => true)); ?>
 </script>
 
 <script type="text/template" id="electorfeed-item-tpl">
@@ -190,8 +175,12 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
 <script type="text/template" id="petition-tpl">
     <div class="petition">
-        <h4><a href="petition_details/<%= id %>" class="route"><%= title %></a></h4>
+        <h4><a href="details/<%= mandate_id %>/petition/<%= id %>" class="route"><%= title %></a></h4>
+        <% if (shortContent != false) { %>
         <p class="short-text"><%= shortContent %></p>
+        <% } else { %>
+        <p class="text"><%= content %></p>
+        <% } %>
         <div class="details row-fluid">
             <div class="person-photo span1">
                 <div class="img-wrapper-tocenter users-photo">
@@ -212,6 +201,39 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
         </div>
     </div>
     <hr>
+</script>
+
+<script type="text/template" id="petition-detailed-tpl">
+    <div class="petition">
+        <h4><%= title %></h4>
+        <p class="text"><%= content %></p>
+        <div class="details row-fluid">
+            <div class="person-photo span1">
+                <div class="img-wrapper-tocenter users-photo">
+                    <span></span>
+                    <a href="<%= person.pageUrl %>"><img src="<%= person.photoThmbnl64 %>" alt="<%= person.displayName %>"></a>
+                </div>
+            </div>
+            <div class="span5">
+                <h5><a href="<%= person.pageUrl %>" target="_blank"><%= person.displayName %></a></h5>
+                <p>
+                    <b><% if(personType == 'creator') { %>Created<% } else { %>Addressed<% } %>:</b> 
+                    <span><%= i18n.date(created_ts, 'full', 'full') %></span>
+                </p>
+            </div>
+            <div class="support span2 pull-right">
+                <div class="petition-rates pull-right"></div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="petition-details-layout-tpl">
+    <div class="row-fluid">
+        <div id="petition-info" class="span12"></div>
+    </div>
+    
+    <div id="petition-tabs" class="row-fluid"></div>
 </script>
 
 <?php $this->renderPartial('frontend.views.jsTemplates.petitionRates'); ?>

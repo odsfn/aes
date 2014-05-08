@@ -25,7 +25,7 @@ Aes.ItemView = Marionette.ItemView.extend({
     },
             
     getTplStr: function() {
-        return this.tpl;
+        return Marionette.getOption(this, 'tpl');
     },
             
     /**

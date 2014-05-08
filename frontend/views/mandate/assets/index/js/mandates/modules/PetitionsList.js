@@ -23,13 +23,26 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         }
     });
     
+    var Supporter = Backbone.Model.extend({
+        parse: function(attrs) {
+            
+            attrs.profile.birth_day = parseInt(attrs.profile.birth_day) * 1000;
+            
+            return attrs;
+        }
+    });
+    
     var PetitionsCollection = FeedCollection.extend({
         limit: 30,
         model: Petition,
         url: UrlManager.createUrlCallback('api/petition')
     });
     
-    var PetitionView = Aes.ItemView.extend({
+    PetitionsList.PetitionView = Aes.ItemView.extend({
+        /*
+         * Whether to shorten content
+         */
+        shortContent: true,
         
         personType: 'creator',
         
@@ -72,8 +85,14 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
                 person = this.model.get('creator');
             }
     
+            var shortContent = false;
+            
+            if (Marionette.getOption(this, 'shortContent')) {
+                shortContent = this.getShortContent();
+            }
+    
             return _.extend(Aes.ItemView.prototype.serializeData.apply(this, arguments), {
-               shortContent: this.getShortContent(),
+               shortContent: shortContent,
                personType: personType,
                person: person
             });
@@ -91,9 +110,14 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         }
     });
     
+    PetitionsList.PetitionDetailedView = PetitionsList.PetitionView.extend({
+        template: '#petition-detailed-tpl',
+        shortContent: false
+    });
+    
     var PetitionsFeedView = Aes.FeedView.extend({
         template: '#petitions-feed-tpl',
-        itemView: PetitionView,
+        itemView: PetitionsList.PetitionView,
         
         getFiltersConfig: function() {
             return {
@@ -147,18 +171,57 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         }
     });
     
-    var Layout = Marionette.Layout.extend({
-       regions: {
-           petitions: '#petitions-feed-container',
-           petitionDetails: '#petition-details'
-       } 
+    var SupporterView = Aes.ItemView.extend({
+        className: 'user-info',
+        template: '#electorfeed-item-tpl'
     });
     
-    var DetailsLayout = Marionette.Layout.extend({
+    var Layout = Marionette.Layout.extend({
+        regions: {
+           petitions: '#petitions-feed-container',
+           petitionDetails: '#petition-details'
+        },
+       
+        render: function() {
+            if (!this._wasRendered) {
+                Marionette.Layout.prototype.render.apply(this, arguments);
+                this._wasRendered = true;
+            } else {
+                this.regionManager.each(function(region) {
+                    if(!region.currentView) return;
+                    
+                    region.currentView.render();
+                    region.currentView.delegateEvents();
+                });
+            }
+            
+            return this;
+        },       
+    });
+    
+    PetitionsList.DetailsLayout = Marionette.Layout.extend({
         template: '#petition-details-layout-tpl',
+        
         regions: {
             petitionInfo: '#petition-info',
-            supportersTabContent: '#supporters-tab'
+            tabs: '#petition-tabs'
+        },
+        
+        render: function() {
+            if (!this._wasRendered) {
+                Marionette.Layout.prototype.render.apply(this, arguments);
+                this._wasRendered = true;
+            }
+            
+            return this;
+        },
+        
+        onShow: function() {
+            this.options.onShow.call(this);
+        },
+        
+        initialize: function() {
+            this.render();
         }
     });
     
@@ -170,23 +233,68 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         return config.petitionsCanBeRated;
     };
     
-//    this.viewPetitions = function() {
-//        this.layout.petitionDetails.close();
-//        this.layout.petitions.$el.show();
-//        $('#petition-details li.node-viewDetails').remove();
-//    };
-    
-//    this.viewDetails = function(petitionId) {
-//        var petition = this.petitions.findWhere({id: petitionId});
-//        
-//        this.layout.petitions.$el.hide();
-//        
-//        this.layout.petitionDetails.show(this.detailsLayout);
-//        this.detailsLayout.petitionInfo.show(new PetitionView({
-//            template: '#petition-detailed-tpl',
-//            model: petition
-//        }));
-//    };
+    this.initPetitionDetails = function(petition, callback) {
+        
+        var petitionView = new PetitionsList.PetitionDetailedView({
+            shortContent: false,
+            model: petition
+        });
+        
+        var supportersFeed = new FeedCollection([], {
+            model: Supporter,
+            filters: {
+                target_id: petition.get('id'),
+                with_profile: true
+            }
+        });
+        supportersFeed.url = UrlManager.createUrlCallback('api/Petition_rate');
+        
+        var supportersFeedView = new Aes.FeedView({
+            itemView: SupporterView,
+            collection: supportersFeed,
+            filters: {
+                type: 'inTopPanel',
+                
+                enabled: true,
+
+                fields: {
+                    name: {
+                        label: 'Name',
+                        type: 'text'
+                    }
+                }
+            }
+        });
+        supportersFeed.fetch();
+        
+        var petitionTabsView = new Aes.TabsView({
+            tabs: {
+                supporters: {
+                    title: 'Supporters',
+                    content: supportersFeedView
+                },
+                discussion: {
+                    title: 'Discussion',
+                    content: CommentsWidget.create({
+                        emptyView: true,
+                        targetId: petition.get('id'),
+                        targetType: 'Petition'
+                    })
+                }
+            }
+        });        
+        
+        var details = new PetitionsList.DetailsLayout({
+            petitionView: petitionView,
+            petitionTabsView: petitionTabsView,
+            onShow: function() {
+                this.petitionInfo.show(this.options.petitionView);
+                this.tabs.show(this.options.petitionTabsView);
+            }
+        });
+        
+        callback(details);
+    };
     
     this.addInitializer(function(options) {
         
@@ -203,7 +311,6 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
            template: config.layoutTpl
         });
         
-//        this.detailsLayout = new DetailsLayout();
     });
     
     this.on('start', function() {
@@ -211,8 +318,8 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         $.when(
             this.petitions.fetch()
         ).done(function(){
-           PetitionsList.layout.petitions.show(PetitionsList.petitionsFeedView);
-           PetitionsList.trigger('ready');
+            PetitionsList.layout.petitions.show(PetitionsList.petitionsFeedView);
+            PetitionsList.trigger('ready');
         });
         
     });
