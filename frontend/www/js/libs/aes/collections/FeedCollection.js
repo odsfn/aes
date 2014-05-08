@@ -37,8 +37,22 @@ var FeedCollection = Backbone.Collection.extend({
     
     _requestProcessing: false,
     
+    /**
+     * To provide default filters you can override this method.
+     * You can pass filters property with constructors' options also, or getFilters method
+     * 
+     * @returns Set of default filters which will be applied on every fetch
+     */
     getFilters: function() {
-       return {};
+        var filters = {};
+        
+        if (this.options && this.options.filters) {
+            filters = this.options.filters;
+        } else if (this.options && this.options.getFilters && _.isFunction(this.options.getFilters)) {
+            filters = this.options.getFilters.apply(this);
+        }
+        
+        return filters;
     },
     
     comparator: function(model) {
@@ -150,7 +164,11 @@ var FeedCollection = Backbone.Collection.extend({
         this.trigger('totalCountChanged', value, lastValue);
     },
     
-    initialize: function() {
+    initialize: function(models, options) {
+
+        if (options) {
+            this.options = options;
+        }
 
         var restoreIncrCount = _.bind(function() {
             // @TODO: move this "_.findWhere(this._events['add'], {callback: this.incrementCount})" to the method Backbobe.Events.hasHandler(eventName, callback, context) 
