@@ -14,10 +14,13 @@ class RateController extends RestController {
     public $nestedModels = array();
 
     protected $convertRestFilters = true;
-
+    
+    public $acceptFilters = array('plain' => 'name,with_profile', 'model' => 'target_id');
+    
     public function getOutputFormatters() {
         return array(
-            'created_ts' => array('Formatter', 'toTs')
+            'created_ts' => array('Formatter', 'toTs'),
+            'profile.birth_day' => array('Formatter', 'toTs')
         );
     }
 
@@ -25,6 +28,18 @@ class RateController extends RestController {
         return array(
             'created_ts' => array('Formatter', 'fromTs')
         );
+    }
+    
+    public function onPlainFilter_with_profile($filterName, $filterValue, $criteria) {        
+        $this->nestedModels = array(
+            'profile' => array(
+                'select' => 'profile.user_id, profile.first_name, profile.last_name, profile.birth_day, profile.birth_place'
+            )
+        );
+    }
+    
+    public function onPlainFilter_name($filterName, $filterValue, $criteria) {        
+        $criteria->mergeWith(PeopleSearch::getCriteriaFindByName($filterValue, 'profile'));
     }
     
     public function getModel() 

@@ -85,7 +85,7 @@ class Rate extends CActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'target' => array(self::BELONGS_TO, $this->rateableEntity, 'target_id'),
-            'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
+            'profile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
         );
     }
 
