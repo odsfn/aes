@@ -192,6 +192,13 @@ var CommentsWidget = (function(){
             newCommentContainter: 'div.comment-to-comment'
         },
 
+        buildItemView: function(item, ItemViewType, itemViewOptions) {
+            if(ItemViewType === Marionette.getOption(this, 'emptyView'))
+                return new ItemViewType();
+            
+            return Marionette.CompositeView.prototype.buildItemView.apply(this, arguments);
+        },
+
         onRender: function() {
             this.newCommentRegion = new Marionette.Region({el: this.ui.newCommentContainter});
             this.resetNewCommentRegion();
@@ -395,8 +402,8 @@ var CommentsWidget = (function(){
             
             if(config.initData.models.length > 0)   //setting up init data rows if any provided
                 comments.reset(config.initData.models, {parse: true, totalCount: config.initData.totalCount});
-                
-            var commentsView = view = new CommentsView({
+            
+            var commentsViewOptions = {
                 
                 template: config.templates.commentsView,
                 
@@ -407,8 +414,20 @@ var CommentsWidget = (function(){
                     ratesUrl: config.urls.rates,
                     user: config.webUser
                 }
+            };
+            
+            if (config.emptyView) {
+                var emptyView;
                 
-            });
+                if (_.isFunction(config.emptyView))
+                    emptyView = config.emptyView;
+                else
+                    emptyView = Aes.NoItemView;
+                
+                commentsViewOptions.emptyView = emptyView;
+            }
+            
+            var commentsView = view = new CommentsView(commentsViewOptions);
             
             if(config.autoFetch && config.initData.models.length == 0)            
                 commentsView.once('show', function() {
