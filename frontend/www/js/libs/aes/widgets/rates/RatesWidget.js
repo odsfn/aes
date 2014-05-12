@@ -97,15 +97,29 @@ var RatesWidget = (function(){
             var rate = this.getCurrentUserRate();
             //Mark user's vote
             
-            if(rate !== false)
-            {
-                if(rate === 1) {
-                    this.ui.ratePlus.addClass('chosen');
-                }else{
-                    this.ui.rateMinus.addClass('chosen');
-                }
+            if(rate !== false) {
+                this.markRate(rate);
             }
             
+        },
+
+        markRate: function(rate) {
+            if(rate === 1) {
+                this.ui.ratePlus.addClass('chosen');
+            }else{
+                this.ui.rateMinus.addClass('chosen');
+            }
+        },
+
+        unmarkRate: function(rate) {
+            if (rate === 1) {
+                this.ui.ratePlus.removeClass('chosen');
+            } else
+                this.ui.rateMinus.removeClass('chosen');            
+        },
+
+        getRatesCollection: function() {
+            return this.ratesCollection;
         },
 
         getCurrentUserRate: function() {
@@ -190,22 +204,12 @@ var RatesWidget = (function(){
             this.ratesCollection = options.ratesCollection;
             
             this.listenTo(this.ratesCollection, 'add', _.bind(function(rate, collection){
-                if(rate.get('score') == 1) {
-                    this.ui.ratePlus.addClass('chosen');
-                }
-                else
-                    this.ui.rateMinus.addClass('chosen');
-
+                this.markRate(rate.get('score'));
                 this.render();
             }, this));
 
             this.listenTo(this.ratesCollection, 'remove', _.bind(function(rate, collection){
-                if(rate.get('score') == 1) {
-                    this.ui.ratePlus.removeClass('chosen');
-                }
-                else
-                    this.ui.rateMinus.removeClass('chosen');
-
+                this.unmarkRate(rate.get('score'));
                 this.render();
             }, this));     
         }
@@ -253,6 +257,56 @@ var RatesWidget = (function(){
        
     });
     
+    var ratesCollections = new (Backbone.Collection.extend({
+        getRatesCol: function() {
+            
+            var targetType = arguments[0];
+            var targetId = arguments[1];
+            var config = false;
+            
+            if (_.isObject(arguments[0])) {
+                config = arguments[0];
+                targetType = config.targetType;
+                targetId = config.targetId;
+            }
+            
+            var col = this.findWhere({
+                targetType: targetType,
+                targetId: targetId
+            });
+            
+            if (!col && config) {
+                col = new Backbone.Model({
+                    targetType: targetType,
+                    targetId: targetId,
+                    collection: this._initRatesCollection(config)
+                });
+                
+                this.add([
+                    col
+                ]);
+            }
+            
+            if (!col) {
+                return false;
+            }
+            
+            return col.get('collection');
+        },
+        
+        _initRatesCollection: function(config) {
+            var ratesCol = new Rates([], {
+                target_id: config.targetId,
+                url: config.urls.rates
+            });
+
+            if(config.initData.models.length > 0)   //setting up init data rows if any provided
+                ratesCol.reset(config.initData.models, {parse: true, totalCount: config.initData.totalCount});
+
+            return ratesCol;
+        }        
+    }))();
+     
     return {
         create: function(options) {
             
@@ -267,15 +321,7 @@ var RatesWidget = (function(){
             
             
             if(!config.ratesCollection) {
-                
-                var ratesCol = new Rates([], {
-                    target_id: config.targetId,
-                    url: config.urls.rates
-                });
-
-                if(config.initData.models.length > 0)   //setting up init data rows if any provided
-                    ratesCol.reset(config.initData.models, {parse: true, totalCount: config.initData.totalCount});
-
+                var ratesCol = ratesCollections.getRatesCol(config);
             } else {
                 var ratesCol = config.ratesCollection;
             }
