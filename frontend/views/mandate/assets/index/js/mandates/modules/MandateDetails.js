@@ -6,6 +6,8 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
     // prevent starting with parent
     this.startWithParent = false; 
     
+    this.createPetitionTabSel = 'div.tab-view[id^="createPetition"]';
+    
     var Elector = Backbone.Model.extend({
         parse: function() {
             var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
@@ -71,9 +73,9 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
     };
     
     this.openCreatePetitionForm = function() {
-        $('#createPetition-tab').html('Loading...');
+        $(this.createPetitionTabSel).html('Loading...');
         
-        $('#createPetition-tab').load(
+        $(this.createPetitionTabSel).load(
             UrlManager.createUrl("petition/ajaxCreate"),
             {
                 mandateId: this.getActiveMandate().get('id'),
@@ -83,15 +85,15 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
     };
     
     this.onPetitionCreationFailed = function(response) {
-        $('#createPetition-tab').html(response.responseHtml);
+        $(this.createPetitionTabSel).html(response.responseHtml);
     };
     
     this.onPetitionCreated = function() {
         App.module('PetitionsList').petitions.offset = 0;
         App.module('PetitionsList').petitions.fetch();
         
-        $('a[href="#petitions-tab"]').tab('show');
-        $('#createPetition-tab').html('Loading...');
+        $('a[href^="#petitions"]').tab('show');
+        $(this.createPetitionTabSel).html('Loading...');
     };
     
     this.loadDetails = function(mandateId) {

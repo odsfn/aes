@@ -84,7 +84,7 @@
     margin-top: 10px;
 }
 
-#createPetition-tab, div.tab-view[id^="discussion"] {
+div.tab-view[id^="createPetition"], div.tab-view[id^="discussion"] {
     padding: 15px;
 }
 
