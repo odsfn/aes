@@ -53,21 +53,6 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         },
         
         onRender: function() {
-            if(!this._rates)
-            {
-                this._rates = RatesWidget.create({
-                    
-                    rateViewTemplate: '#petition-rates-tpl',
-                    
-                    targetId: this.model.get('id'),
-                    targetType: 'Petition',
-                    
-                    canRateChecker: function() {
-                        return PetitionsList.getPetitionsCanBeRated();
-                    }
-                });
-            }
-
             this.ui.rates.prepend(this._rates.render().$el);
             this._rates.delegateEvents();
         },
@@ -107,6 +92,29 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
             }
             
             return text;
+        },
+        
+        getRates: function() {
+            return this._rates;
+        },
+        
+        _initializeRates: function() {
+            this._rates = RatesWidget.create({    
+                rateViewTemplate: '#petition-rates-tpl',
+
+                targetId: this.model.get('id'),
+                targetType: 'Petition',
+
+                canRateChecker: function() {
+                    return PetitionsList.getPetitionsCanBeRated();
+                }
+            });
+        },
+        
+        initialize: function() {
+            Aes.ItemView.prototype.initialize.apply(this, arguments);
+            
+            this._initializeRates();
         }
     });
     
@@ -240,6 +248,9 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
             model: petition
         });
         
+        /**
+         * @todo Move initialization of supportersFeedView to the RatesWidget or RatesView
+         */
         var supportersFeed = new FeedCollection([], {
             model: Supporter,
             filters: {
@@ -248,6 +259,17 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
             }
         });
         supportersFeed.url = UrlManager.createUrlCallback('api/Petition_rate');
+        
+        supportersFeed.listenTo(petitionView.getRates().getRatesCollection(), 'add', function(rate, collection) {
+            this.listenToOnce(collection, 'sync', function() {
+                this.fetch();
+            });
+        });
+        
+        supportersFeed.listenTo(petitionView.getRates().getRatesCollection(), 'remove', function(rate, collection) {
+            var rate = this.get(rate);
+            if (rate) this.remove(rate);
+        });
         
         var supportersFeedView = new Aes.FeedView({
             itemView: SupporterView,
