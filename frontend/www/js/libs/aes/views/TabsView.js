@@ -78,6 +78,14 @@ Aes.TabsView = (function() {
             if(append === undefined)
                 append = true;
 
+            if (!tabOptions.tabId) {
+                throw new Error('Required attribute tabId is missed');
+            }
+
+            if (this.tabViews.findByCustom(tabOptions.tabId)) {
+                throw new Error('Tab with id: "' + tabOptions.tabId + '" already exist');
+            }
+
             _.extend(tabOptions, {
                 tabsContainer: this
             });
@@ -87,7 +95,7 @@ Aes.TabsView = (function() {
             var shouldAdd = this.triggerMethod("before:add", newTab);
             if(!shouldAdd)
                 return;
-
+            
             this.tabViews.add(newTab, tabOptions.tabId);
 
             if(append) {

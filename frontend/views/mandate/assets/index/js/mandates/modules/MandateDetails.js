@@ -221,6 +221,17 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
     
     this.viewPetitionDetails = function(mandateId, petitionId) {
         
+        var tabId = 'petition-' + petitionId;
+        
+        //check for opened
+        if (this.detailsLayout.tabs.currentView) {
+            var existingTab = this.detailsLayout.tabs.currentView.tabViews.findByCustom(tabId);
+            if (existingTab) {
+                existingTab.select();
+                return;
+            }
+        }
+        
         var initPetitionDetailsTab = function() {
             var petition = MandateDetails.modPetitions.petitions.findWhere({id: petitionId});
 
@@ -229,7 +240,7 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
 
             MandateDetails.modPetitions.initPetitionDetails(petition, function(detailsView) {
                 MandateDetails.detailsLayout.tabs.currentView.add({
-                   tabId: 'petition-' + petitionId,
+                   tabId: tabId,
                    title: petition.get('title'),
                    content: detailsView,
                    closable: true
