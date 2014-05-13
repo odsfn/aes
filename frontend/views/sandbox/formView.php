@@ -11,21 +11,21 @@ $clientScript->registerPackage('marionette');
 $clientScript->registerScriptFile('/js/libs/aes/i18n.js');
 $clientScript->registerScriptFile('/js/libs/jquery.dateFormat-1.0.js');
 $clientScript->registerScriptFile('/js/libs/bootstrap.button.js', CClientScript::POS_END);
-$clientScript->registerScript('resolveBtnConflict', 
+$clientScript->registerScript('resolveBtnConflict',
    '$(function(){ var btn = $.fn.button.noConflict();
     $.fn.bButton = btn; });', CClientScript::POS_END);
 
 
 $clientScript->registerScriptFile('/js/libs/bootstrap.tooltip.js', CClientScript::POS_END);
-$clientScript->registerScript('resolveTooltipConflict', 
+$clientScript->registerScript('resolveTooltipConflict',
    '$(function(){
        var bTooltip = $.fn.tooltip;
-       
+
        $.fn.tooltip.noConflict();
        $.fn.jqTooltip = $.fn.tooltip;
-       
+
        $.fn.tooltip = bTooltip;
-    });', CClientScript::POS_END); 
+    });', CClientScript::POS_END);
 
 $clientScript->registerScriptFile('/js/libs/aes/views/ItemView.js');
 $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
@@ -43,7 +43,7 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
 <div id="qunit-fixture"></div>
 <div id="qunit-output"></div>
 <div id="qunit-fixtures" style="display: none;">
-    
+
     <div class="qfix-1">
         <div>
             <input type="text" value="" class="span4">
@@ -52,7 +52,7 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
     <div class="qfix-5">
         <input type="text" value="" class="span4"/>
     </div>
-    
+
     <div class="qfix-6">
         <div>
             <select name="sel1" class="span4">
@@ -61,7 +61,7 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
             </select>
         </div>
     </div>
-    
+
     <div class="qfix-7">
         <div class="row-fluid">
             <div class="search-form span4">
@@ -70,22 +70,22 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                         <label for="PeopleSearch_name">Name</label>
                         <input type="text" id="PeopleSearch_name" name="name" maxlength="128" class="filter span12">
                     </div>
-                    
+
                     <div>
                         <label for="birth_place">Birth Place</label>
                         <input type="text" id="PeopleSearch_birth_place" name="birth_place" maxlength="128" class="filter span12">
                     </div>
-                    
+
                     <div>
                         <label for="ageFrom">Age from</label>
                         <input type="text" id="PeopleSearch_ageFrom" name="ageFrom" class="filter span12">
                     </div>
-                    
+
                     <div>
                         <label for="ageTo">Age to</label>
                         <input type="text" id="PeopleSearch_ageTo" name="ageTo" class="filter span12">
                     </div>
-                    
+
                     <div>
                         <label for="gender">Gender</label>
                         <select id="PeopleSearch_gender" name="gender" class="filter span12">
@@ -94,16 +94,16 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                             <option value="2">Female</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-actions">
                         <input type="button" value="Search" class="btn btn-primary form-submit">
                         <input type="button" value="Reset" class="btn form-reset">
                     </div>
-                </form>           
+                </form>
             </div>
         </div>
     </div>
-    
+
     <div class="qfix-19">
         <div class="navbar head">
             <div class="navbar-inner">
@@ -115,13 +115,13 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
     </div>
 </div>
 <script type="text/javascript">
-    
+
     var outAfterQunitBlock = false;
-    
+
     var prepareFixture = function() {
-        
+
         var fixtureForTest = $('.qfix-' + QUnit.config.current.testNumber);
-            
+
         if(fixtureForTest.length)
             $('#qunit-fixture').append(fixtureForTest.html());
     };
@@ -131,53 +131,53 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
             $('#qunit-output').append('<div class="row-fluid qout-' + QUnit.config.current.testNumber + '"><b>Test #' + QUnit.config.current.testNumber + ' output</b>:<br></div>');
         else
             $('#qunit-test-output' + (QUnit.config.current.testNumber - 1)).append('<div>Output:</div><div class="qout qout-' + QUnit.config.current.testNumber + '"></div>');
-        
+
         $('#qunit-fixture').children().each(function(index, el) {
             $(el).appendTo($('.qout-' + QUnit.config.current.testNumber));
-        });    
+        });
     };
-    
+
     module('FormFields input-text', {
         setup: function() {
             prepareFixture();
         },
-        
+
         teardown: function() {
             passOutput();
         }
     });
-    
+
     test('#1 TextFormField gotchas from DOM', function(){
         var $input = $('#qunit-fixture div');
-    
+
         var textField = new Aes.TextFormField({
             el: $input
         });
-        
+
         textField.setValue('Foo');
-        
+
         equal($('#qunit-fixture input').val(),'Foo');
         equal(textField.getValue(), 'Foo');
     });
-    
+
     test('#2 TextFormField renders', function() {
         var textField = new Aes.TextFormField();
         textField.render();
-        
+
         $('#qunit-fixture').append(textField.$el);
-        
+
         equal($('#qunit-fixture input[type="text"]').length, 1);
     });
-    
+
     test('#3 TextFormField accepts value', function() {
         var textField = new Aes.TextFormField();
         $('#qunit-fixture').append(textField.render().$el);
-        
+
         $('#qunit-fixture input[type="text"]').val('New Value').blur();
-        
+
         equal(textField.getValue(), 'New Value');
     });
-    
+
     test('TextFormField validate', function(){
         var textField = new Aes.TextFormField({
             validator: {
@@ -186,18 +186,18 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
             }
         });
         $('#qunit-fixture').append(textField.render().$el);
-        
+
         $('#qunit-fixture input[type="text"]').val('New Value').blur();
-        
+
         equal(textField.getValue(), 'New Value');
-        
+
         ok($('#qunit-fixture .error').length > 0);
-        
+
         $('#qunit-fixture input[type="text"]').val('validemail@gmail.com').blur();
-        
+
         ok($('#qunit-fixture .error').length === 0);
     });
-    
+
     test('validate picked up from DOM', function() {
         var textField = new Aes.TextFormField({
             el: $('#qunit-fixture input'),
@@ -207,26 +207,26 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
             }
         });
         $('#qunit-fixture').append(textField.render().$el);
-        
+
         $('#qunit-fixture input[type="text"]').val('New Value').blur();
-        
+
         equal(textField.getValue(), 'New Value');
-        
+
         ok($('#qunit-fixture .error').length > 0);
-        
+
         $('#qunit-fixture input[type="text"]').val('validemail@gmail.com').blur();
-        
-        ok($('#qunit-fixture .error').length === 0);        
+
+        ok($('#qunit-fixture .error').length === 0);
     });
-    
+
     test('Select pickes up from DOM', function() {
         var select = new Aes.SelectFormField({
             el: $('#qunit-fixture div')
         });
-        
+
         equal(select.getValue(), '1');
     });
-    
+
     test('Form pickes up from DOM', function() {
         var form = new Aes.FormView({
             el: $('#qunit-fixture form'),
@@ -270,31 +270,31 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
 
                 if(this.hasErrors())
                     console.log('Form has errors: ' + JSON.stringify(this.getErrors()));
-            }            
+            }
         });
-        
+
         ok(form.getFields()['name']);
-        
+
         $('#qunit-fixture input[name="ageFrom"]').val(0).blur();
         ok($('#qunit-fixture .error').length > 0);
-        
+
         $('#qunit-fixture input[name="ageFrom"]').val('').blur();
         ok($('#qunit-fixture .error').length === 0);
-        
+
 //        $('#qunit-fixture input[name="ageTo"]').val(50).blur();
 //        ok($('#qunit-fixture .error').length === 0);
-//        
+//
 //        $('#qunit-fixture input[name="ageFrom"]').val(51);
 //        $('#qunit-fixture input[name="ageTo"]').blur();
 //        ok($('#qunit-fixture .error').length > 0);
-//        
+//
 //        $('#qunit-fixture input[name="ageFrom"]').val(50).blur();
 //        ok($('#qunit-fixture .error').length === 0);
-//        
+//
 //        $('#qunit-fixture input[name="ageFrom"]').val(5).blur();
-//        ok($('#qunit-fixture .error').length === 0);       
+//        ok($('#qunit-fixture .error').length === 0);
     });
-    
+
     test('Form renders', function() {
         var form = new Aes.FormView({
             attributes: {
@@ -319,34 +319,34 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 }
             }
         });
-        
+
         $('#qunit-fixture').append('<div class="row-fluid"></div>');
         $('#qunit-fixture .row-fluid').append(form.render().$el);
-        
+
         ok($('#qunit-fixture').find('form').length > 0);
         ok($('#qunit-fixture form').find('input[type="text"]').length === 3);
         ok($('#qunit-fixture form').find('input[type="button"]').length === 2);
     });
-    
+
     test('Field renders with label', function() {
         var input = new Aes.TextFormField({
             name: 'foo',
             label: 'Foo'
         });
-        
+
         $('#qunit-fixture').append(input.render().$el);
         ok($('#qunit-fixture').has('input[type="text"][name="foo"]').length === 1);
         ok($('#qunit-fixture').find('label').length > 0);
     });
-    
+
     test('Input accepts attributes', function(){
         var input = new Aes.TextFormField({
             id: 'i-1',
-            
+
             attributes: {
                 title: 'foo'
             },
-            
+
             uiAttributes: {
                 input: {
                     id: 'input-bar',
@@ -354,11 +354,11 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                     "data-bar": 'uiui'
                 }
             },
-            
+
             name: 'foo',
             label: 'Foo'
         });
-        
+
         $('#qunit-fixture').append(input.render().$el);
         equal($('#qunit-fixture div').attr('id'), 'i-1');
         equal($('#qunit-fixture div').attr('title'), 'foo');
@@ -375,16 +375,16 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 c: {}
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().$el);
-        
+
         $('#qunit-fixture input[name="a"]').val(1).blur();
         $('#qunit-fixture input[name="b"]').val('foo').blur();
         $('#qunit-fixture input[name="c"]').val('bar').blur();
-        
+
         ok(_.isEqual(form.getValues(), {a:'1', b: 'foo', c: 'bar'}));
     });
-    
+
     test('Form renders fields in correct ordrer', function() {
         var form = new Aes.FormView({
             fields: {
@@ -393,31 +393,31 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 c: {}
             }
         });
-        
+
         $('#qunit-fixture').append('<div class="row-fluid"></div>');
         $('#qunit-fixture .row-fluid').append(form.render().$el);
-        
+
         equal($('#qunit-fixture input:eq(0)').attr('name'), 'a');
         equal($('#qunit-fixture input:eq(2)').attr('name'), 'c');
     });
-    
+
     test('Form customize attributes', function() {
         var form = new Aes.FormView({
-            
+
             attributes: {
                 class: 'span6'
             },
-            
+
             uiAttributes: {
                 form: {
                     class: 'form-horizontal'
                 },
-                
+
                 inputs: {
                     class: 'span8'
                 }
             },
-            
+
             fields: {
                 a: {},
                 b: {},
@@ -430,22 +430,22 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 }
             }
         });
-        
-        
+
+
         $('#qunit-fixture').append('<div class="row-fluid"></div>');
         $('#qunit-fixture .row-fluid').append(form.render().$el);
-        
+
         equal($('#qunit-fixture .row-fluid > div').attr('class'), 'span6');
         equal($('#qunit-fixture form').attr('class'),'form-horizontal');
         equal($('#qunit-fixture input[name="a"]').attr('class'),'span8');
         equal($('#qunit-fixture input[name="b"]').attr('class'),'span8');
         equal($('#qunit-fixture input[name="c"]').attr('class'),'span4');
-    });    
-    
+    });
+
     test('Form validate on submit', function() {
-        
+
         expect(3);
-        
+
         var form = new Aes.FormView({
             fields: {
                 a: {
@@ -455,23 +455,23 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 },
                 b: {},
             },
-            
+
             onSubmit: function() {
                 ok(true, 'on submit called');
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().$el);
-        
+
         $('#qunit-fixture .form-submit').click();
         ok($('#qunit-fixture .error').length === 1);
-        
+
         $('#qunit-fixture input[name="a"]').val('foo');
         $('#qunit-fixture .form-submit').click();
         ok($('#qunit-fixture .error').length === 0);
-        
+
     });
-    
+
     test('Reset fields', function() {
         var form = new Aes.FormView({
             fields: {
@@ -479,63 +479,63 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 b: {}
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().$el);
-        
+
         $('#qunit-fixture input[name="a"]').val('foo').blur();
         $('#qunit-fixture input[name="b"]').val('bar');
-        
+
         form.reset();
-        
+
         equal($('#qunit-fixture input[name="a"]').val(), '');
         equal($('#qunit-fixture input[name="b"]').val(), '');
     });
-    
+
     test('Form buttons text', function() {
         var form = new Aes.FormView({
-            
+
             submitBtnText: 'Go',
-            
+
             resetBtnText: 'No!No!No!',
-            
+
             fields: {
                 a: {},
                 b: {}
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().$el);
         equal($('#qunit-fixture .form-submit').val(), 'Go');
         equal($('#qunit-fixture .form-reset').val(), 'No!No!No!');
     });
-    
+
     test('Textarea field', function() {
-        
+
         var textarea = new Aes.TextareaFormField({
             showLabel: true,
             validator: {
                 required: true
             }
         });
-        
+
         $('#qunit-fixture').append(textarea.render().$el);
-        
+
         ok($('#qunit-fixture').find('textarea').length === 1);
-        
+
         textarea.setValue('Some interesting text');
-        
+
         equal($('#qunit-fixture textarea').val(), 'Some interesting text');
-        
+
         $('#qunit-fixture textarea').val('');
         $('#qunit-fixture textarea').blur();
         ok($('#qunit-fixture .error').length > 0);
-        
+
         $('#qunit-fixture textarea').val('Hello world!').blur();
-        
+
         equal(textarea.getValue(), 'Hello world!');
         ok($('#qunit-fixture .error').length === 0);
     });
-    
+
     test('Select field', function() {
        var select = new Aes.SelectFormField({
             name: 'foo_sel',
@@ -545,19 +545,19 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 {label: 'Three', value: 3, selected: true}
             ]
        });
-       
+
        $('#qunit-fixture').append(select.render().$el);
-       
+
        ok($('#qunit-fixture select').length === 1);
        ok($('#qunit-fixture option').length === 3);
-       
+
        equal($('#qunit-fixture option[value="1"]').text(), 'One');
        equal($('#qunit-fixture option[value="Two"]').text(), 'Two');
        equal($('#qunit-fixture option[value="3"][selected="selected"]').text(), 'Three');
-       
+
        equal($('#qunit-fixture select').val(), '3');
-    });    
-    
+    });
+
     test('Navbar Form', function() {
         var form = new Aes.NavbarFormView({
             fields: {
@@ -579,51 +579,51 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                         input: {
                             class: 'span4'
                         }
-                    }                
+                    }
                 }
             }
         });
-        
+
         $('#qunit-fixture .navbar-inner').prepend(form.render().$el);
         equal($('#qunit-fixture form.form-inline.navbar-search').length, 1);
-        
+
     });
-    
+
     test('Radio Field', function() {
         var radio = new Aes.RadioFormField({
             name: 'foo_radio',
             value: 'foo_radio_value',
             label: 'Foo radio'
         });
-        
+
         $('#qunit-fixture').append(radio.render().$el);
-        
+
         ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]').length === 1);
         ok($('#qunit-fixture input[name="foo_radio"]:checked').length === 0);
-        
+
         equal(radio.getValue(), false);
-        
+
         radio.check();
         equal(radio.getValue(), 'foo_radio_value');
         ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 1);
-        
+
         radio.uncheck();
         equal(radio.getValue(), false);
         ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 0);
-        
+
         $('#qunit-fixture label.radio').click();
         equal(radio.getValue(), 'foo_radio_value');
         ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 1);
-        
+
         radio.uncheck();
         equal(radio.getValue(), false);
         ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 0);
-        
+
         $('#qunit-fixture label.radio > input').click();
         equal(radio.getValue(), 'foo_radio_value');
-        ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 1);        
+        ok($('#qunit-fixture input[type="radio"][name="foo_radio"][value="foo_radio_value"]:checked').length === 1);
     });
-    
+
     test('Radio Field Cheked By default', function() {
         var radio = new Aes.RadioFormField({
             name: 'foo_radio1',
@@ -631,15 +631,15 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
             label: 'Foo radio 1',
             checked: true
         });
-        
+
         $('#qunit-fixture').append(radio.render().$el);
-        
+
         ok($('#qunit-fixture input[type="radio"][name="foo_radio1"][value="foo_radio1_value"]:checked').length === 1);
-        
+
         radio.render();
         ok($('#qunit-fixture input[type="radio"][name="foo_radio1"][value="foo_radio1_value"]:checked').length === 1);
     });
-    
+
     test('Radio Fields As Part Of Form', function() {
         var form = new Aes.FormView({
             fields: {
@@ -652,31 +652,31 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 }
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().$el);
-        
+
         ok($('#qunit-fixture label.radio > input[type="radio"][name="bar_radio"][value="Value A"]').not(':checked').length === 1);
         ok($('#qunit-fixture label.radio > input[type="radio"][name="bar_radio"][value="Value B"]').not(':checked').length === 1);
-        
+
         var values = form.getValues();
         equal(values.bar_radio, false);
-        
+
         $('#qunit-fixture input[name="bar_radio"][value="Value B"]').click();
         ok($('#qunit-fixture input[name="bar_radio"][value="Value B"]:checked').length === 1);
-        
+
         var values = form.getValues();
         equal(values.bar_radio, 'Value B');
-        
+
         form.reset();
         equal(form.getValues().bar_radio, false);
         ok($('#qunit-fixture input[name="bar_radio"]:checked').length === 0);
-        
+
         form.getField('bar_radio').setValue('Value A');
         ok($('#qunit-fixture input[name="bar_radio"]:checked').length === 1);
         ok($('#qunit-fixture input[name="bar_radio"][value="Value A"]:checked').length === 1);
         equal(form.getValues().bar_radio, 'Value A');
     });
-    
+
     test('RadioFields has top-level lable', function() {
         var form = new Aes.FormView({
             fields: {
@@ -690,16 +690,16 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 }
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().$el);
-        
+
         ok($('#qunit-fixture form > div > div > label.radio > input[type="radio"][name="bar_radio"][value="Value A"]').not(':checked').length === 1);
         ok($('#qunit-fixture form > div > div > label.radio > input[type="radio"][name="bar_radio"][value="Value B"]').not(':checked').length === 1);
         equal($('#qunit-fixture form > div > span.radios-heading').text(), 'Bar Radio');
     });
-    
-    test('RadioFields validation pass without check', function() { // TODO: Realize validation! 
-    
+
+    test('RadioFields validation pass without check', function() { // TODO: Realize validation!
+
         var form = new Aes.FormView({
             fields: {
                 bar_radio: {
@@ -709,21 +709,21 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                         {label: 'Option A', value: 'Value A'},
                         {label: 'Option B', value: 'Value B'}
                     ],
-                    
+
                     validator: {
                         required: true
-                    }                    
+                    }
                 }
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().$el);
-        
+
         ok(form.validate() === true);
-        
+
         ok($('#qunit-fixture .error').length === 0);
     });
-    
+
     test('Checked radiofields by default still checked even after form reset', function() {
         var form = new Aes.FormView({
             fields: {
@@ -733,19 +733,19 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                     options: [
                         {label: 'Option A', value: 'Value A', checked: true},
                         {label: 'Option B', value: 'Value B'}
-                    ]                   
+                    ]
                 }
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().$el);
         ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
-        
+
         form.reset();
         ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
     });
-    
-    
+
+
     test('Checked radiofields by default is not checked afer user chack another and form re-rendered', function() {
         var form = new Aes.FormView({
             fields: {
@@ -757,38 +757,38 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                         {label: 'Option A', value: 'Value A'},
                         {label: 'Option B', value: 'Value B'},
                         {label: 'Option C', value: 'Value C', checked: true}
-                    ]                   
+                    ]
                 }
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().$el);
         form.triggerMethod('show');
-        
+
         ok($('#qunit-fixture input:checked').length === 1);
         ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
-        
+
         form.reset();
         form.render();
-        
+
         ok($('#qunit-fixture input:checked').length === 1);
         ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
-        
+
         $('#qunit-fixture input[name="bar_radio"]:eq(1)').click();
-        
+
         ok($('#qunit-fixture input:checked').length === 1);
         ok($('#qunit-fixture input[value="Value B"]:checked').length === 1);
-        
+
         form.render();
-        
+
         ok($('#qunit-fixture input:checked').length === 1);
         ok($('#qunit-fixture input[value="Value B"]:checked').length === 1);
-        
+
         form.reset();
         ok($('#qunit-fixture input:checked').length === 1);
         ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
     });
-    
+
     test('Form contains user input even after re-rendering', function() {
         var form = new Aes.FormView({
             fields: {
@@ -813,35 +813,291 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
                 }
             }
         });
-        
+
         $('#qunit-fixture').append(form.render().el);
         form.triggerMethod('show');
-        
+
         $('#qunit-fixture input[name="text"]').val('Hello').blur();
         $('#qunit-fixture textarea').html('World!').blur();
         $('#qunit-fixture select option:eq(1)').attr('selected', true);
         $('#qunit-fixture select').change();
         $('#qunit-fixture input[name="radio"]:eq(1)').click();
-        
+
         var expVals = {
             text: 'Hello',
             textArea: 'World!',
             select: 'Two',
             radio: 'Value B'
         };
-        
+
         var result = form.getValues();
         ok(_.isEqual(result, expVals));
-        
+
         form.render();
-        
+
         result = form.getValues();
         ok(_.isEqual(result, expVals));
-        
+
         equal($('#qunit-fixture input[name="text"]').val(), expVals.text);
         equal($('#qunit-fixture textarea').val(), expVals.textArea);
         equal($('#qunit-fixture select').val(), expVals.select);
         equal($('#qunit-fixture input[name="radio"]:checked').val(), expVals.radio);
+    });
+
+    test('Text field default', function() {
+        var form = new Aes.FormView({
+            fields: {
+                text: {
+                    default: 'text default'
+                }
+            }
+        });
+
+        $('#qunit-fixture').append(form.render().el);
+        form.triggerMethod('show');
+
+        equal($('#qunit-fixture input[name="text"]').val(), 'text default');
+        ok(_.isEqual(form.getValues(), {text: 'text default'}));
+
+        form.render();
+
+        equal($('#qunit-fixture input[name="text"]').val(), 'text default');
+        ok(_.isEqual(form.getValues(), {text: 'text default'}));
+
+        form.reset();
+
+        equal($('#qunit-fixture input[name="text"]').val(), 'text default');
+        ok(_.isEqual(form.getValues(), {text: 'text default'}));
+
+        $('#qunit-fixture input[name="text"]').val('Another Value').blur();
+        ok(_.isEqual(form.getValues(), {text: 'Another Value'}));
+
+        form.render();
+        ok(_.isEqual(form.getValues(), {text: 'Another Value'}));
+        equal($('#qunit-fixture input[name="text"]').val(), 'Another Value');
+
+        form.reset();
+
+        equal($('#qunit-fixture input[name="text"]').val(), 'text default');
+        ok(_.isEqual(form.getValues(), {text: 'text default'}));
+    });
+
+    test('TextField with value', function() {
+        var form = new Aes.FormView({
+            fields: {
+                textWithVal: {
+                    value: 'textWithVal value'
+                }
+            }
+        });
+
+        $('#qunit-fixture').append(form.render().el);
+        form.triggerMethod('show');
+
+        equal($('#qunit-fixture input[name="textWithVal"]').val(), 'textWithVal value');
+        ok(_.isEqual(form.getValues(), {textWithVal: 'textWithVal value'}));
+
+        form.render();
+
+        equal($('#qunit-fixture input[name="textWithVal"]').val(), 'textWithVal value');
+        ok(_.isEqual(form.getValues(), {textWithVal: 'textWithVal value'}));
+
+        form.reset();
+
+        equal($('#qunit-fixture input[name="textWithVal"]').val(), '');
+        ok(_.isEqual(form.getValues(), {textWithVal: ''}));
+
+        $('#qunit-fixture input[name="textWithVal"]').val('Another Value').blur();
+        ok(_.isEqual(form.getValues(), {textWithVal: 'Another Value'}));
+
+        form.render();
+        ok(_.isEqual(form.getValues(), {textWithVal: 'Another Value'}));
+        equal($('#qunit-fixture input[name="textWithVal"]').val(), 'Another Value');
+
+        form.reset();
+
+        equal($('#qunit-fixture input[name="textWithVal"]').val(), '');
+        ok(_.isEqual(form.getValues(), {textWithVal: ''}));
+    });
+
+    test('TextField with value and default', function() {
+        var form = new Aes.FormView({
+            fields: {
+                text: {
+                    default: 'text default',
+                    value: 'value'
+                }
+            }
+        });
+
+        $('#qunit-fixture').append(form.render().el);
+        form.triggerMethod('show');
+
+        equal($('#qunit-fixture input[name="text"]').val(), 'value');
+        ok(_.isEqual(form.getValues(), {text: 'value'}));
+
+        form.render();
+
+        equal($('#qunit-fixture input[name="text"]').val(), 'value');
+        ok(_.isEqual(form.getValues(), {text: 'value'}));
+
+        form.reset();
+
+        equal($('#qunit-fixture input[name="text"]').val(), 'text default');
+        ok(_.isEqual(form.getValues(), {text: 'text default'}));
+
+        $('#qunit-fixture input[name="text"]').val('Another Value').blur();
+        ok(_.isEqual(form.getValues(), {text: 'Another Value'}));
+
+        form.render();
+        ok(_.isEqual(form.getValues(), {text: 'Another Value'}));
+        equal($('#qunit-fixture input[name="text"]').val(), 'Another Value');
+
+        form.reset();
+
+        equal($('#qunit-fixture input[name="text"]').val(), 'text default');
+        ok(_.isEqual(form.getValues(), {text: 'text default'}));
+    });
+
+    test('TextAreaField with value and default', function() {
+        var form = new Aes.FormView({
+            fields: {
+                text: {
+                    default: 'text default',
+                    value: 'value',
+                    type: 'textarea'
+                }
+            }
+        });
+
+        $('#qunit-fixture').append(form.render().el);
+        form.triggerMethod('show');
+
+        equal($('#qunit-fixture textarea[name="text"]').val(), 'value');
+        ok(_.isEqual(form.getValues(), {text: 'value'}));
+
+        form.render();
+
+        equal($('#qunit-fixture textarea[name="text"]').val(), 'value');
+        ok(_.isEqual(form.getValues(), {text: 'value'}));
+
+        form.reset();
+
+        equal($('#qunit-fixture textarea[name="text"]').val(), 'text default');
+        ok(_.isEqual(form.getValues(), {text: 'text default'}));
+
+        $('#qunit-fixture textarea[name="text"]').val('Another Value').blur();
+        ok(_.isEqual(form.getValues(), {text: 'Another Value'}));
+
+        form.render();
+        ok(_.isEqual(form.getValues(), {text: 'Another Value'}));
+        equal($('#qunit-fixture textarea[name="text"]').val(), 'Another Value');
+
+        form.reset();
+
+        equal($('#qunit-fixture textarea[name="text"]').val(), 'text default');
+        ok(_.isEqual(form.getValues(), {text: 'text default'}));
+    });
+
+    test('Select with value and default', function() {
+
+        var form = new Aes.FormView({
+            fields: {
+                select: {
+                    type: 'select',
+                    value: 'Three',
+                    default: 'Two',
+                    options: [
+                        {label: 'One', value: 1},
+                        {value: 'Two'},
+                        {value: 'Three'},
+                        {value: 'Four'}
+                    ]
+                }
+            }
+        });
+
+        $('#qunit-fixture').append(form.render().el);
+        form.triggerMethod('show');
+
+        ok(_.isEqual(form.getValues(), {select: 'Three'}));
+        ok($('#qunit-fixture select option:eq(2)').attr('selected'));
+
+        form.render();
+
+        ok(_.isEqual(form.getValues(), {select: 'Three'}));
+        ok($('#qunit-fixture select option:eq(2)').attr('selected'));
+
+        form.reset();
+
+        ok(_.isEqual(form.getValues(), {select: 'Two'}));
+        ok($('#qunit-fixture select option:eq(1)').attr('selected'));
+
+        $('#qunit-fixture select option:eq(3)').attr('selected', true);
+        $('#qunit-fixture select').change();
+
+        ok(_.isEqual(form.getValues(), {select: 'Four'}));
+        ok($('#qunit-fixture select option:eq(3)').attr('selected'));
+
+        form.render();
+
+        ok(_.isEqual(form.getValues(), {select: 'Four'}));
+        ok($('#qunit-fixture select option:eq(3)').attr('selected'));
+
+        form.reset();
+
+        ok(_.isEqual(form.getValues(), {select: 'Two'}));
+        ok($('#qunit-fixture select option:eq(1)').attr('selected'));
+    });
+    
+    test('Radio with value and default', function() {
+        var form = new Aes.FormView({
+            fields: {
+                select: {
+                    type: 'radio-group',
+                    value: 'Three',
+                    default: 'Two',
+                    options: [
+                        {label: 'One', value: 1},
+                        {value: 'Two'},
+                        {value: 'Three'},
+                        {value: 'Four'}
+                    ]
+                }
+            }
+        });
+
+        $('#qunit-fixture').append(form.render().el);
+        form.triggerMethod('show');
+
+        ok(_.isEqual(form.getValues(), {select: 'Three'}));
+        ok($('#qunit-fixture input[name="select"]:eq(2)').attr('checked'));
+
+        form.render();
+        
+        ok(_.isEqual(form.getValues(), {select: 'Three'}));
+        ok($('#qunit-fixture input[name="select"]:eq(2)').attr('checked'));
+
+        form.reset();
+
+        ok(_.isEqual(form.getValues(), {select: 'Two'}));
+        ok($('#qunit-fixture input[name="select"]:eq(1)').attr('checked'));
+
+        $('#qunit-fixture input[name="select"]:eq(0)').click();
+
+        var values = form.getValues();
+        deepEqual(values, {select: '1'});
+        ok($('#qunit-fixture input[name="select"]:eq(0)').attr('checked'));
+
+        form.render();
+
+        deepEqual(form.getValues(), {select: '1'});
+        ok($('#qunit-fixture input[name="select"]:eq(0)').attr('checked'));
+
+        form.reset();
+
+        ok(_.isEqual(form.getValues(), {select: 'Two'}));
+        ok($('#qunit-fixture input[name="select"]:eq(1)').attr('checked'));       
     });
 //    test('MultySelect field');
 

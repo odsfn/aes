@@ -1,82 +1,87 @@
-/* 
+/*
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
 var Aes = Aes || {};
 
 Aes.FormField = Aes.ItemView.extend({
-    
+
     /**
      * Forces to show label even it was not set by user. In this case it will be
      * shown as input name
      */
     showLabel: false,
-    
+
     errorPopUp: false,
-    
+
     /**
      * Event name after which internal value will be changed and validated
      */
     changeEvent: 'blur',
-    
+
     ui: {
         input: 'input'
     },
-    
+
     getUiValue: function() {
         return this.ui.input.val();
     },
-    
+
     setUiValue: function(val) {
         this.ui.input.val(val);
     },
-    
+
     getValue: function() {
         return this.model.get('value');
     },
-    
+
     setValue: function(value) {
         this.setUiValue(value);
         this.model.set('value', value);
     },
-    
+
     pickUpValue: function() {
         this.setValue(this.getUiValue());
     },
-    
+
     onValueChange: function() {
         this.pickUpValue();
         this.validate();
     },
-    
+
     reset: function() {
-        this.setValue('');
+        this.setValue(this.options.default || '');
     },
-    
+
     validate: function() {
         this.model.validate();
         return this.model.isValid();
     },
-    
+
     serializeData: function() {
         var serialized = Aes.ItemView.prototype.serializeData.apply(this, arguments);
-        
+
         return _.extend(serialized, {
            view: this
         });
     },
-    
+
     onRender: function() {
         var currVal = this.getValue();
-        
+
         if (currVal)
             this.setUiValue(currVal);
     },
-    
+
+    _initStartValue: function() {
+        var startValue = this.options.value || this.options.default || '';
+        this.model.set('value', startValue);
+    },
+
     initialize: function() {
-        
+
         if(!this.events)
             this.events = {};
-        
+
         this.events[Marionette.getOption(this, 'changeEvent') + ' ' + this.ui.input] = 'onValueChange';
 
         if(!this.options.name)
@@ -93,22 +98,24 @@ Aes.FormField = Aes.ItemView.extend({
             }));
         else
             this.model = new Backbone.Model();
-        
+
+        this._initStartValue();
+
         Backbone.Validation.bind(this, {
             valid: function(view, attr) {
                 view.$el.removeClass('invalid');
                 view.$el.find('.error').remove();
-                
+
                 if(Marionette.getOption(view, 'errorPopUp') == true) {
                     view.ui.input.tooltip('destroy');
                 }
             },
-                    
+
             invalid: function(view, attr, error) {
                 view.$el.find('.error').remove();
                 view.$el.addClass('invalid');
                 view.$el.append('<span class="help-block error">' + error + '</span>');
-                
+
                 if(Marionette.getOption(view, 'errorPopUp') == true) {
                     view.ui.input.tooltip({
                         title: error
@@ -116,34 +123,34 @@ Aes.FormField = Aes.ItemView.extend({
                 }
             }
         });
-        
+
         Aes.ItemView.prototype.initialize.apply(this, arguments);
     }
 }, {
     create: function(options) {
         var type, el;
-        
+
         var opts = _.clone(options);
-        
+
         type = options.type || 'text';
-        
+
         opts = _.omit(opts, 'type', 'el');
-        
+
         if(options.el)
         {
             var elType = typeof options.el;
-            
+
             if(elType === 'string')
                 el = $(options.el);
             else if(elType === 'function')
                 el = options.el();
             else
                 el = options.el;
-            
+
             opts.el = el;
         }
-        
-        switch (type) 
+
+        switch (type)
         {
             case 'select':
                 return new Aes.SelectFormField(opts);
@@ -153,27 +160,27 @@ Aes.FormField = Aes.ItemView.extend({
                 return new Aes.RadioGroupFormField(opts);
             case 'textarea':
                 return new Aes.TextareaFormField(opts);
-            default: 
+            default:
                 return new Aes.TextFormField(opts);
         }
     }
 });
 
 Aes.TextFormField = Aes.FormField.extend({
-    
+
     inputType: 'text',
-    
+
     labelInPlaceholder: false,
-    
+
     getTplStr: function() {
         return Aes.TextFormField.getTpl();
     }
-    
+
 },{
     getTpl: function() {
         return '<% if(!view.options.labelInPlaceholder && view.options.label) { %><label for="<%= view.cid %>"><%= view.options.label %></label> <% } %>'
-            + '<input ' 
-                + 'id="<%= view.cid %>" ' 
+            + '<input '
+                + 'id="<%= view.cid %>" '
                 + 'type="<%= view.inputType %>" '
                 + 'name="<%= view.options.name %>" '
                 + '<% if(view.options.labelInPlaceholder) { %> placeholder="<%= view.options.label %>" <% } %>'
@@ -183,63 +190,63 @@ Aes.TextFormField = Aes.FormField.extend({
 });
 
 Aes.TextareaFormField = Aes.FormField.extend({
-    
+
     getTplStr: function() {
         return Aes.TextareaFormField.getTpl();
     },
 
     ui: {
         input: 'textarea'
-    }        
-    
+    }
+
 },{
     getTpl: function() {
         return '<% if(view.options.label) { %><label for="<%= view.cid %>"><%= view.options.label %></label> <% } %>'
             + '<textarea id="<%= view.cid %>" name="<%= view.options.name %>"></textarea>';
-    }   
+    }
 });
 
 Aes.SelectFormField = Aes.FormField.extend({
-    
+
     getTplStr: function() {
         return Aes.SelectFormField.getTpl();
-    },    
-    
+    },
+
     _options: false,
-    
+
     ui: {
         input: 'select'
     },
-    
+
     changeEvent: 'change',
 
     getUiValue: function() {
         return this.ui.input.children(':selected').val();
-    },            
-            
+    },
+
     getOptions: function() {
         return this._options;
     },
     /**
      * Picks up options from DOM
-     */        
+     */
     pickUpOptions: function() {
         this._options = {};
-        
+
         this.ui.input.children().each(_.bind(function(index, el) {
             var $el = $(el);
             this._options[$el.attr('value')] = $el.text();
         }, this));
-        
+
         this.model.set('value', this.getUiValue());
-    },        
-            
+    },
+
     initialize: function() {
         Aes.FormField.prototype.initialize.apply(this, arguments);
-        
+
         if(this.options.el)
             this.pickUpOptions();
-        
+
         this._options = new Backbone.Collection(this.options.options);
     }
 }, {
@@ -254,24 +261,24 @@ Aes.SelectFormField = Aes.FormField.extend({
 });
 
 Aes.RadioFormField = Aes.FormField.extend({
-    
+
     triggers: {
         'change input': 'checked'
     },
-    
+
     getTplStr: function() {
         return Aes.RadioFormField.getTpl();
     },
-            
+
     getUiValue: function() {
         var result = false;
-        
+
         if(this.ui.input.is(':checked'))
             result = this.ui.input.val();
-        
+
         return result;
     },
-    
+
     getValue: function() {
         return this.getUiValue();
     },
@@ -280,7 +287,7 @@ Aes.RadioFormField = Aes.FormField.extend({
         this.ui.input.prop('checked', true);
         this.triggerMethod('checked');
     },
-            
+
     uncheck: function() {
         this.ui.input.attr('checked', false);
     },
@@ -292,31 +299,40 @@ Aes.RadioFormField = Aes.FormField.extend({
 
     initialize: function(options) {
         Aes.FormField.prototype.initialize.apply(this, arguments);
+
+        if (!options.value) 
+            throw new Error('value is required');
+        else
+            this.options.value = options.value.toString();
+
+        if(!options.label) this.options.label = this.options.value;
+
         
-        this.model.set('value', options.value || false)
-        
+        var value = this.options.value || '';
+        this.model.set('value', value);
+
         this.once('render', function() {
             this.setValue(this.model.get('value'));
         });
     }
-    
+
 },{
     getTpl: function() {
         return '<label for="<%= view.cid %>" class="radio">'
-            + '<input ' 
-                + 'id="<%= view.cid %>" ' 
+            + '<input '
+                + 'id="<%= view.cid %>" '
                 + 'type="radio" '
                 + 'name="<%= view.options.name %>" '
                 + 'value="<%= view.options.value %>" '
             + '>'
-            +'<%= view.options.label %>' 
+            +'<%= view.options.label %>'
         + '</label>';
     }
 });
 
 /**
  * Aggregates RadioFormFields to use in form
- * 
+ *
  * @example Configuration map
  * radio: {
  *      type: 'radio-group',
@@ -327,62 +343,62 @@ Aes.RadioFormField = Aes.FormField.extend({
  *          {label: 'Option B', value: 'Value B'}
  *      ]
  *  }
- *  
+ *
  *  @example Setting default checked option by option's *checked* property
  *  anotherRadio: {
  *      type: 'radio-group',
  *      label: 'Another radio',
  *      options: [
  *          { label: 'One', value: 'Val 1', checked: true },//will be checked by default
- *          { 
- *              label: 'Two', 
- *              value: 'Val 2', 
- *              checked: true   //this will be ignored because first option already checked 
+ *          {
+ *              label: 'Two',
+ *              value: 'Val 2',
+ *              checked: true   //this will be ignored because first option already checked
  *          },
  *          { value: 'Val 3' },
  *      ]
  *  }
  */
 Aes.RadioGroupFormField = Aes.ItemView.extend({
-    
+
     ui: {},
-    
+
     attributes: function() {
         return {
             class: 'radios-group-form-field ' + this.options.name,
             id: this.cid
         };
     },
-    
+
     getTplStr: function() {
         return Aes.RadioGroupFormField.getTpl();
-    },    
-    
+    },
+
     getUiValue: function() {
         var checkedRadio = this.getChecked();
-        
+
         if(checkedRadio)
             return checkedRadio.getValue();
         else
             return false;
     },
-    
+
     setUiValue: function(val) {
         this.setValue(val);
     },
-    
+
     getValue: function() {
         this.pickUpValue();
         return this.model.get('value');
     },
-            
+
     getChecked: function() {
         return this.radios.find(function(radio) {
            if(radio.getValue() !== false)
                return true;
         });
     },
-    
+
     setValue: function(value) {
         this.radios.each(function(radio) {
             if(value === '' || value === false || value === undefined)
@@ -391,33 +407,33 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
                 radio.check();
         });
     },
-    
+
     pickUpValue: function() {
         this.model.set('value', this.getUiValue());
     },
-    
+
     reset: function() {
         var options = this.options.options || [];
         var checkedVal = '';
-        
+
         if (this.options.default) {
             var checkedOption = _.findWhere(options, {value: this.options.default});
-       
+
             if(checkedOption)
                 checkedVal = checkedOption.value;
         }
-        
+
         this.setValue(checkedVal);
     },
-            
+
     /**
      * Note: Validation is not supported for the current moment by this type of field
      * @TODO: Implement validation
      */
-    validate: function() {  
-        
+    validate: function() {
+
         return true;
-        
+
 //        this.model.validate();
 //        return this.model.isValid();
     },
@@ -426,28 +442,28 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
         Aes.ItemView.prototype.render.apply(this, arguments);
         if(!this.radios.length)
             return;
-        
+
         this.radios.each(function(radio){
             this.$el.append(radio.render().$el);
             radio.delegateEvents();
-            
+
             var currVal = this.model.get('value');
-            
+
             if(currVal === radio.options.value)
                 radio.check();
-            
+
             if (this._isShown) {
                 radio.triggerMethod('show');
             }
         }, this);
-        
+
         return this;
     },
-      
+
     onShow: function() {
         if(!this.radios.length)
             return;
-        
+
         this.radios.each(function(radio) {
             radio.triggerMethod('show');
         });
@@ -455,54 +471,58 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
 
     serializeData: function() {
         var serialized = Aes.ItemView.prototype.serializeData.apply(this, arguments);
-        
+
         return _.extend(serialized, {
            view: this
         });
     },
 
+    _initStartValue: function() {
+        var startValue = this.options.value || this.options.default || '';
+        this.model.set('value', startValue);
+    },
+
     initialize: function(options) {
         Marionette.ItemView.prototype.initialize.apply(this, arguments);
-        
+
         var radios = [];
-        
+
         if (!options.default) {
             var checkedOption = _.findWhere(options.options, {checked: true});
-            
+
             if (checkedOption)
                 options.default = checkedOption.value;
         }
-        
+
         for(var i = 0; i < options.options.length; i++) {
             var radioConf = options.options[i];
-            
+
             if (options.default && radioConf.checked) {
                 delete radioConf.checked;
             }
-            
+
             var radio = Aes.FormField.create(
                 _.extend(
-                    {}, 
-                    radioConf, 
+                    {},
+                    radioConf,
                     {
                        type: 'radio',
                        name: options.name
                     }
                 )
             );
-    
+
             this.listenTo(radio, 'checked', this.pickUpValue);
-    
+
             radios.push(radio);
         }
-        
+
         this.radios = new Backbone.ChildViewContainer(radios);
-        
+
         this.model = new Backbone.Model();
-        
-        if (options.default)
-            this.model.set('value', options.default);
-    }    
+
+        this._initStartValue();
+    }
 }, {
     getTpl: function() {
         return '<% if(view.options.label) { %><span class="radios-heading"><%= view.options.label %></span><% } %>';
@@ -510,38 +530,38 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
 });
 
 Aes.FormView = Aes.ItemView.extend({
-    
+
     showLabels: true,
-    
+
     getTplStr: function() {
         return Aes.FormView.getTpl();
     },
-    
+
     ui: {
         form: 'form'
     },
-    
+
     submitBtnText: 'Submit',
-    
+
     resetBtnText: 'Reset',
-    
+
     _fields: null,
-    
+
     events: {
         'click .form-submit': 'submit',
         'click .form-reset': 'reset'
     },
-    
+
     onSubmit: function(event) {
         var handler = this.options.onSubmit;
-        
+
         if(handler && typeof handler === 'function')
             return handler.apply(this, arguments);
     },
-            
+
     onReset: function(event) {
         var handler = this.options.onReset;
-        
+
         if(handler && typeof handler === 'function')
             return handler.apply(this, arguments);
     },
@@ -556,48 +576,48 @@ Aes.FormView = Aes.ItemView.extend({
         this._collectValues();
         return this.model.toJSON();
     },
-            
+
     hasErrors: function() {
         return false;
     },
-            
+
     getErrors: function() {
         return {};
     },
-            
+
     getField: function(fieldName) {
         return this._fields[fieldName];
     },
-            
+
     validate: function() {
 
         var result = true;
 
         _.each(this._fields, function(field, fieldName){
             field.pickUpValue();
-            
+
             if(!field.validate())
                 result = false;
         }, this);
-        
+
         return result;
     },
-            
+
     submit: function(event) {
         event.preventDefault();
         if(this.validate())
-            this.triggerMethod('submit', event);  
-    },        
-            
+            this.triggerMethod('submit', event);
+    },
+
     reset: function(event) {
 
         _.each(this._fields, function(field) {
             field.reset();
         });
-        
+
         this.triggerMethod('reset', event);
     },
-    
+
     parseFieldConf: function(fieldName, fieldConf) {
         if(!fieldConf.name)
             fieldConf.name = fieldName;
@@ -606,72 +626,72 @@ Aes.FormView = Aes.ItemView.extend({
 
         if(this.options.uiAttributes && this.options.uiAttributes.inputs)
         {
-            if(!fieldConf.uiAttributes) 
+            if(!fieldConf.uiAttributes)
                fieldConf.uiAttributes = {};
 
             if(!fieldConf.uiAttributes.input)
                 fieldConf.uiAttributes['input'] = this.options.uiAttributes.inputs;
         }
-        
+
         return fieldConf;
     },
-    
+
     setFields: function(fields) {
         this._fields = {};
 
         for(var fieldName in fields) {
             var fieldConf = this.parseFieldConf(fieldName, fields[fieldName]);
-            
+
             this._fields[fieldName] = Aes.FormField.create(fieldConf);
         }
     },
-            
+
     getFields: function() {
         return this._fields;
     },
-            
+
     render: function() {
         Aes.ItemView.prototype.render.apply(this, arguments);
         if(!this._fields)
             return;
-        
+
         var fieldNames = _.keys(this._fields);
         fieldNames.reverse();
-        
+
         _.each(fieldNames, function(fieldName){
             var field = this._fields[fieldName];
             this.$('form').prepend(field.render().$el);
             field.delegateEvents();
-            
+
             if (this._isShown) {
                 field.triggerMethod('show');
             }
-            
+
         }, this);
-        
+
         return this;
     },
-      
+
     onShow: function() {
         if(!this._fields)
             return;
-        
+
         _.each(this._fields, function(field) {
             field.triggerMethod('show');
         });
     },
-            
+
     serializeData: function() {
         return _.extend(Aes.ItemView.prototype.serializeData.apply(this, arguments), {
            submitBtnText: this.submitBtnText,
            resetBtnText: this.resetBtnText
         });
-    },        
-            
+    },
+
     initialize: function() {
         this.model = new Backbone.Model();
         this.setFields(this.options.fields);
-        
+
         this.submitBtnText = Marionette.getOption(this, 'submitBtnText');
         this.resetBtnText = Marionette.getOption(this, 'resetBtnText');
     }
@@ -688,7 +708,7 @@ Aes.NavbarFormView = Aes.FormView.extend({
     getTplStr: function() {
         return Aes.NavbarFormView.getTpl();
     },
-            
+
     parseFieldConf: function(fieldName, fieldConf) {
         fieldConf = Aes.FormView.prototype.parseFieldConf.apply(this, arguments);
         fieldConf.labelInPlaceholder = true;
