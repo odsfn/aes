@@ -252,7 +252,6 @@ Aes.TabsView = (function() {
         onShow: function() {
             if (this.contentView) {
                 this.contentView.triggerMethod('show');
-                console.log('Tabs content view have been shown');
             }
         },
 

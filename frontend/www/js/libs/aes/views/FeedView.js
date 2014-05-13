@@ -19,6 +19,18 @@ Aes.FeedView = Marionette.CompositeView.extend({
         loader: 'img.loader'
     },
 
+    modelEvents: {
+        'change:totalCount': 'updateItemsCounter'
+    },
+    
+    collectionEvents: {
+        'request': 'showLoader',
+        'sync remove add': 'hideLoader',
+        'totalCountChanged': function(actualValue) {
+            this.model.set('totalCount', actualValue);
+        }
+    },
+
     appendHtml: function(collectionView, itemView, index){
         var childrenContainer = collectionView.itemViewContainer ? collectionView.$(collectionView.itemViewContainer) : collectionView.$el;
         var children = childrenContainer.children();
@@ -137,35 +149,35 @@ Aes.FeedView = Marionette.CompositeView.extend({
             this.initFilters(this.getFiltersConfig());
         }
 
-        this.model = new Backbone.Model();
-        
-        this.listenTo(this.collection, 'totalCountChanged', _.bind(function(actualValue) {
-            this.model.set('totalCount', actualValue);
-        }, this));
+        this.model = new Backbone.Model({
+            totalCount: this.collection.totalCount
+        });
         
         this.moreBtnView = new this.moreView({
             view: this,
             appendTo: _.bind(function() { return $('div.load-btn-cntr', this.$el);}, this)
         });        
     },
-            
-    onShow: function() {
-        
+    
+    updateItemsCounter: function() {
+        if (!this._uiBindings) return;
         this.ui.itemsCounter.html(this.model.get('totalCount'));
-        
-        this.listenTo(this.model, 'change:totalCount', function() {
-            this.ui.itemsCounter.html(this.model.get('totalCount'));
-        }, this);
-
-        this.listenTo(this.collection, 'request', function() {
-            this.$el.mask();
-            this.ui.loader.show();
-        });
-
-        this.listenTo(this.collection, 'sync remove add', _.bind(function(collection) {
-            this.$el.unmask();
-            this.ui.loader.hide();
-        }, this));
+    },
+    
+    showLoader: function() {
+        if (!this._uiBindings) return;
+        this.$el.mask();
+        this.ui.loader.show();
+    },
+    
+    hideLoader: function() {
+        if (!this._uiBindings) return;
+        this.$el.unmask();
+        this.ui.loader.hide();
+    },
+    
+    onRender: function() {
+        this.updateItemsCounter();
     }
 }, {
     getTpl: function() {
