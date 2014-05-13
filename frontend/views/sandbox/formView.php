@@ -635,6 +635,9 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
         $('#qunit-fixture').append(radio.render().$el);
         
         ok($('#qunit-fixture input[type="radio"][name="foo_radio1"][value="foo_radio1_value"]:checked').length === 1);
+        
+        radio.render();
+        ok($('#qunit-fixture input[type="radio"][name="foo_radio1"][value="foo_radio1_value"]:checked').length === 1);
     });
     
     test('Radio Fields As Part Of Form', function() {
@@ -721,7 +724,7 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
         ok($('#qunit-fixture .error').length === 0);
     });
     
-    test('Checked radiofields still checked even after form reset', function() {
+    test('Checked radiofields by default still checked even after form reset', function() {
         var form = new Aes.FormView({
             fields: {
                 bar_radio: {
@@ -740,6 +743,105 @@ $clientScript->registerScriptFile('/js/libs/aes/views/FormView.js');
         
         form.reset();
         ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
+    });
+    
+    
+    test('Checked radiofields by default is not checked afer user chack another and form re-rendered', function() {
+        var form = new Aes.FormView({
+            fields: {
+                bar_radio: {
+                    type: 'radio-group',
+                    label: 'Bar Radio',
+                    default: 'Value A',
+                    options: [
+                        {label: 'Option A', value: 'Value A'},
+                        {label: 'Option B', value: 'Value B'},
+                        {label: 'Option C', value: 'Value C', checked: true}
+                    ]                   
+                }
+            }
+        });
+        
+        $('#qunit-fixture').append(form.render().$el);
+        form.triggerMethod('show');
+        
+        ok($('#qunit-fixture input:checked').length === 1);
+        ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
+        
+        form.reset();
+        form.render();
+        
+        ok($('#qunit-fixture input:checked').length === 1);
+        ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
+        
+        $('#qunit-fixture input[name="bar_radio"]:eq(1)').click();
+        
+        ok($('#qunit-fixture input:checked').length === 1);
+        ok($('#qunit-fixture input[value="Value B"]:checked').length === 1);
+        
+        form.render();
+        
+        ok($('#qunit-fixture input:checked').length === 1);
+        ok($('#qunit-fixture input[value="Value B"]:checked').length === 1);
+        
+        form.reset();
+        ok($('#qunit-fixture input:checked').length === 1);
+        ok($('#qunit-fixture input[value="Value A"]:checked').length === 1);
+    });
+    
+    test('Form contains user input even after re-rendering', function() {
+        var form = new Aes.FormView({
+            fields: {
+                text: {},
+                textArea: {
+                    type: 'textarea'
+                },
+                select: {
+                    type: 'select',
+                    options: [
+                        {label: 'One', value: 1},
+                        {value: 'Two'}
+                    ]
+                },
+                radio: {
+                    type: 'radio-group',
+                    label: 'Radio',
+                    options: [
+                        {label: 'Option A', value: 'Value A'},
+                        {label: 'Option B', value: 'Value B'}
+                    ]
+                }
+            }
+        });
+        
+        $('#qunit-fixture').append(form.render().el);
+        form.triggerMethod('show');
+        
+        $('#qunit-fixture input[name="text"]').val('Hello').blur();
+        $('#qunit-fixture textarea').html('World!').blur();
+        $('#qunit-fixture select option:eq(1)').attr('selected', true);
+        $('#qunit-fixture select').change();
+        $('#qunit-fixture input[name="radio"]:eq(1)').click();
+        
+        var expVals = {
+            text: 'Hello',
+            textArea: 'World!',
+            select: 'Two',
+            radio: 'Value B'
+        };
+        
+        var result = form.getValues();
+        ok(_.isEqual(result, expVals));
+        
+        form.render();
+        
+        result = form.getValues();
+        ok(_.isEqual(result, expVals));
+        
+        equal($('#qunit-fixture input[name="text"]').val(), expVals.text);
+        equal($('#qunit-fixture textarea').val(), expVals.textArea);
+        equal($('#qunit-fixture select').val(), expVals.select);
+        equal($('#qunit-fixture input[name="radio"]:checked').val(), expVals.radio);
     });
 //    test('MultySelect field');
 

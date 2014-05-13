@@ -65,6 +65,13 @@ Aes.FormField = Aes.ItemView.extend({
         });
     },
     
+    onRender: function() {
+        var currVal = this.getValue();
+        
+        if (currVal)
+            this.setUiValue(currVal);
+    },
+    
     initialize: function() {
         
         if(!this.events)
@@ -144,6 +151,8 @@ Aes.FormField = Aes.ItemView.extend({
                 return new Aes.RadioFormField(opts);
             case 'radio-group':
                 return new Aes.RadioGroupFormField(opts);
+            case 'textarea':
+                return new Aes.TextareaFormField(opts);
             default: 
                 return new Aes.TextFormField(opts);
         }
@@ -246,6 +255,10 @@ Aes.SelectFormField = Aes.FormField.extend({
 
 Aes.RadioFormField = Aes.FormField.extend({
     
+    triggers: {
+        'change input': 'checked'
+    },
+    
     getTplStr: function() {
         return Aes.RadioFormField.getTpl();
     },
@@ -265,10 +278,16 @@ Aes.RadioFormField = Aes.FormField.extend({
 
     check: function() {
         this.ui.input.prop('checked', true);
+        this.triggerMethod('checked');
     },
             
     uncheck: function() {
         this.ui.input.attr('checked', false);
+    },
+
+    onRender: function() {
+        if(this.options.checked)
+            this.check();
     },
 
     initialize: function(options) {
@@ -278,8 +297,6 @@ Aes.RadioFormField = Aes.FormField.extend({
         
         this.once('render', function() {
             this.setValue(this.model.get('value'));
-            if(options.checked)
-                this.check();
         });
     }
     
@@ -297,6 +314,35 @@ Aes.RadioFormField = Aes.FormField.extend({
     }
 });
 
+/**
+ * Aggregates RadioFormFields to use in form
+ * 
+ * @example Configuration map
+ * radio: {
+ *      type: 'radio-group',
+ *      label: 'Radio',
+ *      default: 'Value B',
+ *      options: [
+ *          {label: 'Option A', value: 'Value A'},
+ *          {label: 'Option B', value: 'Value B'}
+ *      ]
+ *  }
+ *  
+ *  @example Setting default checked option by option's *checked* property
+ *  anotherRadio: {
+ *      type: 'radio-group',
+ *      label: 'Another radio',
+ *      options: [
+ *          { label: 'One', value: 'Val 1', checked: true },//will be checked by default
+ *          { 
+ *              label: 'Two', 
+ *              value: 'Val 2', 
+ *              checked: true   //this will be ignored because first option already checked 
+ *          },
+ *          { value: 'Val 3' },
+ *      ]
+ *  }
+ */
 Aes.RadioGroupFormField = Aes.ItemView.extend({
     
     ui: {},
@@ -313,7 +359,12 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
     },    
     
     getUiValue: function() {
-        return this.getValue();
+        var checkedRadio = this.getChecked();
+        
+        if(checkedRadio)
+            return checkedRadio.getValue();
+        else
+            return false;
     },
     
     setUiValue: function(val) {
@@ -321,12 +372,8 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
     },
     
     getValue: function() {
-        var checkedRadio = this.getChecked();
-        
-        if(checkedRadio)
-            return checkedRadio.getValue();
-        else
-            return false;
+        this.pickUpValue();
+        return this.model.get('value');
     },
             
     getChecked: function() {
@@ -351,10 +398,14 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
     
     reset: function() {
         var options = this.options.options || [];
-        var checkedOption = _.findWhere(options, {checked: true});
         var checkedVal = '';
-        if(checkedOption)
-            checkedVal = checkedOption.value;
+        
+        if (this.options.default) {
+            var checkedOption = _.findWhere(options, {value: this.options.default});
+       
+            if(checkedOption)
+                checkedVal = checkedOption.value;
+        }
         
         this.setValue(checkedVal);
     },
@@ -379,6 +430,15 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
         this.radios.each(function(radio){
             this.$el.append(radio.render().$el);
             radio.delegateEvents();
+            
+            var currVal = this.model.get('value');
+            
+            if(currVal === radio.options.value)
+                radio.check();
+            
+            if (this._isShown) {
+                radio.triggerMethod('show');
+            }
         }, this);
         
         return this;
@@ -389,7 +449,7 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
             return;
         
         this.radios.each(function(radio) {
-            radio.trigger('show');
+            radio.triggerMethod('show');
         });
     },
 
@@ -406,8 +466,19 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
         
         var radios = [];
         
+        if (!options.default) {
+            var checkedOption = _.findWhere(options.options, {checked: true});
+            
+            if (checkedOption)
+                options.default = checkedOption.value;
+        }
+        
         for(var i = 0; i < options.options.length; i++) {
             var radioConf = options.options[i];
+            
+            if (options.default && radioConf.checked) {
+                delete radioConf.checked;
+            }
             
             var radio = Aes.FormField.create(
                 _.extend(
@@ -419,12 +490,18 @@ Aes.RadioGroupFormField = Aes.ItemView.extend({
                     }
                 )
             );
+    
+            this.listenTo(radio, 'checked', this.pickUpValue);
+    
             radios.push(radio);
         }
         
         this.radios = new Backbone.ChildViewContainer(radios);
         
         this.model = new Backbone.Model();
+        
+        if (options.default)
+            this.model.set('value', options.default);
     }    
 }, {
     getTpl: function() {
@@ -565,6 +642,11 @@ Aes.FormView = Aes.ItemView.extend({
             var field = this._fields[fieldName];
             this.$('form').prepend(field.render().$el);
             field.delegateEvents();
+            
+            if (this._isShown) {
+                field.triggerMethod('show');
+            }
+            
         }, this);
         
         return this;
@@ -575,7 +657,7 @@ Aes.FormView = Aes.ItemView.extend({
             return;
         
         _.each(this._fields, function(field) {
-            field.trigger('show');
+            field.triggerMethod('show');
         });
     },
             
