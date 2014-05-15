@@ -7,9 +7,9 @@ class MessagingTest extends WebTestCase
 
     public $fixtures = array(
         'user_profile' => 'userAccount.models.Profile',
-        'conversation' => 'Conversation',//array('Conversation', 'common/empty'),
-        'conversation_participant' => 'ConversationParticipant',//array('ConversationParticipant', 'common/empty'),
-        'message' => 'Message',//array('Message', 'common/empty'),
+        'conversation' => 'Conversation',
+        'conversation_participant' => 'ConversationParticipant',
+        'message' => 'Message',
     );
 
     protected function getCssSelectors()
@@ -102,11 +102,15 @@ class MessagingTest extends WebTestCase
         
         $this->assertConversationsContainerShown();
         
+        $this->assertMessagesCountMenuIndicator(4); //check messages count on menu
+        
         $this->assertEquals('Another User', $this->getConversation(0)->with);
         $this->assertTrue($this->getConversation(0)->isUnviewed);
         
         $this->selectConversation(0);
         $this->assertActiveChatWith('Another User');
+        
+        $this->assertMessagesCountMenuIndicator(3); //check messages count on menu
         
         $this->swapToConversations();
         
@@ -114,9 +118,147 @@ class MessagingTest extends WebTestCase
         $this->assertEquals('Another User', $this->getConversation(3)->with);
         $this->assertFalse($this->getConversation(3)->isUnviewed);
         
+        $this->assertMessagesCountMenuIndicator(3); //check messages count on menu
+        
         $this->selectConversation(0);
         $this->assertActiveChatWith('Jhon Lenon');
+        
+        $this->assertMessagesCountMenuIndicator(2); //check messages count on menu
     }
+    
+    //check swapping and closing chats
+    public function testSwappingAndClosingChats()
+    {
+        $this->login('truvazia@gmail.com', 'qwerty');
+        $this->open('messaging/index');
+        
+        $this->assertConversationsContainerShown();
+        
+        //open all conversations
+        $this->selectConversation(0);
+        $this->assertActiveChatWith('Another User');
+        
+        $this->swapToConversations();
+        
+        $this->selectConversation(0);
+        $this->assertActiveChatWith('Jhon Lenon');
+        
+        $this->swapToConversations();
+        
+        $this->selectConversation(0);
+        $this->assertActiveChatWith('Yetanother User');        
+        
+        $this->swapToConversations();
+        
+        $this->selectConversation(0);
+        $this->assertActiveChatWith('Steve Jobs');        
+        
+        $this->assertTextPresent('Cnvs_text_5.');
+        $this->assertTextPresent('Sep 21, 2013 11:19:33 AM');
+        
+        $this->clickConvHeader(3);
+        
+        $this->assertActiveChatWith('Steve Jobs');        
+        
+        $this->assertElementContainsText($this->getCssSel('chat'), 'Cnvs_text_5.');
+        $this->assertElementContainsText($this->getCssSel('chat'), 'Sep 21, 2013 11:19:33 AM');
+        
+        $this->clickConvHeader(0);
+        $this->assertActiveChatWith('Another User');
+        $this->assertElementContainsText($this->getCssSel('chat'), 'Cnvs_text_1.');
+        $this->assertElementContainsText($this->getCssSel('chat'), 'Sep 25, 2013 11:19:33 AM');
+        $this->assertElementNotContainsText($this->getCssSel('chat'), 'Cnvs_text_5.');
+        
+        $this->assertCssCount($this->getCssSel('chatTabs.tab'), 4);
+        
+        $this->closeConv(0);
+        
+        $this->assertCssCount($this->getCssSel('chatTabs.tab'), 3);
+        
+        $this->assertActiveChatWith('Jhon Lenon');
+        
+        $this->clickConvHeader(2);
+        $this->assertActiveChatWith('Steve Jobs'); 
+        
+        $this->closeConv(1);
+        
+        $this->assertCssCount($this->getCssSel('chatTabs.tab'), 2);
+        
+        $this->assertActiveChatWith('Steve Jobs');
+        
+        $this->clickConvHeader(0);
+        
+        $this->assertActiveChatWith('Jhon Lenon');
+        $this->assertElementContainsText($this->getCssSel('chat'), 'Cnvs_text_2.');
+        
+        //trying to open active opened conversation from conversation list
+        $this->swapToConversations();
+        $this->selectConversation(1);
+        $this->assertActiveChatWith('Jhon Lenon');
+        $this->assertCssCount($this->getCssSel('chatTabs.tab'), 2);
+        
+        //trying to open not active opened conversation from conversation list
+        $this->swapToConversations();
+        $this->selectConversation(3);
+        $this->assertActiveChatWith('Steve Jobs');
+        $this->assertCssCount($this->getCssSel('chatTabs.tab'), 2);
+        
+        $this->closeConv(1);
+        $this->assertCssCount($this->getCssSel('chatTabs.tab'), 1);
+        
+        $this->assertActiveChatWith('Jhon Lenon');
+        $this->closeConv(0);
+        $this->assertCssCount($this->getCssSel('chatTabs.tab'), 0);
+        $this->assertNotVisible($this->getCssSel('tabs.activeConv'));
+        
+        $this->assertVisible($this->getCssSel('tabs.conversations'));
+        
+        //check that chat opens again
+        $this->selectConversation(0);
+        $this->assertVisible($this->getCssSel('tabs.activeConv'));
+        $this->assertCssCount($this->getCssSel('chatTabs.tab'), 1);
+    }
+
+    //check chatting
+    public function testChatting()
+    {
+        $this->login('truvazia@gmail.com', 'qwerty');
+        $this->open('messaging/index/chat_with/2');
+
+        $this->assertConversationsContainerShown();
+
+        $this->assertActiveChatWith('Another User');
+        
+        $this->waitForMessagesCount(1);
+        $this->assertStringStartsWith('Cnvs_text_1.', $this->getMessage(0)->text);
+        
+        $message = new Message;
+        $message->conversation_id = 1;
+        $message->user_id = 2;
+        $message->text = 'Hello, Vasiliy!';
+        $message->save();
+        
+        $this->waitForMessagesCount(2, 21000);
+        $this->assertElementContainsText($this->getCssSel('chat'), 'Hello, Vasiliy!');
+        
+        //@TODO:
+        //check gets incoming message in opened conversation
+        //check gets incoming message in not opened conversation
+        //check gets incoming message in new conversation
+        //check new messages count indicator changes
+    }
+
+    //check conversations fitlering
+    
+    //check conversations listing
+    
+    //check messages loading
+    
+    //check unread messages indicator in the chat title
+    protected function clickConvHeader($index)
+    {
+        $this->click($this->getCssSel('chatTabs.tab') . ':nth-of-type(' . ($index+1) . ') > a');
+    }    
     
     protected function waitForConversationsCount($count)
     {
@@ -175,9 +317,9 @@ class MessagingTest extends WebTestCase
         $this->click($this->getCssSel('chat.newPost.sendBtn'));
     }
 
-    protected function waitForMessagesCount($count)
+    protected function waitForMessagesCount($count, $time = 3000)
     {
-        $this->waitForElementContainsText($this->getCssSel('chat.messagesCount'), 'Total Messages Count: ' . $count);
+        $this->waitForElementContainsText($this->getCssSel('chat.messagesCount'), 'Total Messages Count: ' . $count, $time);
         $this->waitForCssCount($this->getCssSel('chat.message'), $count);
     }
     
@@ -225,5 +367,25 @@ class MessagingTest extends WebTestCase
         $this->click($this->getCssSel('tabs.conversations'));
         $this->assertVisible($this->getCssSel('feed'));
         $this->assertNotVisible($this->getCssSel('chat'));
+    }
+
+    protected function assertMessagesCountMenuIndicator($expCount)
+    {
+        $actualCount = $this->getMessagesCountMenuIndicator();
+        $this->assertEquals($expCount, $actualCount);
+    }
+    
+    protected function getMessagesCountMenuIndicator()
+    {
+        $count = $this->getText('css=div#column-left div#navigation li.messaging > a > span');
+        
+        $count = str_replace('+', '', $count);
+        
+        return $count;
+    }
+    
+    protected function closeConv($index)
+    {
+        $this->click($this->getCssSel('chatTabs.tab') . ':nth-of-type(' . ($index+1) . ') > a > i.icon-remove');
     }
 }
