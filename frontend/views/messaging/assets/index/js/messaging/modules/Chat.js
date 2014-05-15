@@ -269,7 +269,7 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
         //hide last conversation if any
         if(this.openedConversation) {
             $('div.active-chat-titles-cnt > ul > li').removeClass('active');
-            this.activeChatViews.findByModel(this.openedConversation).$el.hide();
+            this.activeChatViews.findByModel(this.openedConversation).$el.hide().removeClass('active');
         }
         
         this.openedConversation = conversation;
@@ -305,10 +305,9 @@ App.module('Messaging.Chat', function(Chat, App, Backbone, Marionette, $, _) {
             });            
 
         }else{
-            
             chat.$el.show();
-            
         }
+        chat.$el.addClass('active');
         
         this.triggerMethod('chat:opened', chat);
     };

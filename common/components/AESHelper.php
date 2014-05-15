@@ -18,7 +18,12 @@ class AESHelper
     public static function explode($set, $delim = ',') {
         if(is_string($set)) {
             if(strstr($set, $delim) !== FALSE) {
-                $result = explode($delim, preg_replace('/\s+/', '', $set));
+                
+                if ($delim === ' ') {
+                    $result = explode($delim, preg_replace('/\s{1,}/', ' ', trim($set)));
+                }else{
+                    $result = explode($delim, preg_replace('/\s+/', '', $set));
+                }
             } else
                 $result = array(trim($set));
         } elseif (is_array($set)) {

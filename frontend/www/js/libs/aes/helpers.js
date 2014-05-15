@@ -127,7 +127,7 @@ Backbone.Model.prototype.parse = function(rawData, options) {
     
     var result = {};
     
-    if(response.data.totalCount === 1) {
+    if(parseInt(response.data.totalCount) === 1) {
         
         if(_.isArray(response.data.models))
             result = response.data.models[0];
