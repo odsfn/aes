@@ -1,5 +1,4 @@
- <?php
-
+<?php
 /**
  * This is the model class for table "candidate".
  *
@@ -9,7 +8,7 @@
  * @property integer $election_id
  * @property integer $status
  * @property integer $electoral_list_pos
- * @property integer $appointer_id 
+ * @property integer $appointer_id
  *
  * The followings are the available model relations:
  * @property Election $election
@@ -19,19 +18,19 @@
  */
 class Candidate extends CActiveRecord implements iCommentable
 {
-    
+
     const STATUS_INVITED = 0;
-    
+
     const STATUS_AWAITING_CONFIRMATION = 1;
-    
+
     const STATUS_REGISTERED = 2;
-    
+
     const STATUS_REFUSED = 3;
-    
+
     const STATUS_BLOCKED = 4;
-    
+
     protected $transaction;
-    
+
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -49,11 +48,11 @@ class Candidate extends CActiveRecord implements iCommentable
     {
         return 'candidate';
     }
-    
+
     public function behaviors() {
         return array('AttrsChangeHandlerBehavior');
     }
-    
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -123,90 +122,90 @@ class Candidate extends CActiveRecord implements iCommentable
             'criteria'=>$criteria,
         ));
     }
-    
+
     protected function beforeSave() {
-        
+
         if($this->status == Candidate::STATUS_REGISTERED && !$this->electoral_list_pos) {
-            
+
             $db = Yii::app()->db;
-            
+
             $this->transaction = $db->beginTransaction();
-            
+
             $maxListPos = $db->createCommand(
                     'SELECT MAX(electoral_list_pos) FROM candidate WHERE election_id = ' . $this->election_id
                         . ' LOCK IN SHARE MODE'
             )->queryScalar();
-            
+
             $this->electoral_list_pos = ++$maxListPos;
         }
-//        
+//
 //        $this->appointer_id  = Yii::app()->user->id;
-//        
+//
 //        if($this->election->cand_reg_confirm == 0) {
 //            if($this->appointer_id == $this->user_id)
 //                $this->status = self::STATUS_REGISTERED;
-//        
+//
 //        }
-//        
+//
         if($this->isNewRecord || $this->isStoredDiffers('status'))
             $this->status_changed_ts = date('Y-m-d H:i:s');
-        
+
         return parent::beforeSave();
     }
-    
+
     protected function afterSave() {
-        
+
         if(isset($this->transaction))
             $this->transaction->commit();
-        
+
         return parent::afterSave();
     }
 
     public function criteriaWithStatusOnly($status) {
-        
+
         $this->getDbCriteria()->mergeWith(self::getCriteriaWithStatusOnly($status));
-        
+
         return $this;
     }
-    
+
     public static function getCriteriaWithStatusOnly($status) {
         return new CDbCriteria(array('condition' => 'status = ' . (int)$status));
     }
-    
+
     /**
-     * @return bool 
+     * @return bool
      */
     public function canUnassignedComment(){
         return true;
     }
-    
+
     /**
      * @return bool
      */
     public function canUnassignedRead(){
         return true;
     }
-    
+
     public function checkUserInRole($userId, $role) {
         return false;
     }
-    
+
     /**
      * Checks whether specified user has voted for candidate
      * @param int $userId
      * @return boolean
      */
-    public function isAdherent($userId) {        
+    public function isAdherent($userId) {
         /**
          * Note! Should be like this $votes = $this->votes(array('condition' => 'status = ' . Vote::STATUS_PASSED . ' AND user_id = ' . (int)$userId));
          * but it is not work during creation PetitionRate from Rest controller.
-         * 
-         * Quick fix for unexplained bug. 
+         *
+         * Quick fix for unexplained bug.
          */
         $votes = $this->getRelated('votes', $this->isNewRecord, array('condition' => 'status = ' . Vote::STATUS_PASSED . ' AND user_id = ' . (int)$userId));
         if($votes && count($votes) > 0)
             return true;
-        
+
         return false;
-    }    
+    }
 }
