@@ -11,7 +11,9 @@ class PetitionController extends RestController {
         )
     );
     
-    public $acceptFilters = array('plain' => 'creator_name,support,creation_date', 'model' => 'title');
+    protected $convertRestFilters = true;
+
+    public $acceptFilters = array('plain' => 'creator_name,support,creation_date', 'model' => 'title, mandate_id');
 
     public function getOutputFormatters() {
         return array(

@@ -50,7 +50,7 @@ class RestController extends ERestController {
         if(ArrayHelper::isAssoc($this->restFilter)) {   //Conversion needed
             
             if(!empty($this->acceptFilters['plain'])) {
-                $plainKeys = explode(',', $this->acceptFilters['plain']);
+                $plainKeys = AESHelper::explode($this->acceptFilters['plain']);
                 
                 foreach ($plainKeys as $key) {
                     $this->plainFilter[$key] = $this->restFilter[$key];
@@ -62,7 +62,7 @@ class RestController extends ERestController {
             }
             
             if(!empty($this->acceptFilters['model'])) {
-                $acceptableKeys = explode(',', $this->acceptFilters['model']);
+                $acceptableKeys = AESHelper::explode($this->acceptFilters['model']);
                 
                 foreach ($this->restFilter as $key => $value) {
                     if(!in_array($key, $acceptableKeys))
@@ -79,7 +79,12 @@ class RestController extends ERestController {
                 $convertedFilter = array();
 
                 foreach ($this->restFilter as $filterName => $value) {
-                    $convertedFilter[] = array('property' => $filterName, 'value' => $value);
+                    
+                    if (!is_array($value) && !key_exists('property', $value) && !key_exists('value', $value)) {
+                        $convertedFilter[] = array('property' => $filterName, 'value' => $value);    
+                    } else {
+                        $convertedFilter[] = $value;
+                    }
                 }
 
                 $this->restFilter = $convertedFilter;
@@ -91,11 +96,11 @@ class RestController extends ERestController {
             $filterableModelKeys = array();
             
             if(!empty($this->acceptFilters['plain'])) {
-                $plainKeys = explode(',', $this->acceptFilters['plain']);
+                $plainKeys = AESHelper::explode($this->acceptFilters['plain']);
             }
             
             if(!empty($this->acceptFilters['model'])) {
-                $filterableModelKeys = explode(',', $this->acceptFilters['model']);
+                $filterableModelKeys = AESHelper::explode($this->acceptFilters['model']);
             }
             
             $checkPlain = (bool)count($plainKeys);
