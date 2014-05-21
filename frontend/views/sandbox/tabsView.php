@@ -401,22 +401,22 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
 
         $('#qunit-fixture').append(tabs.render().el);
         tabs.triggerMethod('show');
-        
+
         ok($('#qunit-fixture .tabs-container li:eq(2)').hasClass('active'));
         ok($('#qunit-fixture .tabs-container li').length === 4);
-        
+
         $('#qunit-fixture .tabs-container li.active > a > span.icon-remove').mouseenter().click();
         ok($('#qunit-fixture .tabs-container li:eq(1)').hasClass('active'));
         ok($('#qunit-fixture .tabs-container li').length === 3);
-        
+
         $('#qunit-fixture .tabs-container li.active > a > span.icon-remove').mouseenter().click();
         ok($('#qunit-fixture .tabs-container li:eq(0)').hasClass('active'));
-        ok($('#qunit-fixture .tabs-container li').length === 2);   
-        
+        ok($('#qunit-fixture .tabs-container li').length === 2);
+
         $('#qunit-fixture .tabs-container li.active > a > span.icon-remove').mouseenter().click();
         ok($('#qunit-fixture .tabs-container li:eq(0)').hasClass('active'));
         ok($('#qunit-fixture .tabs-container li').length === 1);
-        
+
         equal($('#qunit-fixture .tabs-container li.active > a > b').text(), 'Fourth');
     });
 
@@ -731,7 +731,6 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
 
         //emulate opening page with specified tab route
         router.navigate('someAction/tabs/second', {trigger: true});
-//        ok(router.someAction.calledOnce);
 
         var tabs = new Aes.TabsView({
 
@@ -766,14 +765,14 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
         ok($('#qunit-fixture .tabs-container li:first').hasClass('active'));
         ok(!$('#qunit-fixture .tabs-container li:eq(1)').hasClass('active'));
 
-//        $('#qunit-fixture .tabs-container li:eq(1) > a').mouseenter().click();
         tabs.tabViews.findByCustom('second').select();
-        
+
         ok(/tabsView\/someAction\/tabs\/second$/.test(window.location.href));
 
         ok(!$('#qunit-fixture .tabs-container li:first').hasClass('active'));
         ok($('#qunit-fixture .tabs-container li:eq(1)').hasClass('active'));
 
+//      @todo:
 //        router.navigate('someAction/tabs/first', {trigger: true});
 //        ok(router.someAction.calledTwice);
 
@@ -781,7 +780,6 @@ $clientScript->registerScriptFile('/js/libs/aes/views/TabsView.js');
 //        ok(!$('#qunit-fixture .tabs-container li:eq(1)').hasClass('active'));
 
         router.navigate('someAction/tabs/second', {trigger: false});
-//        ok(router.someAction.calledTwice);
 
         ok(!$('#qunit-fixture .tabs-container li:first').hasClass('active'));
         ok($('#qunit-fixture .tabs-container li:eq(1)').hasClass('active'));

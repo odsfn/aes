@@ -194,13 +194,11 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
             electors: {
                 title: 'Electors',
                 content: this.initElectorsFeedView(),
-//               route: 'details/' + that._activeMandate.get('id') + '/'
                 route: 'elections'
             },
             petitions: {
                title: 'Petitions',
                content: this.modPetitions.layout,
-//               route: 'details/' + that._activeMandate.get('id') + '/petitions/'
                route: 'petitions'
             },
             createPetition: {
@@ -257,7 +255,7 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
                    closable: true,
                    route: 'petition_' + petitionId
                 });
-                
+
                 MandateDetails.detailsLayout.tabs.currentView.select(newTab);
             });
         };
