@@ -1,11 +1,11 @@
-/** 
+/**
  * TabsView
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
-Aes.TabsView = (function() { 
-    
+Aes.TabsView = (function() {
+
     var TabsView = Aes.ItemView.extend({
-    
+
         ui: {
             tabBodies: 'div.tab-content',
             tabTitles: 'ul.nav-tabs'
@@ -19,9 +19,9 @@ Aes.TabsView = (function() {
             return Aes.TabsView.getTpl();
         },
 
-        /** 
-         * Searches and return currently selected tab 
-         * @return {TabView} Selected tab 
+        /**
+         * Searches and return currently selected tab
+         * @return {TabView} Selected tab
          */
         getSelected: function() {
             return this.tabViews.find(function(tabView) {
@@ -44,7 +44,7 @@ Aes.TabsView = (function() {
          */
         select: function(tab) {
             if (typeof tab === 'string') {
-               tab = this.getTab(tab); 
+               tab = this.getTab(tab);
             }
 
             var shouldSelect = this.triggerMethod('before:select', tab);
@@ -52,7 +52,6 @@ Aes.TabsView = (function() {
                 return;
 
             tab.select();
-            this.trigger('selected', tab);
         },
 
         /**
@@ -91,11 +90,11 @@ Aes.TabsView = (function() {
             });
 
             var newTab = new TabView(tabOptions);
-            
+
             var shouldAdd = this.triggerMethod("before:add", newTab);
             if(!shouldAdd)
                 return;
-            
+
             this.tabViews.add(newTab, tabOptions.tabId);
 
             if(append) {
@@ -104,7 +103,7 @@ Aes.TabsView = (function() {
             }
 
             this.trigger('added', newTab);
-            
+
             return newTab;
         },
 
@@ -119,11 +118,18 @@ Aes.TabsView = (function() {
             if(!shouldRemove)
                 return;
 
-            if(tab) {                
+            if(tab) {
+
+                if(tab.selected) {
+                    var index = _.keys(this.tabViews._views).indexOf(tab.cid);
+                    if(index > 0) index--;
+                }
+                
                 this.tabViews.remove(tab);
 
-                if(tab.selected)
-                    this.tabViews.first().select();
+                if(tab.selected) {
+                    this.select(this.tabViews.findByIndex(index));
+                }
 
                 this.render();
             }
@@ -145,6 +151,10 @@ Aes.TabsView = (function() {
             return true;
         },
 
+        onSelected: function(tab) {
+            this._processRoute(tab);
+        },
+
         onBeforeAdd: function(tab) {
             return true;
         },
@@ -164,11 +174,66 @@ Aes.TabsView = (function() {
             this._renderTab(tabView);
             this.ui.tabTitles.append(tabView.titleView.$el);
             this.ui.tabBodies.append(tabView.$el);
-            
+
             if (this._isShown) {
                 tabView.titleView.triggerMethod('show');
                 tabView.triggerMethod('show');
             }
+        },
+
+        _initRouting: function() {
+            var routingConf;
+            if(! (routingConf = this.options.routing) ) return;
+            if(!routingConf.router) return;
+
+            this._routingConf = routingConf;
+
+            this.tabViews.each(function(tab) {
+                if(!tab.options.route)
+                    tab.options.route = tab.options.tabId;
+            });
+
+            var tabRoute = this._getActiveRoute();
+
+            if(tabRoute) {
+
+                var tabToSel = this.tabViews.find(function(tab) {
+                    return (tab.options.route === tabRoute);
+                });
+
+                if(!tabToSel) return;
+
+                var markedForSelect = this.getSelected();
+                if(markedForSelect) markedForSelect.selected = false;
+
+                tabToSel.selected = true;
+            }
+        },
+
+        _getActiveRoute: function() {
+            var fragment = Backbone.history.getFragment();
+            var routingConf = this._routingConf;
+
+            if(routingConf.routeRoot) {
+                if(fragment.indexOf(routingConf.routeRoot) === 0)
+                    fragment = fragment.replace(routingConf.routeRoot, '');
+            } else
+                routingConf.routeRoot = '';
+
+            if(fragment && fragment !== '')
+                return fragment.match(/^((\w|-)+)/)[0] || false;
+
+            return false;
+        },
+
+        _processRoute: function(tab) {
+            if(!this._routingConf) return;
+
+            var router = this._routingConf.router || false;
+            if(!tab.options.route || !router) return;
+
+            var route = tab.options.route;
+            router.navigate(this._routingConf.routeRoot + route, {trigger: false});
         },
 
         onShow: function() {
@@ -188,11 +253,14 @@ Aes.TabsView = (function() {
             for(var tabName in options.tabs) {
                 var tabOptions = options.tabs[tabName];
                 _.extend(tabOptions, {
-                    tabId: tabName
+                    tabId: tabName,
+                    selected: (tabName === options.selected)
                 });
 
                 this.add(tabOptions, false);
             }
+
+            this._initRouting();
 
             if(this.tabViews.length > 0 && !this.getSelected())
                 this.tabViews.first().selected = true;
@@ -206,7 +274,7 @@ Aes.TabsView = (function() {
     });
 
     var TabView = Aes.ItemView.extend({
-        selected: false, 
+        selected: false,
 
         tpl: '<%= content %>',
 
@@ -220,7 +288,7 @@ Aes.TabsView = (function() {
             var shouldSelect = this.triggerMethod('before:select');
             if(!shouldSelect)
                 return;
-            
+
             var selectedTab = this.options.tabsContainer.getSelected();
             if(selectedTab)
                 selectedTab.unselect();
@@ -228,7 +296,7 @@ Aes.TabsView = (function() {
             this.titleView.select();
             this.selected = true;
 
-            this.options.tabsContainer.trigger('selected', this);
+            this.options.tabsContainer.triggerMethod('selected', this);
         },
 
         unselect: function() {
@@ -257,17 +325,19 @@ Aes.TabsView = (function() {
 
         onBeforeSelect: function() {
             var handler;
-            
+
             if(handler = this.options.onBeforeSelect)
                 return handler.apply(this);
-                
+
             return true;
         },
 
         initialize: function(options) {
-            
+
+            if (options.selected) this.selected = true;
+
             var domTabId = options.tabId + '-' + this.cid;
-            
+
             this.$el.attr('id', domTabId + '-tab');
 
             var modelAttrs = {
@@ -313,7 +383,9 @@ Aes.TabsView = (function() {
             this.options.tabContentView.select();
         },
 
-        closeClicked: function() {
+        closeClicked: function(event) {
+           event.preventDefault();
+           event.stopPropagation();
            this.options.tabsContainer.removeTab(this.model.get('id'));
         },
 
@@ -339,7 +411,7 @@ Aes.TabsView = (function() {
         },
 
         unselect: function() {
-           this.$('.icon-remove').hide();    
+           this.$('.icon-remove').hide();
         },
 
         tagName: 'li',

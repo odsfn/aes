@@ -7,8 +7,8 @@ var App = new Backbone.Marionette.Application(),
 App.Router = Marionette.AppRouter.extend({
     appRoutes: {
         "": 'viewMandates',
-        "details/:mandId/": 'viewDetails',
-        "details/:mandId/petition/:petitionId": 'viewPetitionDetails'
+        "details/:mandId/petition_:petitionId(/)": 'viewPetitionDetails',
+        "details/:mandId(/*subsection(/))": 'viewDetails'
     }
 });
 

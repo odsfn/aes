@@ -175,7 +175,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
 <script type="text/template" id="petition-tpl">
     <div class="petition">
-        <h4><a href="details/<%= mandate_id %>/petition/<%= id %>" class="route"><%= title %></a></h4>
+        <h4><a href="details/<%= mandate_id %>/petition_<%= id %>" class="route"><%= title %></a></h4>
         <% if (shortContent != false) { %>
         <p class="short-text"><%= shortContent %></p>
         <% } else { %>

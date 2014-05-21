@@ -63,7 +63,7 @@ class PetitionsOnMandateDetailsTest extends WebTestCase
         $this->click("link=Petitions");
         $this->assertPetitionsFeedPresent();
 
-        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/');
+        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petitions');
         $this->assertCssCount($this->getCssSel('tabs.tab'), 2);
         
         $this->click($this->getCssSel('petitionsFeed.item') . ' h4 > a');
@@ -74,7 +74,7 @@ class PetitionsOnMandateDetailsTest extends WebTestCase
         
         $this->assertEquals($openedPetition->title, $tabTitle);
         $this->assertEquals($openedPetition->title, $this->getText($this->getCssSel('tabs.tab') . ':nth-of-type(3)'));
-        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition/' . $openedPetition->id);
+        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition_' . $openedPetition->id);
         
         $this->click($this->getCssSel('petitionsFeed.item') . ' h4 > a');
         $this->waitForCssCount($this->getCssSel('tabs.tab'), 3);
@@ -83,25 +83,25 @@ class PetitionsOnMandateDetailsTest extends WebTestCase
         $this->waitForCssCount($this->getCssSel('tabs.tab'), 4);
         $openedPetition = $petitions[1];
         $this->assertEquals($openedPetition->title, $this->getText($this->getCssSel('tabs.tab') . ':nth-of-type(4)'));
-        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition/' . $openedPetition->id);
+        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition_' . $openedPetition->id);
         
         $this->click($this->getCssSel('petitionsFeed.item') . ':nth-of-type(3) h4 > a');
         $this->waitForCssCount($this->getCssSel('tabs.tab'), 5);
         $openedPetition = $petitions[2];
         $this->assertEquals($openedPetition->title, $this->getText($this->getCssSel('tabs.tab') . ':nth-of-type(5)'));
-        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition/' . $openedPetition->id);
+        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition_' . $openedPetition->id);
 
-//        //выбираем открытую петицию - видем ее локейшн
-//        $this->click($this->getCssSel('tabs.tab') . ':nth-of-type(4)');
-//        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition/' . $petitions[1]->id);
-//        
-//        //закрываем открытую петицию - видим начальный локейшн, т.к. перекинуло на первый таб
-//        $this->click($this->getCssSel('tabs.tab') . ':nth-of-type(4) i.icon-remove');
-//        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/');  //@todo: must be a location of first tab ( .../election/ ) or previous tab 
-//        
-//        //тыкаем по уже открытой, из списка петиций - получаем ее локейшн
-//        $this->click($this->getCssSel('petitionsFeed.item') . ' h4 > a');
-//        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition/' . $petitions[0]->id);
+        //выбираем открытую петицию - видем ее локейшн
+        $this->click($this->getCssSel('tabs.tab') . ':nth-of-type(4) > a');
+        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition_' . $petitions[1]->id);
+        
+        //закрываем открытую петицию - видим локейшн предидущей
+        $this->click($this->getCssSel('tabs.tab') . ':nth-of-type(4) > a > span.icon-remove');
+        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition_' . $petitions[0]->id);
+        
+        //тыкаем по уже открытой, из списка петиций - получаем ее локейшн
+        $this->click($this->getCssSel('petitionsFeed.item') . ' h4 > a');
+        $this->assertLocation(TEST_BASE_URL . 'mandate/index/details/1/petition_' . $petitions[0]->id);
         
     }
 //    testMultiplePetitionsDetailsShowsAndCloses    
