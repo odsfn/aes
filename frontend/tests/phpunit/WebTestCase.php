@@ -26,6 +26,13 @@ class WebTestCase extends CWebTestCase
             $this->waitForPageToLoad("30000");
         }
         
+        protected function logout()
+        {
+            $this->open('userAccount/login/out');
+            $this->waitForPageToLoad("30000");
+        }
+
+
         protected function checkSelectOptions($expected, $selector) {
 
             if(is_string($expected) && strstr($expected, ',') !== FALSE)
@@ -142,10 +149,6 @@ class WebTestCase extends CWebTestCase
         {
             if(!$selectors)
                 $sels = $this->getCssSelectors();
-            
-            if (!in_array($index, array_keys($sels))) {
-                throw new CException('Undefined selector: ' . $index);
-            }
 
             $resultSel = 'css=' . $sels['container'];
 
