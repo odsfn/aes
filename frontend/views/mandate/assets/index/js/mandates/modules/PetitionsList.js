@@ -13,16 +13,6 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         layoutTpl: '#petitions-list-layout-tpl'
     };
     
-    var Petition = Backbone.Model.extend({
-        
-        parse: function(attrs) {
-            
-            attrs.created_ts = parseInt(attrs.created_ts) * 1000;
-            
-            return attrs;
-        }
-    });
-    
     var Supporter = Backbone.Model.extend({
         parse: function(attrs) {
             
@@ -32,89 +22,9 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         }
     });
     
-    var PetitionsCollection = FeedCollection.extend({
-        limit: 30,
-        model: Petition,
-        url: UrlManager.createUrlCallback('api/petition')
-    });
-    
-    PetitionsList.PetitionView = Aes.ItemView.extend({
-        /*
-         * Whether to shorten content
-         */
-        shortContent: true,
-        
-        personType: 'creator',
-        
-        template: '#petition-tpl',      
-        
-        ui: {
-            rates: '.petition-rates'
-        },
-        
-        onRender: function() {
-            this.ui.rates.prepend(this._rates.render().$el);
-            this._rates.delegateEvents();
-        },
-                
-        onShow: function() {
-            this._rates.trigger('show');
-        },
-                
-        serializeData: function() {
-            
-            var person = this.model.get('mandate').candidate.profile;
-            var personType = Marionette.getOption(this, 'personType');
-            
-            if(personType === 'creator') {
-                person = this.model.get('creator');
-            }
-    
-            var shortContent = false;
-            
-            if (Marionette.getOption(this, 'shortContent')) {
-                shortContent = this.getShortContent();
-            }
-    
-            return _.extend(Aes.ItemView.prototype.serializeData.apply(this, arguments), {
-               shortContent: shortContent,
-               personType: personType,
-               person: person
-            });
-        },
-                
-        getShortContent: function() {
-            var text = this.model.get('content');
-            var length = 512;
-            
-            if(text.length > length) {
-                text = text.substr(0, length) + '...';
-            }
-            
-            return text;
-        },
-        
-        getRates: function() {
-            return this._rates;
-        },
-        
-        _initializeRates: function() {
-            this._rates = RatesWidget.create({    
-                rateViewTemplate: '#petition-rates-tpl',
-
-                targetId: this.model.get('id'),
-                targetType: 'Petition',
-
-                canRateChecker: function() {
-                    return PetitionsList.getPetitionsCanBeRated();
-                }
-            });
-        },
-        
-        initialize: function() {
-            Aes.ItemView.prototype.initialize.apply(this, arguments);
-            
-            this._initializeRates();
+    PetitionsList.PetitionView = PetitionView.extend({
+        canRateChecker:  function() {
+            return PetitionsList.getPetitionsCanBeRated();
         }
     });
     
@@ -123,60 +33,8 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         shortContent: false
     });
     
-    var PetitionsFeedView = Aes.FeedView.extend({
-        template: '#petitions-feed-tpl',
-        itemView: PetitionsList.PetitionView,
-        
-        getFiltersConfig: function() {
-            return {
-                
-                enabled: true,
-
-                submitBtnText: 'Filter',
-
-                uiAttributes: {
-                    form: {
-                        class: 'span3 well'
-                    },
-                    inputs: {
-                        class: 'span12'
-                    }
-                },
-
-                fields: {
-                    title: {
-                        label: 'Petition title',
-                        type: 'text',
-                        
-                        filterOptions: {
-                            extendedFormat: true
-                        }
-                    },
-                    creator_name: {
-                        label: 'Authored by'
-                    },
-                    support: {
-                        label: 'Support type',
-                        type: 'radio-group',
-                        options: [
-                            {label: 'Any', value: 'any', checked: true},
-                            {label: 'Created by me', value: 'created_by_user'},
-                            {label: 'Supported by me', value: 'supported_by_user'}
-                        ]
-                    },
-                    creation_date: {
-                        label: 'Creation date',
-                        type: 'radio-group',
-                        options: [
-                            {label: 'Any', value: 'any', checked: true},
-                            {label: 'Today', value: 'today'},
-                            {label: 'This week', value: 'week'},
-                            {label: 'This month', value: 'month'}
-                        ]
-                    }
-                }  
-            };
-        }
+    PetitionsList.PetitionsFeedView = PetitionsFeedView.extend({
+        itemView: PetitionsList.PetitionView
     });
     
     var SupporterView = Aes.ItemView.extend({
@@ -204,7 +62,7 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
             }
             
             return this;
-        },       
+        }       
     });
     
     PetitionsList.DetailsLayout = Marionette.Layout.extend({
@@ -325,7 +183,7 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         this.petitions = new PetitionsCollection();
         this.petitions.filter.mandate_id = config.mandateId;
         
-        this.petitionsFeedView = new PetitionsFeedView({
+        this.petitionsFeedView = new PetitionsList.PetitionsFeedView({
             collection: this.petitions
         });
         

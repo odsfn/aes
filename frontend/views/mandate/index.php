@@ -10,6 +10,10 @@ $js = array(
     'aes:views/NoItemView.js',
     'aes:views/FeedView.js',
     'aes:views/TabsView.js',
+    'aes:models/Petition.js',
+    'aes:collections/Petitions.js',
+    'aes:views/PetitionView.js',
+    'aes:views/PetitionsFeedView.js',
     'modules/PetitionsList.js',
     'modules/MandateDetails.js',
     'modules/MandatesList.js'
