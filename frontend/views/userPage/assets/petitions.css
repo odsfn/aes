@@ -1,0 +1,35 @@
+/*
+ * Petitions
+ */
+.petition-create-btn {
+    display: none;
+}
+
+.petition .details .person-photo {
+    padding-left: 0.5%;
+}
+
+.petition .img-wrapper-tocenter {
+    width: 64px;
+    height: 64px;
+}
+
+.petition .person-photo.span1 {
+    width: 75px;
+}
+
+.petition .details > .span5 {
+    margin-left: 1%;
+}
+
+.petition .petition-rates {
+    margin-top: 10px;
+}
+
+div.tab-view[id^="createPetition"], div.tab-view[id^="discussion"] {
+    padding: 15px;
+}
+
+#petition-info {
+    margin-bottom: 20px;
+}

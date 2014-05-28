@@ -4,3 +4,5 @@ var PetitionsCollection = FeedCollection.extend({
     url: UrlManager.createUrlCallback('api/petition')
 });
 
+var Petitions = PetitionsCollection;
+

@@ -47,15 +47,6 @@
     font-size: larger;
 }
 
-.tabs-container > .nav-tabs {
-    margin-bottom: 0px;
-}
-
-.tabs-container .navbar-inner {
-    border-radius: 0px 0px 4px 4px;
-    border-top: none;
-}
-
 /*
  * Petitions
  */

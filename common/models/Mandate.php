@@ -151,4 +151,16 @@ class Mandate extends CActiveRecord implements iCommentable
         
         return false;
     }
+    
+    public function getUsersMandates($userId)
+    {
+        $candidates = Candidate::model()->findAllByAttributes(array('user_id' => (int)$userId));
+        $cand_ids = array();
+        
+        foreach ($candidates as $candidate) {
+            $cand_ids[] = $candidate->id;
+        }
+        
+        return $this->findAllByAttributes(array('candidate_id'=>$cand_ids));
+    }
 }

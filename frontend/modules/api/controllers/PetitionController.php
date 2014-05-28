@@ -13,7 +13,7 @@ class PetitionController extends RestController {
     
     protected $convertRestFilters = true;
 
-    public $acceptFilters = array('plain' => 'creator_name,support,creation_date', 'model' => 'title, mandate_id');
+    public $acceptFilters = array('plain' => 'creator_name,support,creation_date', 'model' => 'title, mandate_id, creator_id');
 
     public function getOutputFormatters() {
         return array(

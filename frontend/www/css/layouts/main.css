@@ -106,3 +106,15 @@ div.invalid input {
     font-size: 12px;
     line-height: 14px;
 }
+
+/**
+ *  TabsView
+ */
+.tabs-container > .nav-tabs {
+    margin-bottom: 0px;
+}
+
+.tabs-container .navbar-inner {
+    border-radius: 0px 0px 4px 4px;
+    border-top: none;
+}
