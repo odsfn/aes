@@ -27,17 +27,14 @@ class UserPageController extends SocialController {
     }
     
     public function actionPetitions() {
-        $usersMandates = 'false';
         
-        if ($uid = Yii::app()->user->id) {
-            $usersMandates = array(); 
-            $mandates = Mandate::model()->getUsersMandates($uid);
-            foreach ($mandates as $key => $mandate) {
-                $usersMandates[] = $mandate->id;
-            }
-            
-            $usersMandates = '[' . implode(',', $usersMandates) . ']';
+        $usersMandates = array(); 
+        $mandates = Mandate::model()->getUsersMandates($this->profile->user_id);
+        foreach ($mandates as $key => $mandate) {
+            $usersMandates[] = $mandate->id;
         }
+
+        $usersMandates = '[' . implode(',', $usersMandates) . ']';
         
         $this->render('petitions', array(
             'usersMandates' => $usersMandates
