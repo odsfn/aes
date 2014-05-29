@@ -96,8 +96,6 @@ App.module('UserRelatedPetitions', function(UserRelatedPetitions, App, Backbone,
                     }
                 }
             });
-
-            this.petitionsForMe.fetch();
         } else {
             this.mainView = this.myPetitionsView;
         }
@@ -105,9 +103,19 @@ App.module('UserRelatedPetitions', function(UserRelatedPetitions, App, Backbone,
     });
 
     this.on('start', function() {
-        this.myPetitions.fetch().done(function() {
-            UserRelatedPetitions.trigger('ready');
-        });
+        if (this.petitionsForMe)
+        {
+            $.when(
+                this.myPetitions.fetch(),    
+                this.petitionsForMe.fetch()
+            ).done(function() {
+                UserRelatedPetitions.trigger('ready');
+            });
+        } else {
+            this.myPetitions.fetch().done(function() {
+                UserRelatedPetitions.trigger('ready');
+            });
+        }
     });
 });
 

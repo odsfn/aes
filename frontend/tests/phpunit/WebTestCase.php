@@ -46,7 +46,7 @@ class WebTestCase extends CWebTestCase
                 $this->assertContains($expOption, $options);
         }
         
-        protected function waitForPresent($elementSel, $time = 3000, $interval = 250) {
+        protected function waitForPresent($elementSel, $time = 5000, $interval = 250) {
         
             for ($passedTime = 0; ; $passedTime+=$interval) {
                 if ($passedTime >= $time) 
@@ -55,32 +55,33 @@ class WebTestCase extends CWebTestCase
                 try {
                     if ($this->isElementPresent($elementSel)) break;
                 } catch (Exception $e) {}
-                    usleep($interval * 1000);
+                usleep($interval * 1000);
             }            
         }
         
-        protected function waitFor($callback, $message = 'timeout', $time = 3000, $interval = 250) {
+        protected function waitFor($callback, $message = 'timeout', $time = 5000, $interval = 250) {
             
             for ($passedTime = 0; ; $passedTime+=$interval) {
                 if ($passedTime >= $time) 
                     $this->fail($message);
                 
                 try {
-                    if ($callback()) break;
+                    if ($callback() === true) break;
                 } catch (Exception $e) {}
-                    usleep($interval * 1000);
+                usleep($interval * 1000);
             }            
             
         }
 
 
-        protected function waitForElementContainsText($elementSel, $text, $time = 3000, $interval = 250) {
+        protected function waitForElementContainsText($elementSel, $text, $time = 5000, $interval = 250) {
+            $text = '';
             for ($passedTime = 0; ; $passedTime+=$interval) {
                 if ($passedTime >= $time) 
-                    $this->fail("timeout");
+                    $this->fail("Timeout. Last text is '$text' ");
                 
                 try {
-                    if (strpos($this->getText($elementSel), $text) !== false) break;
+                    if (strpos($text = $this->getText($elementSel), $text) !== false) break;
                 } catch (Exception $e) {}
                     usleep($interval * 1000);
             }            
@@ -134,6 +135,20 @@ class WebTestCase extends CWebTestCase
             $this->assertTrue($this->isElementHasClass($sel, $targetClass));
         }
         
+        protected function assertElementHasNoClass($sel, $targetClass)
+        {
+            $this->assertFalse($this->isElementHasClass($sel, $targetClass));
+        }
+
+//      @todo: fix it
+//        protected function waitForElementHasNoClass($sel, $targetClass)
+//        {
+//            $that = $this;
+//            $this->waitFor(function() use(&$that, $sel, $targetClass) {
+//                return ($that->isElementHasClass($sel, $targetClass) === false);
+//            });
+//        }
+
         protected function getAttribute($sel, $attr) 
         {
             try {

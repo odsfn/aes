@@ -161,42 +161,55 @@ class PetitionsOnMandateDetailsTest extends WebTestCase
         $this->assertElementContainsText($this->getCssSel('petitionsFeed.item.support'), 'Petition supporters: 0');
         $this->assertFalse($this->isElementHasClass($this->getCssSel('petitionsFeed.item.supportBtn'), 'chosen'));
         
+        sleep(1);
         $this->click($this->getCssSel('petitionsFeed.item.supportBtn'));
-
+        sleep(1);
+        
         $this->waitForElementContainsText($this->getCssSel('petitionsFeed.item.support'), 'Petition supporters: 1');
         $this->assertElementHasClass($this->getCssSel('petitionsFeed.item.supportBtn'), 'chosen');
 
+        
         //switch to supported petition
+        sleep(1);
         $this->click($this->getCssSel('petitionsFeed.item.title'));
-
+        sleep(1);
+        
         //check that it is supported
         $this->waitForElementContainsText($this->getCssSel('petitionDetails.active.support'), 'Petition supporters: 1');
         $this->assertElementHasClass($this->getCssSel('petitionDetails.active.supportBtn'), 'chosen');
         $this->waitForCssCount($this->getCssSel('petitionDetails.active.supporters.supporter'), 1);
         
         //unsupport
+        sleep(1);
         $this->click($this->getCssSel('petitionDetails.active.supportBtn'));
-
+        sleep(1);
+        
         $this->waitForElementContainsText($this->getCssSel('petitionDetails.active.support'), 'Petition supporters: 0');
         $this->assertFalse($this->isElementHasClass($this->getCssSel('petitionDetails.active.supportBtn'), 'chosen'));
         $this->waitForCssCount($this->getCssSel('petitionDetails.active.supporters.supporter'), 0);
         
         //switch back to petitions feed
+        sleep(1);
         $this->click($this->getCssSel('tabs.petitions'));
-
+        sleep(1);
+        
         //so it is unsupported now
         $this->waitForElementContainsText($this->getCssSel('petitionsFeed.item.support'), 'Petition supporters: 0');
         $this->assertFalse($this->isElementHasClass($this->getCssSel('petitionsFeed.item.supportBtn'), 'chosen'));
 
         //support again
+        sleep(1);
         $this->click($this->getCssSel('petitionsFeed.item.supportBtn'));
-
+        sleep(1);
+        
         $this->waitForElementContainsText($this->getCssSel('petitionsFeed.item.support'), 'Petition supporters: 1');
         $this->assertElementHasClass($this->getCssSel('petitionsFeed.item.supportBtn'), 'chosen');
 
         //switch to opened tab with petition
+        sleep(1);
         $this->click($this->getCssSel('tabs.tab') . ':nth-of-type(3)');
-
+        sleep(1);
+        
         $this->waitForElementContainsText($this->getCssSel('petitionDetails.active.support'), 'Petition supporters: 1');
         $this->assertElementHasClass($this->getCssSel('petitionDetails.active.supportBtn'), 'chosen');
         $this->waitForCssCount($this->getCssSel('petitionDetails.active.supporters.supporter'), 1);
@@ -211,8 +224,10 @@ class PetitionsOnMandateDetailsTest extends WebTestCase
         $this->waitForElementContainsText($this->getCssSel('petitionsFeed.item.support'), 'Petition supporters: 1');
         $this->assertFalse($this->isElementHasClass($this->getCssSel('petitionsFeed.item.supportBtn'), 'chosen'));
 
+        sleep(1);
         $this->click($this->getCssSel('petitionsFeed.item.supportBtn'));
-
+        sleep(1);
+        
         $this->waitForElementContainsText($this->getCssSel('petitionsFeed.item.support'), 'Petition supporters: 2');
         $this->assertElementHasClass($this->getCssSel('petitionsFeed.item.supportBtn'), 'chosen');
     }
@@ -226,8 +241,10 @@ class PetitionsOnMandateDetailsTest extends WebTestCase
         $this->assertElementContainsText($this->getCssSel('petitionsFeed.item.support'), 'Petition supporters: 0');
         $this->assertFalse($this->isElementHasClass($this->getCssSel('petitionsFeed.item.supportBtn'), 'chosen'));
 
+        sleep(1);
         $this->click($this->getCssSel('petitionsFeed.item.supportBtn'));
-
+        sleep(1);
+        
         $this->assertElementContainsText($this->getCssSel('petitionsFeed.item.support'), 'Petition supporters: 0');
         $this->assertFalse($this->isElementHasClass($this->getCssSel('petitionsFeed.item.supportBtn'), 'chosen'));
 
@@ -235,8 +252,10 @@ class PetitionsOnMandateDetailsTest extends WebTestCase
         $this->open('mandate/index/details/1/');
         $this->assertPetitionsFeedPresent();
 
+        sleep(1);
         $this->click($this->getCssSel('petitionsFeed.item.supportBtn'));
-
+        sleep(1);
+        
         $this->assertElementContainsText($this->getCssSel('petitionsFeed.item.support'), 'Petition supporters: 0');
         $this->assertFalse($this->isElementHasClass($this->getCssSel('petitionsFeed.item.supportBtn'), 'chosen'));
     }
