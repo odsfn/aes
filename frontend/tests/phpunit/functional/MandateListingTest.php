@@ -56,7 +56,7 @@ class MandateListingTest extends WebTestCase {
         $this->waitForPresent('css=div.mandate');
         $this->waitForNotVisible('css=img.loader');
         
-        usleep(250000);
+        usleep(300000);
         
         $count = count($aliases);
         

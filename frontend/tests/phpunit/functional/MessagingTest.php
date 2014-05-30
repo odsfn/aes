@@ -98,6 +98,7 @@ class MessagingTest extends WebTestCase
     public function testSwapsConversationsToChats()
     {
         $this->login('truvazia@gmail.com', 'qwerty');
+        usleep(50000);        
         $this->open('messaging/index');
         
         $this->assertConversationsContainerShown();
@@ -223,6 +224,7 @@ class MessagingTest extends WebTestCase
     public function testChatting()
     {
         $this->login('truvazia@gmail.com', 'qwerty');
+        usleep(50000);
         $this->open('messaging/index/chat_with/2');
 
         $this->assertConversationsContainerShown();
@@ -258,6 +260,7 @@ class MessagingTest extends WebTestCase
     protected function clickConvHeader($index)
     {
         $this->click($this->getCssSel('chatTabs.tab') . ':nth-of-type(' . ($index+1) . ') > a');
+        usleep(50000);
     }    
     
     protected function waitForConversationsCount($count)
@@ -267,6 +270,7 @@ class MessagingTest extends WebTestCase
         $this->waitForElementContainsText($this->getCssSel('feedItemsCounter'), 'Found ' . $count . ' conversations');
 
         if ($count == 0) {
+            usleep(50000);
             $this->assertElementContainsText($this->getCssSel('feed'), 'No items found.');
         } else {
             $this->waitForCssCount($this->getCssSel('feed.conv'), $count);
@@ -285,7 +289,7 @@ class MessagingTest extends WebTestCase
         $this->waitForPresent($this->getCssSel('tabs.activeConv'));
         $this->waitForVisible($this->getCssSel('tabs.activeConv'));
         $this->waitForPresent($this->getCssSel('chatTabs.active'));
-
+        usleep(5000);
         $this->assertElementHasClass($this->getCssSel('chatTabs.active'), 'active');
     }
 
@@ -306,7 +310,7 @@ class MessagingTest extends WebTestCase
         $this->writeMsg($msg);
 
         $this->waitForMessagesCount($expCount);
-        
+        usleep(5000);
         $this->assertEquals($msg, $this->getMessage($currentCount)->text);
         $this->assertEquals($from, $this->getMessage($currentCount)->author);
     }
@@ -315,6 +319,7 @@ class MessagingTest extends WebTestCase
     {
         $this->type($this->getCssSel('chat.newPost.input'), $msg);
         $this->click($this->getCssSel('chat.newPost.sendBtn'));
+        usleep(50000);
     }
 
     protected function waitForMessagesCount($count, $time = 3000)
@@ -365,6 +370,7 @@ class MessagingTest extends WebTestCase
     protected function swapToConversations()
     {
         $this->click($this->getCssSel('tabs.conversations'));
+        usleep(50000);
         $this->assertVisible($this->getCssSel('feed'));
         $this->assertNotVisible($this->getCssSel('chat'));
     }
@@ -372,6 +378,7 @@ class MessagingTest extends WebTestCase
     protected function assertMessagesCountMenuIndicator($expCount)
     {
         $actualCount = $this->getMessagesCountMenuIndicator();
+        usleep(50000);
         $this->assertEquals($expCount, $actualCount);
     }
     
@@ -387,5 +394,6 @@ class MessagingTest extends WebTestCase
     protected function closeConv($index)
     {
         $this->click($this->getCssSel('chatTabs.tab') . ':nth-of-type(' . ($index+1) . ') > a > i.icon-remove');
+        usleep(50000);
     }
 }

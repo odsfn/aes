@@ -25,7 +25,9 @@ class UserPageTest extends WebTestCase {
     
     protected function openOwnPage() {
         $this->login();
+        usleep(100000);
         $this->waitForElementPresent('css=div.media.post');
+        usleep(75000);
     }
             
     function testUsersPageDisplayed() {
@@ -36,6 +38,7 @@ class UserPageTest extends WebTestCase {
     function testPostsAndCommentsRendered() {
         $this->open('userPage/1');
         $this->waitForElementPresent('css=div.media.post');
+        usleep(50000);
 	$this->assertCssCount('css=div.media.post', 5);
 	$this->assertVisible('css=div.media.post:nth-of-type(1)');
         $this->assertVisible('css=div.media.post:nth-of-type(2)');
@@ -48,35 +51,37 @@ class UserPageTest extends WebTestCase {
     function testOpacityOfRatesChangesWhenMouseEntersAndOuts() {
         $this->openOwnPage();
         $this->waitForElementPresent('css=div.media.post');
-        
+        usleep(50000);
         $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
         $this->mouseEnter("css=div.media.post .post-body .rate-control");
+        usleep(50000);
         $this->assertEquals("1", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
         $this->mouseLeave("css=div.media.post .post-body .rate-control");
+        usleep(50000);
         $this->assertEquals("0.25", $this->getEval("window.$('div.media.post .post-rate span').css('opacity')"));
     }
     
     function testControlsNotShowsForUnauthorizedUser() {
         $this->open('userPage/1');
         $this->waitForElementPresent('css=div.media.post');
-        
+        usleep(50000);
         $this->assertNotVisible('css=span.controls');
         
         $this->mouseOver("css=div.media.post .post-body");
-        
+        usleep(50000);
         $this->assertNotVisible('css=span.controls');
     }
     
     function testAddingPostsAndCommentsUnavailableForUnauthorizedUser() {
         $this->open('userPage/1');
         $this->waitForElementPresent('css=div.media.post');
-        
+        usleep(50000);
         $this->assertNotVisible('css=div.new-post');
     }
     
     function testControlsShowsForAuthorizedUser() {
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertNotVisible('css=span.controls');
         
         $this->mouseOver("css=div.media.post .post-body");
@@ -86,36 +91,38 @@ class UserPageTest extends WebTestCase {
     
     function testAddingPostAndCommentsAvailableForAuthorizedUser() {
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertVisible('css=div.new-post');        
     }
     
     function testPostRemoves(){
         $this->openOwnPage();
-        
+        usleep(150000);
         $this->assertCssCount('css=div.media.post', 5);
         $this->assertTextPresent('Aug 14, 2013 11:42:00 AM');
         $this->assertElementContainsText('css=#posts-counter-cont' ,'7 records');
         
         $this->mouseOver("css=div.media.post .post-body");
+        usleep(50000);
         $this->click("css=i.icon-remove");
+        usleep(50000);
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
         $this->waitForTextNotPresent('Aug 14, 2013 11:42:00 AM');
         $this->waitForElementNotPresent('css=div.loadmask');
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 4);
         $this->assertElementContainsText('css=#posts-counter-cont' ,'6 records');
     }
     
     function testCommentRemoves(){
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
         $this->assertTextPresent('Aug 08, 2013 07:46:00 PM');
         
-        $this->mouseOver("css=.comments div.media.post:nth-of-type(1) .post-body");
-        $this->click("css=.comments div.media.post:nth-of-type(1) i.icon-remove");
+        $this->mouseOver("css=.comments div.media.post:nth-of-type(1) .post-body");usleep(50000);
+        $this->click("css=.comments div.media.post:nth-of-type(1) i.icon-remove");usleep(50000);
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
         $this->waitForTextNotPresent('Aug 08, 2013 07:46:00 PM');
@@ -124,42 +131,42 @@ class UserPageTest extends WebTestCase {
     
     function testEditBoxOpensOnFocusToAddPostInput(){
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertNotVisible('css=.new-post:nth-of-type(1) textarea');
         $this->assertNotVisible('css=.new-post:nth-of-type(1) .controls');
         
         $this->click("css=#add-post-top .new-post input");
-        
+        usleep(50000);
         $this->waitForVisible('css=.new-post:nth-of-type(1) textarea');
         $this->waitForVisible('css=.new-post:nth-of-type(1) .controls');
         
         $this->fireEvent("css=#add-post-top .new-post textarea", "blur");
-        
+        usleep(50000);
         $this->waitForNotVisible('css=.new-post:nth-of-type(1) textarea');
         $this->waitForNotVisible('css=.new-post:nth-of-type(1) .controls');
     }
     
     function testEditBoxOpensOnFocusToAddCommentInput(){
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertNotVisible('css=div.media.post:nth-of-type(1) .new-post textarea');
         $this->assertNotVisible('css=div.media.post:nth-of-type(1) .new-post .controls');
         
         $this->fireEvent("css=.media.post:nth-of-type(1) .new-post input", "focus");
-        
+        usleep(50000);
         $this->waitForNotVisible("css=.media.post:nth-of-type(1) .new-post input");
         $this->waitForVisible('css=div.media.post:nth-of-type(1) .new-post textarea');
         $this->waitForVisible('css=div.media.post:nth-of-type(1) .new-post .controls');
         
         $this->fireEvent("css=.media.post:nth-of-type(1) .new-post textarea", "blur");
-        
+        usleep(50000);
         $this->waitForNotVisible('css=div.media.post:nth-of-type(1) .new-post textarea');
         $this->waitForNotVisible('css=div.media.post:nth-of-type(1) .new-post .controls');        
     }
     
     function testEditBoxConfirmsCancel(){
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
         
         $this->click("css=#add-post-top .new-post input");
@@ -169,13 +176,13 @@ class UserPageTest extends WebTestCase {
         
         $this->waitForNotVisible('css=.new-post:nth-of-type(1) textarea');
         $this->waitForNotVisible('css=.new-post:nth-of-type(1) .controls');
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
     }
     
     function testPostAdds(){
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
         
         $this->assertElementContainsText('css=#posts-counter-cont' ,'7 records');
@@ -195,7 +202,7 @@ class UserPageTest extends WebTestCase {
     
     function testCommentAdds(){
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->fireEvent("css=.media.post:nth-of-type(2) .new-post input", "focus");
         
         $this->waitForVisible("css=.media.post:nth-of-type(2) .new-post textarea");
@@ -204,14 +211,14 @@ class UserPageTest extends WebTestCase {
         
         $this->waitForNotVisible('css=div.media.post:nth-of-type(2) .new-post textarea');
         $this->waitForNotVisible('css=div.media.post:nth-of-type(2) .new-post .controls');
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 6);
         $this->assertElementContainsText('css=div.media.post:nth-of-type(2) .comments-feed div.media.post:nth-child(3)', 'Hello world!');
     }
     
     function testPostEdits() {
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
         
         $this->mouseOver("css=div.media.post:nth-of-type(2) .post-body");
@@ -224,14 +231,14 @@ class UserPageTest extends WebTestCase {
         
         //Checks that editBox closed
         $this->waitForCssCount('css=#posts-feed > div > div', 3);
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
         $this->assertElementContainsText('css=div.media.post:nth-of-type(2) .post-body', 'Hello world!');
     }
     
     function testCommentEdits() {
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
         
         $this->mouseOver("css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(2) .post-body");
@@ -251,13 +258,13 @@ class UserPageTest extends WebTestCase {
     
     function testCantEditPostOfOtherUsers(){
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->mouseOver("css=div.media.post:nth-of-type(1) .post-body");
-        
+        usleep(50000);
         $this->assertElementNotPresent('css=div.media.post:nth-of-type(1) span.controls .icon-pencil');
         
         $this->mouseOver("css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(1) .post-body");
-        
+        usleep(50000);
         $this->assertElementNotPresent('css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(1) span.controls .icon-pencil');
     }
     
@@ -265,7 +272,7 @@ class UserPageTest extends WebTestCase {
         $this->openOwnPage();
         $this->open('userPage/2');
         $this->waitForElementPresent('css=div.media.post');
-        
+        usleep(50000);
         //Can Edit
         
         $this->assertCssCount('css=div.media.post', 5);
@@ -280,7 +287,7 @@ class UserPageTest extends WebTestCase {
         
         //Checks that editBox closed
         $this->waitForCssCount('css=#posts-feed > div > div', 3);
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
         $this->assertElementContainsText('css=div.media.post:nth-of-type(2) .post-body', 'Hello world!');
         
@@ -291,6 +298,7 @@ class UserPageTest extends WebTestCase {
         
         $this->mouseOver("css=div.media.post:nth-child(2) .post-body");
         $this->click("css=div.media.post:nth-child(2) i.icon-remove");
+        usleep(50000);
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
         $this->waitForTextNotPresent('Aug 08, 2013 07:13:00 PM');
@@ -304,7 +312,7 @@ class UserPageTest extends WebTestCase {
         $this->waitForElementPresent('css=div.media.post');
         
         //Can Edit
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
         
         $this->mouseOver("css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(2) .post-body");
@@ -317,7 +325,7 @@ class UserPageTest extends WebTestCase {
         
         //Checks that editBox closed
         $this->waitForCssCount('css=div.media.post:nth-of-type(2) .comments-feed > div', 2);
-        
+        usleep(50000);
         $this->assertCssCount('css=div.media.post', 5);
         $this->assertElementContainsText('css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(2) .post-body', 'Hello world!');
         
@@ -325,6 +333,7 @@ class UserPageTest extends WebTestCase {
         
         $this->mouseOver("css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(2) .post-body");
         $this->click("css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(2) i.icon-remove");
+        usleep(50000);
         $this->assertTrue((bool)preg_match('/^You are going to delete the record\. Are you sure[\s\S]$/',$this->getConfirmation()));
         
         $this->waitForCssCount('css=div.media.post', 4);
@@ -335,10 +344,10 @@ class UserPageTest extends WebTestCase {
         $this->open('userPage/2');
         $this->waitForElementPresent('css=div.media.post');
         
-        $this->mouseOver("css=div.media.post:nth-of-type(1) .post-body");
+        $this->mouseOver("css=div.media.post:nth-of-type(1) .post-body");usleep(5000);
         $this->assertElementNotPresent('css=div.media.post:nth-of-type(1) .post-body span.controls i');
         
-        $this->mouseOver("css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(1) .post-body");
+        $this->mouseOver("css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(1) .post-body");usleep(5000);
         $this->assertElementNotPresent('css=div.media.post:nth-of-type(2) .comments div.media.post:nth-of-type(1) .post-body span.controls i');
         
     }
@@ -346,7 +355,7 @@ class UserPageTest extends WebTestCase {
     function testPressOnMoreButtonAppendsPosts() {
         $this->openOwnPage();
         $this->waitForElementPresent('css=div.media.post');
-        
+        usleep(50000);
         $this->assertElementContainsText('css=span.posts-count', '7');
         
         $this->assertCssCount('css=#posts-feed > div > div.media.post', 3);
@@ -355,6 +364,7 @@ class UserPageTest extends WebTestCase {
         
         $this->assertVisible('css=div.get-more');
         $this->click("css=div.get-more > div");
+        usleep(50000);
         $this->waitForNotVisible('css=div.get-more a');
         $this->waitForVisible('css=div.get-more span');
         $this->waitForCssCount('css=#posts-feed > div > div.media.post', 6);
@@ -384,7 +394,7 @@ class UserPageTest extends WebTestCase {
     
     function testPressUsersFilter() {
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->assertElementContainsText('css=span.posts-count', '7');
         
         $this->assertTextPresent('Jhon Lenon');
@@ -417,19 +427,19 @@ class UserPageTest extends WebTestCase {
     function testNotAuthUsersCantRatePosts() {
         $this->open('userPage/1');
         $this->waitForElementPresent('css=div.media.post');
-        
+        usleep(50000);
         $this->assertElementNotPresent('css=.post-rate span.chosen');
         
         $this->assertElementContainsText('css=span.icon-thumbs-up', '0');
         
         $this->click('css=span.icon-thumbs-up');
-        
+        usleep(50000);
         $this->assertElementContainsText('css=span.icon-thumbs-up', '0');
     }
     
     function testAuthUserCanRatePosts() {
         $this->openOwnPage();
-
+        usleep(50000);
         $this->assertElementContainsText('css=.post-rate:first span.icon-thumbs-up', '0');
         
         $this->click('css=.post-rate:first span.icon-thumbs-up');
@@ -452,7 +462,7 @@ class UserPageTest extends WebTestCase {
     
     function testOrder() {
         $this->openOwnPage();
-        
+        usleep(50000);
         $datesOrderAll = array(
             'Aug 14, 2013 11:42:00 AM', 'Aug 08, 2013 07:13:00 PM', 'Aug 08, 2013 10:42:00 AM',
             'Aug 07, 2013 10:12:00 AM', 'Aug 07, 2013 10:08:00 AM', 'Aug 07, 2013 10:05:00 AM',
@@ -484,25 +494,25 @@ class UserPageTest extends WebTestCase {
     
     function testOrderAfterAdd(){
         $this->openOwnPage();
-        
+        usleep(50000);
         $this->click("css=#add-post-top .new-post input");
         $this->waitForVisible("css=#add-post-top textarea");
         $this->type("css=#add-post-top textarea", $addedText = "Hello world! " . time());
         $this->click("css=#add-post-top button.post");
         
         $this->waitForNotVisible("css=#add-post-top textarea");
-        
+        usleep(5000);
         $this->assertElementContainsText('css=#posts-feed > div > div.media.post:nth-child(1)', $addedText);
         
         $this->open('userPage/1');
         $this->waitForElementPresent('css=div.media.post');
-        
+        usleep(5000);
         $this->assertElementContainsText('css=#posts-feed > div > div.media.post:nth-child(1)', $addedText);
     }
     
     function testRateShows() {
        $this->openOwnPage();
-       
+       usleep(5000);
        $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(2) > .media-body > .post-body > .post-after';
        
        $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "3");
@@ -520,7 +530,7 @@ class UserPageTest extends WebTestCase {
     
     function testRateAddPositive() {
        $this->openOwnPage();
-       
+       usleep(50000);
        $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(1) > .media-body > .post-body > .post-after';
        
        $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "0");
@@ -534,7 +544,7 @@ class UserPageTest extends WebTestCase {
     
     function testRateAddNegative() {
        $this->openOwnPage();
-       
+       usleep(50000);
        $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(1) > .media-body > .post-body > .post-after';
        
        $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "0");
@@ -548,7 +558,7 @@ class UserPageTest extends WebTestCase {
     
     function testRateRemovePositive() {
        $this->openOwnPage();
-       
+       usleep(50000);
        $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(2) > .media-body > .post-body > .post-after';
        
        $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "3");
@@ -565,7 +575,7 @@ class UserPageTest extends WebTestCase {
     
     function testRateChangesByClickingOnOposite() {
        $this->openOwnPage();
-       
+       usleep(50000);
        $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(2) > .media-body > .post-body > .post-after';
        
        $this->assertElementContainsText("$elementSelector .icon-thumbs-up", "3");
@@ -586,7 +596,7 @@ class UserPageTest extends WebTestCase {
     function testRateCantBeChangedByUnauthorized() {
         $this->open('userPage/1');
         $this->waitForElementPresent('css=div.media.post');
-
+        usleep(50000);
         $elementSelector = 'css=#posts-feed > div > div.media.post:nth-child(1) > .media-body > .post-body > .post-after';
         
         $this->assertElementContainsText("$elementSelector .icon-thumbs-down", "0");

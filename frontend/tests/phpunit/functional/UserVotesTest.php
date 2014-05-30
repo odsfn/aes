@@ -18,7 +18,9 @@ class UserVotesTest extends WebTestCase {
     
     public function testShowVotes() {
         $this->open('userPage/votes/3');
+        usleep(50000);
         $this->waitForTextPresent('Election 2', 4000);
+        usleep(50000);
         $this->assertElementContainsText('css=#votes-feed-container > div > div.items > div:nth-of-type(1) h4', 'Election 1');
         $this->assertElementContainsText('css=#votes-feed-container > div > div.items > div:nth-of-type(1) .votes-container > div > div:nth-of-type(1) a', '№2 Vasiliy Pedak');
         $this->assertElementContainsText('css=#votes-feed-container > div > div.items > div:nth-of-type(1) .votes-container > div > div:nth-of-type(2) a', '№1 Another User');
@@ -30,9 +32,11 @@ class UserVotesTest extends WebTestCase {
         
         $this->type("name=name", "2");
         $this->click("css=.btn.form-submit");
+        usleep(50000);
         $this->assertTextNotPresent('Election 1');
         $this->click("css=.btn.form-reset");
         $this->waitForTextPresent('Election 1');
+        usleep(50000);
         $this->assertTextPresent('Election 2');
     }
 }
