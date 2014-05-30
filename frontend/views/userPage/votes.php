@@ -4,6 +4,8 @@
  */
 $this->breadcrumbs->add('Votes', 'userPage/votes/' . $profile->user_id);
 
+$this->createWidget('CommentsMarionetteWidget')->register();
+
 $js = array(
     'aes:collections/FeedCollection.js',
     'aes:views/ItemView.js',
@@ -24,7 +26,7 @@ $this->widget('application.widgets.ClientApp', array(
     )
 ));
 
-$this->createWidget('CommentsMarionetteWidget')->register();
+//$this->createWidget('CommentsMarionetteWidget')->register();
 
 Yii::app()->clientScript->registerScript('starter',
     "App.start({

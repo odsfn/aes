@@ -165,25 +165,35 @@ class MarionetteWidget extends CWidget {
 
             $this->registerSelf();
 
-            echo file_get_contents(Yii::getPathOfAlias($this->basePath) . '/templates.html');
+            $this->publishTemplates();
             
-            if(count($this->checkForRoles)) {
-
-                $rolesToAdd = $this->performRolesCheck($this->checkForRoles);
-
-                if(count($rolesToAdd)) {
-
-                    $rolesToAdd = json_encode($rolesToAdd);
-
-                    $this->_clientScript->registerScript('addingRolesForWidget' . $this->id, "
-                        WebUser.addRoles($rolesToAdd);
-                    ", CClientScript::POS_HEAD);
-                }
-            }            
+            $this->assignRoles();
             
             self::$registered[] = $this->widgetName;
             
         }        
+    }
+    
+    protected function assignRoles()
+    {
+        if(count($this->checkForRoles)) {
+
+            $rolesToAdd = $this->performRolesCheck($this->checkForRoles);
+
+            if(count($rolesToAdd)) {
+
+                $rolesToAdd = json_encode($rolesToAdd);
+
+                $this->_clientScript->registerScript('addingRolesForWidget' . $this->id, "
+                    WebUser.addRoles($rolesToAdd);
+                ", CClientScript::POS_HEAD);
+            }
+        }         
+    }
+
+    protected function publishTemplates()
+    {
+        echo file_get_contents(Yii::getPathOfAlias($this->basePath) . '/templates.html');        
     }
     
     protected function registerDependentWidgets() {
@@ -271,6 +281,8 @@ class MarionetteWidget extends CWidget {
                 array($this->widgetName => $this->requires)
         );
 
+        Yii::log('Package will be registered by widget "' . $this->widgetName . '". All packages: ' . print_r($this->clientScript->packages, true));
+        
         $this->clientScript->registerPackage($this->widgetName);        
     }
     

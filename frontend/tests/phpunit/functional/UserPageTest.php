@@ -354,8 +354,8 @@ class UserPageTest extends WebTestCase {
 
     function testPressOnMoreButtonAppendsPosts() {
         $this->openOwnPage();
+        usleep(500000);
         $this->waitForElementPresent('css=div.media.post');
-        usleep(50000);
         $this->assertElementContainsText('css=span.posts-count', '7');
         
         $this->assertCssCount('css=#posts-feed > div > div.media.post', 3);
@@ -364,14 +364,15 @@ class UserPageTest extends WebTestCase {
         
         $this->assertVisible('css=div.get-more');
         $this->click("css=div.get-more > div");
-        usleep(50000);
-        $this->waitForNotVisible('css=div.get-more a');
-        $this->waitForVisible('css=div.get-more span');
+        
+        $this->waitForVisible('css=div.get-more span .loader');
         $this->waitForCssCount('css=#posts-feed > div > div.media.post', 6);
+        
+        usleep(50000);
         
         $this->assertVisible('css=div.get-more');
         $this->assertVisible('css=div.get-more a');
-        $this->assertNotVisible('css=div.get-more span');
+        $this->assertNotVisible('css=div.get-more span .loader');
         
         $this->assertTextPresent('Post 4');
         $this->assertTextPresent('Post 5');
