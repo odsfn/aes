@@ -24,7 +24,7 @@ App.on('start', function() {
 
     $('#mandates').on('click', 'a.route', function(e) {
         e.preventDefault();
-        App.router.navigate($(this).attr('href'), {trigger: true});
+        App.router.navigate($(this).attr('href'), {trigger: true, replace: true});
     });
 
     this.listenTo(modMands, 'ready', function() {

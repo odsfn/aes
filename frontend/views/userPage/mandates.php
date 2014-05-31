@@ -82,7 +82,7 @@ Yii::app()->clientScript->registerScript('starter',
 
 <script type="text/template" id="mandate-tpl">
     <div class="mandate">
-        <h4><a href="<%= UrlManager.createUrl('mandate/index/details/' + id + '/') %>" class="route"><%= name %></a></h4>
+        <h4><a href="<%= UrlManager.createUrl('mandate/index/details/' + id + '/elections') %>" class="route"><%= name %></a></h4>
         <div>
             <div><b>Owner</b>: <%= candidate.profile.displayName %></div>
             <div class="election-name"><b>Election name: </b><%= election.name %></div>

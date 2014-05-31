@@ -229,14 +229,13 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
     };
 
     this.viewPetitionDetails = function(mandateId, petitionId) {
-
         var tabId = 'petition-' + petitionId;
 
         //check for opened
         if (this.detailsLayout.tabs.currentView) {
             var existingTab = this.detailsLayout.tabs.currentView.tabViews.findByCustom(tabId);
             if (existingTab) {
-                existingTab.select();
+                existingTab.select({replace: true});
                 return;
             }
         }
@@ -256,7 +255,7 @@ App.module('MandateDetails', function(MandateDetails, App, Backbone, Marionette,
                    route: 'petition_' + petitionId
                 });
 
-                MandateDetails.detailsLayout.tabs.currentView.select(newTab);
+                MandateDetails.detailsLayout.tabs.currentView.select(newTab, {replace: true});
             });
         };
 

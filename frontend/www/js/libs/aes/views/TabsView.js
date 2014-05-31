@@ -42,7 +42,7 @@ Aes.TabsView = (function() {
          * Switches TabsView to specified tab ( makes it visible )
          * @param {String|TabView} tab Tab id or TabView to select
          */
-        select: function(tab) {
+        select: function(tab, options) {
             if (typeof tab === 'string') {
                tab = this.getTab(tab);
             }
@@ -51,7 +51,7 @@ Aes.TabsView = (function() {
             if(!shouldSelect)
                 return;
 
-            tab.select();
+            tab.select(options);
         },
 
         /**
@@ -151,8 +151,8 @@ Aes.TabsView = (function() {
             return true;
         },
 
-        onSelected: function(tab) {
-            this._processRoute(tab);
+        onSelected: function(tab, options) {
+            this._processRoute(tab, options);
         },
 
         onBeforeAdd: function(tab) {
@@ -226,14 +226,24 @@ Aes.TabsView = (function() {
             return false;
         },
 
-        _processRoute: function(tab) {
+        _processRoute: function(tab, options) {
             if(!this._routingConf) return;
 
             var router = this._routingConf.router || false;
             if(!tab.options.route || !router) return;
 
             var route = tab.options.route;
-            router.navigate(this._routingConf.routeRoot + route, {trigger: false});
+            var navOptions = {trigger: false, replace: true};
+            
+            if (options && options.replace) {
+                navOptions.replace = options.replace;
+            }
+            
+            if (options && options.trigger) {
+                navOptions.trigger = options.trigger;
+            }            
+            
+            router.navigate(this._routingConf.routeRoot + route, navOptions);
         },
 
         onShow: function() {
@@ -244,7 +254,7 @@ Aes.TabsView = (function() {
 
             var selected = this.getSelected();
             if(selected)
-                this.select(selected);
+                this.select(selected, {replace: true});
         },
 
         initialize: function(options) {
@@ -284,7 +294,7 @@ Aes.TabsView = (function() {
 
         contentView: null,
 
-        select: function() {
+        select: function(options) {
             var shouldSelect = this.triggerMethod('before:select');
             if(!shouldSelect)
                 return;
@@ -296,7 +306,7 @@ Aes.TabsView = (function() {
             this.titleView.select();
             this.selected = true;
 
-            this.options.tabsContainer.triggerMethod('selected', this);
+            this.options.tabsContainer.triggerMethod('selected', this, options);
         },
 
         unselect: function() {

@@ -141,7 +141,6 @@ App.module('MandatesList', function(MandatesList, App, Backbone, Marionette, $, 
     };
 
     this.viewPetitionDetails = function(mandId, petitionId) {
-        console.log('viewPetitionDetails for ' + petitionId + ' and mandate id: ' + mandId);
         this.modDetails.viewPetitionDetails(mandId, petitionId);
     };
 

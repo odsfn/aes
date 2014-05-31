@@ -72,13 +72,13 @@ class MessagingTest extends WebTestCase
         
         //Checks that shows this conversation afer opening all messages
         $this->open('messaging/index');
-        
+        $this->sleep(50);
         $this->assertConversationsContainerShown();
         $this->waitForConversationsCount(1);
-        
+        $this->sleep(250);
         //Open this conversation
         $this->click($this->getCssSel('feed.conv') . ':nth-of-type(1) div.post-content');
-        $this->sleep(250);
+        $this->sleep(500);
         $this->assertActiveChatWith('Another User');
         
         $this->assertTextPresent($msg1);
