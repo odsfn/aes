@@ -40,7 +40,7 @@ Yii::app()->clientScript->registerScript('starter',
 
 <script type="text/template" id="election-tpl">
     <div class="election">
-        <h4><a href="<%= UrlManager.createUrl('election/view/' + id) %>" target="_blank"><%= name %></a></h4>
+        <h4><a href="<%= UrlManager.createUrl('election/view/' + id) %>"><%= name %></a></h4>
         <div>
             <b>Status:</b>&nbsp;<span><%= textStatus %></span>
         </div>
@@ -50,7 +50,7 @@ Yii::app()->clientScript->registerScript('starter',
 
 <script type="text/template" id="voted-candidate-tpl">
     <div>
-        <b>Vote for the candidate <a href="<%= UrlManager.createUrl('election/candidates/' + election_id + '/details/' + id) %>" target="_blank">№<%= electoral_list_pos %>&nbsp;<%= profile.displayName %></a></b>
+        <b>Vote for the candidate <a href="<%= UrlManager.createUrl('election/candidates/' + election_id + '/details/' + id) %>">№<%= electoral_list_pos %>&nbsp;<%= profile.displayName %></a></b>
     </div>
     <div class="last">
         <div class="span11"><% if(vote_declined) { %><span class="label label-important declined-marker"><i class="icon-ban-circle"></i>&nbsp;Declined</span>&nbsp;<% } %><span class="muted">Given: <%= i18n.date(vote_date, 'full', 'full') %></span></div>

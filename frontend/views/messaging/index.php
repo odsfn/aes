@@ -111,7 +111,7 @@ if(defined('TEST_APP_INSTANCE') && TEST_APP_INSTANCE) {
             <div class="post-body">
             
                 <h5 class="media-heading">
-                    With <span class="user"><a href="<%= participant.pageUrl %>" target="_blank"><%= participant.displayName %></a></span>
+                    With <span class="user"><a href="<%= participant.pageUrl %>"><%= participant.displayName %></a></span>
                     <small>Last message from <%= lastMessage.user.displayName %> <a href="#<%= lastMessage.id %>"><%= i18n.date(created_ts, 'full', 'full') %> <% if(title && title !== '') { %>at "<%= title %>"<% }; %></a></small>
                     <i class="icon-bell pull-right <% if(hasUnviewedIncome) { %>visible<%}; %>"></i>
                 </h5>

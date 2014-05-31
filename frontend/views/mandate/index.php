@@ -147,7 +147,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
     </div>                       
 
     <div class="body">
-        <a href="<%= profile.pageUrl %>" target="_blank"><%= profile.displayName %></a> <br>
+        <a href="<%= profile.pageUrl %>"><%= profile.displayName %></a> <br>
 
         <div><b>Birth Day: </b><%= i18n.date(profile.birth_day, 'full') %></div>
 
@@ -193,7 +193,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
                 </div>
             </div>
             <div class="span5">
-                <h5><a href="<%= person.pageUrl %>" target="_blank"><%= person.displayName %></a></h5>
+                <h5><a href="<%= person.pageUrl %>"><%= person.displayName %></a></h5>
                 <p>
                     <b><% if(personType == 'creator') { %>Created<% } else { %>Addressed<% } %>:</b> 
                     <span><%= i18n.date(created_ts, 'full', 'full') %></span>
@@ -219,7 +219,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
                 </div>
             </div>
             <div class="span5">
-                <h5><a href="<%= person.pageUrl %>" target="_blank"><%= person.displayName %></a></h5>
+                <h5><a href="<%= person.pageUrl %>"><%= person.displayName %></a></h5>
                 <p>
                     <b><% if(personType == 'creator') { %>Created<% } else { %>Addressed<% } %>:</b> 
                     <span><%= i18n.date(created_ts, 'full', 'full') %></span>

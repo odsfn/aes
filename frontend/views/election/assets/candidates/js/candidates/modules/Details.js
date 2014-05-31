@@ -151,7 +151,7 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
         getTplStr: function() {
             return '<ul>'
                 + '<% _.each(items, function(item){ %>'
-                + '<li><a href="<%= UrlManager.createUrl("mandate/index/details/" + item.id) %>" target="_blank"><%= item.name %></a></li>'
+                + '<li><a href="<%= UrlManager.createUrl("mandate/index/details/" + item.id + "/") %>"><%= item.name %></a></li>'
                 + '<% }); %>'
             + '</ul>';
         }

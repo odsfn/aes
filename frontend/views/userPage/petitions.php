@@ -75,7 +75,7 @@ Yii::app()->clientScript->registerScript('starter',
                 </div>
             </div>
             <div class="span5">
-                <h5><a href="<%= person.pageUrl %>" target="_blank"><%= person.displayName %></a></h5>
+                <h5><a href="<%= person.pageUrl %>"><%= person.displayName %></a></h5>
                 <p>
                     <b><% if(personType == 'creator') { %>Created<% } else { %>Addressed<% } %>:</b>
                     <span><%= i18n.date(created_ts, 'full', 'full') %></span>

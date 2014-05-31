@@ -213,7 +213,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
         <div class="pull-right vote-cntr"></div>
 
         <div class="body">
-            <a href="<%= profile.pageUrl %>" target="_blank"><%= profile.displayName %></a> <% if(statusText === 'Registered') { %> <b>№<%= electoral_list_pos %></b> <% } %> <br>
+            <a href="<%= profile.pageUrl %>"><%= profile.displayName %></a> <% if(statusText === 'Registered') { %> <b>№<%= electoral_list_pos %></b> <% } %> <br>
 
             <div><b>Birth Day: </b><%= i18n.date(profile.birth_day, 'full') %></div>
 
