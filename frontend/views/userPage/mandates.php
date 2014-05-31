@@ -45,7 +45,7 @@ Yii::app()->clientScript->registerScript('starter',
 
 <script type="text/template" id="nomination-tpl">
     <div class="nomination">
-        <h4><a href="<%= UrlManager.createUrl('election/view/' + election.id) %>" target="_blank"><%= election.name %></a></h4>
+        <h4><a href="<%= UrlManager.createUrl('election/view/' + election.id) %>"><%= election.name %></a></h4>
         <div>
             <div class="date-time"><b>Date:</b>&nbsp;<span><%= i18n.date(status_changed_ts, 'full', 'full') %></span></div>
         </div>
@@ -82,7 +82,7 @@ Yii::app()->clientScript->registerScript('starter',
 
 <script type="text/template" id="mandate-tpl">
     <div class="mandate">
-        <h4><a href="<%= UrlManager.createUrl('mandate/index/details/' + id) %>" target="_blank" class="route"><%= name %></a></h4>
+        <h4><a href="<%= UrlManager.createUrl('mandate/index/details/' + id + '/') %>" class="route"><%= name %></a></h4>
         <div>
             <div><b>Owner</b>: <%= candidate.profile.displayName %></div>
             <div class="election-name"><b>Election name: </b><%= election.name %></div>
