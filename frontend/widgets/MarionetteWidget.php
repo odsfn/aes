@@ -297,7 +297,7 @@ class MarionetteWidget extends CWidget {
             }
         }
         
-        $packName = uniqid();
+        $packName = 'pk_' . uniqid();
         
         $this->clientScript->addPackage($packName, array(
             'baseUrl' => 'js/libs/aes',
