@@ -80,7 +80,7 @@ class RestController extends ERestController {
 
                 foreach ($this->restFilter as $filterName => $value) {
                     
-                    if (!is_array($value) && !key_exists('property', $value) && !key_exists('value', $value)) {
+                    if (!is_array($value) || !key_exists('property', $value) && !key_exists('value', $value)) {
                         $convertedFilter[] = array('property' => $filterName, 'value' => $value);    
                     } else {
                         $convertedFilter[] = $value;
