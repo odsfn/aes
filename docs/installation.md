@@ -1,6 +1,18 @@
 Installation
 =======
 
+System requirements
+
+PHP 5.3
+Mysql 5.1 - 5.5
+
+On staging Mysql version is
+ 5.1.73-cll - MySQL Community Server (GPLv2)
+
+On main developer's machine:
+ PHP 5.3.10-1ubuntu3.11
+ 5.5.37-0ubuntu0.12.04.1 - (Ubuntu)
+
 #For development
 
 0. 
