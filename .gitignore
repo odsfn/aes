@@ -4,16 +4,20 @@
 
 /common/config/env.php
 /common/config/local.php
+/common/config/local-test.php
 
 /backend/www/assets/
 
 /backend/config/env.php
 /backend/config/local.php
+/backend/config/local-test.php
 
 /frontend/www/assets/
 
 /frontend/config/env.php
 /frontend/config/local.php
+/frontend/config/local-test.php
+
 /console/config/env.php
 
 /console/runtime/
