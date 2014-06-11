@@ -5,6 +5,6 @@
  * @var Controller $this	
  */
 
-$this->renderPartial('userAccount.views.profile._form', array('model'=>$model));
+$this->renderPartial($this->module->registrationFormView, array('model'=>$model));
 ?>
 <div class="clearfix"></div>
