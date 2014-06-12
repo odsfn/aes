@@ -84,14 +84,38 @@ return array(
     
 	'modules' => array(
 	    'userAccount' => array(
-		'returnUrl' => '/userPage/index'
+                'controllerMap' => array(
+                    'registration' => array(
+                        'class' => 'frontend.controllers.AesRegistrationController'
+                    )
+                ),
+		'returnUrl' => '/userPage/index',
+                'registrationFormView' => 'frontend.views.userAccount.profile._form',
+                'registrationView' => 'frontend.views.userAccount.registration.registration'
 	    ),
 	    
 	    'gii' => array(
 		'generatorPaths' => array('bootstrap.gii'),
 	    ),
             
-            'api'
+            'api',
+            
+            'personIdentifier' => array(
+                'defaultIdentifierType' => 'passport',
+                'personIdentifiers' => array(
+                    'passport' => array(
+                        'rules' => array(
+                            array('serialNumber, code', 'required'),
+                            array('code', 'numerical', 'integerOnly' => true, 'min' => 0, 'max'=>9999)
+                        )
+                    ),
+                    'anotherId' => array(
+                        'rules' => array(
+                            array('someField, anotherField', 'required')
+                        )
+                    )
+                )                
+            )
 	),
     
         'params' => array(

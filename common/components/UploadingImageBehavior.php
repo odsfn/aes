@@ -10,13 +10,13 @@ class UploadingImageBehavior extends CActiveRecordBehavior
      * Name of the record's attribute with uploading image 
      * @var string
      */
-    public $uploadingImageAttr = 'uploadingPhoto';
+    public $uploadingImageAttr = 'uploadingImage';
     
     /**
      * Name of the record's attribute with uploaded image path 
      * @var string 
      */
-    public $imagePathAttr = 'photo';
+    public $imagePathAttr = 'image';
     
     /**
      * Attribute name with id of related AR
@@ -56,6 +56,15 @@ class UploadingImageBehavior extends CActiveRecordBehavior
      */
     public $thumbnailsToCreate = false;
     
+    public $uploadOnBeforeSave = true;
+    
+    protected $imageUploadingProcessed = false;
+
+    public function __construct()
+    {
+        $this->attachEventHandler('onAfterImageUploaded', array($this, 'afterImageUploadedHandler'));
+    }
+
     /**
      * Provides link to the image with specified size. Makes resizing if
      * needed
@@ -184,12 +193,55 @@ class UploadingImageBehavior extends CActiveRecordBehavior
     
     public function beforeSave($event)
     {
+        if(!$this->uploadOnBeforeSave)
+            return;
+        
+        $this->uploadImage();
+    }
+
+    public function afterSave($event)
+    {
+        if($this->uploadOnBeforeSave)
+            return;
+     
+        $this->uploadImage();
+    }
+    
+    protected function uploadImage()
+    {
+        if ($this->imageUploadingProcessed)
+            return;
+        
         $uploadingImage = CUploadedFile::getInstance($this->owner, $this->uploadingImageAttr);
 
         if ($uploadingImage) {
             $this->changeImage($uploadingImage);
         }
+        
+        $this->afterImageUploaded();
     }
-
+    
+    protected function afterImageUploaded()
+    {
+        $event = new CEvent($this);
+        $this->onAfterImageUploaded($event);
+    }
+    
+    public function onAfterImageUploaded($event) {
+        $this->imageUploadingProcessed = true;
+        $this->raiseEvent('onAfterImageUploaded', $event);
+    }
+    
+    public function afterImageUploadedHandler($event) {
+        if ($this->uploadOnBeforeSave)
+            return;
+        
+        if ($this->owner->isNewRecord && $this->owner->getPrimaryKey()) {
+            $this->owner->setIsNewRecord(false);
+            $this->owner->setScenario('update');
+        }
+        
+        $this->owner->save(false, array($this->imagePathAttr));        
+    }
 }
 

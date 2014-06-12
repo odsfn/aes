@@ -26,6 +26,7 @@ return array(
 		// define all available modules (if you do not set this, modules will be set from yii app config)
 		'modulePaths' => array(
 			'userAccount'      => 'frontend.modules.userAccount.migrations',
+                        'personIdentifier' => 'frontend.modules.personIdentifier.migrations'
 			// ...
 		),
 		// you can customize the modules migrations subdirectory which is used when you are using yii module config
