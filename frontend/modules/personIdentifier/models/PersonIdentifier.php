@@ -217,7 +217,7 @@ class PersonIdentifier extends CActiveRecord
     
     protected function isSerializedAttr($name)
     {
-        return (!in_array($name, $this->attributeNames()) && in_array($name, $this->typeAttributeNames));
+        return (!in_array($name, $this->attributeNames()) && in_array($name, $this->getTypeAttributeNames()));
     }
     
     protected static function getPersonIdentifiersConfig()
