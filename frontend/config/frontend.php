@@ -100,22 +100,7 @@ return array(
             
             'api',
             
-            'personIdentifier' => array(
-                'defaultIdentifierType' => 'passport',
-                'personIdentifiers' => array(
-                    'passport' => array(
-                        'rules' => array(
-                            array('serialNumber, code', 'required'),
-                            array('code', 'numerical', 'integerOnly' => true, 'min' => 0, 'max'=>9999)
-                        )
-                    ),
-                    'anotherId' => array(
-                        'rules' => array(
-                            array('someField, anotherField', 'required')
-                        )
-                    )
-                )                
-            )
+            'personIdentifier' => require('in-frontend/personIdentifier.php')
 	),
     
         'params' => array(

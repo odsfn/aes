@@ -52,8 +52,7 @@
             
             <div class="span6">
                 <h5>Person Identifier</h5>
-                <?php // $this->renderPartial('frontend.views.userAccount.personIdentifiers._formFields', array('model'=> $personIdent, 'form' => $form)); ?>    
-                <?php $this->renderPartial('personIdentifier.views.personIdentifiers._formFields', array('model'=> $personIdent, 'form' => $form)); ?>    
+                <?php $this->widget('personIdentifier.widgets.IdentifierInput', array('identifier' => $personIdent, 'form' => $form)); ?>
             </div>
             
         </div>

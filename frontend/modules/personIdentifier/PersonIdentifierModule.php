@@ -14,6 +14,12 @@ class PersonIdentifierModule extends CWebModule
     
     public $imagesDir = '/uploads/person_identifiers';    
     
+    /**
+     * Path alias to custom identifiers
+     * @var string
+     */
+    public $customIdentifiersPath = 'personIdentifier.identifiers';
+
     public function init()
     {
         // this method is called when the module is being created
@@ -21,6 +27,7 @@ class PersonIdentifierModule extends CWebModule
         // import the module-level models and components
         $this->setImport(array(
             'personIdentifier.models.*',
+            'personIdentifier.widgets.*'
         ));
     }
 
@@ -64,5 +71,4 @@ class PersonIdentifierModule extends CWebModule
 
         return Yii::createComponent($config);
     }
-
 }
