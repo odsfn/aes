@@ -14,7 +14,7 @@ class RegistrationTest extends WebTestCase
         $this->deleteFile($logFilePath);
         
         $identifiersImagesDirPath = $this->identifiersImagesDirPath = Yii::getPathOfAlias('frontend.www') . Yii::app()->getModule('personIdentifier')->imagesDir;
-        self::removeDirectory($identifiersImagesDirPath);
+//        self::removeDirectory($identifiersImagesDirPath);
     }
             
     function testRegistration() 
@@ -114,6 +114,74 @@ class RegistrationTest extends WebTestCase
         $this->checkLogin();         
     }
 
+    function testPassportRfIdent()
+    {
+        $this->goToRegistration();
+        
+        $this->fillProfile();
+        
+        $this->switchIdentifier(Yii::app()->getModule('personIdentifier')->personIdentifiers['passport_rf']['caption']);
+        
+        $this->assertTextPresent('Серия');
+        $this->assertTextPresent('Номер');
+        $this->assertTextPresent('Дата выдачи');
+        $this->assertTextPresent('Орган, осуществивший выдачу');
+        
+        $this->type("id=PersonIdentifier_uploadingImage", $this->getFixtureFilePath());
+        
+        $this->click("css=button[type='submit']");
+        $this->waitForPageToLoad();
+        
+        $this->assertTextPresent('Please fix the following input errors:');
+        $this->assertTextPresent('Серия is invalid.');
+        $this->assertTextPresent('Серия cannot be blank.');
+        $this->assertTextPresent('Номер is invalid.');
+        $this->assertTextPresent('Номер cannot be blank.');
+        $this->assertTextPresent('The format of Дата выдачи is invalid.');
+        $this->assertTextPresent('Дата выдачи cannot be blank.');
+        $this->assertTextPresent('Орган, осуществивший выдачу cannot be blank.');
+
+        $this->assertValue('id=PersonIdentifier_type', 'passport_rf');
+        
+        $this->type("id=PersonIdentifier_serial", "абвг");
+        $this->type("id=PersonIdentifier_number", "1234");
+        
+        $this->click("id=PersonIdentifier_issued");
+        
+        $this->assertElementPresent('css=div.datepicker.datepicker-dropdown.dropdown-menu');
+        $this->assertVisible('css=div.datepicker.datepicker-dropdown.dropdown-menu');
+        $this->click("css=td.day.old");
+
+        $this->click("id=PersonIdentifier_issuer");
+//        $this->assertNotVisible('css=div.datepicker.datepicker-dropdown.dropdown-menu');
+        
+        $this->type("id=PersonIdentifier_issuer", "Отделом внутренних дел, такого-то города");
+        
+        $this->click("css=button[type='submit']");
+        $this->waitForPageToLoad();
+        
+        $this->assertTextPresent('Please fix the following input errors:');
+        $this->assertTextPresent('Серия is invalid.');
+        $this->assertTextPresent('Номер is invalid.');
+        
+        $this->assertTextNotPresent('The format of Дата выдачи is invalid.');
+        $this->assertTextNotPresent('Дата выдачи cannot be blank.');
+        $this->assertTextNotPresent('Орган, осуществивший выдачу cannot be blank.');
+
+        $this->type("id=PersonIdentifier_serial", "1234");
+        $this->type("id=PersonIdentifier_number", "123456");
+        $this->type("id=PersonIdentifier_uploadingImage", $this->getFixtureFilePath());
+        
+        $this->click("css=button[type='submit']");
+        $this->waitForPageToLoad("15000");
+
+        $this->assertTextNotPresent('Please fix the following input errors:');
+        
+        $this->activate();
+        
+        $this->checkLogin();        
+    }
+    
     protected function truncateTables()
     {
         Yii::app()->db->createCommand('SET foreign_key_checks = 0;')->execute();
@@ -141,7 +209,7 @@ class RegistrationTest extends WebTestCase
     public static function removeDirectory($directory)
     {
         if (is_dir($directory)) {
-            chmod($directory, 0777);
+            @chmod($directory, 0777);
         }
         
         $items=glob($directory.DIRECTORY_SEPARATOR.'{,.}*',GLOB_MARK | GLOB_BRACE);
@@ -152,7 +220,7 @@ class RegistrationTest extends WebTestCase
             if(substr($item,-1)==DIRECTORY_SEPARATOR)
                 self::removeDirectory($item);
             else {
-                chmod($item, 0777);
+                @chmod($item, 0777);
                 unlink($item);
             }
         }
@@ -210,6 +278,9 @@ class RegistrationTest extends WebTestCase
         $this->select("id=PersonIdentifier_type", 'label=' . $type);
         
         $ident = new PersonIdentifier;
+        
+        $type = array_search($type, PersonIdentifier::getTypesCaptions());
+        
         $ident->type = $type;
         $attrs = $ident->getTypeAttributeNames();
         

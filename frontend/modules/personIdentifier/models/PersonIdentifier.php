@@ -37,6 +37,26 @@ class PersonIdentifier extends CActiveRecord
         return array_keys(self::getPersonIdentifiersConfig());
     }
 
+    public static function getTypesCaptions()
+    {
+        $values = self::getTypes();
+        
+        $labels = array();
+        
+        foreach ($values as $type) {
+            $typeConf = self::getPersonIdentifiersConfig($type);
+            
+            if (isset($typeConf['caption']) && !empty($typeConf['caption'])) {
+                $labels[] = $typeConf['caption'];
+            } else {
+                $labels[] = $type;
+            }
+        }
+        
+        return array_combine($values, $labels);
+    }
+
+
     /**
      * @return string the associated database table name
      */
@@ -109,14 +129,16 @@ class PersonIdentifier extends CActiveRecord
      */
     public function attributeLabels()
     {
-        return array(
-            'id' => 'ID',
-            'profile_id' => 'Profile',
-            'status' => 'Status',
-            'last_update_ts' => 'Last Update Ts',
-            'type' => 'Type',
-            'data' => 'Data',
-            'uploadingImage' => 'Scan copy or photo of document'
+        return array_merge(
+            array(
+                'id' => 'ID',
+                'profile_id' => 'Profile',
+                'status' => 'Status',
+                'last_update_ts' => 'Last Update Ts',
+                'type' => 'Type',
+                'uploadingImage' => 'Scan copy or photo of document'
+            ),
+            $this->getTypeAttributeLabels()
         );
     }
 
@@ -184,6 +206,19 @@ class PersonIdentifier extends CActiveRecord
         
         return $attrs;
     }
+    
+    public function getTypeAttributeLabels()
+    {
+        $labels = array();
+        
+        $conf = self::getPersonIdentifiersConfig($this->type);
+        
+        if (isset($conf['labels'])) {
+            $labels = $conf['labels'];
+        }
+        
+        return $labels;
+    }
 
     public function getData()
     {
@@ -220,12 +255,16 @@ class PersonIdentifier extends CActiveRecord
         return (!in_array($name, $this->attributeNames()) && in_array($name, $this->getTypeAttributeNames()));
     }
     
-    protected static function getPersonIdentifiersConfig()
+    protected static function getPersonIdentifiersConfig($type = null)
     {
         $identifiers = Yii::app()->getModule('personIdentifier')->personIdentifiers;
         
         if (!$identifiers || count($identifiers) === 0) {
             throw new CException('PersonIdentifier types not specified in config!');
+        }
+        
+        if ($type) {
+            return $identifiers[$type];
         }
         
         return $identifiers;

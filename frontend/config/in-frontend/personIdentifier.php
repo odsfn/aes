@@ -14,21 +14,37 @@ return array(
         'anotherId' => array(
             'rules' => array(
                 array('someField, anotherField', 'required')
-            )
+            ),
+            'form' => array(
+                'popover' => array(
+                    'someField' => array(
+                        'img' => 'Passport_RF.jpg'
+                    )
+                )
+            )            
         ),
         'passport_rf' => array(
+            'caption' => 'Пасспорт гражданина Российской Федерации', 
             'rules' => array(
                 array('serial', 'match', 'pattern' => '/\d{4}/', 'allowEmpty' => false),
                 array('number', 'match', 'pattern' => '/\d{6}/', 'allowEmpty' => false),
                 array('issued', 'date', 'format' => 'MM/dd/yyyy', 'allowEmpty' => false),
                 array('serial, number, issued, issuer', 'required')
             ),
-//                        'labels' => array(
-//                            'serial' => 'Серия',
-//                            'code' => 'Код',
-//                            'issued' => 'Дата выдачи',
-//                            'issuer' => 'Орган, осуществивший выдачу'
-//                        ),
+            'form' => array(
+                'popover' => array(
+                    'serial, number' => array(
+                        'img' => 'Passport_RF.jpg',
+                        'title' => 'Document fields example',
+                    )
+                )
+            ),
+            'labels' => array(
+                'serial' => 'Серия',
+                'number' => 'Номер',
+                'issued' => 'Дата выдачи',
+                'issuer' => 'Орган, осуществивший выдачу'
+            ),
 //                        'fieldTypes' => array(
 //                            'date' => 'datePicker',
 //                            'issuer' => 'textarea'

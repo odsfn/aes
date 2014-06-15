@@ -18,9 +18,7 @@ if (empty($form)) {
 
 echo $form->fileFieldRow($model,'uploadingImage',array('class'=>'span12'));
 
-$types = array_combine(PersonIdentifier::getTypes(), PersonIdentifier::getTypes());
-
-echo $form->dropDownListRow($model, 'type', $types, array('class'=>'span12'));
+echo $form->dropDownListRow($model, 'type', PersonIdentifier::getTypesCaptions(), array('class'=>'span12'));
 
 ?>
 <script type="text/javascript">
