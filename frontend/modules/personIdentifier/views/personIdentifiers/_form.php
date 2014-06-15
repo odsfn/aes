@@ -23,12 +23,18 @@ echo $form->dropDownListRow($model, 'type', PersonIdentifier::getTypesCaptions()
 ?>
 <script type="text/javascript">
     $('#PersonIdentifier_type').change(function() {
-        $('#identifier-input-container').css('cursor', 'wait');
+        $('#identifier-input-container').css({
+            'cursor': 'wait',
+            'opacity': 0.75
+        });
         $('#identifier-input-container').load(
             '<?= $this->owner->createUrl('/personIdentifier/types/getFormAttrs/'); ?>',
             {type: this.value},
             function() {
-                $('#identifier-input-container').css('cursor', 'default');
+                $('#identifier-input-container').css({
+                    'cursor': 'default',
+                    'opacity': 1
+                });
             }
         );
     });
