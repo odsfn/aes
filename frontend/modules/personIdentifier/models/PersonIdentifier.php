@@ -250,6 +250,11 @@ class PersonIdentifier extends CActiveRecord
         }
     }
     
+    public function getTypeConfig()
+    {
+        return self::getPersonIdentifiersConfig($this->type);
+    }
+    
     protected function isSerializedAttr($name)
     {
         return (!in_array($name, $this->attributeNames()) && in_array($name, $this->getTypeAttributeNames()));

@@ -182,6 +182,29 @@ class RegistrationTest extends WebTestCase
         $this->checkLogin();        
     }
     
+    public function testPopup()
+    {
+        $this->goToRegistration();
+        
+        $this->switchIdentifier(Yii::app()->getModule('personIdentifier')->personIdentifiers['passport_rf']['caption']);
+        
+        $popupSel = 'css=img[src$="Passport_RF.jpg"]';
+        
+        $this->click("id=PersonIdentifier_serial");
+        $this->assertElementPresent($popupSel);
+        $this->assertVisible($popupSel);
+        
+//        $this->triggerJqueryEvent('css=#PersonIdentifier_serial', 'focusout');
+//        $this->assertNotVisible($popupSel);
+//        
+//        $this->click("id=PersonIdentifier_number");
+//        $this->assertElementPresent($popupSel);
+//        $this->assertVisible($popupSel);
+//        
+//        $this->triggerJqueryEvent('css=#PersonIdentifier_serial', 'focusout');
+//        $this->assertNotVisible($popupSel);
+    }
+    
     protected function truncateTables()
     {
         Yii::app()->db->createCommand('SET foreign_key_checks = 0;')->execute();

@@ -11,7 +11,6 @@ class IdentifierInput extends CWidget
     
     public $ajax = false;
 
-
     public function run()
     {
         $view = 'personIdentifier.views.personIdentifiers._form';
@@ -20,6 +19,7 @@ class IdentifierInput extends CWidget
         if (!$this->ajax)
             echo '<div id="identifier-input-container">';
         
+        $this->initPopover();
         $output = $this->renderPartial($view, array('model'=> $this->identifier, 'form' => $this->form, 'fieldsView' => $fieldsView), true, $this->ajax);
         
         if ($this->ajax)
@@ -29,6 +29,50 @@ class IdentifierInput extends CWidget
         
         if (!$this->ajax)
             echo '</div>';
+    }
+    
+    protected function initPopover()
+    {
+        $conf = $this->identifier->getTypeConfig();
+        if (!isset($conf['form']['popover'])) 
+            return;
+        
+        $popoverConf = array();
+        
+        foreach ($conf['form']['popover'] as $attrs => $conf) {
+            foreach (AESHelper::explode($attrs) as $attr) {
+                if (!isset($conf['title']))
+                    $conf['title'] = 'Document example';
+                
+                $popoverConf[] = array_merge(array(
+                    'attr' => $attr
+                ), $conf);
+            }
+        }
+        
+        Yii::app()->clientScript->registerScriptFile(
+            Yii::app()->assetManager->publish(Yii::getPathOfAlias('personIdentifier.assets') . '/popupdetails.js')
+        );
+        
+        foreach ($popoverConf as $index => $conf) {
+            if (!isset($conf['img'])) {
+                unset($popoverConf[$index]);
+                continue;
+            }
+            
+            $imgPath = Yii::getPathOfAlias(Yii::app()->getModule('personIdentifier')->customIdentifiersPath . '.' . $this->identifier->type ) . '/' . $conf['img'];
+            
+            if (!file_exists($imgPath)) {
+                unset($popoverConf[$index]);
+                continue;
+            }
+            
+            $imgUrl = Yii::app()->assetManager->publish($imgPath);
+            
+            $popoverConf[$index]['img'] = $imgUrl;
+        }
+        
+        Yii::app()->clientScript->registerScript(uniqid(), 'PersonIdentifier.initPopups(' . CJavaScript::encode($popoverConf) . ');');
     }
     
     protected function getIdentifierFieldsView($identifier)
