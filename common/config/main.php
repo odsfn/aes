@@ -30,6 +30,7 @@ return array(
 		'application.extensions.*',
 		'application.helpers.*',
 		'application.models.*',
+                'application.modules.personIdentifier.models.PersonIdentifier',
                 'application.modules.userAccount.models.UserAccount',
             
 		'common.extensions.YiiMailer.YiiMailer'

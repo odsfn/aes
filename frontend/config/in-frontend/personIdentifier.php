@@ -44,11 +44,7 @@ return array(
                 'number' => 'Номер',
                 'issued' => 'Дата выдачи',
                 'issuer' => 'Орган, осуществивший выдачу'
-            ),
-//                        'fieldTypes' => array(
-//                            'date' => 'datePicker',
-//                            'issuer' => 'textarea'
-//                        )
+            )
         )
     )
 );
