@@ -9,6 +9,7 @@ class ElectionAdminsTest extends WebTestCase {
         'user' => 'userAccount.models.UserAccount',
         'user_identity' => 'userAccount.models.Identity',
         'user_profile' => 'userAccount.models.Profile',
+        'personIdentifier' => 'personIdentifier.models.PersonIdentifier',
         'election'     => 'Election',
         'AuthAssignment' => 'AuthAssignment',
         'election_auth_assignment' => ':election_auth_assignment',

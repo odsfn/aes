@@ -7,6 +7,7 @@ class MessagingTest extends WebTestCase
 
     public $fixtures = array(
         'user_profile' => 'userAccount.models.Profile',
+        'personIdentifier' => 'personIdentifier.models.PersonIdentifier',
         'conversation' => 'Conversation',
         'conversation_participant' => 'ConversationParticipant',
         'message' => 'Message',

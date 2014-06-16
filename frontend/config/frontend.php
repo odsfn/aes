@@ -35,6 +35,7 @@ return array(
     ),
 
     'import' => array(
+//        'personIdentifier.models.PersonIdentifier',
         'userAccount.models.UserAccount',
         'userAccount.models.Profile',
         'ext.galleryManager.models.*',
@@ -83,6 +84,8 @@ return array(
 	),
     
 	'modules' => array(
+            'personIdentifier' => require('in-frontend/personIdentifier.php'),
+            
 	    'userAccount' => array(
                 'controllerMap' => array(
                     'registration' => array(
@@ -91,16 +94,17 @@ return array(
                 ),
 		'returnUrl' => '/userPage/index',
                 'registrationFormView' => 'frontend.views.userAccount.profile._form',
-                'registrationView' => 'frontend.views.userAccount.registration.registration'
+                'registrationView' => 'frontend.views.userAccount.registration.registration',
+                'profileCustomRelations' => array(
+                    'personIdentifier' => array('CHasOneRelation', 'PersonIdentifier', 'profile_id')
+                )
 	    ),
 	    
 	    'gii' => array(
 		'generatorPaths' => array('bootstrap.gii'),
 	    ),
             
-            'api',
-            
-            'personIdentifier' => require('in-frontend/personIdentifier.php')
+            'api'
 	),
     
         'params' => array(

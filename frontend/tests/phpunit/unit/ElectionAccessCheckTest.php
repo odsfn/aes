@@ -6,6 +6,10 @@
 class ElectionAccessCheckTest extends CDbTestCase {
     
     protected $fixtures = array(
+        'user' => 'userAccount.models.UserAccount',
+        'user_identity' => 'userAccount.models.Identity',
+        'user_profile' => 'userAccount.models.Profile',
+        'personIdentifier' => 'personIdentifier.models.PersonIdentifier',
         'election' => 'Election',
         'election_auth_assignment' => ':election_auth_assignment',
         'AuthAssignment'   => ':AuthAssignment'

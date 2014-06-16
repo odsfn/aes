@@ -213,6 +213,7 @@ class RegistrationTest extends WebTestCase
         Yii::app()->db->createCommand('TRUNCATE user_identity')->execute();
         Yii::app()->db->createCommand('TRUNCATE user_profile')->execute();
         Yii::app()->db->createCommand('TRUNCATE user_identity_confirmation')->execute();
+        Yii::app()->db->createCommand('TRUNCATE personIdentifier')->execute();
         
         Yii::app()->db->createCommand('SET foreign_key_checks = 1;')->execute();        
     }

@@ -8,6 +8,7 @@ class UserVotesTest extends WebTestCase {
         'user' => 'userAccount.models.UserAccount',
         'user_identity' => 'userAccount.models.Identity',
         'user_profile' => 'userAccount.models.Profile',
+        'personIdentifier' => 'personIdentifier.models.PersonIdentifier',
         'target'       => 'Target',
         'election'     => 'Election',
         'candidate'    => array('Candidate', 'functional/userVotes/candidate'),

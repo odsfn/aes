@@ -36,7 +36,35 @@
 				'email', 'mobile_phone'
 			    ),
 			)); ?>
-			
+
+			<h5 data-toggle="#personIdentifier"><?= Yii::t('userPage', 'Person identifier'); ?></h5>
+
+			<?php $this->widget('bootstrap.widgets.TbDetailView', array(
+			    'htmlOptions' => array(
+				'id' => 'person-identifier'
+			    ),
+			    'type'  => 'condensed',
+			    'data'=>$profile->personIdentifier,
+			    'attributes'=>  array_merge(
+                                array(
+                                    array(
+                                        'name' => 'status',
+                                        'value'=> $profile->personIdentifier->statusLabel
+                                    ), 
+                                    array(
+                                        'name' => 'type',
+                                        'value'=> $profile->personIdentifier->typeLabel
+                                    ), 
+                                    array(
+                                        'name' => 'image',
+                                        'type' => 'raw',
+                                        'value'=> "<a href=\"{$profile->personIdentifier->imageUrl}\" target=\"_blank\">Open ( in new tab )</a>"
+                                    ),
+                                ),
+                                $profile->personIdentifier->getTypeAttributeNames()
+                            ),
+			)); ?>                        
+                        
 		    </div>
 		</div>
 		

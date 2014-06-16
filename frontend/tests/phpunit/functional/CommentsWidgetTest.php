@@ -8,7 +8,8 @@ class CommentsWidgetTest extends WebTestCase {
     public $fixtures = array(
         'user' => 'userAccount.models.UserAccount',
         'user_identity' => 'userAccount.models.Identity',
-        'user_profile' => 'userAccount.models.Profile'        
+        'user_profile' => 'userAccount.models.Profile',
+        'personIdentifier' => 'personIdentifier.models.PersonIdentifier',
     );
     
     protected function login() {

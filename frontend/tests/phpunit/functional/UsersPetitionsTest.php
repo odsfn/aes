@@ -3,6 +3,7 @@ class UsersPetitionsTest extends WebTestCase
 {
     protected $fixtures = array(
         'user_profile' => 'userAccount.models.Profile',
+        'personIdentifier' => 'personIdentifier.models.PersonIdentifier',
         'target'       => array('Target', 'functional/mandateListing/target'),
         'election'     => array('Election', 'functional/mandateListing/election'),
         'mandate'      => array('Mandate', 'functional/petitionsOnMandateDetails/mandate'),

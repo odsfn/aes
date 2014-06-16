@@ -9,6 +9,7 @@ class ElectionRegistrationTest extends WebTestCase {
         'user' => 'userAccount.models.UserAccount',
         'user_identity' => 'userAccount.models.Identity',
         'user_profile' => 'userAccount.models.Profile',
+        'personIdentifier' => 'personIdentifier.models.PersonIdentifier',
         'election'     => 'Election',
         'elector'      => 'Elector',
         'AuthAssignment' => 'AuthAssignment',

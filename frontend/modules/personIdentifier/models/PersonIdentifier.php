@@ -56,8 +56,33 @@ class PersonIdentifier extends CActiveRecord
         return array_combine($values, $labels);
     }
 
+    public static function getStatusLabels()
+    {
+        return array(
+            self::STATUS_APPLIED => 'Applied',
+            self::STATUS_REJECTED=> 'Rejected',
+            self::STATUS_VERIFIED=> 'Verified'
+        );
+    }
 
-    /**
+    public function getStatusLabel()
+    {
+        $labels = self::getStatusLabels();
+        return $labels[$this->status];
+    }
+
+    public function getTypeLabel()
+    {
+        $labels = self::getTypesCaptions();
+        return $labels[$this->type];
+    }
+
+    public function getImageUrl()
+    {
+        return Yii::app()->baseUrl . Yii::app()->getModule('personIdentifier')->imagesDir . '/' . $this->image;
+    }
+
+        /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -234,7 +259,7 @@ class PersonIdentifier extends CActiveRecord
     public function __get($name)
     {
         if ($this->isSerializedAttr($name)) {
-            return $this->data->$name;
+            return $this->getData()->$name;
         } else {
             return parent::__get($name);
         }
@@ -250,6 +275,15 @@ class PersonIdentifier extends CActiveRecord
         }
     }
     
+    public function __isset($name)
+    {
+        if ($this->isSerializedAttr($name)) {
+            return isset($this->getData()->$name);
+        } else {
+            return parent::__isset($name);
+        }
+    }
+
     public function getTypeConfig()
     {
         return self::getPersonIdentifiersConfig($this->type);
