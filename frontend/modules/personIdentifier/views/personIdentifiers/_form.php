@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 if (empty($form)) {
     $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
@@ -16,29 +16,24 @@ if (empty($form)) {
     echo $form->errorSummary($model);
 }
 
-echo $form->fileFieldRow($model,'uploadingImage',array('class'=>'span12'));
-
 echo $form->dropDownListRow($model, 'type', PersonIdentifier::getTypesCaptions(), array('class'=>'span12'));
 
 ?>
 <script type="text/javascript">
     $('#PersonIdentifier_type').change(function() {
-        $('#identifier-input-container').css({
-            'cursor': 'wait',
-            'opacity': 0.75
-        });
-        $('#identifier-input-container').load(
+        $.maskElement($('#identifier-input-container'), 'Loading...');
+        $('#identifier-input-container').smartLoad(
             '<?= $this->owner->createUrl('/personIdentifier/types/getFormAttrs/'); ?>',
             {type: this.value},
             function() {
-                $('#identifier-input-container').css({
-                    'cursor': 'default',
-                    'opacity': 1
-                });
+                $.unmaskElement($(this));
             }
         );
     });
 </script>
+
+<?php echo $form->fileFieldRow($model,'uploadingImage',array('class'=>'span12')); ?>
+
 <div id='person-identifier-fields'>
     <?php $this->owner->renderPartial($fieldsView, array('model' => $model, 'form' => $form)); ?>
 </div>    

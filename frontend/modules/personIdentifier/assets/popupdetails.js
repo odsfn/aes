@@ -5,7 +5,6 @@
  */
 var PersonIdentifier = (function(){
     var initPopup = function(conf) {
-        console.log('Init popup');
         $('#PersonIdentifier_' + conf.attr).popover({
             title: conf.title,
             html: true,

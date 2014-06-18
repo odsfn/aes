@@ -14,7 +14,11 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
 
-        <?php Yii::app()->clientScript->registerCssFile(Yii::app()->getBaseUrl(true) . '/css/layouts/main.css'); ?>
+        <?php
+        Yii::app()->clientScript->registerCssFile(Yii::app()->getBaseUrl(true) . '/css/layouts/main.css'); 
+        Yii::app()->clientScript->registerPackage('loadmask');
+        Yii::app()->clientScript->registerScriptFile('/js/libs/jquery.smartLoad.js');
+        ?>
 	<!--<script src="<?php echo Yii::app()->getBaseUrl(true); ?>/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>-->
 </head>
 <body>
