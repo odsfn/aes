@@ -11,7 +11,7 @@ var PersonIdentifier = (function(){
             trigger: 'focus',
             placement: 'left',
             animation: true,
-            content: '<img src="' + conf.img + '">'
+            content: '<div style="width: ' + conf.width + 'px; height: ' + conf.height + 'px;"><img src="' + conf.img + '"></div>'
         });
     };
     

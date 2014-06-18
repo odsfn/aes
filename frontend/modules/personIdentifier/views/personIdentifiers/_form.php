@@ -19,10 +19,16 @@ if (empty($form)) {
 echo $form->dropDownListRow($model, 'type', PersonIdentifier::getTypesCaptions(), array('class'=>'span12'));
 
 Yii::app()->clientScript->registerCss('popupdetails', 
-        ".popover-content {"
+        ".popover {"
+            . "max-width: 405px;"
+            . "max-height: 505px;"
+        . "}"
+        . ".popover-content {"
             . "padding: 2px;"
-            . "width: 200px;"
-            . "height: 250px;"
+        . "}"
+        . ".popover-content img {"
+            . "max-width: 400px;"
+            . "max-height: 500px;"
         . "}");
 
 ?>

@@ -69,7 +69,14 @@ class IdentifierInput extends CWidget
             
             $imgUrl = Yii::app()->assetManager->publish($imgPath);
             
+            list($width, $height) = getimagesize($imgPath);
+            
+            if($width > 400) $width = 400;
+            if($height > 500) $height = 500;
+            
             $popoverConf[$index]['img'] = $imgUrl;
+            $popoverConf[$index]['width'] = $width;
+            $popoverConf[$index]['height'] = $height;
         }
         
         Yii::app()->clientScript->registerScript(uniqid(), 'PersonIdentifier.initPopups(' . CJavaScript::encode($popoverConf) . ');');
