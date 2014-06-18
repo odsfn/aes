@@ -18,15 +18,29 @@ if (empty($form)) {
 
 echo $form->dropDownListRow($model, 'type', PersonIdentifier::getTypesCaptions(), array('class'=>'span12'));
 
+Yii::app()->clientScript->registerCss('popupdetails', 
+        ".popover-content {"
+            . "padding: 2px;"
+            . "width: 200px;"
+            . "height: 250px;"
+        . "}");
+
 ?>
 <script type="text/javascript">
     $('#PersonIdentifier_type').change(function() {
-        $.maskElement($('#identifier-input-container'), 'Loading...');
+        $('#identifier-input-container').block({
+            message: null,
+            overlayCSS:  { 
+                backgroundColor: '#f5f5f5', 
+                opacity: 0.3, 
+                cursor: 'wait'
+            }
+        });
         $('#identifier-input-container').smartLoad(
             '<?= $this->owner->createUrl('/personIdentifier/types/getFormAttrs/'); ?>',
             {type: this.value},
             function() {
-                $.unmaskElement($(this));
+                $('#identifier-input-container').unblock();
             }
         );
     });
