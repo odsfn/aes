@@ -54,25 +54,57 @@ class IdentifierInput extends CWidget
             Yii::app()->assetManager->publish(Yii::getPathOfAlias('personIdentifier.assets') . '/popupdetails.js')
         );
         
+        $module = Yii::app()->getModule('personIdentifier');
+        
+        $maxWidth = $module->identifierExampleMaxWidth;
+        $maxHeight = $module->identifierExampleMaxHeight;
+        
         foreach ($popoverConf as $index => $conf) {
             if (!isset($conf['img'])) {
                 unset($popoverConf[$index]);
                 continue;
             }
             
-            $imgPath = Yii::getPathOfAlias(Yii::app()->getModule('personIdentifier')->customIdentifiersPath . '.' . $this->identifier->type ) . '/' . $conf['img'];
+            $examplesPath = Yii::getPathOfAlias('webroot') . $module->identifierExamplesPath;
+            $currentTypeExamplePath = $examplesPath . '/' . $this->identifier->type;
             
-            if (!file_exists($imgPath)) {
+            $sourceImgPath = Yii::getPathOfAlias($module->customIdentifiersPath . '.' . $this->identifier->type ) . '/' . $conf['img'];
+            $destImgPath = $currentTypeExamplePath . '/' . $conf['img'];
+            
+            $published = file_exists($destImgPath);
+            
+            if (!$published && !file_exists($sourceImgPath)) {
                 unset($popoverConf[$index]);
                 continue;
             }
             
-            $imgUrl = Yii::app()->assetManager->publish($imgPath);
+            if(!$published) {
+                
+                if (!file_exists(Yii::getPathOfAlias('webroot') . $module->imagesDir)) {
+                    mkdir(Yii::getPathOfAlias('webroot') . $module->imagesDir);
+                }
+                
+                if (!file_exists($examplesPath)) {
+                    mkdir($examplesPath);
+                }
+                
+                if (!file_exists($currentTypeExamplePath)) {
+                    mkdir($currentTypeExamplePath);
+                }
+                
+                $image = Yii::app()->image->load($sourceImgPath);
+                
+                list($width, $height) = getimagesize($sourceImgPath);
+                if ($width > $maxWidth || $height > $maxHeight) {
+                    $image->resize($maxWidth, $maxHeight);
+                }
+                
+                $image->quality(100)
+                      ->save($destImgPath);
+            }
             
-            list($width, $height) = getimagesize($imgPath);
-            
-            if($width > 400) $width = 400;
-            if($height > 500) $height = 500;
+            list($width, $height) = getimagesize($destImgPath);            
+            $imgUrl = Yii::app()->getBaseUrl(true) . $module->identifierExamplesPath . '/' . $this->identifier->type . '/' . $conf['img'];
             
             $popoverConf[$index]['img'] = $imgUrl;
             $popoverConf[$index]['width'] = $width;
@@ -93,20 +125,20 @@ class IdentifierInput extends CWidget
             return 'personIdentifier.views.personIdentifiers._formFields';
     }
     
-public function renderPartial($view,$data=null,$return=false,$processOutput=false)
-{
-    if(($viewFile=$this->getViewFile($view))!==false)
+    public function renderPartial($view,$data=null,$return=false,$processOutput=false)
     {
-        $output=$this->renderFile($viewFile,$data,true);
-        if($processOutput)
-            Yii::app()->getClientScript()->render($output);
-        if($return)
-            return $output;
+        if(($viewFile=$this->getViewFile($view))!==false)
+        {
+            $output=$this->renderFile($viewFile,$data,true);
+            if($processOutput)
+                Yii::app()->getClientScript()->render($output);
+            if($return)
+                return $output;
+            else
+                echo $output;
+        }
         else
-            echo $output;
-    }
-    else
-        throw new CException(Yii::t('yii','{controller} cannot find the requested view "{view}".',
-            array('{controller}'=>get_class($this), '{view}'=>$view)));
-}    
+            throw new CException(Yii::t('yii','{controller} cannot find the requested view "{view}".',
+                array('{controller}'=>get_class($this), '{view}'=>$view)));
+    }    
 }

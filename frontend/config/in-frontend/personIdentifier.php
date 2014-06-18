@@ -19,6 +19,9 @@ return array(
                 'popover' => array(
                     'someField' => array(
                         'img' => 'Passport_RF.jpg'
+                    ),
+                    'anotherField' => array(
+                        'img' => 'passport.jpg'
                     )
                 )
             )            

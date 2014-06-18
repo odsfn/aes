@@ -1,4 +1,5 @@
 <?php
+$module = Yii::app()->getModule('personIdentifier');
 
 if (empty($form)) {
     $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
@@ -18,17 +19,20 @@ if (empty($form)) {
 
 echo $form->dropDownListRow($model, 'type', PersonIdentifier::getTypesCaptions(), array('class'=>'span12'));
 
-Yii::app()->clientScript->registerCss('popupdetails', 
-        ".popover {"
-            . "max-width: 405px;"
-            . "max-height: 505px;"
+Yii::app()->clientScript->registerCss('personIdentifierStyles', 
+        "input[type=\"file\"] {"
+            . "margin-bottom: 10px;"
+        . "}"
+        . ".popover {"
+            . "max-width: " . ($module->identifierExampleMaxWidth + 5) . "px;"
+            . "max-height: " . ($module->identifierExampleMaxHeight + 5) . "px;"
         . "}"
         . ".popover-content {"
             . "padding: 2px;"
         . "}"
         . ".popover-content img {"
-            . "max-width: 400px;"
-            . "max-height: 500px;"
+            . "max-width: {$module->identifierExampleMaxWidth}px;"
+            . "max-height: {$module->identifierExampleMaxHeight}px;"
         . "}");
 
 ?>

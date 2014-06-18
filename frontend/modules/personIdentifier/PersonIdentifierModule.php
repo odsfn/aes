@@ -14,6 +14,12 @@ class PersonIdentifierModule extends CWebModule
     
     public $imagesDir = '/uploads/person_identifiers';    
     
+    public $identifierExamplesPath = '/uploads/person_identifiers/examples';
+    
+    public $identifierExampleMaxWidth = 400;
+    
+    public $identifierExampleMaxHeight = 500;
+    
     /**
      * Path alias to custom identifiers
      * @var string
