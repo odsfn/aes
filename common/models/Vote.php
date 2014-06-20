@@ -16,8 +16,9 @@
  */
 class Vote extends CActiveRecord implements iCommentable
 {
-    const STATUS_PASSED = 0;
-    const STATUS_DECLINED = 1;
+    const STATUS_PASSED = 0;    //Default status after vote
+    const STATUS_DECLINED = 1;  //When candidate declined this vote
+    const STATUS_REVOKED = 2;   //Voter revoked this vote
     
     public function behaviors() {
         return array(

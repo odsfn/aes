@@ -81,7 +81,7 @@ class MessagingTest extends WebTestCase
         $this->click($this->getCssSel('feed.conv') . ':nth-of-type(1) div.post-content');
         $this->sleep(500);
         $this->assertActiveChatWith('Another User');
-        
+        $this->sleep(250);
         $this->assertTextPresent($msg1);
         $this->assertTextPresent($msg2);
         

@@ -23,16 +23,16 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
     });
     
     var DetailsView = Candidates.ElectoralCandView.extend({
-       template: '#candidate-detailed',
+        template: '#candidate-detailed',
        
-       serializeData: function() {
+        serializeData: function() {
            return _.extend(Candidates.ElectoralCandView.prototype.serializeData.apply(this, arguments),
                {
                    electionStatusText: Candidates.getElection().getStatusText(),
                    votesCount: Candidates.Details.votes ? Candidates.Details.votes.getAcceptedVotesCount() : 0
                }
            );
-       }
+        }
     });
     
     var ControlsView = Marionette.View.extend({

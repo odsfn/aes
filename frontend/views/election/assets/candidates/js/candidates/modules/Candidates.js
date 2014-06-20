@@ -108,8 +108,14 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         },
                 
         onRender: function() {
-            if( this._voteBoxView )
+            if( this._voteBoxView ) {
                 this._voteBoxView.render();
+                
+                if(this._isShown) {
+                    this.ui.voteBoxCntr.append(this._voteBoxView.$el);
+                    this._voteBoxView.delegateEvents();
+                }
+            }
         },
                 
         onShow: function() {

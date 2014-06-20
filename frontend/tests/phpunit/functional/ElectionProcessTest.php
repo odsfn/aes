@@ -10,13 +10,13 @@ class ElectionProcessTest extends WebTestCase {
         'user_profile' => 'userAccount.models.Profile',
         'personIdentifier' => 'personIdentifier.models.PersonIdentifier',
         'target'       => 'Target',
-        'election'     => 'Election',
+        'election'     => array('Election', 'functional/electionProcess/election'),
         'mandate'      => 'Mandate',
         'candidate'    => array('Candidate', 'unit/electionProcess/candidate'),
         'elector'    => array('Elector', 'unit/electionProcess/elector'),
         'vote'       => array('Vote'),
-        'AuthAssignment' => 'AuthAssignment',
-        'election_auth_assignment' => ':election_auth_assignment'
+        'AuthAssignment' => array('AuthAssignment', 'functional/electionProcess/AuthAssignment'),
+        'election_auth_assignment' => array(':election_auth_assignment', 'functional/electionProcess/election_auth_assignment')
     );    
     
     public function testProcess() {
@@ -106,12 +106,14 @@ class ElectionProcessTest extends WebTestCase {
         $this->assertElementContainsText('css=div#title.bootstrap-widget div.bootstrap-widget-header h3.pull-right small', 'Election');
         $this->checkSelectOptions('Canceled, Finished, Election', 'id=Election_status');
         
+        //Check voting
         $this->click("link=Candidates");
         $this->waitForPageToLoad("3000");
         $voteBox = "css=div.checkbox.vote";
         $this->waitForElementPresent($voteBox);
         $this->click($voteBox);
         
+        //Finish process
         $this->click("link=Management");
         $this->waitForPageToLoad("3000");
         $this->select("id=Election_status", "label=Finished");
@@ -122,6 +124,7 @@ class ElectionProcessTest extends WebTestCase {
         $this->assertElementContainsText('css=div#title.bootstrap-widget div.bootstrap-widget-header h3.pull-right small', 'Finished');
         $this->checkSelectOptions('Finished', 'id=Election_status');
         
+        //Check that mandate were created
         $this->click("link=Mandates");
         $this->waitForPageToLoad("30000");
         $this->waitForTextPresent('Mandate of Election 3');
@@ -154,4 +157,79 @@ class ElectionProcessTest extends WebTestCase {
         $this->assertElementContainsText('css=#candidate-details #mandates-tab div ul li a', 'Mandate of Election 3');
         
     }
+    
+    public function testVoteAdds()
+    {
+        $this->login("truvazia@gmail.com", "qwerty");
+        
+        $this->open('election/candidates/1');
+        $this->waitForPageToLoad("30000");
+        
+        $voteBox = "css=div.checkbox.vote";
+        $this->waitForElementPresent($voteBox);
+        
+        //check that all vote boxes are active
+        $this->assertCssCount('css=div.checkbox.vote', 3);
+        $this->assertCssCount('css=div.checkbox.vote.inactive', 0);        
+        
+        $this->click($voteBox);
+        
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        //check that other vote boxes are inactive
+        $this->assertCssCount('css=div.checkbox.vote', 3);
+        $this->assertCssCount('css=div.checkbox.vote.inactive', 2);
+        
+        $this->click('css=.user-info a.route');
+        
+        $this->waitForElementPresent('css=#votes-tab .items');
+        $this->waitForCssCount('css=#votes-tab .items .user-info', 1);
+        
+        $this->assertLocation( TEST_BASE_URL . 'election/candidates/1/details/4');
+        $this->assertElementContainsText('css=.bootstrap-widget-header h3 .breadcrumbs', 'Elections/Election 1/Candidates/Another User');
+        
+        $this->assertElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
+        $this->assertElementContainsText('css=#candidate-info .body > a', 'Another User');
+        $this->assertElementContainsText('css=#candidate-info .body > b', '№1');
+        $this->assertElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1');
+        
+        $this->assertElementPresent('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
+        $this->assertElementContainsText('css=#candidate-info .user-info .vote-cntr .checkbox.vote span.value', '✓');
+    }
+    
+    public function testVoteRemovedByVoterDisplays()
+    {
+        $this->login("truvazia@gmail.com", "qwerty");
+        
+        $this->open('election/candidates/1');
+        $this->waitForPageToLoad("30000");
+        
+        $voteBox = "css=div.checkbox.vote";
+        $this->waitForElementPresent($voteBox);      
+        
+        $this->click($voteBox);
+        
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        $this->click('css=.user-info a.route');
+        
+        $this->waitForElementPresent('css=#votes-tab .items');
+        $this->waitForCssCount('css=#votes-tab .items .user-info', 1);
+        
+        $this->assertElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
+        $this->assertElementContainsText('css=#candidate-info .body > a', 'Another User');
+        $this->assertElementContainsText('css=#candidate-info .body > b', '№1');
+        $this->assertElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1');
+        
+        $this->click('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
+        
+        $this->assertElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
+        $this->assertElementContainsText('css=#votes-tab .items .user-info .mark', 'Removed by elector');
+        $this->assertElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 0');        
+    }
+    
+//    public function testUserWhichRemovedVoteCantVoteBecauseTimerLimits()
+//    {
+//        
+//    }
  }

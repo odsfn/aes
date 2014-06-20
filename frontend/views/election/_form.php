@@ -47,6 +47,16 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 
 <?php echo $form->dropDownListRow($model, 'voter_reg_confirm', AESHelper::arrTranslated(Election::$voter_reg_confirms), array('class'=>'span6')); ?>
 
+<h5 data-toggle="#revote-options"><a name="revote-options"></a>
+    <?= Yii::t('election.provisions', 'Revote options'); ?>
+</h5><hr>
+
+<?php  
+    echo $form->textFieldRow($model,'revotes_count',array('class'=>'span6'));
+    echo $form->textFieldRow($model,'remove_vote_time',array('class'=>'span6'));
+    echo $form->textFieldRow($model,'revote_time',array('class'=>'span6'));
+?>
+
 <?php if(!$model->isNewRecord): ?>
 
 <h5 data-toggle="#status"><a name="status"></a>

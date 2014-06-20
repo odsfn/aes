@@ -16,8 +16,16 @@ Yii::import('stateMachine.*');
  * @property integer $voter_reg_type
  * @property integer $voter_reg_confirm
  * @property integer $unassigned_access_level Access level for users that were not assigned to this election
- * @property integet $target_id
- *
+ * @property integer $target_id
+ * @property integer $revotes_count How many times voter can revote in the election
+ * @property integer $remove_vote_time Specifies how much time in minutes voter can to remove his vote. 
+ *                                      Time calculates from a moment when user's last vote was assigned.
+ *                                      If it equals 0 then time is unlimited before the election will finish.
+ * @property integet $revote_time Specifies how much time in minutes voter can to assign his removed vote 
+ *                                      to another candidate. Time calculates from a moment when user 
+ *                                      removes his last vote. If it equals 0 then time is unlimited before 
+ *                                      the election will finish.
+ * 
  * The followings are the available model relations:
  * @property User $user
  * @property Target $target AR from base parent table.
@@ -197,7 +205,15 @@ class Election extends CActiveRecord implements iPostable, iCommentable
                 array('id, user_id, name, status, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'safe', 'on'=>'search'),
 
                 array('name, status', 'safe', 'on'=>'search'),
+                
+                array('revotes_count', 'default', 'setOnEmpty'=>true, 'value' => (isset(Yii::app()->params->revotes_count) ? Yii::app()->params->revotes_count : 1)),
+                
+                array('remove_vote_time', 'default', 'setOnEmpty'=>true, 'value' => (isset(Yii::app()->params->remove_vote_time) ? Yii::app()->params->remove_vote_time : 60*6)),
+                
+                array('revote_time', 'default', 'setOnEmpty'=>true, 'value' => (isset(Yii::app()->params->revote_time) ? Yii::app()->params->revote_time : 60*6)),
 
+                array('revote_time, remove_vote_time, revotes_count', 'numerical', 'integerOnly' => true, 'min' => 0),
+                
                 array('id, name, status, text_status, have_pic', 'safe', 'on' => 'rest'),
 
             );
@@ -269,6 +285,15 @@ class Election extends CActiveRecord implements iPostable, iCommentable
             return new CActiveDataProvider($this, array(
                     'criteria'=>$criteria,
             ));
+    }
+    
+    public function init() 
+    {
+        $this->revotes_count = (isset(Yii::app()->params->revotes_count) ? Yii::app()->params->revotes_count : 1);
+
+        $this->remove_vote_time = (isset(Yii::app()->params->remove_vote_time) ? Yii::app()->params->remove_vote_time : 60*6);
+
+        $this->revote_time = (isset(Yii::app()->params->revote_time) ? Yii::app()->params->revote_time : 60*6);        
     }
     
     public function canUnassignedPost() {

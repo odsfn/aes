@@ -108,6 +108,13 @@ return array(
 	),
     
         'params' => array(
+            
+            'revotes_count' => 1,
+            
+            'remove_vote_time' => 60*6,
+            
+            'revote_time' => 30,
+            
             'RESTusername' => 'admin@restuser',
             'RESTpassword' => 'admin@Access',
         )
