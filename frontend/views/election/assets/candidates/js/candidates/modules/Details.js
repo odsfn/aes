@@ -130,16 +130,18 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             this.ui.controls.hide();
         },
                 
-        onDeclineBtnClick: function() {
-            this.model.set('status', 1);
-            
+        onDeclineBtnClick: function() {            
             this.$el.mask();
-            this.model.save({}, {
+            this.model.decline({
                 wait: true,
                 success: _.bind(function() {
                     this.$el.unmask();
                 }, this)
             });
+        },
+        
+        render: function() {
+            return Marionette.ItemView.prototype.render.apply(this, arguments);
         }
     });
     
@@ -169,7 +171,7 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
     this.viewCandidate = function(candidate) {
         currentCandidate = candidate;
         
-        this.detailesView = new DetailsView({
+        this.detailsView = new DetailsView({
             model: candidate
         });
         
@@ -177,7 +179,7 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
            model: candidate 
         });        
         
-        this.layout.info.show(this.detailesView);
+        this.layout.info.show(this.detailsView);
         this.layout.controls.show(this.controlsView);
         
         if((Candidates.getElection().checkStatus('Election') || Candidates.getElection().checkStatus('Finished')) && candidate.checkStatus('Registered'))
@@ -190,14 +192,37 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             this.votes.filter.with_profile = true;
             this.votes.filter.candidate_id = candidate.get('id');
             this.votes.setElectionId(candidate.get('election_id'));
+            //Add current user's votes for this candidate
+            
+//            @todo: refactor FeedCollection rename *filter* to *filters* and then
+//            you can use this statement
+//            var usersVotes = Candidates.votes.where({
+//                candidate_id: candidate.get('id')
+//            });
+            var usersVotes = [];
+            Candidates.votes.each(function(m, i) {
+                if(m.get('candidate_id') == candidate.get('id'))
+                    usersVotes.push(m);
+            });
 
             this.layout.votes.show(this.votesFeedView);
 
-            this.votes.fetch();
+            this.votes.add(usersVotes);
+
+            this.votes.fetch({update: true});
             $('#details-votes-tab-sel').show();
             $('#details-votes-tab-sel a').tab('show');
             
-            this.listenTo(this.votes, 'changed:acceptedVotesCount', this.detailesView.render);
+            this.listenTo(Candidates.votes, 'vote:passed', function(vote) {
+                this.votes.add(vote);
+                this.votes.trigger('vote:passed', vote);
+                this.detailsView.render();
+            });
+            
+            this.listenTo(this.votes, 'changed:acceptedVotesCount', function() {
+                console.log('Details -> changed:acceptedVotesCount');
+                this.detailsView.render();
+            });
             
             if(Candidates.getElection().checkStatus('Finished')) 
             {

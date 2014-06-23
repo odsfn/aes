@@ -315,11 +315,25 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         isDeclined: function() {
             return (this.get('status') === 1);
         },
-                
+        
+        isRevoked: function() {
+            return (this.get('status') === 2);
+        },
+        
         canVote: function() {
             var passedVote = Candidates.votes.getPassedVote();
             
             return (!passedVote || _.isEqual(passedVote, this));
+        },
+        
+        revoke: function(options) {
+            this.set('status', 2);
+            this.save({}, options);
+        },
+        
+        decline: function(options) {
+            this.set('status', 1);
+            this.save({}, options);
         }
     });
     
@@ -343,6 +357,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                     wait: true,
                     success: _.bind(function(model) {
                         this.set('vote', model);
+                        Candidates.votes.trigger('vote:passed', model);
                         success();
                     }, this)
                 }
@@ -354,8 +369,8 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             
             if(!vote)
                 return;
-            
-            vote.destroy({
+  
+            vote.revoke({
                 wait: true,
                 success: success
             });
@@ -367,11 +382,12 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             
             if(vote) {
                 var declined = vote.isDeclined();
+                var revoked = vote.isRevoked();
                 
                 this.set({
                    voted: true,
-                   active:  (!declined && vote.canVote()),
-                   declined: declined
+                   active:  (!declined && !revoked && vote.canVote()),
+                   declined: declined || revoked
                 });                
             } else {
                 var hasPassedVote = false;
@@ -452,22 +468,41 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
     
             var result = FeedCollection.prototype.parse.apply(this, arguments);
     
-            var totalVotes = this.totalCount;
-            var declinedVotes = parseInt(response.data.declinedCount);
-            
-            this.setAcceptedVotesCount(totalVotes - declinedVotes);
+//            var totalVotes = this.totalCount;
+//            var declinedVotes = parseInt(response.data.declinedCount) || 0;
+//            
+//            this.setAcceptedVotesCount(totalVotes - declinedVotes);
+    
+            this.setAcceptedVotesCount(parseInt(response.data.acceptedCount) || 0);
     
             return result;
             
         }, 
 
         /**
-        * Returns the vote that had benn passed by current user and had not been declined by candidate 
+        * Returns the vote that had been passed by current user and had not been declined by candidate 
         * @returns {Vote}
         */
         getPassedVote: function() {
             return this.find(function(m) {
-                return ( m.isVoted() && m.get('status') !== 1); 
+                return ( m.isVoted() && ( !m.isDeclined() && !m.isRevoked() )); 
+            });
+        },
+        
+        initialize: function() {
+            
+            FeedCollection.prototype.initialize.apply(this, arguments);
+            
+            this.on('change:status', function(m, val, opts) {
+                console.log('status changed');
+                if(m.isDeclined() || m.isRevoked()) {
+                    console.log('    Revoked or declined now');
+                    this.setAcceptedVotesCount(this._acceptedVotesCount - 1);
+                }
+            });
+            
+            this.on('vote:passed', function(vote) {
+                this.setAcceptedVotesCount(this._acceptedVotesCount + 1);
             });
         }
     });
@@ -543,7 +578,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         
         this.approvedCands = new ApprovedCands();
         this.approvedCands.filter.status = 2;
-        
+        // current user's votes for all candidates
         this.votes = new Candidates.Votes();
         
         this.layout = new CandidatesLayout();
@@ -599,6 +634,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         
         Candidates.cands.setElectionId(config.electionId);
         Candidates.votes.setElectionId(config.electionId);
+        Candidates.votes.filter.with_profile = true;
         Candidates.votes.filter.user_id = WebUser.getId() || 0;
         
         Candidates.approvedCands.setElectionId(config.electionId);

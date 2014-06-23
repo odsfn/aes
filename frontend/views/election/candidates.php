@@ -176,7 +176,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
         </div>
 
         <div class="pull-right">
-            <% if(status !== 1) { %>
+            <% if(status === 0) { %>
             <span class="controls">
                 <small>Decline&nbsp;<i class="icon-remove-sign"></i></small>
             </span>
@@ -187,6 +187,12 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
                 <small>Declined&nbsp;<i class="icon-remove-sign"></i></small>
             </span>
             <% } %>
+                        
+            <% if(status === 2) { %>
+            <span class="mark">
+                <small>Revoked by elector&nbsp;<i class="icon-remove-sign"></i></small>
+            </span>
+            <% } %>                        
         </div>                        
 
         <div class="body">

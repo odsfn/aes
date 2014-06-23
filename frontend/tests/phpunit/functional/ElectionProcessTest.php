@@ -14,7 +14,7 @@ class ElectionProcessTest extends WebTestCase {
         'mandate'      => 'Mandate',
         'candidate'    => array('Candidate', 'unit/electionProcess/candidate'),
         'elector'    => array('Elector', 'unit/electionProcess/elector'),
-        'vote'       => array('Vote'),
+        'vote'       => array('Vote', 'functional/electionProcess/vote'),
         'AuthAssignment' => array('AuthAssignment', 'functional/electionProcess/AuthAssignment'),
         'election_auth_assignment' => array(':election_auth_assignment', 'functional/electionProcess/election_auth_assignment')
     );    
@@ -186,15 +186,91 @@ class ElectionProcessTest extends WebTestCase {
         $this->waitForCssCount('css=#votes-tab .items .user-info', 1);
         
         $this->assertLocation( TEST_BASE_URL . 'election/candidates/1/details/4');
-        $this->assertElementContainsText('css=.bootstrap-widget-header h3 .breadcrumbs', 'Elections/Election 1/Candidates/Another User');
+        $this->waitForElementContainsText('css=.bootstrap-widget-header h3 .breadcrumbs', 'Elections/Election 1/Candidates/Another User');
         
-        $this->assertElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
-        $this->assertElementContainsText('css=#candidate-info .body > a', 'Another User');
-        $this->assertElementContainsText('css=#candidate-info .body > b', '№1');
-        $this->assertElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1');
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
+        $this->waitForElementContainsText('css=#candidate-info .body > a', 'Another User');
+        $this->waitForElementContainsText('css=#candidate-info .body > b', '№1');
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1');
         
-        $this->assertElementPresent('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
-        $this->assertElementContainsText('css=#candidate-info .user-info .vote-cntr .checkbox.vote span.value', '✓');
+        $this->waitForElementPresent('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
+        $this->waitForElementContainsText('css=#candidate-info .user-info .vote-cntr .checkbox.vote span.value', '✓');
+    }
+
+    public function testVoteAddsFromCandidateDetails()
+    {    
+        $this->login("truvazia@gmail.com", "qwerty");
+        
+        $this->open('election/candidates/1/details/4');
+        $this->waitForPageToLoad("30000");
+        
+        $voteBox = "css=#candidate-info div.checkbox.vote";
+        $this->waitForElementPresent($voteBox);
+        
+        $this->assertCssCount('css=#votes-tab div.items .user-info', 0);
+        
+        $this->click($voteBox);
+        
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        $this->waitForCssCount('css=#votes-tab div.items .user-info', 1);
+        $this->waitForElementContainsText('css=#votes-tab div.items .user-info a', 'Vasiliy Pedak');
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1'); 
+    }
+    
+    public function testFilteringVotesFeedDoesNotAffectsAcceptedVotesCount()
+    {
+        $this->login("truvazia@gmail.com", "qwerty");
+        
+        $this->open('election/candidates/1/details/3');
+        $this->waitForPageToLoad("30000");
+        
+        $this->waitForCssCount('css=#votes-tab div.items .user-info', 5);
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 3');
+        $this->assertElementContainsText('css=#votes-tab a#items-count', 'Found 5');
+        
+        //check that loaded items correctly marked
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info:nth-of-type(4) .mark', 'Declined');
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info:nth-of-type(5) .mark', 'Revoked by elector');
+        
+        $this->type('css=#votes-tab input[name="userName"]', 'Another');
+        $this->click('css=#votes-tab button.userName-filter-apply');
+        
+        $this->waitForCssCount('css=#votes-tab div.items .user-info', 2);
+        $this->waitForElementContainsText('css=#votes-tab a#items-count', 'Found 2');
+        $this->sleep(1000);
+        $this->assertElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 3');
+        
+        $this->click('css=#votes-tab button.filter-reset');
+        
+        $this->waitForCssCount('css=#votes-tab div.items .user-info', 5);
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 3');
+        $this->assertElementContainsText('css=#votes-tab a#items-count', 'Found 5');
+        
+        //Check that added vote correctly changes feed
+        $voteBox = "css=#candidate-info div.checkbox.vote";
+        $this->click($voteBox);
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        $this->waitForCssCount('css=#votes-tab div.items .user-info', 6);
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 4');
+        $this->waitForElementContainsText('css=#votes-tab a#items-count', 'Found 6');
+        
+        $this->click('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
+        
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info .mark', 'Revoked by elector');
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 3');
+        $this->waitForCssCount('css=#votes-tab div.items .user-info', 6);
+        $this->waitForElementContainsText('css=#votes-tab a#items-count', 'Found 6');
+        
+        //Check that declining vote correctly changes feed
+        $this->click('css=#votes-tab div.user-info:nth-of-type(2) > .pull-right > .controls i.icon-remove-sign');
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 2');
+        $this->waitForCssCount('css=#votes-tab div.items .user-info', 6);
+        $this->waitForElementContainsText('css=#votes-tab a#items-count', 'Found 6');
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info:nth-of-type(2) .mark', 'Revoked by elector');
     }
     
     public function testVoteRemovedByVoterDisplays()
@@ -219,13 +295,13 @@ class ElectionProcessTest extends WebTestCase {
         $this->assertElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
         $this->assertElementContainsText('css=#candidate-info .body > a', 'Another User');
         $this->assertElementContainsText('css=#candidate-info .body > b', '№1');
-        $this->assertElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1');
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1');
         
         $this->click('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
         
-        $this->assertElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
-        $this->assertElementContainsText('css=#votes-tab .items .user-info .mark', 'Removed by elector');
-        $this->assertElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 0');        
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info .mark', 'Revoked by elector');
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 0');        
     }
     
 //    public function testUserWhichRemovedVoteCantVoteBecauseTimerLimits()

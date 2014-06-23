@@ -1,4 +1,4 @@
- <?php
+<?php
 
 /**
  * This is the model class for table "vote".
@@ -17,10 +17,13 @@
 class Vote extends CActiveRecord implements iCommentable
 {
     const STATUS_PASSED = 0;    //Default status after vote
+
     const STATUS_DECLINED = 1;  //When candidate declined this vote
+
     const STATUS_REVOKED = 2;   //Voter revoked this vote
-    
-    public function behaviors() {
+
+    public function behaviors()
+    {
         return array(
             'UpdateDateBehavior' => array(
                 'class' => 'UpdateDateBehavior',
@@ -31,12 +34,13 @@ class Vote extends CActiveRecord implements iCommentable
             )
         );
     }
+
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
      * @return Vote the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
@@ -58,11 +62,11 @@ class Vote extends CActiveRecord implements iCommentable
         // will receive user inputs.
         return array(
             array('candidate_id, user_id', 'required'),
-            array('candidate_id, user_id, status', 'numerical', 'integerOnly'=>true),
+            array('candidate_id, user_id, status', 'numerical', 'integerOnly' => true),
             array('date', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, date, candidate_id, user_id, status', 'safe', 'on'=>'search'),
+            array('id, date, candidate_id, user_id, status', 'safe', 'on' => 'search'),
         );
     }
 
@@ -103,59 +107,68 @@ class Vote extends CActiveRecord implements iCommentable
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('date',$this->date,true);
-        $criteria->compare('candidate_id',$this->candidate_id);
-        $criteria->compare('user_id',$this->user_id);
-        $criteria->compare('status',$this->status);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('date', $this->date, true);
+        $criteria->compare('candidate_id', $this->candidate_id);
+        $criteria->compare('user_id', $this->user_id);
+        $criteria->compare('status', $this->status);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
-    
-    protected function beforeSave() {
-        
-        if($this->candidate->status != Candidate::STATUS_REGISTERED)
+
+    protected function beforeSave()
+    {
+
+        if ($this->candidate->status != Candidate::STATUS_REGISTERED)
             throw new Exception('Vote can\'t be passed or changed for not registered candidate');
-        
-        if($this->candidate->election->status != Election::STATUS_ELECTION)
-            throw new Exception ('Vote can\'t be created or changed for inactive election');
-        
-        if($this->isStoredDiffers('user_id') || $this->isStoredDiffers('candidate_id'))
-            throw new Exception ('Vote can\'t be reassigned');
-        
-        if($this->isStoredDiffers('status') && $this->status != Vote::STATUS_DECLINED)
-            throw new Exception ('Declined vote can\'t be re-accepted');
-        
+
+        if ($this->candidate->election->status != Election::STATUS_ELECTION)
+            throw new Exception('Vote can\'t be created or changed for inactive election');
+
+        if ($this->isStoredDiffers('user_id') || $this->isStoredDiffers('candidate_id'))
+            throw new Exception('Vote can\'t be reassigned');
+
+//        if($this->isStoredDiffers('status') && ($this->status != Vote::STATUS_DECLINED || $this->status != Vote::STATUS_REVOKED) )
+//            throw new Exception ('Declined or revoked vote can\'t be re-accepted');
+
+        if ($this->isStoredDiffers('status') && $this->storedValue('status') != Vote::STATUS_PASSED)
+            throw new Exception('Status of declined or revoked vote can\'t be changed');
+
+
         return parent::beforeSave();
     }
-    
-    protected function beforeDelete() {
-        
-        if($this->candidate->election->status != Election::STATUS_ELECTION)
-            throw new Exception ('Vote can\'t be deleted for inactive election');
-        
-        return parent::beforeDelete();
+
+    protected function beforeDelete()
+    {
+        throw new Exception('Vote can\'t be deleted');
+//        if($this->candidate->election->status != Election::STATUS_ELECTION)
+//            throw new Exception ('Vote can\'t be deleted for inactive election');
+//        return parent::beforeDelete();
     }
-    
+
     /**
      * @return bool 
      */
-    public function canUnassignedComment(){
+    public function canUnassignedComment()
+    {
         return true;
     }
-    
+
     /**
      * @return bool
      */
-    public function canUnassignedRead(){
+    public function canUnassignedRead()
+    {
         return true;
     }
-    
-    public function checkUserInRole($userId, $role) {
+
+    public function checkUserInRole($userId, $role)
+    {
         return false;
-    }    
+    }
+
 }
