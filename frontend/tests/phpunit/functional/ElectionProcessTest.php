@@ -282,7 +282,7 @@ class ElectionProcessTest extends WebTestCase {
         
         $voteBox = "css=div.checkbox.vote";
         $this->waitForElementPresent($voteBox);      
-        
+        //first vote
         $this->click($voteBox);
         
         $this->waitForElementContainsText($voteBox . ' span.value', '✓');
@@ -296,12 +296,40 @@ class ElectionProcessTest extends WebTestCase {
         $this->assertElementContainsText('css=#candidate-info .body > a', 'Another User');
         $this->assertElementContainsText('css=#candidate-info .body > b', '№1');
         $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1');
-        
+        //revoke vote
         $this->click('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
         
         $this->waitForElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
         $this->waitForElementContainsText('css=#votes-tab .items .user-info .mark', 'Revoked by elector');
-        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 0');        
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 0'); 
+        $this->waitForCssCount('css=#votes-tab .items .user-info', 1);
+        
+        sleep(1);
+        
+        //vote again
+        $this->click('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
+        
+        $this->waitForCssCount('css=#votes-tab .items .user-info', 2);
+        
+        $this->assertElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
+        $this->assertElementContainsText('css=#candidate-info .body > a', 'Another User');
+        $this->assertElementContainsText('css=#candidate-info .body > b', '№1');
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1');
+        
+        //check that vote is marked after page refresh
+        $this->open('election/candidates/1/details/4');
+        $this->waitForPageToLoad("30000");
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        //revoke again
+        $this->click('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
+        
+        $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 0');
+        $this->sleep(750);
+        $this->waitForCssCount('css=#votes-tab .items .user-info', 2);
+        
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info:nth-of-type(1) .mark', 'Revoked by elector');
+        $this->waitForElementContainsText('css=#votes-tab .items .user-info:nth-of-type(2) .mark', 'Revoked by elector');
     }
     
 //    public function testUserWhichRemovedVoteCantVoteBecauseTimerLimits()

@@ -137,10 +137,25 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 Candidates.voteBoxModels.add(model);
             }
             
-            var candidateVote = Candidates.votes.findWhere({candidate_id: this.model.get('id')});
+            var lastCandidateVote = null;
+                    
+            Candidates.votes.each(function(vote) {
+                if(vote.get('candidate_id') != this.model.get('id')) return;
+                
+                if(!lastCandidateVote) 
+                    lastCandidateVote = vote;
+                else if(lastCandidateVote.get('id') < vote.get('id'))
+                    lastCandidateVote = vote;
+                
+            }, this);
             
-            if(candidateVote)
-                model.set('vote', candidateVote);
+            if(lastCandidateVote)
+                model.set('vote', lastCandidateVote);
+            
+//            var candidateVote = Candidates.votes.findWhere({candidate_id: this.model.get('id')});
+//            
+//            if(candidateVote)
+//                model.set('vote', candidateVote);
             
             if(this.model.getStatusText() === 'Registered' && Candidates.getElection().checkStatus('Election'))
                 this._voteBoxView = new Candidates.VoteBoxView({model: model });
@@ -382,12 +397,11 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             
             if(vote) {
                 var declined = vote.isDeclined();
-                var revoked = vote.isRevoked();
                 
                 this.set({
-                   voted: true,
-                   active:  (!declined && !revoked && vote.canVote()),
-                   declined: declined || revoked
+                   voted: !vote.isRevoked(),
+                   active:  (!declined && vote.canVote()),
+                   declined: declined
                 });                
             } else {
                 var hasPassedVote = false;
@@ -468,11 +482,6 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
     
             var result = FeedCollection.prototype.parse.apply(this, arguments);
     
-//            var totalVotes = this.totalCount;
-//            var declinedVotes = parseInt(response.data.declinedCount) || 0;
-//            
-//            this.setAcceptedVotesCount(totalVotes - declinedVotes);
-    
             this.setAcceptedVotesCount(parseInt(response.data.acceptedCount) || 0);
     
             return result;
@@ -494,9 +503,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             FeedCollection.prototype.initialize.apply(this, arguments);
             
             this.on('change:status', function(m, val, opts) {
-                console.log('status changed');
                 if(m.isDeclined() || m.isRevoked()) {
-                    console.log('    Revoked or declined now');
                     this.setAcceptedVotesCount(this._acceptedVotesCount - 1);
                 }
             });

@@ -132,9 +132,6 @@ class Vote extends CActiveRecord implements iCommentable
         if ($this->isStoredDiffers('user_id') || $this->isStoredDiffers('candidate_id'))
             throw new Exception('Vote can\'t be reassigned');
 
-//        if($this->isStoredDiffers('status') && ($this->status != Vote::STATUS_DECLINED || $this->status != Vote::STATUS_REVOKED) )
-//            throw new Exception ('Declined or revoked vote can\'t be re-accepted');
-
         if ($this->isStoredDiffers('status') && $this->storedValue('status') != Vote::STATUS_PASSED)
             throw new Exception('Status of declined or revoked vote can\'t be changed');
 
@@ -145,9 +142,6 @@ class Vote extends CActiveRecord implements iCommentable
     protected function beforeDelete()
     {
         throw new Exception('Vote can\'t be deleted');
-//        if($this->candidate->election->status != Election::STATUS_ELECTION)
-//            throw new Exception ('Vote can\'t be deleted for inactive election');
-//        return parent::beforeDelete();
     }
 
     /**

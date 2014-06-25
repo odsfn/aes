@@ -220,7 +220,6 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             });
             
             this.listenTo(this.votes, 'changed:acceptedVotesCount', function() {
-                console.log('Details -> changed:acceptedVotesCount');
                 this.detailsView.render();
             });
             

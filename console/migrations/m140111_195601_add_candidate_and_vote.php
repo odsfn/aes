@@ -27,7 +27,6 @@ class m140111_195601_add_candidate_and_vote extends EDbMigration
                 'status'       => 'tinyint NOT NULL DEFAULT 0'
             ));
             
-            $this->createIndex('ux_vote_candidate_id_user_id', 'vote', 'candidate_id, user_id', true);
             $this->addForeignKey('fk_vote_election_id', 'vote', 'election_id', 'election', 'id', 'CASCADE', 'NO ACTION');
             $this->addForeignKey('fk_vote_candidate_id', 'vote', 'candidate_id', 'candidate', 'id', 'CASCADE' , 'NO ACTION');
             $this->addForeignKey('fk_vote_user_id', 'vote', 'user_id', 'user_profile', 'user_id', 'CASCADE' , 'NO ACTION');
