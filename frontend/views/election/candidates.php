@@ -11,6 +11,8 @@ $js = array(
     'aes:views/ItemView.js',
     'aes:views/MoreView.js',
     'aes:views/FeedCountView.js',
+    'aes:views/ButtonView.js',
+    'aes:views/ModalView.js',
     'aes:models/Election.js',
     'aes:models/Candidate.js',
     'modules/Candidates.js',

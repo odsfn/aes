@@ -298,6 +298,11 @@ class ElectionProcessTest extends WebTestCase {
         $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 1');
         //revoke vote
         $this->click('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
+        $this->sleep(1000);
+        $this->assertVisible('css=div.modal');
+        $this->click('css=div.modal button.btn-primary');
+        $this->sleep(1000);
+        $this->assertElementNotPresent('css=div.modal');
         
         $this->waitForElementContainsText('css=#votes-tab .items .user-info .body > a', 'Vasiliy Pedak');
         $this->waitForElementContainsText('css=#votes-tab .items .user-info .mark', 'Revoked by elector');
@@ -323,6 +328,11 @@ class ElectionProcessTest extends WebTestCase {
         
         //revoke again
         $this->click('css=#candidate-info .user-info .vote-cntr .checkbox.vote');
+        $this->sleep(1000);
+        $this->assertVisible('css=div.modal');
+        $this->click('css=div.modal button.btn-primary');
+        $this->sleep(1000);
+        $this->assertElementNotPresent('css=div.modal');
         
         $this->waitForElementContainsText('css=#candidate-info .body > div:nth-of-type(4)', 'Accepted votes count: 0');
         $this->sleep(750);
@@ -332,8 +342,4 @@ class ElectionProcessTest extends WebTestCase {
         $this->waitForElementContainsText('css=#votes-tab .items .user-info:nth-of-type(2) .mark', 'Revoked by elector');
     }
     
-//    public function testUserWhichRemovedVoteCantVoteBecauseTimerLimits()
-//    {
-//        
-//    }
  }

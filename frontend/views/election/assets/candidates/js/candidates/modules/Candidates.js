@@ -69,13 +69,25 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 
             } else {
 
-                this.model.declineVote(_.bind(function(){
-                    this.ui.voteBoxValue.html('');
-                    this.trigger('voteDeleted');
-                    this._voted = voted;
-                    this.$el.unmask();
-                }, this));
+                var decline = _.bind(function(){
+                    this.model.declineVote(_.bind(function(){
+                        this.ui.voteBoxValue.html('');
+                        this.trigger('voteDeleted');
+                        this._voted = voted;
+                        this.$el.unmask();
+                    }, this));
+                }, this);
+
+                var confirmation = new Aes.ConfirmModalView({
+                    label: 'Revoke vote confirmation',
+                    body: 'Are you really want to revoke your vote?',
+                    onConfirm: decline,
+                    onCancel: _.bind(function(){
+                        this.$el.unmask();
+                    }, this)
+                });
                 
+                confirmation.open();
             }
         },
        
@@ -137,25 +149,10 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 Candidates.voteBoxModels.add(model);
             }
             
-            var lastCandidateVote = null;
-                    
-            Candidates.votes.each(function(vote) {
-                if(vote.get('candidate_id') != this.model.get('id')) return;
-                
-                if(!lastCandidateVote) 
-                    lastCandidateVote = vote;
-                else if(lastCandidateVote.get('id') < vote.get('id'))
-                    lastCandidateVote = vote;
-                
-            }, this);
+            var candidateVote = Candidates.getLastVote(this.model.get('id'));
             
-            if(lastCandidateVote)
-                model.set('vote', lastCandidateVote);
-            
-//            var candidateVote = Candidates.votes.findWhere({candidate_id: this.model.get('id')});
-//            
-//            if(candidateVote)
-//                model.set('vote', candidateVote);
+            if(candidateVote)
+                model.set('vote', candidateVote);
             
             if(this.model.getStatusText() === 'Registered' && Candidates.getElection().checkStatus('Election'))
                 this._voteBoxView = new Candidates.VoteBoxView({model: model });
@@ -546,6 +543,21 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         return election;
     };
     
+    this.getLastVote = function(candidateId) {
+        var lastCandidateVote = null;
+
+        Candidates.votes.each(function(vote) {
+            if(vote.get('candidate_id') != candidateId) return;
+
+            if(!lastCandidateVote) 
+                lastCandidateVote = vote;
+            else if(lastCandidateVote.get('id') < vote.get('id'))
+                lastCandidateVote = vote;
+        });  
+        
+        return lastCandidateVote;
+    };
+     
     this.viewDetails = function(candId) {
         
         var cand = this.cands.findWhere({id: parseInt(candId)});
