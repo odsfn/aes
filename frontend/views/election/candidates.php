@@ -50,6 +50,16 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
 <div id="candidate-details"></div>
 
+<script id="revoke-vote-message" type="text/template">
+    <p>Are you really want to revoke your vote?</p>
+    <% if(--revoteTriesRemain <= 3 && revoteTriesRemain > 0) { %>
+    <p>You will have ability to revote <%= revoteTriesRemain %> times after you revoke this vote.</p>
+    <% } else if (revoteTriesRemain == 0) { %>
+    <p>Please note, you will not be able to revoke your vote again. This is the last try.</p>
+    <% } %>
+    <p>You can vote next time during <%= (revoteTime / 60 / 1000) %> minutes.</p>
+</script>
+
 <script id="cands-layout-tpl" type="text/template">
     <ul class="nav nav-tabs">
         <li id="electoral-list-tab-sel"><a href="#electoral-list-tab" data-toggle="tab">Electoral list</a></li>

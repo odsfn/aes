@@ -54,11 +54,18 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             if(!this.model.canVote())
                 return;
             
+            var revoteAbility = Candidates.getRevoteAbility();
+            
             var voted = !this.model.get('voted');
             
             this.$el.mask();
             
             if(voted) {
+                
+                if(!revoteAbility.isAllowed('pass')) {
+                    alert('NoNoNo! Dude');
+                    return;
+                }
                 
                 this.model.passVote(_.bind(function(){
                     this.ui.voteBoxValue.html('&#10003;');
@@ -69,6 +76,11 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 
             } else {
 
+                if(!revoteAbility.isAllowed('revoke')) {
+                    alert('NoNoNo! Dude');
+                    return;
+                }
+
                 var decline = _.bind(function(){
                     this.model.declineVote(_.bind(function(){
                         this.ui.voteBoxValue.html('');
@@ -77,10 +89,10 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                         this.$el.unmask();
                     }, this));
                 }, this);
-
+                
                 var confirmation = new Aes.ConfirmModalView({
                     label: 'Revoke vote confirmation',
-                    body: 'Are you really want to revoke your vote?',
+                    body: Backbone.Marionette.Renderer.render('#revoke-vote-message', revoteAbility.toJSON()),
                     onConfirm: decline,
                     onCancel: _.bind(function(){
                         this.$el.unmask();
@@ -334,8 +346,15 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         
         canVote: function() {
             var passedVote = Candidates.votes.getPassedVote();
+            var canVote = false;
             
-            return (!passedVote || _.isEqual(passedVote, this));
+            if((!passedVote && Candidates.getRevoteAbility().isAllowed('pass')) 
+                || (_.isEqual(passedVote, this) && Candidates.getRevoteAbility().isAllowed('revoke'))
+            ) {
+                canVote = true;
+            }
+            
+            return canVote;
         },
         
         revoke: function(options) {
@@ -408,7 +427,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 
                 this.set({
                     voted: false,
-                    active: !hasPassedVote,
+                    active: (!hasPassedVote && Candidates.getRevoteAbility().isAllowed('pass')),
                     declined: false
                 });
             }
@@ -420,28 +439,146 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 
         initialize: function() {
             this.on('change:vote', _.bind(function(m, v, o) {
-                
-                var vote = this.get('vote'); 
-                
-                if(vote) {
-                    
-                    this.listenTo(vote, 'destroy', function() {
-                        this.set({
-                            voted: false,
-                            active: true,
-                            declined: false,
-                            vote: null
-                        });
-                    });
-                }
-                
                 this.updateAttrs();
-                
             }, this));
             
-            this.listenTo(Candidates.votes, 'sync remove', this.updateAttrs);
+            this.listenTo(Candidates.votes, 'sync', this.updateAttrs);
             
             this.updateAttrs();
+        }
+    });
+    
+    //Calculates and exposes information about revoting ability
+    Candidates.RevoteAbility = Backbone.Model.extend({
+        
+        defaults: {
+            removeVoteTime: null,
+            revoteTime: null,
+            revoteTriesRemain: null,
+            revokeVoteTimeRemain: null,
+            passVoteTimeRemain: null
+        },
+        
+        _election: null,
+        
+        _votes: null,
+        
+        calculate: function() {
+            var revoteTriesRemain = this.calculateRevoteTriesRemain();
+            
+            this.set('revoteTriesRemain', revoteTriesRemain);
+            
+            if(!revoteTriesRemain) {
+                this.set('revokeVoteTimeRemain', 0);
+                this.set('passVoteTimeRemain', 0);
+                return;
+            }
+            
+            this.set('revokeVoteTimeRemain', this.calculateRevokeVoteTimeRemain());
+            this.set('passVoteTimeRemain', this.calculatePassVoteTimeRemain());
+        },
+        
+        calculateRevoteTriesRemain: function() {
+            var revokedVotes = [];
+            var revoteTriesRemain = 0;
+            
+            this._votes.each(function(vote) {
+                if(vote.isRevoked()) revokedVotes.push(vote);
+            });
+            
+            revoteTriesRemain = this._election.get('revotes_count') - revokedVotes.length;
+            
+            var lastVote = this._getLastVote();
+            
+            if(lastVote && lastVote.isRevoked()) {
+                revoteTriesRemain++;
+            }
+            
+            if(revoteTriesRemain <= 0) 
+                revoteTriesRemain = 0;
+            
+            return revoteTriesRemain;
+        },
+        
+        calculateRevokeVoteTimeRemain: function() {
+            var lastVote = this._getLastVote();
+            var timeRemain = 0;
+            var currentTime = this._getCurrentTime();
+            
+            if(!lastVote || lastVote.isRevoked() || lastVote.isDeclined())
+                return 0;
+            
+            timeRemain = this._election.get('remove_vote_time') + lastVote.get('date') - currentTime;
+            
+            if(timeRemain <= 0)
+                timeRemain = 0;
+            
+            return timeRemain;
+        },
+        
+        calculatePassVoteTimeRemain: function() {
+            var lastVote = this._getLastVote();
+            var timeRemain = 0;
+            var currentTime = this._getCurrentTime();
+            
+            if(!lastVote || !lastVote.isRevoked() || lastVote.isDeclined())
+                return 0;
+            
+            timeRemain = this._election.get('revote_time') + lastVote.get('date') - currentTime;
+            
+            if(timeRemain <= 0)
+                timeRemain = 0;
+            
+            return timeRemain;
+        },
+        
+        isAllowed: function(action) {
+            var lastVote = this._getLastVote();
+            
+            if(!lastVote && action === 'pass')
+                return true;
+            else if(!lastVote)
+                return false;
+            
+            this.calculate();
+            
+            if(lastVote.isDeclined() && action === 'pass') {
+                return true;
+            } else if(this.get('revoteTriesRemain') > 0 && (
+                (action === 'revoke' && this.get('revokeVoteTimeRemain') > 0)
+                || (action === 'pass' && this.get('passVoteTimeRemain') > 0)
+            )) return true;
+            
+            return false;
+        },
+        
+        initialize: function(attrs, options) {
+            this._election = options.election;
+            this._votes = options.votes;
+            
+            this.set('removeVoteTime', this._election.get('remove_vote_time'));
+            this.set('revoteTime', this._election.get('revote_time'));
+            
+            this.listenTo(this._votes, 'change:status add', this.calculate);
+            
+            this.calculate();
+        },
+        
+        _getLastVote: function() {
+            var lastVote = null;
+
+            Candidates.votes.each(function(vote) {
+                if(!lastVote) 
+                    lastVote = vote;
+                else if(lastVote.get('date') < vote.get('date'))
+                    lastVote = vote;
+            });  
+
+            return lastVote;
+        },
+        
+        _getCurrentTime: function() {
+            return (new Date()).getTime();
         }
     });
     
@@ -557,7 +694,17 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         
         return lastCandidateVote;
     };
-     
+    
+    this.getRevoteAbility = function() {
+        if(!this._revoteAbility)
+            this._revoteAbility = new Candidates.RevoteAbility({}, {
+                votes: Candidates.votes,
+                election: Candidates.getElection()
+            });
+        
+        return this._revoteAbility;
+    };
+    
     this.viewDetails = function(candId) {
         
         var cand = this.cands.findWhere({id: parseInt(candId)});

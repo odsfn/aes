@@ -2,8 +2,8 @@
 /*
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
-class ElectionProcessTest extends WebTestCase {
-    
+class ElectionProcessTest extends WebTestCase
+{
     public $fixtures = array(
         'user' => 'userAccount.models.UserAccount',
         'user_identity' => 'userAccount.models.Identity',
@@ -342,4 +342,129 @@ class ElectionProcessTest extends WebTestCase {
         $this->waitForElementContainsText('css=#votes-tab .items .user-info:nth-of-type(2) .mark', 'Revoked by elector');
     }
     
- }
+    public function testRevoteAvailabilityInfoCorrect() 
+    {
+        $this->login("truvazia@gmail.com", "qwerty");
+        
+        $this->open('election/candidates/1');
+        $this->waitForPageToLoad("30000");
+        
+        $voteBox = "css=div.checkbox.vote";
+        $this->waitForElementPresent($voteBox);      
+        //first vote
+        $this->click($voteBox);
+        
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        //revoke vote
+        $this->click($voteBox);
+        $this->waitForPresent('css=div.modal');
+        $this->waitForVisible('css=div.modal');
+        $this->assertTextPresent('You will have ability to revote 2 times after you revoke this vote.');
+        $this->assertTextPresent('You can vote next time during 30 minutes.');
+        $this->click('css=div.modal button.btn-primary');
+        $this->waitForElementNotPresent('css=div.modal');
+        
+        $this->sleep(1000);
+        
+        //vote again
+        $this->click($voteBox);
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        $this->sleep(1000);
+        
+        //revoke vote again
+        $this->click($voteBox);
+        $this->waitForPresent('css=div.modal');
+        $this->waitForVisible('css=div.modal');
+        $this->assertTextPresent('You will have ability to revote 1 times after you revoke this vote.');
+        $this->assertTextPresent('You can vote next time during 30 minutes.');
+        $this->click('css=div.modal button.btn-primary');
+        $this->waitForElementNotPresent('css=div.modal');
+        
+        $this->click('css=.user-info a.route');
+        
+        $this->waitForElementPresent('css=#votes-tab .items');
+        $this->waitForCssCount('css=#votes-tab .items .user-info', 2);
+        $this->sleep(500);
+        
+        //vote again
+        $voteBox = 'css=#candidate-info .user-info .vote-cntr .checkbox.vote';
+        $this->click($voteBox);
+        $this->waitForElementContainsText('css=#candidate-info .user-info .vote-cntr .checkbox.vote span.value', '✓');
+        $this->waitForCssCount('css=#votes-tab .items .user-info', 3);
+        $this->sleep(2000);
+        
+        //revoke vote again
+        $this->click($voteBox);
+        $this->waitForPresent('css=div.modal');
+        $this->waitForVisible('css=div.modal');
+        $this->assertTextNotPresent('You will have ability to revote ');
+        $this->assertTextPresent('Please note, you will not be able to revoke your vote again. This is the last try.');
+        $this->assertTextPresent('You can vote next time during 30 minutes.');
+        $this->click('css=div.modal button.btn-primary');
+        $this->waitForElementNotPresent('css=div.modal');
+        $this->waitForCssCount('css=#votes-tab .items .user-info', 3);
+        
+        $this->sleep(1000);
+        
+        //vote again
+        $this->click($voteBox);
+        $this->waitForCssCount('css=#votes-tab .items .user-info', 4);
+        $this->assertElementHasClass($voteBox, 'inactive'); //last revoke done, so now is inactive
+    }
+    
+    public function testPassVoteUnavailableBecauseOfTimeout()
+    {
+        $this->login("truvazia@gmail.com", "qwerty");
+        
+        $this->open('election/candidates/1');
+        $this->waitForPageToLoad("30000");
+        
+        $voteBox = "css=div.checkbox.vote";
+        $this->waitForElementPresent($voteBox);      
+        //first vote
+        $this->click($voteBox);
+        
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        //revoke vote
+        $this->click($voteBox);
+        $this->waitForPresent('css=div.modal');
+        $this->waitForVisible('css=div.modal');
+        $this->click('css=div.modal button.btn-primary');
+        $this->waitForElementNotPresent('css=div.modal');
+        
+        $this->sleep(1000);
+        
+        //Simulating that timer is expired
+        $candidate = Candidate::model()->findByAttributes(array('electoral_list_pos' => 1, 'election_id' => 1));
+        $vote = Vote::model()->findByAttributes(array(
+            'candidate_id' => $candidate->id,
+            'user_id' => 1
+        ));
+        $voted = new DateTime($vote->date);
+        $voted->sub(new DateInterval('PT'. Election::model()->findByPk(1)->revote_time .'M'));
+        $voted = $voted->format('Y-m-d H:i:s');
+        Yii::app()->db->createCommand()->update('vote', array('date' => $voted), 'id = ' . $vote->id);
+                
+        $this->open('election/candidates/1');
+        //check all candidates are inactive for voring
+        $this->waitForCssCount($voteBox . '.inactive', 3);      
+    }
+    
+    public function testRevokeVoteUnavailableBecauseOfTimeout()
+    {
+        $this->markTestIncomplete();
+    }
+    
+    public function testPassVoteFailsWithMessageBecauseOfTimeout()
+    {
+        $this->markTestIncomplete();
+    }
+    
+    public function testRevokeVoteFailsWithMessageBecauseOfTimeout()
+    {
+        $this->markTestIncomplete();
+    }    
+}

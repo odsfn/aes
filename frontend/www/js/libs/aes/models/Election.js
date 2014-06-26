@@ -23,6 +23,12 @@ var Election = Backbone.Model.extend({
         attrs.status = parseInt(attrs.status);
         attrs.id = parseInt(attrs.id);
 
+        attrs.revotes_count = parseInt(attrs.revotes_count);
+        //We are getting minutes from server here we convert it to the correct
+        //time interval in milliseconds
+        attrs.remove_vote_time = parseInt(attrs.remove_vote_time) * 60 * 1000;  
+        attrs.revote_time = parseInt(attrs.revote_time) * 60 * 1000;
+
         return attrs;
     }
 }, {

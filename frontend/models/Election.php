@@ -17,7 +17,9 @@ Yii::import('stateMachine.*');
  * @property integer $voter_reg_confirm
  * @property integer $unassigned_access_level Access level for users that were not assigned to this election
  * @property integer $target_id
- * @property integer $revotes_count How many times voter can revote in the election
+ * @property integer $revotes_count How many times voter can revote in the election. If 0 - it means 
+ *                                  electors can't remove their votes. If 1 - it means voter can remove
+ *                                  his vote and add to any candidate again only once.
  * @property integer $remove_vote_time Specifies how much time in minutes voter can to remove his vote. 
  *                                      Time calculates from a moment when user's last vote was assigned.
  *                                      If it equals 0 then time is unlimited before the election will finish.
@@ -214,7 +216,7 @@ class Election extends CActiveRecord implements iPostable, iCommentable
 
                 array('revote_time, remove_vote_time, revotes_count', 'numerical', 'integerOnly' => true, 'min' => 0),
                 
-                array('id, name, status, text_status, have_pic', 'safe', 'on' => 'rest'),
+                array('id, name, status, text_status, have_pic, revotes_count, remove_vote_time, revote_time', 'safe', 'on' => 'rest'),
 
             );
     }
