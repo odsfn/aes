@@ -184,6 +184,9 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
         
         if((Candidates.getElection().checkStatus('Election') || Candidates.getElection().checkStatus('Finished')) && candidate.checkStatus('Registered'))
         {
+            this.stopListening(Candidates.votes);
+            this.stopListening(this.votes);
+            
             this.votesFeedView = new VotesFeedView({
                 collection: this.votes
             });            
@@ -214,12 +217,17 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             $('#details-votes-tab-sel a').tab('show');
             
             this.listenTo(Candidates.votes, 'vote:passed', function(vote) {
+                console.log('vote:passed in Details.js');
+                if(!currentCandidate || vote.get('candidate_id') !== currentCandidate.get('id'))
+                    return;
+                
                 this.votes.add(vote);
                 this.votes.trigger('vote:passed', vote);
                 this.detailsView.render();
             });
             
             this.listenTo(this.votes, 'changed:acceptedVotesCount', function() {
+                console.log('changed:acceptedVotesCount in Details.js');
                 this.detailsView.render();
             });
             

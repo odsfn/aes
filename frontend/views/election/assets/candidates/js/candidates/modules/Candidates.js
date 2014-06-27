@@ -51,8 +51,14 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         },
         
         onVoteBoxClicked: function() {
-            if(!this.model.canVote())
+            if(!this.model.canVote()) {
                 return;
+            }
+            
+            var fail = function() {
+                alert('Action is unavailable because of timeout');
+                Candidates.votes.trigger('refresh:availability');
+            };
             
             var revoteAbility = Candidates.getRevoteAbility();
             
@@ -63,7 +69,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             if(voted) {
                 
                 if(!revoteAbility.isAllowed('pass')) {
-                    alert('NoNoNo! Dude');
+                    fail();
                     return;
                 }
                 
@@ -77,7 +83,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             } else {
 
                 if(!revoteAbility.isAllowed('revoke')) {
-                    alert('NoNoNo! Dude');
+                    fail();
                     return;
                 }
 
@@ -442,7 +448,10 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 this.updateAttrs();
             }, this));
             
-            this.listenTo(Candidates.votes, 'sync', this.updateAttrs);
+            this.listenTo(Candidates.votes, 'sync refresh:availability', this.updateAttrs);
+//            this.listenTo(Candidates.votes, 'refresh:availability', function() {
+//                this.updateAttrs();
+//            });
             
             this.updateAttrs();
         }

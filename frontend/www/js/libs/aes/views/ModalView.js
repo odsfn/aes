@@ -3,15 +3,18 @@
  */
 var Aes = Aes || {};
 
-Aes.ConfirmModalView = Aes.ItemView.extend({
+/**
+ * Base class for modals
+ * 
+ * @type @exp;Aes@pro;ItemView@call;extend
+ */
+Aes.ModalView = Aes.ItemView.extend({
     
-    label: 'Confirmation',
+    label: '',
     
-    body: 'Are you sure?',
+    body: '',
     
-    closeBtnLabel: 'No',
-    
-    confirmBtnLabel: 'Yes',
+    closeBtnLabel: 'Close',
     
     ui: {
         footer: 'div.modal-footer'
@@ -21,8 +24,22 @@ Aes.ConfirmModalView = Aes.ItemView.extend({
         'click': 'closeClicked'
     },
     
+    /**
+     * @returns {Array} Configured buttons objects
+     */
+    buttonsConfig: function() {
+        return [
+            new Aes.ButtonView({
+                label: Marionette.getOption(this, 'closeBtnLabel'),
+                onClick: _.bind(function() {
+                    this.triggerMethod('closeClicked');
+                }, this)
+            })         
+        ];
+    },
+    
     getTplStr: function() {
-        return Aes.ConfirmModalView.getTpl();
+        return Aes.ModalView.getTpl();
     },
     
     open: function() {
@@ -50,14 +67,8 @@ Aes.ConfirmModalView = Aes.ItemView.extend({
         this.close();
     },
     
-    onConfirmClicked: function() {
-        Marionette.getOption(this, 'onConfirm').call(this);
-        this.close();
-    },
-    
     //should be overriden or passed as constructor options
     onCancel: function() {},
-    onConfirm: function() {},
     
     serializeData: function() {
         return _.extend(Aes.ItemView.prototype.serializeData.apply(this, arguments),{
@@ -68,7 +79,7 @@ Aes.ConfirmModalView = Aes.ItemView.extend({
         });
     },    
     
-    initialize: function(options) {        
+    initialize: function() {        
         Aes.ItemView.prototype.initialize.apply(this, arguments);
         
         this.model = new Backbone.Model({
@@ -76,7 +87,43 @@ Aes.ConfirmModalView = Aes.ItemView.extend({
             body: Marionette.getOption(this, 'body')
         });
         
-        this._buttons = [
+        var btnsConfigProvider = Marionette.getOption(this, 'buttonsConfig');
+        
+        this._buttons = btnsConfigProvider.call(this);
+    }
+    
+},{
+    getTpl: function() {
+        return '<div id="<%= view.cid %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="<%= view.cid %>-label" aria-hidden="true">'
+                    + '<div class="modal-header">'
+                        + '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
+                        + '<h3 id="<%= view.cid %>-label"><%= label %></h3>'
+                    + '</div>'
+                    + '<div class="modal-body"><%= body %></div>'
+                    + '<div class="modal-footer"></div>'
+                + '</div>';
+    }
+});
+
+Aes.ConfirmModalView = Aes.ModalView.extend({
+    label: 'Confirmation',
+    
+    body: 'Are you sure?',
+    
+    closeBtnLabel: 'No',
+    
+    confirmBtnLabel: 'Yes',
+    
+    onConfirmClicked: function() {
+        Marionette.getOption(this, 'onConfirm').call(this);
+        this.close();
+    },
+    
+    //should be overriden or passed as constructor options
+    onConfirm: function() {},
+    
+    buttonsConfig: function() {
+        return [
             new Aes.ButtonView({
                 label: Marionette.getOption(this, 'closeBtnLabel'),
                 onClick: _.bind(function() {
@@ -94,18 +141,9 @@ Aes.ConfirmModalView = Aes.ItemView.extend({
             })
         ];
     }
-    
-},{
-    getTpl: function() {
-        return '<div id="<%= view.cid %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="<%= view.cid %>-label" aria-hidden="true">'
-                    + '<div class="modal-header">'
-                        + '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
-                        + '<h3 id="<%= view.cid %>-label"><%= label %></h3>'
-                    + '</div>'
-                    + '<div class="modal-body"><%= body %></div>'
-                    + '<div class="modal-footer"></div>'
-                + '</div>';
-    }
 });
 
+Aes.AlertModalView = Aes.ModalView.extend({
+    label: 'Alert'
+});
 

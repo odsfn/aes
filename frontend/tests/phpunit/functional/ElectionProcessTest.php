@@ -455,16 +455,107 @@ class ElectionProcessTest extends WebTestCase
     
     public function testRevokeVoteUnavailableBecauseOfTimeout()
     {
-        $this->markTestIncomplete();
+        $this->login("truvazia@gmail.com", "qwerty");
+        
+        $this->open('election/candidates/1');
+        $this->waitForPageToLoad("30000");
+        
+        $voteBox = "css=div.checkbox.vote";
+        $this->waitForElementPresent($voteBox);      
+        //first vote
+        $this->click($voteBox);
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        //Simulating that timer is expired
+        $candidate = Candidate::model()->findByAttributes(array('electoral_list_pos' => 1, 'election_id' => 1));
+        $vote = Vote::model()->findByAttributes(array(
+            'candidate_id' => $candidate->id,
+            'user_id' => 1
+        ));
+        $voted = new DateTime($vote->date);
+        $voted->sub(new DateInterval('PT'. Election::model()->findByPk(1)->remove_vote_time .'M'));
+        $voted = $voted->format('Y-m-d H:i:s');
+        Yii::app()->db->createCommand()->update('vote', array('date' => $voted), 'id = ' . $vote->id);
+        
+        $this->open('election/candidates/1');
+        //check all candidates are inactive for voting
+        $this->waitForCssCount($voteBox . '.inactive', 3);
     }
     
     public function testPassVoteFailsWithMessageBecauseOfTimeout()
     {
-        $this->markTestIncomplete();
+        $this->login("truvazia@gmail.com", "qwerty");
+        
+        $this->open('election/candidates/1');
+        $this->waitForPageToLoad("30000");
+        
+        $voteBox = "css=div.checkbox.vote";
+        $this->waitForElementPresent($voteBox);      
+        //first vote
+        $this->click($voteBox);
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        //revoke vote
+        $this->click($voteBox);
+        $this->waitForPresent('css=div.modal');
+        $this->waitForVisible('css=div.modal');
+        $this->click('css=div.modal button.btn-primary');
+        $this->waitForElementNotPresent('css=div.modal');
+        
+        $this->sleep(1000);
+        
+        //Simulating that timer is expired
+        $candidate = Candidate::model()->findByAttributes(array('electoral_list_pos' => 1, 'election_id' => 1));
+        $vote = Vote::model()->findByAttributes(array(
+            'candidate_id' => $candidate->id,
+            'user_id' => 1
+        ));
+        $voted = new DateTime($vote->date);
+        $voted->sub(new DateInterval('PT'. (Election::model()->findByPk(1)->revote_time - 1) . 'M' . '54S'));
+        $voted = $voted->format('Y-m-d H:i:s');
+        Yii::app()->db->createCommand()->update('vote', array('date' => $voted), 'id = ' . $vote->id);
+        
+        $this->open('election/candidates/1');
+        
+        $this->sleep(7000);
+        $this->assertElementHasNoClass($voteBox, 'inactive');
+        //try to vote again
+        $this->click($voteBox);
+        $this->assertAlert('Action is unavailable because of timeout');
+        //check all candidates are inactive for voting
+        $this->waitForCssCount($voteBox . '.inactive', 3);
     }
     
     public function testRevokeVoteFailsWithMessageBecauseOfTimeout()
     {
-        $this->markTestIncomplete();
+        $this->login("truvazia@gmail.com", "qwerty");
+        
+        $this->open('election/candidates/1');
+        $this->waitForPageToLoad("30000");
+        
+        $voteBox = "css=div.checkbox.vote";
+        $this->waitForElementPresent($voteBox);      
+        //first vote
+        $this->click($voteBox);
+        $this->waitForElementContainsText($voteBox . ' span.value', '✓');
+        
+        //Simulating that timer is expired
+        $candidate = Candidate::model()->findByAttributes(array('electoral_list_pos' => 1, 'election_id' => 1));
+        $vote = Vote::model()->findByAttributes(array(
+            'candidate_id' => $candidate->id,
+            'user_id' => 1
+        ));
+        $voted = new DateTime($vote->date);
+        $voted->sub(new DateInterval('PT'. (Election::model()->findByPk(1)->remove_vote_time - 1) .'M' . '54S'));
+        $voted = $voted->format('Y-m-d H:i:s');
+        Yii::app()->db->createCommand()->update('vote', array('date' => $voted), 'id = ' . $vote->id);
+        
+        $this->open('election/candidates/1');
+        
+        $this->sleep(7000);
+        $this->click($voteBox);
+        $this->assertAlert('Action is unavailable because of timeout');
+        //check all candidates are inactive for voting
+        $this->waitForCssCount($voteBox . '.inactive', 3);
     }    
 }
