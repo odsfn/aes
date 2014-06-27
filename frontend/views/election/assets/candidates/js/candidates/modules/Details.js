@@ -217,7 +217,6 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             $('#details-votes-tab-sel a').tab('show');
             
             this.listenTo(Candidates.votes, 'vote:passed', function(vote) {
-                console.log('vote:passed in Details.js');
                 if(!currentCandidate || vote.get('candidate_id') !== currentCandidate.get('id'))
                     return;
                 
@@ -227,7 +226,6 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             });
             
             this.listenTo(this.votes, 'changed:acceptedVotesCount', function() {
-                console.log('changed:acceptedVotesCount in Details.js');
                 this.detailsView.render();
             });
             

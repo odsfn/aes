@@ -393,12 +393,14 @@ class ElectionProcessTest extends WebTestCase
         $this->click($voteBox);
         $this->waitForElementContainsText('css=#candidate-info .user-info .vote-cntr .checkbox.vote span.value', '✓');
         $this->waitForCssCount('css=#votes-tab .items .user-info', 3);
+        
         $this->sleep(2000);
         
         //revoke vote again
         $this->click($voteBox);
         $this->waitForPresent('css=div.modal');
         $this->waitForVisible('css=div.modal');
+        $this->sleep(250);
         $this->assertTextNotPresent('You will have ability to revote ');
         $this->assertTextPresent('Please note, you will not be able to revoke your vote again. This is the last try.');
         $this->assertTextPresent('You can vote next time during 30 minutes.');
