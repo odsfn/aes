@@ -355,6 +355,67 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         
         return $result;
     }
+    
+    public function isRevotesLimitReached($userId)
+    {
+        return ( $this->revotes_count - $this->getActualRevotesCount($userId) <= 0 ) ? true : false;
+    }
+    
+    public function isRevokeVoteTimeoutReached($userId)
+    {
+        $lastVote = $this->getLastVote($userId);
+        
+        if(!$lastVote)
+            return false;
+        
+        $lastVoteDate = new DateTime($lastVote->date);
+        $timeRemains = $lastVoteDate->getTimestamp() + $this->remove_vote_time * 60 - time();
+        
+        return ($timeRemains <= 0);
+    }
+    
+    public function isRevoteTimeoutReached($userId)
+    {
+        $lastVote = $this->getLastVote($userId);
+        
+        if(!$lastVote)
+            return false;
+        
+        $lastVoteDate = new DateTime($lastVote->date);
+        $timeRemains = $lastVoteDate->getTimestamp() + $this->revote_time * 60 - time();
+        
+        return ($timeRemains <= 0);        
+    }
+
+    public function getLastVote($userId = null) 
+    {
+        return Vote::model()->find(new CDbCriteria(
+            array(
+                'condition' => 'election_id = ' . $this->id 
+                                . ( !empty($userId) ? ' AND user_id = ' . $userId : '' ),
+                'order'     => 'id DESC'
+            )
+        ));
+    }
+    
+    public function getActualRevotesCount($userId)
+    {
+        $revokedCount = Vote::model()->count($condition = new CDbCriteria(
+            array(
+                'condition' => 'election_id = ' . $this->id 
+                                . ' AND user_id = ' . $userId
+            )
+        ));
+        
+        $revotesCount = $revokedCount;
+
+        $lastVote = $this->getLastVote($userId);
+        
+        if(!$lastVote || $lastVote->status !== Vote::STATUS_PASSED)
+            $revotesCount--;
+        
+        return $revotesCount;
+    }
 }
 
 class ElectionFinishedState extends AState {

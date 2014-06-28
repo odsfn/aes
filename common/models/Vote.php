@@ -9,10 +9,12 @@
  * @property integer $candidate_id
  * @property integer $user_id
  * @property integer $status
- *
+ * @property integer $election_id
+ * 
  * The followings are the available model relations:
  * @property Profile $profile
  * @property Candidate $candidate
+ * @property Election $election
  */
 class Vote extends CActiveRecord implements iCommentable
 {
@@ -61,8 +63,8 @@ class Vote extends CActiveRecord implements iCommentable
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('candidate_id, user_id', 'required'),
-            array('candidate_id, user_id, status', 'numerical', 'integerOnly' => true),
+            array('candidate_id, user_id, election_id', 'required'),
+            array('candidate_id, user_id, status, election_id', 'numerical', 'integerOnly' => true),
             array('date', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -80,7 +82,8 @@ class Vote extends CActiveRecord implements iCommentable
         return array(
             'profile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'candidate' => array(self::BELONGS_TO, 'Candidate', 'candidate_id'),
-            'elector' => array(self::BELONGS_TO, 'Elector', 'user_id')
+            'elector' => array(self::BELONGS_TO, 'Elector', 'user_id'),
+            'election' => array(self::BELONGS_TO, 'Election', 'election_id')
         );
     }
 
@@ -95,6 +98,7 @@ class Vote extends CActiveRecord implements iCommentable
             'candidate_id' => 'Candidate',
             'user_id' => 'User',
             'status' => 'Status',
+            'election_id' => 'Election'
         );
     }
 
@@ -122,7 +126,6 @@ class Vote extends CActiveRecord implements iCommentable
 
     protected function beforeSave()
     {
-
         if ($this->candidate->status != Candidate::STATUS_REGISTERED)
             throw new Exception('Vote can\'t be passed or changed for not registered candidate');
 
@@ -135,7 +138,19 @@ class Vote extends CActiveRecord implements iCommentable
         if ($this->isStoredDiffers('status') && $this->storedValue('status') != Vote::STATUS_PASSED)
             throw new Exception('Status of declined or revoked vote can\'t be changed');
 
+        $lastVote = $this->election->getLastVote($this->user_id);
+        if($this->isNewRecord && !empty($lastVote) && $lastVote->status == Vote::STATUS_PASSED)
+            throw new Exception('Vote has already been passed');
 
+        if ($this->election->isRevotesLimitReached($this->user_id))
+            throw new Exception('Revote limit has been reached');
+
+        if ($this->election->isRevokeVoteTimeoutReached($this->user_id))
+            throw new Exception('Revoke vote timeout has been reached');
+
+        if ($this->election->isRevoteTimeoutReached($this->user_id))
+            throw new Exception('Revote timeout has been reached');
+        
         return parent::beforeSave();
     }
 
