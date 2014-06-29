@@ -30,7 +30,7 @@ var Messages = FeedCollection.extend({
         FeedCollection.prototype.initialize.apply(this, arguments);
 
         if(conf.conversationId)
-            this.filter = { conversation_id: conf.conversationId };
+            this.filters = { conversation_id: conf.conversationId };
         
     }
 });

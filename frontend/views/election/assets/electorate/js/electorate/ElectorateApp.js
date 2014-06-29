@@ -116,7 +116,7 @@ var Electorate = FeedCollection.extend({
    model: Elector,
    setElectionId: function(electionId) {
        this.electionId = electionId;
-       this.filter.election_id = electionId;
+       this.filters.election_id = electionId;
    }
 });
 
@@ -183,7 +183,7 @@ App.addInitializer(function(options) {
    
     this.layout = new App.Layout();
     this.users = new Aes.Users();
-    this.users.filter.applyScopes = '{notElector: {election_id: '+ options.electionId +'}}';
+    this.users.filters.applyScopes = '{notElector: {election_id: '+ options.electionId +'}}';
     this.usersView = new ElectorateApp.FeedView({
        collection: this.users,
        filters: filter

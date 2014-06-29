@@ -73,7 +73,7 @@ var FormView = Marionette.ItemView.extend({
                 param[1] = {property: 'status', value : select_val};
         }
         this.collection.reset();
-        this.collection.filter = param;
+        this.collection.filters = param;
         this.collection.fetch();
     },
 

@@ -189,7 +189,7 @@ App.module('AdminsManagement', function(AdminsManagement, App, Backbone, Marione
                 
         setElectionId: function(value) {
             this.electionId = value;
-            this.filter.election_id = value;
+            this.filters.election_id = value;
         }
     });
     

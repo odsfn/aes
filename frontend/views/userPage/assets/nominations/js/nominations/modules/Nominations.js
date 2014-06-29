@@ -34,7 +34,7 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
         
         setUserId: function(value) {
             this.userId = value;
-            this.filter.user_id = value;
+            this.filters.user_id = value;
         }        
     });
     

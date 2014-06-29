@@ -44,7 +44,7 @@ App.module('UsersVotes', function(UsersVotes, App, Backbone, Marionette, $, _) {
         
         setUserId: function(value) {
             this.userId = value;
-            this.filter.voter_id = value;
+            this.filters.voter_id = value;
         }        
     });
     

@@ -33,7 +33,7 @@ var FeedCollection = Backbone.Collection.extend({
      */
     currentPatchCount: 0,
     
-    filter: null,
+    filters: null,
     
     _requestProcessing: false,
     
@@ -89,7 +89,7 @@ var FeedCollection = Backbone.Collection.extend({
      */
     setFilter: function(name, value) {
         
-        this.filter[name] = value;
+        this.filters[name] = value;
                 
         this.sinceTs = null;
         this.offset = 0;
@@ -100,7 +100,7 @@ var FeedCollection = Backbone.Collection.extend({
     
     setFilters: function(filters) {
         
-        _.extend(this.filter, filters);
+        _.extend(this.filters, filters);
 
         this.sinceTs = null;
         this.offset = 0;
@@ -110,7 +110,7 @@ var FeedCollection = Backbone.Collection.extend({
     },
             
     resetFilters: function(filters) {
-        this.filter = filters;
+        this.filters = filters;
 
         this.sinceTs = null;
         this.offset = 0;
@@ -128,7 +128,7 @@ var FeedCollection = Backbone.Collection.extend({
         }
         
         _.extend(params, {
-            filter: _.extend({}, this.filter, this.getFilters())
+            filter: _.extend({}, this.filters, this.getFilters())
         });
         
         _.extend(options, { data: params});
@@ -177,7 +177,7 @@ var FeedCollection = Backbone.Collection.extend({
             
         }, this);
 
-        this.filter = {};
+        this.filters = {};
 
         this.on('request', function() {
            this._requestProccessing = true;

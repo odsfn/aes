@@ -104,7 +104,7 @@ var CommentsWidget = (function(){
             
             this.targetId = options.targetId;
             
-            this.filter = {
+            this.filters = {
                 target_id: this.targetId
             };
        }

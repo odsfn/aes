@@ -181,7 +181,7 @@ App.module('PetitionsList', function(PetitionsList, App, Backbone, Marionette, $
         this.setOptions(options);
         
         this.petitions = new PetitionsCollection();
-        this.petitions.filter.mandate_id = config.mandateId;
+        this.petitions.filters.mandate_id = config.mandateId;
         
         this.petitionsFeedView = new PetitionsList.PetitionsFeedView({
             collection: this.petitions

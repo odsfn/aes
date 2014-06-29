@@ -314,7 +314,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 
         setElectionId: function(value) {
             this.electionId = value;
-            this.filter.election_id = value;
+            this.filters.election_id = value;
         }
     });
     
@@ -618,7 +618,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
 
         setElectionId: function(value) {
             this.electionId = value;
-            this.filter.election_id = value;
+            this.filters.election_id = value;
         },
 
         parse: function(response, options) {
@@ -752,7 +752,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         this.cands = new Cands();
         
         this.approvedCands = new ApprovedCands();
-        this.approvedCands.filter.status = 2;
+        this.approvedCands.filters.status = 2;
         // current user's votes for all candidates
         this.votes = new Candidates.Votes();
         
@@ -809,8 +809,8 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         
         Candidates.cands.setElectionId(config.electionId);
         Candidates.votes.setElectionId(config.electionId);
-        Candidates.votes.filter.with_profile = true;
-        Candidates.votes.filter.user_id = WebUser.getId() || 0;
+        Candidates.votes.filters.with_profile = true;
+        Candidates.votes.filters.user_id = WebUser.getId() || 0;
         
         Candidates.approvedCands.setElectionId(config.electionId);
         

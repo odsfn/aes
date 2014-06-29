@@ -192,8 +192,8 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             });            
             
             this.votes.reset();
-            this.votes.filter.with_profile = true;
-            this.votes.filter.candidate_id = candidate.get('id');
+            this.votes.filters.with_profile = true;
+            this.votes.filters.candidate_id = candidate.get('id');
             this.votes.setElectionId(candidate.get('election_id'));
             //Add current user's votes for this candidate
             

@@ -118,7 +118,7 @@ App.module('Mandates', function(Mandates, App, Backbone, Marionette, $, _) {
         this.setOptions(options);
         
         this.mandates = new MandatesCollection();
-        this.mandates.filter.user_id = config.userId;
+        this.mandates.filters.user_id = config.userId;
         
         this.mandatesFeedView = new MandatesFeedView({
             collection: this.mandates
