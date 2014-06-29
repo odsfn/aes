@@ -258,6 +258,9 @@ class Election extends CActiveRecord implements iPostable, iCommentable
                     'voter_reg_type' => 'Voter Registration Type',
                     'voter_reg_confirm' => 'Voter Registration Confirmation',
                     'uploaded_file'=>'Image',
+                    'revotes_count'=>'Revote Count',
+                    'remove_vote_time'=>'Remove Vote Time (minutes after vote added)',
+                    'revote_time'=>'Revote Time (minutes after last vote revoked)'
             );
     }
 
