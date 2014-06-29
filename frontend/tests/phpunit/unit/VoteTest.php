@@ -129,4 +129,61 @@ class VoteTest extends CDbTestCase
         $vote->user_id = 1;
         $this->assertFalse($vote->save());
     }
+    
+    public function testRevotesWithRevoteLimitEqualsToOne()
+    {
+        $election = Election::model()->findByPk(1);
+        $election->revotes_count = 1;
+        $this->assertTrue($election->save());
+        
+        $vote = new Vote;
+        $vote->election_id = 1;
+        $vote->candidate_id = 3;
+        $vote->user_id = 1;
+        $this->assertTrue($vote->save());
+        
+        $vote->status = Vote::STATUS_REVOKED;
+        $this->assertTrue($vote->save());
+        
+        $vote = new Vote;
+        $vote->election_id = 1;
+        $vote->candidate_id = 4;
+        $vote->user_id = 1;
+        $this->assertTrue($vote->save());
+        
+        $this->setExpectedException('Exception', 'Revote limit has been reached');
+        $vote->status = Vote::STATUS_REVOKED;
+        $this->assertFalse($vote->save());
+        
+        $this->setExpectedException('Exception', 'Revote limit has been reached');
+        $vote = new Vote;
+        $vote->candidate_id = 5;
+        $vote->user_id = 1;
+        $vote->election_id = 1;
+        $this->assertFalse($vote->save());
+    }
+    
+    public function testNotRevokesWithRevoteLimitEqualsToZero()
+    {
+        $election = Election::model()->findByPk(1);
+        $election->revotes_count = 0;
+        $this->assertTrue($election->save());
+        
+        $vote = new Vote;
+        $vote->election_id = 1;
+        $vote->candidate_id = 3;
+        $vote->user_id = 1;
+        $this->assertTrue($vote->save());
+        
+        $this->setExpectedException('Exception', 'Revote limit has been reached');
+        $vote->status = Vote::STATUS_REVOKED;
+        $this->assertFalse($vote->save());
+        
+        $this->setExpectedException('Exception', 'Revote limit has been reached');
+        $vote = new Vote;
+        $vote->candidate_id = 5;
+        $vote->user_id = 1;
+        $vote->election_id = 1;
+        $this->assertFalse($vote->save());
+    }
 }
