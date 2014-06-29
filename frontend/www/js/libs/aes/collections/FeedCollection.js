@@ -3,10 +3,10 @@
  * navigation through infinite models feed - like posts.
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
- * @todo Extend it from Aes.FilterableCollection. Note: you should rename "filter" property call
- * to "filters" in every places
  */
-var FeedCollection = Backbone.Collection.extend({
+var Aes = Aes || {};
+
+var FeedCollection = Aes.FeedCollection = Aes.FilterableCollection.extend({
 
     /**
      * Offset value for the next fetch
@@ -33,27 +33,7 @@ var FeedCollection = Backbone.Collection.extend({
      */
     currentPatchCount: 0,
     
-    filters: null,
-    
     _requestProcessing: false,
-    
-    /**
-     * To provide default filters you can override this method.
-     * You can pass filters property with constructors' options also, or getFilters method
-     * 
-     * @returns Set of default filters which will be applied on every fetch
-     */
-    getFilters: function() {
-        var filters = {};
-        
-        if (this.options && this.options.filters) {
-            filters = this.options.filters;
-        } else if (this.options && this.options.getFilters && _.isFunction(this.options.getFilters)) {
-            filters = this.options.getFilters.apply(this);
-        }
-        
-        return filters;
-    },
     
     comparator: function(model) {
         return -model.get('created_ts');
@@ -87,53 +67,45 @@ var FeedCollection = Backbone.Collection.extend({
      * Sets the filter value and fetches first page. All loaded results will be 
      * throwed out, navigation will be reset to the begining
      */
-    setFilter: function(name, value) {
-        
-        this.filters[name] = value;
-                
+    setFilter: function(name, value) {        
         this.sinceTs = null;
         this.offset = 0;
         
-        this.reset();
-        this.fetch();
+        Aes.FilterableCollection.prototype.setFilter.apply(this, arguments);
     },
     
     setFilters: function(filters) {
-        
-        _.extend(this.filters, filters);
-
         this.sinceTs = null;
         this.offset = 0;
         
-        this.reset();
-        this.fetch();
+        Aes.FilterableCollection.prototype.setFilters.apply(this, arguments);
     },
             
     resetFilters: function(filters) {
-        this.filters = filters;
-
         this.sinceTs = null;
         this.offset = 0;
         
-        this.reset();
-        this.fetch();
+        Aes.FilterableCollection.prototype.resetFilters.apply(this, arguments);
     },
             
     fetch: function(options) {
-        var options = options || {},
-            params = _.pick(this, 'offset', 'sinceTs', 'limit');
-        
         if(!this.sinceTs) {
             this.sinceTs = this.getTimestamp();
         }
         
-        _.extend(params, {
-            filter: _.extend({}, this.filters, this.getFilters())
-        });
+        if(options === undefined) {
+            var options = {};
+            Array.prototype.push.call(arguments, options);
+        }
         
-        _.extend(options, { data: params});
+        var params = _.pick(this, 'offset', 'sinceTs', 'limit');
         
-        return Backbone.Collection.prototype.fetch.apply(this, [options]);
+        if(options.data === undefined)
+            options.data = {};
+        
+        _.extend(options.data, params);
+        
+        return Aes.FilterableCollection.prototype.fetch.apply(this, arguments);
     },
             
     reset: function(models, options) {

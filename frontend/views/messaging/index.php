@@ -13,6 +13,7 @@ $this->widget('application.widgets.ClientApp', array(
             'models/Conversation.js',
             'models/Message.js',
             'models/Participant.js',
+            'aes:collections/FilterableCollection.js',
             'aes:collections/FeedCollection.js',
             'collections/Conversations.js',
             'collections/Messages.js',

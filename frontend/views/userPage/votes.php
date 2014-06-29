@@ -7,6 +7,7 @@ $this->breadcrumbs->add('Votes', 'userPage/votes/' . $profile->user_id);
 $this->createWidget('CommentsMarionetteWidget')->register();
 
 $js = array(
+    'aes:collections/FilterableCollection.js',
     'aes:collections/FeedCollection.js',
     'aes:views/ItemView.js',
     'aes:views/FormView.js',

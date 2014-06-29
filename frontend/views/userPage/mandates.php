@@ -5,6 +5,7 @@
 $this->breadcrumbs->add('Mandates', 'userPage/mandates/' . $profile->user_id);
 
 $js = array(
+    'aes:collections/FilterableCollection.js',
     'aes:collections/FeedCollection.js',
     'aes:views/ItemView.js',
     'aes:views/FormView.js',

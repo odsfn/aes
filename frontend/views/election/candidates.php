@@ -7,6 +7,7 @@ $this->breadcrumbs->add('Candidates', '/election/candidates/' . $model->id);
 $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
 
 $js = array(
+    'aes:collections/FilterableCollection.js',
     'aes:collections/FeedCollection.js',
     'aes:views/ItemView.js',
     'aes:views/MoreView.js',

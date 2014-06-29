@@ -1,15 +1,28 @@
 /* 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
+var Aes = Aes || {};
+
 Aes.FilterableCollection = Backbone.Collection.extend({
     
     filters: null,
             
     /**
-     * Override this method to provide default set of filters to a collection instance
+     * To provide default filters you can override this method.
+     * You can pass filters property with constructors' options also, or getFilters method
+     * 
+     * @returns Set of default filters which will be applied on every fetch
      */
     getFilters: function() {
-       return {};
+        var filters = {};
+        
+        if (this.options && this.options.filters) {
+            filters = this.options.filters;
+        } else if (this.options && this.options.getFilters && _.isFunction(this.options.getFilters)) {
+            filters = this.options.getFilters.apply(this);
+        }
+        
+        return filters;
     },
             
     /**
@@ -42,10 +55,11 @@ Aes.FilterableCollection = Backbone.Collection.extend({
     fetch: function(options) {
         var options = options || {};
         
-        _.extend(options, { 
-            data: {
+        if(options.data === undefined)
+            options.data = {};
+        
+        _.extend(options.data, {
                 filter: _.extend({}, this.filters, this.getFilters())
-            }
         });
         
         return Backbone.Collection.prototype.fetch.apply(this, arguments);

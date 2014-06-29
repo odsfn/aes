@@ -12,6 +12,7 @@ $this->widget('application.widgets.ClientApp', array(
     'requires' => array(
         'depends' => array('loadmask'),
         'js' => array(
+            'aes:collections/FilterableCollection.js',
             'aes:collections/FeedCollection.js',
             'aes:views/ItemView.js',
             'aes:views/MoreView.js',

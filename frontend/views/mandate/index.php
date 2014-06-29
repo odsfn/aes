@@ -1,6 +1,7 @@
 <?php
 
 $js = array(
+    'aes:collections/FilterableCollection.js',
     'aes:collections/FeedCollection.js',
     'aes:views/ItemView.js',
     'aes:views/TableItemView.js',

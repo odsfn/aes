@@ -2,6 +2,7 @@
     'appName' => 'elections',
     'requires' => array(
         'js' => array(
+            'aes:collections/FilterableCollection.js',
             'aes:collections/FeedCollection.js',
             'aes:models/Election.js'
         )
