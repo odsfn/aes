@@ -51,10 +51,21 @@ Yii::app()->clientScript->registerScript('starter',
 
 <script type="text/template" id="voted-candidate-tpl">
     <div>
-        <b>Vote for the candidate <a href="<%= UrlManager.createUrl('election/candidates/' + election_id + '/details/' + id) %>">№<%= electoral_list_pos %>&nbsp;<%= profile.displayName %></a></b>
+        <b>Vote for the candidate <a href="<%= UrlManager.createUrl('election/candidates/' + election_id + '/details/' + candidate_id) %>">№<%= electoral_list_pos %>&nbsp;<%= profile.displayName %></a></b>
     </div>
     <div class="last">
-        <div class="span11"><% if(vote_declined) { %><span class="label label-important declined-marker"><i class="icon-ban-circle"></i>&nbsp;Declined</span>&nbsp;<% } %><span class="muted">Given: <%= i18n.date(vote_date, 'full', 'full') %></span></div>
+        <div class="span11">
+        <% if(vote_declined || vote_revoked) { %>
+            <span class="label label-important declined-marker" title="<% if(vote_declined) { %>Declined by candidate<% } else { %>Revoked by elector<% } %>">
+                <i class="icon-ban-circle"></i>&nbsp;<% if(vote_declined) { %>Declined<% } else { %>Revoked<% } %>
+            </span>&nbsp;
+        <% } else { %>
+            <span class="label label-success declined-marker">
+                <i class="icon-ok"></i>&nbsp;Given
+            </span>&nbsp;
+        <% } %>
+            <span class="muted"><%= i18n.date(vote_date, 'full', 'full') %></span>
+        </div>
         <div class="rates-container span1">
             <span>&nbsp;</span>
         </div>

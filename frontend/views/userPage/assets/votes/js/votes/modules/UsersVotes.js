@@ -14,7 +14,8 @@ App.module('UsersVotes', function(UsersVotes, App, Backbone, Marionette, $, _) {
             var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
             
             attrs.vote_id = parseInt(attrs.votes[0].id);
-            attrs.vote_declined = parseInt(attrs.votes[0].status) !== 0;
+            attrs.vote_declined = parseInt(attrs.votes[0].status) === 1;
+            attrs.vote_revoked = parseInt(attrs.votes[0].status) === 2;
             attrs.vote_date = parseInt(attrs.votes[0].date * 1000);
             
             return attrs;
@@ -29,7 +30,20 @@ App.module('UsersVotes', function(UsersVotes, App, Backbone, Marionette, $, _) {
         parse: function() {
             var attrs = Election.prototype.parse.apply(this, arguments);
             
-            this.candidates = new Candidates(attrs.candidates, {parse: true});
+//            this.candidates = new Candidates(attrs.candidates, {parse: true});
+            var candidates = [];
+            
+            _.each(attrs.candidates, function(candidate, ci) {
+                _.each(candidate.votes, function(vote, vi) {
+                    var newCand = _.clone(candidate);
+                    newCand.votes = [vote];
+                    newCand.candidate_id = newCand.id;
+                    newCand.id = vote.id;
+                    candidates.push(newCand);
+                });
+            }); 
+            
+            this.candidates = new Candidates(candidates, {parse: true});
             delete attrs.candidates;
             
             return attrs;
