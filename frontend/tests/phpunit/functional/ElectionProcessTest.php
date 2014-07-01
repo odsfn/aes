@@ -560,4 +560,80 @@ class ElectionProcessTest extends WebTestCase
         //check all candidates are inactive for voting
         $this->waitForCssCount($voteBox . '.inactive', 3);
     }    
+    
+    public function testShowsCandidatesMandateOnElectionFinishedState()
+    {
+        $this->open('election/candidates/1');
+        $this->waitForPageToLoad("30000");
+        $this->waitForPresent('css=#electoral-list-tab div.user-info:nth-of-type(1) a.route');
+        
+        $this->click('css=#electoral-list-tab div.user-info:nth-of-type(1) a.route');
+        $this->waitForPresent('css=#votes-tab');
+        $this->assertNotVisible('css=#mandates-tab-sel');
+        
+        $this->click("css=#title .breadcrumbs li:nth-of-type(3) a.route");
+        $candSel = 'css=#electoral-list-tab div.user-info';
+        $this->waitForElementPresent($candSel);
+        
+        $this->click('css=#electoral-list-tab div.user-info:nth-of-type(2) a.route');
+        $this->waitForPresent('css=#votes-tab');
+        $this->assertNotVisible('css=#mandates-tab-sel');
+        
+        $this->click("css=#title .breadcrumbs li:nth-of-type(3) a.route");
+        $this->waitForElementPresent($candSel);
+        
+        $this->click('css=#electoral-list-tab div.user-info:nth-of-type(3) a.route');
+        $this->waitForPresent('css=#votes-tab');
+        $this->assertNotVisible('css=#mandates-tab-sel');
+        
+        Yii::app()->db->createCommand()->insert('mandate', array(
+            'id' => '1','election_id' => '1','candidate_id' => '4','name' => 'Mandate of Election 1',
+            'submiting_ts' => '2014-04-19 00:00:00','expiration_ts' => '2014-10-19 00:00:00','validity' => '6',
+            'votes_count' => '2','status' => '0'
+        ));
+        
+        Yii::app()->db->createCommand()->insert('mandate', array(
+            'id' => '2','election_id' => '1','candidate_id' => '3','name' => 'Mandate of Election 1',
+            'submiting_ts' => '2014-04-20 01:30:40','expiration_ts' => '2014-10-20 01:30:40','validity' => '6',
+            'votes_count' => '2','status' => '0'
+        ));     
+        
+        Yii::app()->db->createCommand()->insert('mandate', array(
+            'id' => '3','election_id' => '2','candidate_id' => '3','name' => 'Mandate of Election 2',
+            'submiting_ts' => '2014-04-20 01:30:40','expiration_ts' => '2014-10-20 01:30:40','validity' => '6',
+            'votes_count' => '2','status' => '0'
+        ));         
+        
+        Yii::app()->db->createCommand()->update('election', array('status'=>  Election::STATUS_FINISHED), 'id = 1');
+        
+        $this->open('election/candidates/1');
+        $this->waitForPageToLoad("30000");
+        $this->waitForPresent('css=#electoral-list-tab div.user-info:nth-of-type(1) a.route');
+        
+        $this->click('css=#electoral-list-tab div.user-info:nth-of-type(1) a.route');
+        $this->waitForPresent('css=#votes-tab');
+        $this->assertVisible('css=#mandates-tab-sel');
+        $this->assertCssCount('css=#mandates-tab ul li', 1);
+        $this->assertElementContainsText('css=#mandates-tab ul li a', 'Mandate of Election 1');
+        $this->assertElementAttributeEquals('css=#mandates-tab ul li a', 'href', '/index-test.php/mandate/index/details/1/elections');
+        
+        $this->click("css=#title .breadcrumbs li:nth-of-type(3) a.route");
+        $candSel = 'css=#electoral-list-tab div.user-info';
+        $this->waitForElementPresent($candSel);
+        
+        $this->click('css=#electoral-list-tab div.user-info:nth-of-type(2) a.route');
+        $this->waitForPresent('css=#votes-tab');
+        $this->assertVisible('css=#mandates-tab-sel');
+        $this->assertCssCount('css=#mandates-tab ul li', 1);
+        $this->assertElementContainsText('css=#mandates-tab ul li a', 'Mandate of Election 1');
+        $this->assertElementAttributeEquals('css=#mandates-tab ul li a', 'href', '/index-test.php/mandate/index/details/2/elections');
+        
+        $this->click("css=#title .breadcrumbs li:nth-of-type(3) a.route");
+        $this->waitForElementPresent($candSel);
+        
+        $this->click('css=#electoral-list-tab div.user-info:nth-of-type(3) a.route');
+        $this->waitForPresent('css=#votes-tab');
+        $this->sleep(500);
+        $this->assertNotVisible('css=#mandates-tab-sel');        
+    }
 }

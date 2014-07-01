@@ -786,9 +786,9 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 });
                 
                 this.mandates.fetch({
-                   params: {
-                       filters: {
-                           election_id: config.electionId
+                   data: {
+                       filter: {
+                           election_id: {'property': 'election_id', 'value': config.electionId }
                        }
                    } 
                 });          

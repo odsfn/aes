@@ -182,6 +182,9 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
         this.layout.info.show(this.detailsView);
         this.layout.controls.show(this.controlsView);
         
+        $('#mandates-tab-sel').hide();
+        this.layout.mandates.close();
+        
         if((Candidates.getElection().checkStatus('Election') || Candidates.getElection().checkStatus('Finished')) && candidate.checkStatus('Registered'))
         {
             this.stopListening(Candidates.votes);
@@ -231,10 +234,15 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             
             if(Candidates.getElection().checkStatus('Finished')) 
             {
+                var mandates = Candidates.mandates.where({candidate_id: candidate.get('id').toString()});
+                
+                if(mandates.length === 0)
+                    return;
+                
                 $('#mandates-tab-sel').show();
                 
                 this.layout.mandates.show(new MandatesView({
-                    collection: Candidates.mandates
+                    collection: new Backbone.Collection(mandates)
                 }));
             }
             

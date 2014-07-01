@@ -11,7 +11,7 @@ class MandateController extends RestController {
         )
     );
     
-    public $acceptFilters = array('plain' => 'owner_name,user_id', 'model' => 'name,status');
+    public $acceptFilters = array('plain' => 'owner_name,user_id', 'model' => 'name,status, election_id');
 
     public function getOutputFormatters() {
         return array(

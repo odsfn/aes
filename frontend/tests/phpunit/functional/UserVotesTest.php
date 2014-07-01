@@ -47,7 +47,7 @@ class UserVotesTest extends WebTestCase {
         usleep(50000);
         
         $this->assertCssCount('css=#votes-feed-container > div > div.items > div', 2);
-        $this->waitForCssCount('css=#votes-feed-container > div > div.items > div:nth-of-type(1) .votes-container > div > div a', 4);
+        $this->waitForCssCount('css=#votes-feed-container > div > div.items > div:nth-of-type(1) .votes-container > div > div a', 8);
         
         $this->assertElementContainsText('css=#votes-feed-container > div > div.items > div:nth-of-type(1) h4', 'Election 2');
         $this->assertElementContainsText('css=#votes-feed-container > div > div.items > div:nth-of-type(1) .votes-container > div > div:nth-of-type(1) a', '№2 Vasiliy Pedak');
