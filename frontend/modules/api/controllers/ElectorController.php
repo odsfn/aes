@@ -8,6 +8,8 @@ Yii::import('frontend.modules.userAccount.models.Profile');
 
 class ElectorController extends RestController {
     
+    protected $convertRestFilters = true;
+
     public $nestedModels = array(
         'profile' => array(
             'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64, birth_place, birth_day'
@@ -15,7 +17,8 @@ class ElectorController extends RestController {
     );
 
     public $acceptFilters = array(
-        'plain' => 'name,election_id,ageFrom,ageTo,birth_place,gender'
+        'plain' => 'name,election_id,ageFrom,ageTo,birth_place,gender',
+        'model' => 'status'
     );
     
     public $virtualAttrs = array(
@@ -66,11 +69,12 @@ class ElectorController extends RestController {
             $criteria->mergeWith($arProvCriteria);
         
         $results = $model->with($this->nestedRelations)
+            ->filter($this->restFilter)
             ->orderBy($this->restSort)
             ->limit($this->restLimit)->offset($this->restOffset)
             ->findAll($criteria);
         
-        $forCount = $this->getModel();
+        $forCount = $this->getModel()->filter($this->restFilter);
         
         $this->outputHelper( 
                 'Records Retrieved Successfully', 
@@ -86,7 +90,7 @@ class ElectorController extends RestController {
                 'users'=>array('*')
             ),
             array('allow',
-                'actions' => array('restCreate', 'restDelete'),
+                'actions' => array('restCreate', 'restDelete', 'restUpdate'),
                 'users'=>array('@'),
                 'expression' => array($this, 'checkAccess')
             ),
@@ -119,7 +123,10 @@ class ElectorController extends RestController {
         $params['election'] = $election;
         
         if( $this->action->id == 'restCreate' && Yii::app()->user->checkAccess('election_addElector', $params) )
-            return true;  
+            return true;
+        
+        if( $this->action->id == 'restUpdate' && Yii::app()->user->checkAccess('election_manage', $params) )
+            return true;
         
         if( $this->action->id == 'restDelete' && Yii::app()->user->checkAccess('election_manage', $params) )
             return true;

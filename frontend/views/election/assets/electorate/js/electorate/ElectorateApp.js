@@ -8,7 +8,8 @@ App.Layout = Marionette.Layout.extend({
     template: '#collect-layout-tpl',
     regions: {
         destination: '#dest-tab',
-        source: '#source-tab'
+        source: '#source-tab',
+        requested: '#requested-tab'
     }
 });
 
@@ -78,46 +79,60 @@ ElectorateApp.ElectorItemView = Aes.UserItemView.extend({
    }    
 });
 
+ElectorateApp.NotConfirmedElectorItemView = Aes.UserItemView.extend({
+    getControls: function(){
+       return {
+            remove: {
+                text: 'Allow',
+                iconType: 'ok',
+               
+                onBeforeShow: function() {
+                    return ElectorateApp.getOption('canInvite') || false;
+                },
+                       
+                onRun: function() {                   
+                    this._parent.$el.mask();
+                    
+                    this._parent.model.set('status', Elector.getStatusId('Active'));
+                    this._parent.model.save({}, {
+                        success: _.bind(function(model) {
+                            this._parent.model.set('added', true);
+                            ElectorateApp.electorate.add([model]);
+                            ElectorateApp.notConfirmedElectors.remove([model]);
+                            this._parent.$el.unmask();
+                        }, this),
+                        wait: true
+                    });                 
+                }
+            }
+        };
+    }    
+});
+
 ElectorateApp.ElectorateFeedView = ElectorateApp.FeedView.extend({
     itemView: ElectorateApp.ElectorItemView
 });
 
-//var Elector = Backbone.Model.extend({
-//    parse: function() {
-//        var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
-//
-//        attrs.id = parseInt(attrs.id);
-//        attrs.user_id = parseInt(attrs.user_id);
-//        attrs.election_id = parseInt(attrs.election_id);
-//
-//        if(attrs.profile)
-//        {
-//            var profile = new Aes.User(attrs.profile, {parse: true});
-//            _.extend(attrs, profile.attributes);
-//            
-//            delete attrs.profile;
-//        }
-//        
-//        return attrs;
-//    },
-//
-//    toJSON: function(options) {
-//        var json = Backbone.Model.prototype.toJSON.call(this);
-//
-//        if(json.profile)
-//            delete json.profile;
-//
-//        return json;
-//    }
-//});
-
 var Electorate = FeedCollection.extend({
-   url: UrlManager.createUrlCallback('api/elector'),
-   model: Elector,
-   setElectionId: function(electionId) {
+    url: UrlManager.createUrlCallback('api/elector'),
+    model: Elector,
+    setElectionId: function(electionId) {
        this.electionId = electionId;
        this.filters.election_id = electionId;
-   }
+    },
+    getFilters: function() {
+        return {
+            status: Elector.getStatusId('Active')
+        };
+    }
+});
+
+var NotConfirmedElectorate = Electorate.extend({
+    getFilters: function() {
+        return {
+            status: Elector.getStatusId('NotConfirmed')
+        };
+    }
 });
 
 App.addInitializer(function(options) {
@@ -197,8 +212,21 @@ App.addInitializer(function(options) {
         filters: filter
     });
     
+    if(options.showConfirmationTab) {
+        this.notConfirmedElectors = new NotConfirmedElectorate();
+        this.notConfirmedElectors.setElectionId(options.electionId);
+        this.notConfirmedElectorsView = new ElectorateApp.ElectorateFeedView({
+            itemView: ElectorateApp.NotConfirmedElectorItemView,
+            collection: this.notConfirmedElectors,
+            filters: filter
+        });
+    }
+    
     $('body').on('elector_registered', function(e, elector) {
-        ElectorateApp.electorate.add([elector]);
+        if(elector.checkStatus('Active'))
+            ElectorateApp.electorate.add([elector]);
+        else if(elector.checkStatus('NotConfirmed') && options.showConfirmationTab)
+            ElectorateApp.notConfirmedElectors.add([elector]);
     });
 });
 
@@ -213,8 +241,17 @@ App.on('start', function(options) {
         $('#source-tab-sel').show();
     }
     
+    if(options.showConfirmationTab) {
+        this.layout.requested.show(this.notConfirmedElectorsView);
+        $('#requested-tab-sel').show();
+    }
+    
     this.electorate.fetch().then(function(){
         if(options.canInvite)
             ElectorateApp.users.fetch();
+        
+        if(options.showConfirmationTab) {
+            ElectorateApp.notConfirmedElectors.fetch();
+        }
     });
 });

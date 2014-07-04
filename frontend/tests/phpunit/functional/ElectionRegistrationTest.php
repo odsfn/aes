@@ -12,8 +12,8 @@ class ElectionRegistrationTest extends WebTestCase
         'personIdentifier' => 'personIdentifier.models.PersonIdentifier',
         'election' => array('Election', 'functional/electionRegistration/election'),
         'elector' => 'Elector',
-        'AuthAssignment' => 'AuthAssignment',
-        'election_auth_assignment' => ':election_auth_assignment'
+        'AuthAssignment' => array('AuthAssignment', 'functional/electionRegistration/AuthAssignment'),
+        'election_auth_assignment' => array('ElectionAuthAssignment', 'functional/electionRegistration/election_auth_assignment')
     );
 
     protected function setUp()
@@ -168,6 +168,7 @@ class ElectionRegistrationTest extends WebTestCase
         $this->assertElementPresent('css=#register-elector');
         $this->sleep(300);
         $this->assertTextPresent('There is no items.');
+        $this->assertNotVisible('css=#requested-tab-sel');
         
         $this->click('css=#register-elector');
         $this->waitForNotPresent('css=#register-elector');
@@ -183,10 +184,64 @@ class ElectionRegistrationTest extends WebTestCase
         $this->assertElementContainsText('css=#dest-tab .items div.user-info:nth-of-type(1) a', 'Another User');
     }   
     
-//    public function testRegistrationButtonPressedByUserInElectionThatNeedConfirmation()
-//    {
-//        
-//    }
+    public function testRegistrationButtonPressedByUserInElectionThatNeedConfirmation()
+    {
+        $this->login('tester1@mail.ru', 'qwerty');
+        $this->open('election/electorate/4');
+        $this->waitForPageToLoad(5000);
+        $this->assertElementPresent('css=#register-elector');
+        $this->sleep(300);
+        $this->assertTextPresent('There is no items.');
+        
+        $this->assertVisible('css=#requested-tab-sel');
+        $this->assertCssCount('css=#requested-tab .items div.user-info', 0);
+        $this->assertElementContainsText('css=#requested-tab .items div', 'There is no items.');
+        
+        $this->click('css=#register-elector');
+        $this->waitForNotPresent('css=#register-elector');
+        $this->sleep(300);
+        $this->assertElementContainsText('css=#dest-tab .items div', 'There is no items.');
+        $this->assertCssCount('css=#requested-tab .items div.user-info', 1);
+        $this->assertElementContainsText('css=#requested-tab .items div.user-info a', 'Another User');
+        
+        $this->open('election/electorate/4');
+        $this->waitForPageToLoad(5000);
+        $this->assertElementNotPresent('css=#register-elector');
+        $this->assertElementContainsText('css=#dest-tab .items div', 'There is no items.');
+        $this->waitForCssCount('css=#requested-tab .items div.user-info', 1);
+        $this->assertElementContainsText('css=#requested-tab .items div.user-info a', 'Another User');
+        
+        $this->logout();
+        $this->waitForPageToLoad(5000);
+        
+        $this->login('truvazia@gmail.com', 'qwerty');
+        $this->waitForPageToLoad(5000);
+        
+        $this->open('election/electorate/4');
+        $this->waitForPageToLoad(5000);
+        $this->assertElementContainsText('css=#dest-tab .items div', 'There is no items.');
+        $this->waitForCssCount('css=#requested-tab .items div.user-info', 1);
+        $this->assertElementContainsText('css=#requested-tab .items div.user-info a', 'Another User');
+        
+        $this->click('css=a[href="#requested-tab"]');
+        $this->mouseOver("css=#requested-tab .items div.user-info a");
+        $this->sleep(300);
+        $this->assertTrue($this->isVisible("css=#requested-tab .items div.user-info .controls .icon-ok"));
+        $this->click('css=#requested-tab .items div.user-info .controls .icon-ok');
+
+        $this->waitForElementNotPresent('css=#requested-tab .items div.user-info');
+
+        $this->click('css=a[href="#dest-tab"]');
+
+        $this->assertElementPresent('css=#dest-tab .items .user-info'); 
+        $this->assertElementContainsText('css=#dest-tab .items div.user-info a', 'Another User');
+        
+        $this->logout();
+        $this->open('election/electorate/4');
+        $this->waitForPageToLoad(5000);
+        $this->waitForPresent('css=#dest-tab .items .user-info');
+        $this->assertElementContainsText('css=#dest-tab .items div.user-info a', 'Another User');
+    }
 
     protected function checkRegistrationAvailability()
     {

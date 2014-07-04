@@ -29,8 +29,25 @@ var Elector = Backbone.Model.extend({
 
         if(json.profile)
             delete json.profile;
+        
+        if(options && options.success !== undefined)
+            json = _.pick(json, 'id', 'user_id', 'election_id', 'status');
 
         return json;
+    },
+    
+    checkStatus: function(statusLabel) {
+        return this.get('status') == Elector.getStatusId(statusLabel);
+    }
+}, {
+    getStatuses: function() {
+        return ['Active', 'NotConfirmed', 'Blocked'];
+    },
+    getStatusId: function(label) {
+        var id = Elector.getStatuses().indexOf(label);
+        if(id === -1)
+            throw "unexpected status label: " + label;
+        return id;
     }
 });
 

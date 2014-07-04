@@ -7,7 +7,7 @@
     border-top: none;
 }
 
-#source-tab-sel {
+#source-tab-sel, #requested-tab-sel {
     display: none;
 }
 

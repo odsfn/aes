@@ -125,8 +125,9 @@ class Elector extends CActiveRecord
     protected function beforeSave()
     {
         $result = parent::beforeSave();
+        $params = array('election'=>$this->election);
         //new elector is adding 
-        if ($this->isNewRecord && !Yii::app()->user->checkAccess('election_activateElector', $params = array('election'=>$this->election))) 
+        if ($this->isNewRecord && !Yii::app()->user->checkAccess('election_activateElector', $params)) 
         {
             //user wants to became elector
             if ($this->election->voter_reg_type == Election::VOTER_REG_TYPE_SELF) {
