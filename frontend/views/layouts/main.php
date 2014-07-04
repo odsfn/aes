@@ -82,14 +82,18 @@
 </div>
 
 <div class="container-fluid">
-    <div class="flash-messages affix span4 offset8">
-    <?php
-    $this->widget('bootstrap.widgets.TbAlert', array(
-	'block'=>true, // display a larger alert block?
-	'fade'=>true, // use transitions?
-	'closeText'=>'×', // close link text - if set to false, no close link is displayed
-    ));
-    ?>
+    <div class="row-fluid">
+        <div class="flash-messages affix">
+            <div class="span4 pull-right">
+                <?php
+                $this->widget('bootstrap.widgets.TbAlert', array(
+                    'block'=>true, // display a larger alert block?
+                    'fade'=>true, // use transitions?
+                    'closeText'=>'×', // close link text - if set to false, no close link is displayed
+                ));
+                ?>
+            </div>
+        </div>
     </div>
 </div>
 

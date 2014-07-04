@@ -82,34 +82,34 @@ ElectorateApp.ElectorateFeedView = ElectorateApp.FeedView.extend({
     itemView: ElectorateApp.ElectorItemView
 });
 
-var Elector = Backbone.Model.extend({
-    parse: function() {
-        var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
-
-        attrs.id = parseInt(attrs.id);
-        attrs.user_id = parseInt(attrs.user_id);
-        attrs.election_id = parseInt(attrs.election_id);
-
-        if(attrs.profile)
-        {
-            var profile = new Aes.User(attrs.profile, {parse: true});
-            _.extend(attrs, profile.attributes);
-            
-            delete attrs.profile;
-        }
-        
-        return attrs;
-    },
-
-    toJSON: function(options) {
-        var json = Backbone.Model.prototype.toJSON.call(this);
-
-        if(json.profile)
-            delete json.profile;
-
-        return json;
-    }
-});
+//var Elector = Backbone.Model.extend({
+//    parse: function() {
+//        var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
+//
+//        attrs.id = parseInt(attrs.id);
+//        attrs.user_id = parseInt(attrs.user_id);
+//        attrs.election_id = parseInt(attrs.election_id);
+//
+//        if(attrs.profile)
+//        {
+//            var profile = new Aes.User(attrs.profile, {parse: true});
+//            _.extend(attrs, profile.attributes);
+//            
+//            delete attrs.profile;
+//        }
+//        
+//        return attrs;
+//    },
+//
+//    toJSON: function(options) {
+//        var json = Backbone.Model.prototype.toJSON.call(this);
+//
+//        if(json.profile)
+//            delete json.profile;
+//
+//        return json;
+//    }
+//});
 
 var Electorate = FeedCollection.extend({
    url: UrlManager.createUrlCallback('api/elector'),
@@ -195,6 +195,10 @@ App.addInitializer(function(options) {
     this.electorateView = new ElectorateApp.ElectorateFeedView({
         collection: this.electorate,
         filters: filter
+    });
+    
+    $('body').on('elector_registered', function(e, elector) {
+        ElectorateApp.electorate.add([elector]);
     });
 });
 

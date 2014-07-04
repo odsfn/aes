@@ -40,6 +40,56 @@ $this->widget('bootstrap.widgets.TbMenu', array(
     )
 ));
 
+?>
+
+<div class="row-fluid">
+    <div class="span12 actions">
+    <?php
+    if (Yii::app()->user->checkAccess('election_askToBecameElector', 
+            array(
+                'election' => $this->election,
+                'elector_user_id' => Yii::app()->user->id
+            ))
+    ) {
+
+        $cs = Yii::app()->clientScript;
+        $cs->registerPackage('aes-common')
+                ->registerPackage('loadmask')
+                ->registerScriptFile('/js/libs/aes/models/User.js')
+                ->registerScriptFile('/js/libs/aes/models/Elector.js');
+    ?>
+        <button id="register-elector" class="btn btn-large span8 offset2">Register as Elector</button>
+        <script type="text/javascript">
+            $(function() {
+                var parent = $('#register-elector').parent();
+                var onSuccess = function(model) {
+                    $('#register-elector').remove();
+                    parent.unmask();
+                    $('body').trigger('elector_registered', [model]);
+                };
+                
+                $('#register-elector').click(function(){
+                    
+                    parent.mask();
+                    
+                    var elector = new Elector({
+                        user_id: <?= Yii::app()->user->id ?>,
+                        election_id: <?= $this->election->id ?>
+                    });
+                    
+                    elector.save({}, {
+                        success: function(model) {
+                            onSuccess(model);
+                        }
+                    });
+                });
+            });
+        </script>
+        <?php } ?>
+    </div>
+</div>
+
+<?php
 $this->endClip();
 
 $this->beginContent('//layouts/core');

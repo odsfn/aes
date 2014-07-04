@@ -73,6 +73,25 @@ class WebTestCase extends CWebTestCase
             
         }
 
+        protected function waitForNotPresent($elementSel, $time = 3000, $interval = 250)
+        {
+            $that = $this;
+            $callback = function() use($elementSel, $that) {
+                return !$that->isElementPresent($elementSel);
+            };
+            
+            $this->waitFor($callback, 'timeout', $time, $interval);
+        }
+
+        protected function waitForCssCount($elementSel, $count, $time = 5000, $interval = 250)
+        {
+            $that = $this;
+            $callback = function() use($that, $elementSel, $count) {
+                return $that->getCssCount($elementSel) == $count;
+            };
+            $this->waitFor($callback, 'timeout', $time, $interval);
+        }
+
 
         protected function waitForElementContainsText($elementSel, $text, $time = 5000, $interval = 250) {
             $text = '';

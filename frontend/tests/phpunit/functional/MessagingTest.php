@@ -241,7 +241,7 @@ class MessagingTest extends WebTestCase
         $message->text = 'Hello, Vasiliy!';
         $message->save();
         
-        $this->waitForMessagesCount(2, 21000);
+        $this->waitForMessagesCount(2, 25000);
         $this->assertElementContainsText($this->getCssSel('chat'), 'Hello, Vasiliy!');
         
         //@TODO:
@@ -326,7 +326,7 @@ class MessagingTest extends WebTestCase
     protected function waitForMessagesCount($count, $time = 3000)
     {
         $this->waitForElementContainsText($this->getCssSel('chat.messagesCount'), 'Total Messages Count: ' . $count, $time);
-        $this->waitForCssCount($this->getCssSel('chat.message'), $count);
+        $this->waitForCssCount($this->getCssSel('chat.message'), $count, $time);
     }
     
     protected function getMessage($index)

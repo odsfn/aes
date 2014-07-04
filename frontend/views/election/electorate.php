@@ -13,6 +13,7 @@ $this->widget('application.widgets.ClientApp', array(
         'depends' => array('loadmask', 'backbone.validation'),
         'js' => array(
             'aes:models/User.js',
+            'aes:models/Elector.js',
             'aes:collections/FilterableCollection.js',
             'aes:collections/FeedCollection.js',
             'aes:collections/Users.js',

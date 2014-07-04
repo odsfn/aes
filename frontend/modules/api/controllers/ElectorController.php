@@ -110,6 +110,7 @@ class ElectorController extends RestController {
         } else {
             $data = $this->data();
             $election = Election::model()->findByPk((int)$data['election_id']);
+            $params['elector_user_id'] = $data['user_id'];
         }
         
         if(!$election)
@@ -117,8 +118,8 @@ class ElectorController extends RestController {
         
         $params['election'] = $election;
         
-        if( $this->action->id == 'restCreate' && Yii::app()->user->checkAccess('election_manage', $params) )
-            return true;
+        if( $this->action->id == 'restCreate' && Yii::app()->user->checkAccess('election_addElector', $params) )
+            return true;  
         
         if( $this->action->id == 'restDelete' && Yii::app()->user->checkAccess('election_manage', $params) )
             return true;

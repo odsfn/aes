@@ -9,12 +9,13 @@ body > div.navbar li.divider-vertical{
 
 div.flash-messages{
     z-index: 9999;
+    width: 98%;
 }
 
 div.flash-messages div.alert{
-    -moz-box-shadow: 0 2px 11px rgba(0, 0, 0, 0.25); 
-    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
-    box-shadow: 0 2px 11px rgba(0, 0, 0, 0.25) 
+    -moz-box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5); 
+    -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
 /*
