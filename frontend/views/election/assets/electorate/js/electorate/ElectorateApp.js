@@ -223,10 +223,11 @@ App.addInitializer(function(options) {
     }
     
     $('body').on('elector_registered', function(e, elector) {
-        if(elector.checkStatus('Active'))
+        if(elector.checkStatus('Active')) {
             ElectorateApp.electorate.add([elector]);
-        else if(elector.checkStatus('NotConfirmed') && options.showConfirmationTab)
+        } else if(elector.checkStatus('NotConfirmed') && options.showConfirmationTab) {
             ElectorateApp.notConfirmedElectors.add([elector]);
+        }
     });
 });
 

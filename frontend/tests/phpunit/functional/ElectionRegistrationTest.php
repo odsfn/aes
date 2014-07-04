@@ -176,6 +176,13 @@ class ElectionRegistrationTest extends WebTestCase
         $this->waitForCssCount('css=#dest-tab .items div.user-info', 1);
         $this->assertElementContainsText('css=#dest-tab .items div.user-info:nth-of-type(1) a', 'Another User');
         
+        $this->assertCssCount('css=div.flash-messages div.alert', 1);
+        $this->assertElementContainsText('css=div.flash-messages div.alert', 
+            'You have been registered as elector.'
+        );
+        $this->click('css=div.flash-messages div.alert a.close');
+        $this->waitForNotPresent('css=div.flash-messages div.alert');
+        
         $this->open('election/electorate/5');
         $this->waitForPageToLoad(5000);
         $this->assertElementNotPresent('css=#register-elector');
@@ -203,6 +210,13 @@ class ElectionRegistrationTest extends WebTestCase
         $this->assertElementContainsText('css=#dest-tab .items div', 'There is no items.');
         $this->assertCssCount('css=#requested-tab .items div.user-info', 1);
         $this->assertElementContainsText('css=#requested-tab .items div.user-info a', 'Another User');
+        
+        $this->assertCssCount('css=div.flash-messages div.alert', 1);
+        $this->assertElementContainsText('css=div.flash-messages div.alert', 
+            'Your registration request was sent. Election manager will consider it as soon as possible.'
+        );
+        $this->click('css=div.flash-messages div.alert a.close');
+        $this->waitForNotPresent('css=div.flash-messages div.alert');        
         
         $this->open('election/electorate/4');
         $this->waitForPageToLoad(5000);

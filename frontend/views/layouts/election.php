@@ -56,7 +56,9 @@ $this->widget('bootstrap.widgets.TbMenu', array(
         $cs->registerPackage('aes-common')
                 ->registerPackage('loadmask')
                 ->registerScriptFile('/js/libs/aes/models/User.js')
-                ->registerScriptFile('/js/libs/aes/models/Elector.js');
+                ->registerScriptFile('/js/libs/aes/models/Elector.js')
+                ->registerScriptFile('/js/libs/aes/views/ItemView.js')
+                ->registerScriptFile('/js/libs/aes/views/NotificationsView.js');
     ?>
         <button id="register-elector" class="btn btn-large span8 offset2">Register as Elector</button>
         <script type="text/javascript">
@@ -64,8 +66,15 @@ $this->widget('bootstrap.widgets.TbMenu', array(
                 var parent = $('#register-elector').parent();
                 var onSuccess = function(model) {
                     $('#register-elector').remove();
-                    parent.unmask();
+                    
+                    if(model.checkStatus('Active')) {
+                        Aes.Notifications.add('You have been registered as elector.', 'success');
+                    } else if(model.checkStatus('NotConfirmed')) {
+                        Aes.Notifications.add('Your registration request was sent. Election manager will consider it as soon as possible.', 'success');
+                    }               
+                    
                     $('body').trigger('elector_registered', [model]);
+                    parent.unmask();
                 };
                 
                 $('#register-elector').click(function(){
