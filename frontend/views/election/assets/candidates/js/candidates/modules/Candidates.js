@@ -815,7 +815,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
         Candidates.approvedCands.setElectionId(config.electionId);
         
         Candidates.votes.fetch()
-          .done(function() {
+            .done(function() {
               $.when(
                     Candidates.approvedCands.fetch(),
                     Candidates.cands.fetch()
@@ -836,7 +836,16 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 });
 
               });
-          });
+            });
+            
+        $('body').one('elector_registered', function(e, elector) {
+            if(elector.checkStatus('Active')) {
+                Candidates.voteBoxModels.each(function(m) {
+                    m.set('active', true);
+                });
+            }
+        });
+        
     });
 });
 

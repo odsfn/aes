@@ -34,4 +34,36 @@ return array(
         'voter_reg_confirm' => Election::VOTER_REG_CONFIRM_NOTNEED, 
         'unassigned_access_level' => 2
     ),    
+    array(
+        'id' => '7', 'target_id' => 14, 'user_id' => '1','name' => 'Election 7',
+        'status' => Election::STATUS_FINISHED,'mandate' => 'Mandate of Election 7','quote' => '25',
+        'validity' => '1','cand_reg_type' => '0','cand_reg_confirm' => '0',
+        'voter_reg_type' => Election::VOTER_REG_TYPE_ADMIN,
+        'voter_reg_confirm' => Election::VOTER_REG_CONFIRM_NOTNEED, 
+        'unassigned_access_level' => 2
+    ),     
+    array(
+        'id' => '8', 'target_id' => 15, 'user_id' => '1','name' => 'Election 7',
+        'status' => Election::STATUS_CANCELED,'mandate' => 'Mandate of Election 7','quote' => '25',
+        'validity' => '1','cand_reg_type' => '0','cand_reg_confirm' => '0',
+        'voter_reg_type' => Election::VOTER_REG_TYPE_ADMIN,
+        'voter_reg_confirm' => Election::VOTER_REG_CONFIRM_NOTNEED, 
+        'unassigned_access_level' => 2
+    ),   
+    array(
+        'id' => '9', 'target_id' => 16, 'user_id' => '1','name' => 'Election 9',
+        'status' => Election::STATUS_ELECTION,'mandate' => 'Mandate of Election 9','quote' => '25',
+        'validity' => '1','cand_reg_type' => '0','cand_reg_confirm' => '0',
+        'voter_reg_type' => Election::VOTER_REG_TYPE_SELF,
+        'voter_reg_confirm' => Election::VOTER_REG_CONFIRM_NEED, 
+        'unassigned_access_level' => 2
+    ),
+    array(
+        'id' => '10', 'target_id' => 17, 'user_id' => '1','name' => 'Election 10',
+        'status' => Election::STATUS_ELECTION,'mandate' => 'Mandate of Election 10','quote' => '25',
+        'validity' => '1','cand_reg_type' => '0','cand_reg_confirm' => '0',
+        'voter_reg_type' => Election::VOTER_REG_TYPE_SELF,
+        'voter_reg_confirm' => Election::VOTER_REG_CONFIRM_NOTNEED, 
+        'unassigned_access_level' => 2
+    ),    
 );

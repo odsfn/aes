@@ -29,7 +29,7 @@ $this->widget('application.widgets.ClientApp', array(
     )
 ));
 
-$canUserManage = (int)(Yii::app()->user->checkAccess('election_manage', array('election'=>$model)) && $model->status == Election::STATUS_REGISTRATION);
+$canUserManage = (int)(Yii::app()->user->checkAccess('election_manage', array('election'=>$model)) && $model->status == Election::STATUS_REGISTRATION || $model->status == Election::STATUS_ELECTION);
 
 Yii::app()->clientScript->registerScript('starter',
     "App.start({
