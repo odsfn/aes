@@ -176,9 +176,7 @@ class VoteController extends RestController
             if (isset($data['status']))
                 $params['status'] = $data['status'];
         }
-        /**
-         * @TODO Provide access check to allow vote only electorate
-         */
+
         if ($this->action->id == 'restCreate' && Yii::app()->user->checkAccess('election_createVote', $params))
             return true;
 

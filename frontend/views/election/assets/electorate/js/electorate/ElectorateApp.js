@@ -53,7 +53,12 @@ ElectorateApp.UserItemView = Aes.UserItemView.extend({
 });
 
 ElectorateApp.FeedView = Aes.FeedView.extend({
-    itemView: ElectorateApp.UserItemView 
+    itemView: ElectorateApp.UserItemView,
+    uiAttributes: {
+        items: {
+            class: '<%= classes %> span8'
+        }
+    }
 });
 
 ElectorateApp.ElectorItemView = Aes.UserItemView.extend({

@@ -16,7 +16,8 @@ Aes.FeedView = Marionette.CompositeView.extend({
     
     ui: {
         itemsCounter: 'span.items-count',
-        loader: 'img.loader'
+        loader: 'img.loader',
+        items: 'div.items'
     },
 
     modelEvents: {
@@ -178,7 +179,44 @@ Aes.FeedView = Marionette.CompositeView.extend({
     
     onRender: function() {
         this.updateItemsCounter();
-    }
+    },
+    
+    /**
+     * Binds attributes for child ui elements which are defined in "ui" property.
+     * Attributes are reading from "uiAttributes" property.
+     */
+    bindUIElAttributes: function() {
+        var uiAttributes = Marionette.getOption(this, 'uiAttributes');
+        _.each(uiAttributes, function(attrs, attrName) {
+            var uiEl = this.ui[attrName];
+            
+            if(!uiEl)
+                return;
+            
+            var currentAttrs = uiEl.attr();
+            
+            attrs = _.clone(attrs);
+            
+            if(attrs.class) {
+                attrs.class = _.template(attrs.class)({
+                    classes: currentAttrs.class ? currentAttrs.class : ''
+                });
+            }
+            
+            attrs = _.extend({}, currentAttrs, attrs);
+            
+            uiEl.attr(attrs);
+        }, this);
+    },
+    
+    render: function() {
+        Marionette.CompositeView.prototype.render.apply(this, arguments);
+        
+        if(Marionette.getOption(this, 'uiAttributes'))
+            this.bindUIElAttributes();
+        
+        return this;
+    },
 }, {
     getTpl: function() {
         return '<div class="navbar head">' 

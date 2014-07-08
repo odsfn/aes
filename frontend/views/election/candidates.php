@@ -99,7 +99,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
         </div>
     </div>        
 
-    <div class="items">
+    <div class="items span8">
     </div>            
 
     <div id="load-btn" class="load-btn-cntr">
