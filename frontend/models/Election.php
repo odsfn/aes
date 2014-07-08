@@ -62,6 +62,14 @@ class Election extends CActiveRecord implements iPostable, iCommentable
 
     const STATUS_CANCELED = 4;
     
+    const CAND_REG_TYPE_ADMIN = 1;
+    
+    const CAND_REG_TYPE_SELF = 0;
+    
+    const CAND_REG_CONFIRM_NOTNEED = 0;
+    
+    const CAND_REG_CONFIRM_NEED = 1;
+    
     const VOTER_REG_TYPE_SELF = 0;
     
     const VOTER_REG_TYPE_ADMIN = 1;
@@ -79,13 +87,13 @@ class Election extends CActiveRecord implements iPostable, iCommentable
     );
 
     public static $cand_reg_types = array(
-        '0' => 'Myself',
-        '1' => 'Other',
+        self::CAND_REG_TYPE_SELF => 'Myself',
+        self::CAND_REG_TYPE_ADMIN => 'By Admin',
     );
 
     public static $cand_reg_confirms = array(
-        '0' => 'No',
-        '1' => 'Yes',
+        self::CAND_REG_CONFIRM_NOTNEED => 'No',
+        self::CAND_REG_CONFIRM_NEED => 'Yes',
     );
 
     public static $voter_reg_types = array(
@@ -301,9 +309,13 @@ class Election extends CActiveRecord implements iPostable, iCommentable
 
     public function init()
     {
-        $this->voter_reg_type = 1;
+        $this->cand_reg_type = Election::CAND_REG_TYPE_ADMIN;
         
-        $this->voter_reg_confirm = 0;
+        $this->cand_reg_confirm = Election::CAND_REG_CONFIRM_NEED;
+        
+        $this->voter_reg_type = Election::VOTER_REG_TYPE_ADMIN;
+        
+        $this->voter_reg_confirm = Election::VOTER_REG_CONFIRM_NOTNEED;
         
         $this->revotes_count = (isset(Yii::app()->params->revotes_count) ? Yii::app()->params->revotes_count : 1);
 
@@ -455,6 +467,14 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         }
         
         return true;
+    }
+    
+    protected function beforeSave()
+    {
+        if($this->voter_reg_type == self::VOTER_REG_TYPE_ADMIN)
+            $this->voter_reg_confirm = self::VOTER_REG_CONFIRM_NOTNEED;
+        
+        return parent::beforeSave();
     }
 }
 

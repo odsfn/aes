@@ -10,6 +10,7 @@ body > div.navbar li.divider-vertical{
 div.flash-messages{
     z-index: 9999;
     width: 98%;
+    height: 0px;
 }
 
 div.flash-messages div.alert{

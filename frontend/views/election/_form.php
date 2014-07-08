@@ -76,3 +76,15 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 </div>
 
 <?php $this->endWidget(); ?>
+<script type="text/javascript">
+    $(function(){
+        var handler = function() {
+            if($('#Election_voter_reg_type').val() == 1)
+                $('#Election_voter_reg_confirm').val(0).prop("disabled", true);
+            else
+                $('#Election_voter_reg_confirm').prop('disabled', false);
+        };
+        $('#Election_voter_reg_type').on('change', handler);
+        handler();
+    });
+</script>
