@@ -86,12 +86,18 @@ App.module('Candidates.Invite', function(Invite, App, Backbone, Marionette, $, _
         });
         
         Candidates.cands.on('remove', function(mod, col) {
-            var user = Candidates.users.findWhere({user_id: parseInt(mod.get('profile').user_id)});
+            var user = Candidates.Invite.users.findWhere({user_id: parseInt(mod.get('profile').user_id)});
             
             if(user)
                 user.set('invited', false);
         });
-               
+            
+        Candidates.cands.on('add', function(mod, col) {
+            var user = Candidates.Invite.users.findWhere({user_id: parseInt(mod.get('profile').user_id)});
+            
+            if(user)
+                user.set('invited', true);
+        });
     });
     
 });

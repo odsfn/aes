@@ -60,7 +60,9 @@ $this->widget('bootstrap.widgets.TbMenu', array(
                 ->registerScriptFile('/js/libs/aes/views/ItemView.js')
                 ->registerScriptFile('/js/libs/aes/views/NotificationsView.js');
     ?>
-        <button id="register-elector" class="btn btn-large span8 offset2">Register as Elector</button>
+        <div class="row-fluid">
+            <button id="register-elector" class="btn btn-large span8 offset2">Register as Elector</button>
+        </div>
         <script type="text/javascript">
             $(function() {
                 var parent = $('#register-elector').parent();
@@ -95,6 +97,60 @@ $this->widget('bootstrap.widgets.TbMenu', array(
             });
         </script>
         <?php } ?>
+        
+    <?php
+    if (Yii::app()->user->checkAccess('election_selfAppointment', 
+            array(
+                'election' => $this->election,
+                'candidate_user_id' => Yii::app()->user->id
+            ))
+    ) {
+        
+        $cs = Yii::app()->clientScript;
+        $cs->registerPackage('aes-common')
+                ->registerPackage('loadmask')
+                ->registerScriptFile('/js/libs/aes/models/User.js')
+                ->registerScriptFile('/js/libs/aes/models/Candidate.js')
+                ->registerScriptFile('/js/libs/aes/views/ItemView.js')
+                ->registerScriptFile('/js/libs/aes/views/NotificationsView.js');        
+    ?>
+        <div class="row-fluid">
+            <button id="register-candidate" class="btn btn-large span8 offset2">Register as Candidate</button>
+        </div>
+        <script type="text/javascript">
+            $(function() {
+                var parent = $('#register-candidate').parent();
+                var onSuccess = function(model) {
+                    $('#register-candidate').remove();
+                    
+                    if(model.checkStatus('Registered')) {
+                        Aes.Notifications.add('You have been registered as candidate.', 'success');
+                    } else {
+                        Aes.Notifications.add('Your registration request was sent. Election manager will consider it as soon as possible.', 'success');
+                    }               
+                    
+                    $('body').trigger('candidate_registered', [model]);
+                    parent.unmask();
+                };
+                
+                $('#register-candidate').click(function(){
+                    
+                    parent.mask();
+                    
+                    var candidate = new Candidate({
+                        user_id: <?= Yii::app()->user->id ?>,
+                        election_id: <?= $this->election->id ?>
+                    });
+                    
+                    candidate.save({}, {
+                        success: function(model) {
+                            onSuccess(model);
+                        }
+                    });
+                });
+            });
+        </script>
+        <?php } ?>        
     </div>
 </div>
 

@@ -86,5 +86,14 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
         };
         $('#Election_voter_reg_type').on('change', handler);
         handler();
+        
+        var handlerCandRegType = function() {
+            if($('#Election_cand_reg_type').val() == 1)
+                $('#Election_cand_reg_confirm').val(1).prop("disabled", true);
+            else
+                $('#Election_cand_reg_confirm').prop('disabled', false);            
+        };
+        $('#Election_cand_reg_type').on('change', handlerCandRegType);
+        handlerCandRegType();
     });
 </script>

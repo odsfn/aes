@@ -91,6 +91,7 @@ class CandidateController extends RestController {
             
         } else {
             $election = Election::model()->findByPk((int)$data['election_id']);
+            $params['candidate_user_id'] = $data['user_id'];
         }
         
         if(!$election)

@@ -22,6 +22,10 @@ App.on('start', function() {
     $('#candidates').prepend(modCands.layout.render().el);
     modCands.layout.triggerMethod('show');
     
+    $('body').on('candidate_registered', function(e, candidate) {
+        modCands.cands.add([candidate]);
+    });
+    
     $('#column-right, #title').on('click', 'a.route', function(e) {
         e.preventDefault();
         App.router.navigate($(this).attr('href'), {trigger: true});

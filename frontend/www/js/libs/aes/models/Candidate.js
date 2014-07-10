@@ -3,6 +3,8 @@
  */
 var Candidate = Backbone.Model.extend({
 
+    urlRoot: UrlManager.createUrlCallback('api/candidate'),
+
     parse: function() {
         var attrs = Backbone.Model.prototype.parse.apply(this, arguments);
 

@@ -19,8 +19,8 @@ class ElectionProcessTest extends WebTestCase
         'election_auth_assignment' => array(':election_auth_assignment', 'functional/electionProcess/election_auth_assignment')
     );    
     
-    public function testProcess() {
-        
+    public function testProcess() 
+    {
         $this->login("truvazia@gmail.com", "qwerty");
         
         $this->click("link=Elections");
@@ -386,7 +386,7 @@ class ElectionProcessTest extends WebTestCase
         
         $this->waitForElementPresent('css=#votes-tab .items');
         $this->waitForCssCount('css=#votes-tab .items .user-info', 2);
-        $this->sleep(500);
+        $this->sleep(1000);
         
         //vote again
         $voteBox = 'css=#candidate-info .user-info .vote-cntr .checkbox.vote';
@@ -394,10 +394,11 @@ class ElectionProcessTest extends WebTestCase
         $this->waitForElementContainsText('css=#candidate-info .user-info .vote-cntr .checkbox.vote span.value', '✓');
         $this->waitForCssCount('css=#votes-tab .items .user-info', 3);
         
-        $this->sleep(2000);
+        $this->sleep(3000);
         
         //revoke vote again
         $this->click($voteBox);
+        $this->sleep(250);
         $this->waitForPresent('css=div.modal');
         $this->waitForVisible('css=div.modal');
         $this->sleep(250);
