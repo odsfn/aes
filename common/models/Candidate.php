@@ -126,8 +126,10 @@ class Candidate extends CActiveRecord implements iCommentable
     protected function beforeSave() {
 
         $this->appointer_id  = Yii::app()->user->id;
-        if ($this->election->cand_reg_type == Election::CAND_REG_TYPE_SELF 
-            && $this->appointer_id == $this->user_id) { 
+        if ($this->isNewRecord 
+            && $this->election->cand_reg_type == Election::CAND_REG_TYPE_SELF 
+            && $this->appointer_id == $this->user_id) 
+        { 
             if ($this->election->cand_reg_confirm == Election::CAND_REG_CONFIRM_NOTNEED) {
                 $this->status = self::STATUS_REGISTERED;
             } else {

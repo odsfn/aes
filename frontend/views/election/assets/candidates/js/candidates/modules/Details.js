@@ -54,7 +54,7 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
 
             Candidates.ElectoralCandView.prototype.onRender.apply(this, arguments);
 
-            var btn = '', election = Candidates.getElection();
+            var btn = '', btns = [], election = Candidates.getElection();
 
             if (this.model.get('id') === Candidates.getCurrentCandidateId() && election.checkStatus('Registration')) {
 
@@ -62,11 +62,14 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
                 {
                     btn = $('<button class="btn self-confirm">Confirm participation</button>');
                     btn.click(createChangeStatusCallback(this.model, 'Registered'));
+                    btns.push(btn);
                 }
-                else if (this.model.checkStatus('Registered'))
+                
+                if (!this.model.checkStatus('Refused'))
                 {
                     btn = $('<button class="btn self-refuse">Refuse from participation</button>');
                     btn.click(createChangeStatusCallback(this.model, 'Refused'));
+                    btns.push(btn);
                 }
 
             } else if (Candidates.canInvite()) {
@@ -76,25 +79,30 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
                     {
                         btn = $('<button class="btn confirm">Allow</button>');
                         btn.click(createChangeStatusCallback(this.model, 'Registered'));
+                        btns.push(btn);
                     }
                     else if (!this.model.checkStatus('Registered') && !this.model.checkStatus('Refused'))
                     {
                         btn = $('<button class="btn refuse-from-reg">Refuse from registration</button>');
                         btn.click(createChangeStatusCallback(this.model, 'Refused'));
+                        btns.push(btn);
                     }
-                } else if (this.model.checkStatus('Registered') && (election.checkStatus('Election') || election.checkStatus('Registration')))
+                } 
+                else if (this.model.checkStatus('Registered') && (election.checkStatus('Election') || election.checkStatus('Registration')))
                 {
                     btn = $('<button class="btn block">Block this candidate</button>');
                     btn.click(createChangeStatusCallback(this.model, 'Blocked'));
+                    btns.push(btn);
                 }
                 else if (election.checkStatus('Registration') && this.model.checkStatus('Refused'))
                 {
                     btn = $('<button class="btn invite">Invite</button>');
                     btn.click(createChangeStatusCallback(this.model, 'Invited'));
+                    btns.push(btn);
                 }
             }
 
-            this.$el.html(btn);
+            this.$el.html(btns);
 
             return this;
         }

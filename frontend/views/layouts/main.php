@@ -71,7 +71,7 @@
 				</ul>
 				<?php else: ?>
 				    <div class="navbar-form pull-right"> 
-					<a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->loginUrl); ?>" class="btn">Sign in</a>
+					<a id="sign-in" href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->loginUrl); ?>" class="btn">Sign in</a>
 					<a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->registrationUrl); ?>" class="btn btn-success">Registration</a>
 				    </div>
 				<?php endif; ?>

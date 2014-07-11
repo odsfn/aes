@@ -13,6 +13,7 @@ $js = array(
     'aes:views/TableItemView.js',
     'aes:views/MoreView.js',
     'aes:views/FeedCountView.js',
+    'aes:views/NoItemView.js',
     'aes:views/FeedView.js',    
     'aes:models/Election.js',
     'aes:models/Candidate.js',
@@ -72,7 +73,7 @@ Yii::app()->clientScript->registerScript('starter',
 
 <div class="filter-container"></div>
 
-<div class="nomination-items items span8 offset2"></div>
+<div class="nomination-items items span8"></div>
 
 <div id="load-btn" class="load-btn-cntr"></div>
 </script>

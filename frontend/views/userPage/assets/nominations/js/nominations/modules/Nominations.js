@@ -85,7 +85,7 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
                 this.ui.controls.hide();
             else
             {
-                if(this.model.checkStatus('Registered'))
+                if(this.model.checkStatus('Registered') || this.model.checkStatus('Awaiting registration confirmation'))
                     this.ui.acceptBtn.hide();
             }
             

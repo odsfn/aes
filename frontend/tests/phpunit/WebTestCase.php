@@ -18,6 +18,10 @@ class WebTestCase extends CWebTestCase
         
             
         protected function login($login, $pass) {
+//            if($this->assertElementNotPresent("css=a#sign-in")) {
+//                $this->logout();
+//            }
+            
             $this->open('userAccount/login');
             $this->waitForPageToLoad("30000");
             $this->type("css=input#LoginForm_identity", $login);

@@ -1,3 +1,8 @@
+#candidate-details #controls > div > button {
+    display: block;
+    margin-bottom: 5px;
+}
+
 #candidates > div > ul.nav, #candidate-details div > ul.nav {
     margin-bottom: 0px;
 }
