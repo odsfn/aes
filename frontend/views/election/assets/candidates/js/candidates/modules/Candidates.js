@@ -155,10 +155,14 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 
         initialize: function() {
 
-            var model, candId = this.model.get('id');
+            var model;
             
-            model = Candidates.voteBoxModels.findWhere({candidate_id: candId});
-
+            if(this.model) {
+                var candId = this.model.get('id');
+                var candidateVote = Candidates.getLastVote(candId);
+                model = Candidates.voteBoxModels.findWhere({candidate_id: candId});
+            }
+            
             if(!model) {
                 model = new Candidates.VoteBoxModel({
                     candidate_id: candId
@@ -166,8 +170,6 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 
                 Candidates.voteBoxModels.add(model);
             }
-            
-            var candidateVote = Candidates.getLastVote(this.model.get('id'));
             
             if(candidateVote)
                 model.set('vote', candidateVote);

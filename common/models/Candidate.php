@@ -125,7 +125,17 @@ class Candidate extends CActiveRecord implements iCommentable
 
     protected function beforeSave() {
 
-        if($this->status == Candidate::STATUS_REGISTERED && !$this->electoral_list_pos) {
+        $this->appointer_id  = Yii::app()->user->id;
+        if ($this->election->cand_reg_type == Election::CAND_REG_TYPE_SELF 
+            && $this->appointer_id == $this->user_id) { 
+            if ($this->election->cand_reg_confirm == Election::CAND_REG_CONFIRM_NOTNEED) {
+                $this->status = self::STATUS_REGISTERED;
+            } else {
+                $this->status = self::STATUS_AWAITING_CONFIRMATION;
+            }
+        }
+        
+        if ($this->status == Candidate::STATUS_REGISTERED && !$this->electoral_list_pos) {
 
             $db = Yii::app()->db;
 
@@ -138,16 +148,8 @@ class Candidate extends CActiveRecord implements iCommentable
 
             $this->electoral_list_pos = ++$maxListPos;
         }
-//
-//        $this->appointer_id  = Yii::app()->user->id;
-//
-//        if($this->election->cand_reg_confirm == 0) {
-//            if($this->appointer_id == $this->user_id)
-//                $this->status = self::STATUS_REGISTERED;
-//
-//        }
-//
-        if($this->isNewRecord || $this->isStoredDiffers('status'))
+
+        if ($this->isNewRecord || $this->isStoredDiffers('status'))
             $this->status_changed_ts = date('Y-m-d H:i:s');
 
         return parent::beforeSave();
