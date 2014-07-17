@@ -17,6 +17,7 @@ Yii::import('stateMachine.*');
  * @property integer $cand_reg_confirm
  * @property integer $voter_reg_type
  * @property integer $voter_reg_confirm
+ * @property integer $voter_group_restriction
  * @property integer $unassigned_access_level Access level for users that were not assigned to this election
  * @property integer $target_id
  * @property integer $revotes_count How many times voter can revote in the election. If 0 - it means 
@@ -217,22 +218,35 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('user_id, name, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'required'),
+            array('user_id, name, mandate, quote, validity, cand_reg_type,'
+                . 'voter_group_restriction, cand_reg_confirm, voter_reg_type, '
+                . 'voter_reg_confirm', 'required'),
             array('user_id', 'exist', 'className' => 'UserAccount', 'attributeName' => 'id'),
             array('quote, validity', 'numerical', 'integerOnly' => true, 'min' => 1),
-            array('cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'in', 'range' => array(0, 1)),
+            array('cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 
+                'in', 'range' => array(0, 1)),
             array('name, mandate', 'length', 'max' => 1000),
             array('status', 'in', 'range' => array(0, 1, 2, 3, 4)),
-            array('uploaded_file', 'file', 'types' => 'jpg,jpeg,jpe,png,gif', 'maxSize' => 5000000, 'allowEmpty' => true),
-            array('unassigned_access_level', 'numerical', 'integerOnly' => true, 'min' => 0),
-            array('unassigned_access_level', 'default', 'setOnEmpty' => true, 'value' => self::UNASSIGNED_CAN_POST),
-            array('id, user_id, name, status, mandate, quote, validity, cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 'safe', 'on' => 'search'),
+            array('uploaded_file', 'file', 'types' => 'jpg,jpeg,jpe,png,gif', 
+                'maxSize' => 5000000, 'allowEmpty' => true),
+            array('unassigned_access_level', 'numerical', 'integerOnly' => true,
+                'min' => 0),
+            array('unassigned_access_level', 'default', 'setOnEmpty' => true, 
+                'value' => self::UNASSIGNED_CAN_POST),
+            array('id, user_id, name, status, mandate, quote, validity,'
+                . ' cand_reg_type, cand_reg_confirm, voter_reg_type, voter_reg_confirm', 
+                'safe', 'on' => 'search'),
             array('name, status', 'safe', 'on' => 'search'),
-            array('revotes_count', 'default', 'setOnEmpty' => true, 'value' => (isset(Yii::app()->params->revotes_count) ? Yii::app()->params->revotes_count : 1)),
-            array('remove_vote_time', 'default', 'setOnEmpty' => true, 'value' => (isset(Yii::app()->params->remove_vote_time) ? Yii::app()->params->remove_vote_time : 60 * 6)),
-            array('revote_time', 'default', 'setOnEmpty' => true, 'value' => (isset(Yii::app()->params->revote_time) ? Yii::app()->params->revote_time : 60 * 6)),
-            array('revote_time, remove_vote_time, revotes_count', 'numerical', 'integerOnly' => true, 'min' => 0),
-            array('id, name, status, text_status, have_pic, revotes_count, remove_vote_time, revote_time', 'safe', 'on' => 'rest'),
+            array('revotes_count', 'default', 'setOnEmpty' => true, 'value' => 
+                (isset(Yii::app()->params->revotes_count) ? Yii::app()->params->revotes_count : 1)),
+            array('remove_vote_time', 'default', 'setOnEmpty' => true, 'value' => 
+                (isset(Yii::app()->params->remove_vote_time) ? Yii::app()->params->remove_vote_time : 60 * 6)),
+            array('revote_time', 'default', 'setOnEmpty' => true, 'value' => 
+                (isset(Yii::app()->params->revote_time) ? Yii::app()->params->revote_time : 60 * 6)),
+            array('revote_time, remove_vote_time, revotes_count', 'numerical', 
+                'integerOnly' => true, 'min' => 0),
+            array('id, name, status, text_status, have_pic, revotes_count,'
+                . ' remove_vote_time, revote_time', 'safe', 'on' => 'rest'),
         );
     }
 
@@ -270,6 +284,7 @@ class Election extends CActiveRecord implements iPostable, iCommentable
             'validity' => 'Validity',
             'cand_reg_type' => 'Candidate Registration Type',
             'cand_reg_confirm' => 'Candidate Registration Confirmation',
+            'voter_group_restriction' => 'Voter Group Restriction',
             'voter_reg_type' => 'Voter Registration Type',
             'voter_reg_confirm' => 'Voter Registration Confirmation',
             'uploaded_file' => 'Image',
