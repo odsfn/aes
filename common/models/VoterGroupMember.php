@@ -24,6 +24,18 @@ class VoterGroupMember extends CActiveRecord
         return parent::model($className);
     }
 
+    public function behaviors()
+    {
+        return array(
+            'updateDateBehavior' => array(
+                'class' => 'UpdateDateBehavior',
+                'fields' => array(
+                    'create'=> array('created_ts'),
+                )
+            )
+        );
+    }    
+    
     /**
      * @return string the associated database table name
      */

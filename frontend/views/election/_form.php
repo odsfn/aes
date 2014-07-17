@@ -43,6 +43,10 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     <?= Yii::t('election.provisions', 'Electorate registraion options'); ?>
 </h5><hr>
 
+<?php echo $form->dropDownListRow($model, 'voter_group_restriction', 
+        AESHelper::arrTranslated(Election::$voter_group_restrictions), 
+        array('class'=>'span6')); ?>
+
 <?php echo $form->dropDownListRow($model, 'voter_reg_type', AESHelper::arrTranslated(Election::$voter_reg_types), array('class'=>'span6')); ?>
 
 <?php echo $form->dropDownListRow($model, 'voter_reg_confirm', AESHelper::arrTranslated(Election::$voter_reg_confirms), array('class'=>'span6')); ?>
@@ -78,6 +82,9 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 <?php $this->endWidget(); ?>
 <script type="text/javascript">
     $(function(){
+        var voterRegAdmin = <?= Election::VOTER_REG_TYPE_ADMIN ?>, 
+            voterRegMyself = <?= Election::VOTER_REG_TYPE_SELF ?>;
+
         var handler = function() {
             if($('#Election_voter_reg_type').val() == 1)
                 $('#Election_voter_reg_confirm').val(0).prop("disabled", true);
@@ -94,6 +101,23 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
                 $('#Election_cand_reg_confirm').prop('disabled', false);            
         };
         $('#Election_cand_reg_type').on('change', handlerCandRegType);
-        handlerCandRegType();
+        handlerCandRegType();        
+        
+        var handlerVoterGroupRestriction = function() {
+            if($('#Election_voter_group_restriction').val() == <?= Election::VOTER_GROUP_RESTRICTION_GROUPS_ONLY ?> )
+            {
+                $('#Election_voter_reg_type').val(voterRegAdmin).prop("disabled", true);
+                $('#Election_voter_reg_confirm').val(0).prop("disabled", true);
+            } else if ( $('#Election_voter_group_restriction').val() == <?= Election::VOTER_GROUP_RESTRICTION_GROUPS_ADD ?> ) {
+                $('#Election_voter_reg_type').val(voterRegMyself).prop("disabled", true);
+                $('#Election_voter_reg_confirm').prop("disabled", false);
+            } else {
+                $('#Election_voter_reg_type, #Election_voter_reg_confirm').prop("disabled", false);
+                handler();
+                handlerCandRegType();
+            }
+        };
+        $('#Election_voter_group_restriction').on('change', handlerVoterGroupRestriction);
+        handlerVoterGroupRestriction();
     });
 </script>

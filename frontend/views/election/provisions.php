@@ -61,6 +61,10 @@ $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
             'data'  => $model,
             'attributes'=>array(
                 array(
+                    'name' => 'voter_group_restriction',
+                    'value'=> AESHelper::arrTranslatedValue(Election::$voter_group_restrictions, $model->voter_group_restriction, 'election')
+                ),
+                array(
                     'name'  =>  'voter_reg_type',
                     'value' =>  AESHelper::arrTranslatedValue(Election::$voter_reg_types, $model->voter_reg_type, 'election')
                 ),

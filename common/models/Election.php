@@ -79,6 +79,12 @@ class Election extends CActiveRecord implements iPostable, iCommentable
     
     const VOTER_REG_CONFIRM_NEED = 1;
     
+    const VOTER_GROUP_RESTRICTION_NO = 0;
+    
+    const VOTER_GROUP_RESTRICTION_GROUPS_ONLY = 1;
+    
+    const VOTER_GROUP_RESTRICTION_GROUPS_ADD = 2;
+    
     public static $statuses = array(
         Election::STATUS_PUBLISHED => 'Published',
         Election::STATUS_REGISTRATION => 'Registration',
@@ -107,6 +113,12 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         self::VOTER_REG_CONFIRM_NEED => 'Yes',
     );
 
+    public static $voter_group_restrictions = array(
+        self::VOTER_GROUP_RESTRICTION_NO => 'No',
+        self::VOTER_GROUP_RESTRICTION_GROUPS_ONLY => 'From specified groups only',
+        self::VOTER_GROUP_RESTRICTION_GROUPS_ADD => 'From specified groups or adding into them',
+    );
+    
     public $uploaded_file = null;
 
     private $_text_status = null;
@@ -245,11 +257,14 @@ class Election extends CActiveRecord implements iPostable, iCommentable
                 (isset(Yii::app()->params->revote_time) ? Yii::app()->params->revote_time : 60 * 6)),
             array('revote_time, remove_vote_time, revotes_count', 'numerical', 
                 'integerOnly' => true, 'min' => 0),
+            array('voter_group_restriction', 'in', 'range' => array_keys(self::$voter_group_restrictions)),
+            array('voter_reg_type', 'in', 'range' => $this->getAllowedVoterRegTypes()),
+            array('voter_reg_confirm', 'in', 'range' => $this->getAllowedVoterRegConfirmTypes()),
             array('id, name, status, text_status, have_pic, revotes_count,'
                 . ' remove_vote_time, revote_time', 'safe', 'on' => 'rest'),
         );
     }
-
+    
     /**
      * @return array relational rules.
      */
@@ -265,7 +280,8 @@ class Election extends CActiveRecord implements iPostable, iCommentable
                 'condition' => 'status = ' . Candidate::STATUS_REGISTERED,
                 'with' => 'acceptedVotesCount'
             ),
-            'electors' => array(self::HAS_MANY, 'Elector', 'election_id')
+            'electors' => array(self::HAS_MANY, 'Elector', 'election_id'),
+//            'voterGroups' => array(self::MANY_MANY, 'VoterGroup', 'election_group(election_id, voter_group_id)')
         );
     }
 
@@ -331,6 +347,8 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         $this->voter_reg_type = Election::VOTER_REG_TYPE_ADMIN;
         
         $this->voter_reg_confirm = Election::VOTER_REG_CONFIRM_NOTNEED;
+        
+        $this->voter_group_restriction = self::VOTER_GROUP_RESTRICTION_NO;
         
         $this->revotes_count = (isset(Yii::app()->params->revotes_count) ? Yii::app()->params->revotes_count : 1);
 
@@ -466,6 +484,29 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         return $revotesCount;
     }
 
+
+    public function getAllowedVoterRegTypes() 
+    {
+        if($this->voter_group_restriction == self::VOTER_GROUP_RESTRICTION_GROUPS_ONLY)
+            $types = array(self::VOTER_REG_TYPE_ADMIN);
+        else if($this->voter_group_restriction == self::VOTER_GROUP_RESTRICTION_GROUPS_ADD)
+            $types = array(self::VOTER_REG_TYPE_SELF);
+        else
+            $types = array_keys(self::$voter_reg_types);
+        
+        return $types;
+    }
+
+    public function getAllowedVoterRegConfirmTypes() 
+    {
+        if($this->voter_reg_type == self::VOTER_REG_TYPE_ADMIN)
+            $types = array(self::VOTER_REG_CONFIRM_NOTNEED);
+        else
+            $types = array_keys(self::$voter_reg_confirms);
+        
+        return $types;
+    }    
+    
     /**
      * Checks whether actual user can add himself as elector
      * @return boolean

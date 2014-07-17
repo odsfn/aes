@@ -17,6 +17,14 @@
  */
 class VoterGroup extends CActiveRecord
 {
+    const TYPE_LOCAL = 0;
+    
+    const TYPE_GLOBAL = 1;
+    
+    const STATUS_INACTIVE = 0;
+    
+    const STATUS_ACTIVE = 1;
+    
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -25,6 +33,24 @@ class VoterGroup extends CActiveRecord
     public static function model($className=__CLASS__)
     {
         return parent::model($className);
+    }
+
+    public function init()
+    {
+        $this->status = self::STATUS_ACTIVE;
+        $this->type = self::TYPE_LOCAL;
+    }
+
+    public function behaviors()
+    {
+        return array(
+            'updateDateBehavior' => array(
+                'class' => 'UpdateDateBehavior',
+                'fields' => array(
+                    'create'=> array('created_ts'),
+                )
+            )
+        );
     }
 
     /**

@@ -173,6 +173,18 @@ class ElectionController extends FrontController
         $this->render('electorate', array('model'=>$model));
     }
     
+    public function actionManageVotersGroups($id)
+    {
+        $model = $this->getModel($id);
+        $this->layout = '//layouts/election';
+        $this->election = $model;
+        
+        if(!Yii::app()->user->checkAccess('election_administration', array('election' => $this->election)))
+            throw new CHttpException(403, 'You have no rights to perform this action');
+        
+        $this->render('manageVotersGroups', array('model'=>$model));    
+    }
+
     protected function getModel($id) {
         $model = Election::model()->findByPk($id);
         
