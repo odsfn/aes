@@ -26,4 +26,6 @@
 
 /frontend/www/uploads/photos/*
 !/frontend/www/uploads/photos/unknown_user.png
+/frontend/www/uploads/elections/*
+/frontend/www/uploads/person_identifiers/*
 *~
