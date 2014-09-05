@@ -47,6 +47,11 @@ class RestController extends ERestController {
     public function beforeAction($event) {
         $result = parent::beforeAction($event);
         
+        //decode extjs filters format
+        if(is_string($this->restFilter) && isset($_GET['extjs'])) {
+            $this->restFilter = CJSON::decode($this->restFilter);
+        }
+        
         if(ArrayHelper::isAssoc($this->restFilter)) {   //Conversion needed
             
             if(!empty($this->acceptFilters['plain'])) {

@@ -45,6 +45,17 @@ All dependencies will be fetched, and installation process will start. It will a
 
 At the last step it will updates all migrations.
 
+5. You should create 2 virtual hosts config for apache
+First is for electors and visitors (front-office). DocumentRoot should point to frontend/www/
+Second is for superadmin, admins and managers (back-office). DocumentRoot should point to backend/www/
+Each of them should contain directives:
+	
+        RewriteEngine On
+	RewriteRule ^/ui(.*) /var/www/aes/common/ui$1
+
+To correctly use common ui components. You also should replace "/var/www/aes/" to
+the correct path where AES is deployed
+
 ##Examples
 
 common/config/local.php: 

@@ -31,14 +31,14 @@ class m140717_063435_add_election_groups extends EDbMigration
         $this->addForeignKey('fk_voter_group_member_user_id', 'voter_group_member', 
                 'user_id', 'user_profile', 'user_id', 'CASCADE', 'NO ACTION');
         
-        $this->createTable('election_group', array(
+        $this->createTable('election_voter_group', array(
             'id' => 'pk',
             'election_id' => 'int(11) not null',
             'voter_group_id' => 'int(11) not null'
         ));
-        $this->addForeignKey('fk_election_group_election_id', 'election_group',
+        $this->addForeignKey('fk_election_group_election_id', 'election_voter_group',
                 'election_id', 'election', 'id', 'CASCADE', 'NO ACTION');
-        $this->addForeignKey('fk_election_group_voter_group_id', 'election_group',
+        $this->addForeignKey('fk_election_group_voter_group_id', 'election_voter_group',
                 'voter_group_id', 'voter_group', 'id', 'CASCADE', 'NO ACTION');
     }
 
@@ -46,7 +46,7 @@ class m140717_063435_add_election_groups extends EDbMigration
     {
         $this->dropColumn('election', 'voter_group_restriction');
         
-        $this->dropTable('election_group');
+        $this->dropTable('election_voter_group');
         $this->dropTable('voter_group_member');
         $this->dropTable('voter_group');
     }

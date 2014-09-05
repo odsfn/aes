@@ -1,0 +1,9 @@
+#voters-groups-cntr {
+    min-height: 500px;
+}
+
+iframe.ext-app {
+    width: inherit;
+    min-height: 500px;
+    border: 0px;
+}
