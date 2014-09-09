@@ -171,7 +171,20 @@ class PeopleSearch extends CFormModel{
             'notElector' => array(
                 'join' => 'LEFT JOIN elector AS e ON e.user_id = t.user_id AND e.election_id = :election_id',
                 'condition' => 'e.user_id IS NULL'
-            )
+            ),
+            'elector' => array(
+                'join' => 'INNER JOIN elector AS e ON e.user_id = t.user_id AND e.election_id = :election_id'
+            ),
+            'inVoterGroup' => array(
+                'join' => 'INNER JOIN voter_group_member AS vgm ON vgm.voter_group_id = :voter_group_id '
+                . 'AND t.user_id = vgm.user_id',
+                'condition' => 'vgm.voter_group_id = :voter_group_id'
+            ),
+            'notInVoterGroup' => array(
+                'join' => 'LEFT JOIN voter_group_member AS vgm ON vgm.voter_group_id = :voter_group_id '
+                    . 'AND t.user_id = vgm.user_id',
+                'condition' => 'vgm.user_id IS NULL'
+            ),
         );
     }
 }
