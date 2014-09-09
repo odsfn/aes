@@ -96,7 +96,9 @@ return array(
                 'registrationFormView' => 'frontend.views.userAccount.profile._form',
                 'registrationView' => 'frontend.views.userAccount.registration.registration',
                 'profileCustomRelations' => array(
-                    'personIdentifier' => array('CHasOneRelation', 'PersonIdentifier', 'profile_id')
+                    'personIdentifier' => array('CHasOneRelation', 'PersonIdentifier', 'profile_id'),
+                    'voterGroupMember' => array('CHasOneRelation', 'VoterGroupMember', 'user_id'),
+                    'elector' => array('CHasOneRelation', 'Elector', 'user_id')
                 )
 	    ),
 	    

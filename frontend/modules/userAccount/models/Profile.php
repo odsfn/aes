@@ -96,7 +96,7 @@ class Profile extends CActiveRecord
             array('mobile_phone', 'unique', 'attributeName' => 'mobile_phone', 'className' => 'Profile', 'allowEmpty' => true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('user_id, first_name, last_name, birth_place, birth_day, gender, mobile_phone, email', 'safe', 'on' => 'search'),
+            array('user_id, first_name, last_name, birth_place, birth_day, gender', 'safe', 'on' => 'search')
         );
     }
 
@@ -108,7 +108,7 @@ class Profile extends CActiveRecord
         $customRelations = Yii::app()->getModule('userAccount')->profileCustomRelations;
         
         $relations = array(
-            'user' => array(self::BELONGS_TO, 'UserAccount', 'user_id'),
+            'user' => array(self::BELONGS_TO, 'UserAccount', 'user_id')
         );
         
         return CMap::mergeArray($relations, $customRelations);
