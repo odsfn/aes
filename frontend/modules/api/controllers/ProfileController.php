@@ -41,18 +41,38 @@ class ProfileController extends RestController {
         if($gender = $this->plainFilter['gender'])
             $peopleSearch->gender = $gender;
         
-        if($scopes = $this->plainFilter['applyScopes']) {
+        if($scopes = $this->plainFilter['applyScopes']) 
+        {
             $scopes = CJSON::decode($scopes);
             $peopleSearch->applyScopes = $scopes;
+            
+            if (array_key_exists('elector', $scopes)) {
+                $this->nestedModels['elector'] = array(
+                    'joinType' => 'INNER JOIN',
+                    'condition' => 
+                        'elector.election_id = ' 
+                            . $scopes['elector']['election_id']
+                );
+            }
+            
+            if(array_key_exists('inVoterGroup', $scopes)) {
+                $this->nestedModels['voterGroupMember'] = array(
+                    'joinType' => 'INNER JOIN',
+                    'condition' => 
+                        'voterGroupMember.voter_group_id = ' 
+                            . $scopes['inVoterGroup']['voter_group_id']
+                );
+            }
         }
+        
+        $this->flushRestFilter('applyScopes', 'ageFrom', 'ageTo', 'name');
         
         $arProvCriteria = $peopleSearch->search()->criteria;
         
         $model->getDbCriteria()->mergeWith($arProvCriteria);
         
-        $model->getDbCriteria()->select = 't.user_id, first_name, last_name, photo, photo_thmbnl_64, birth_place, birth_day';
-        
         $results = $model->with($this->nestedRelations)
+            ->filter($this->restFilter)
             ->orderBy($this->restSort)
             ->limit($this->restLimit)->offset($this->restOffset)
             ->findAll();
@@ -63,7 +83,7 @@ class ProfileController extends RestController {
         $this->outputHelper( 
                 'Records Retrieved Successfully', 
                 $results,
-                $forCount->with($this->nestedRelations)->count()
+                $forCount->filter($this->restFilter)->with($this->nestedRelations)->count()
         );
     }
 
@@ -79,5 +99,15 @@ class ProfileController extends RestController {
             )
         );
     }
-    
+
+    protected function flushRestFilter($filterName)
+    {
+        $filterNames = func_get_args();
+        foreach ($filterNames as $filterName){
+            foreach ($this->restFilter as $index => $filter) {
+                if($filter['property'] == $filterName)
+                    unset($this->restFilter[$index]);
+            }
+        }
+    }
 }

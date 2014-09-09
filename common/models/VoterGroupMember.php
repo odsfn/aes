@@ -9,7 +9,7 @@
  * @property string $created_ts
  *
  * The followings are the available model relations:
- * @property Profile $userProfile
+ * @property Profile $profile
  * @property VoterGroup $voterGroup
  */
 class VoterGroupMember extends CActiveRecord
@@ -52,7 +52,7 @@ class VoterGroupMember extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('voter_group_id, user_id, created_ts', 'required'),
+            array('voter_group_id, user_id', 'required'),
             array('voter_group_id, user_id', 'numerical', 'integerOnly'=>true),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -68,7 +68,7 @@ class VoterGroupMember extends CActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'userProfile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
+            'profile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'voterGroup' => array(self::BELONGS_TO, 'VoterGroup', 'voter_group_id'),
         );
     }

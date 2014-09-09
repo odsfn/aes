@@ -1,6 +1,6 @@
 <?php
 /**
- * This is the model class for table "election_group".
+ * This is the model class for table "election_voter_group".
  *
  * The followings are the available columns in table 'election_group':
  * @property integer $id
@@ -11,12 +11,12 @@
  * @property VoterGroup $voterGroup
  * @property Election $election
  */
-class ElectionGroup extends CActiveRecord
+class ElectionVoterGroup extends CActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
-     * @return ElectionGroup the static model class
+     * @return ElectionVoterGroup the static model class
      */
     public static function model($className=__CLASS__)
     {
@@ -28,7 +28,7 @@ class ElectionGroup extends CActiveRecord
      */
     public function tableName()
     {
-        return 'election_group';
+        return 'election_voter_group';
     }
 
     /**

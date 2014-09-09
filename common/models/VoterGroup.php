@@ -11,7 +11,7 @@
  * @property string $created_ts
  *
  * The followings are the available model relations:
- * @property ElectionGroup[] $electionGroups
+ * @property ElectionVoterGroup[] $electionGroups
  * @property Profile $userProfile
  * @property VoterGroupMember[] $voterGroupMembers
  */
@@ -69,7 +69,7 @@ class VoterGroup extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, user_id, created_ts', 'required'),
+            array('name, user_id', 'required'),
             array('type, status, user_id', 'numerical', 'integerOnly'=>true),
             array('name', 'length', 'max'=>512),
             // The following rule is used by search().
