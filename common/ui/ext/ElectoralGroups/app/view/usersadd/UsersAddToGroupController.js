@@ -9,23 +9,14 @@ Ext.define('ElectoralGroups.view.usersadd.UsersAddToGroupController', {
             grid = this.getView().down('grid'),
             sel = grid.getSelectionModel(),
             group = this.getView().up().getViewModel().data.group,
+            members = this.getView().up().getViewModel().data.members;
             
             done = function() {
-                
-                // @TODO: Update grid instead of rows removal after
-                // filters will be implemented on backend
-                Ext.each(sel.getSelection(), function(m, i) {
-                    var rowEl = grid.getView().getRow(m);
-                    var node = Ext.get(rowEl);
-                    node.destroy();
-                });
-                sel.deselect(sel.getSelection());
+                grid.getStore().reload();
                 window.unmask();
             };
    
         window.mask();
-        
-        console.log('Add clicked. @TODO: Implement real adding');
 
         var groupMembers = [];
         Ext.each(sel.getSelection(), function(user, index) {
@@ -36,12 +27,8 @@ Ext.define('ElectoralGroups.view.usersadd.UsersAddToGroupController', {
             groupMembers.push(newMember);
         });
         
-        var store = Ext.create('ElectoralGroups.store.VoterGroupMembers', {
-            autoSync: false
-        });
-        
-        store.add(groupMembers);
-        store.sync({
+        members.add(groupMembers);
+        members.sync({
             success: done,
             failure: function() {
                 console.error('Sync failed');

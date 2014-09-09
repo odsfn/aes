@@ -27,7 +27,12 @@ Ext.define('Aes.view.usersgrid.OperableUsersGrid', {
             ]
         }
     ],
-    initComponent: function() {
-        this.callParent(arguments);
+    
+    initItems: function() {
+        if (this.storeScopes) {
+            this.items.storeScopes = this.storeScopes;
+        }
+        
+        this.callParent();
     }
 });

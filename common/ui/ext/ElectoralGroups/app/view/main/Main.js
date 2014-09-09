@@ -37,16 +37,7 @@ Ext.define('ElectoralGroups.view.main.Main', {
         items:[{
             title: 'Registered in Election',
             closable: false,
-            xtype: 'electorsgrid',
-            store: {
-                fields : [ 'first_name', 'last_name', 'email', 'birth_day', 'birth_place', 'gender' ],
-                data   : [
-                    [ 'Bill', 'Geits', 'billy@msdn.com', 978300000, 'Aiowa, USA', 1 ],
-                    [ 'Edgar', 'Po', 'po@writers.com', 778300000, 'Somewhere', 1 ],
-                    [ 'Suzy', 'Cherlies', 'suzy@test.com', 725300120, 'Somewhere else, USA', 2 ],
-                    [ 'It', 'King', 'it@horror.org', 999300120, 'Somewhere else, USA', 0 ]
-                ]
-            }
+            xtype: 'electorsgrid'
         }]
     }]
 });

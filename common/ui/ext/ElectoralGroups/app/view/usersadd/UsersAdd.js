@@ -7,9 +7,18 @@ Ext.define('ElectoralGroups.view.usersadd.UsersAdd', {
     resizable: false,
     draggable: false,
     layout: 'fit',
+    
     items: {
         xclass: 'Aes.view.usersgrid.OperableUsersGrid',
         controller: 'add-to-group',
         border: false
+    },
+    
+    initItems: function() {
+        if (this.storeScopes) {
+            this.items.storeScopes = this.storeScopes;
+        }
+        
+        this.callParent();
     }
 });

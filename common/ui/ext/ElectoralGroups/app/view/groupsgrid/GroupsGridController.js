@@ -77,18 +77,26 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGridController', {
             tab = Ext.ComponentQuery.query('#usersgrid-group-' + record.get('id'))[0];
         
         if(!tab) {
+            var users = Ext.create('Aes.store.Users', {
+                filters: [
+                    { 
+                        property: 'applyScopes', 
+                        value: Ext.encode({
+                            inVoterGroup: {
+                                voter_group_id: record.get('id')
+                            }
+                        }) 
+                    }
+                ],
+                remoteFilter: true,
+                autoLoad: true
+            });
+            
             tab = tabPanel.add({
                 itemId: 'usersgrid-group-' + record.get('id'),
                 title: record.get('name'),
                 xtype: 'groupmembersgrid',
-                store: Ext.create('ElectoralGroups.store.VoterGroupMembers', {
-                    filters: [
-                        { property: 'voter_group_id', value: record.get('id') },
-//                        { property: 'profile.first_name', value: 'Vasil' }
-                    ],
-                    remoteFilter: true,
-                    autoLoad: true
-                }),
+                store: users,
                 viewModel: {
                     data: {
                         group: record

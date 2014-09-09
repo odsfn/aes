@@ -79,16 +79,36 @@ Ext.define('Aes.view.usersgrid.UsersGrid', {
     ],
     
     initComponent: function() {
+        console.log('UsersGrid.initComponent');
         this.callParent(arguments);
         
         this.initStore();
         
         this.query('pagingtoolbar')[0].setStore(this.getStore());
-        this.getStore().load();
+        var store = this.getStore();
+        
+        store.load();
     },
     
     initStore: function() {
-        if(!this.getInitialConfig('store'))
-            this.setStore(Ext.create('Aes.store.Users'));
+        var conf = {};
+        
+        if(!this.getInitialConfig('store') 
+            && Ext.getClassName(this.getStore()) === 'Ext.data.Store')
+        {
+            if (this.storeScopes) {
+                conf = {
+                    filters: [
+                        { 
+                            property: 'applyScopes', 
+                            value: Ext.encode(this.storeScopes) 
+                        }
+                    ],
+                    remoteFilter: true
+                };
+            }
+            
+            this.setStore(Ext.create('Aes.store.Users', conf));
+        }
     }
 });

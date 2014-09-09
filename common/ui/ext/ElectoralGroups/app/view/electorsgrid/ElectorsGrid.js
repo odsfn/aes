@@ -2,6 +2,7 @@
 Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGrid', {
     extend: 'Aes.view.usersgrid.UsersGrid',
     xtype: 'electorsgrid',
+    controller: 'electorsgrid',
     selModel: Ext.create('Ext.selection.CheckboxModel', {
         checkOnly: true
     }),
@@ -11,18 +12,27 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGrid', {
             dock: 'top',
             items: [
                 {
-                    text:'Add'
+                    itemId: 'addButton',
+                    text:'Add',
+                    disabled: true,
+                    handler: 'onClickAddButton'
                 }, {
                     itemId: 'removeButton',
                     text:'Remove',
-                    disabled: true
+                    disabled: true,
+                    handler: 'onClickRemoveButton'
+                }, '-', {
+                    itemId: 'registerButton',
+                    text: 'Register electors from groups',
+                    disabled: true,
+                    handler: 'onClickRegisterButton'
                 }
             ]
         },
         {
             dock: 'bottom',
             xtype: 'pagingtoolbar',
-            pageSize: 10,
+            pageSize: 25,
             displayInfo: true
         }
     ]

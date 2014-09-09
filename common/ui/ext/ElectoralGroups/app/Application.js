@@ -7,7 +7,8 @@ Ext.define('ElectoralGroups.Application', {
     extend: 'Ext.app.Application',
     
     requires: [
-        'ElectoralGroups.view.main.Main'
+        'ElectoralGroups.view.main.Main',
+        'ElectoralGroups.model.Election'
     ],
     
     name: 'ElectoralGroups',
