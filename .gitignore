@@ -29,3 +29,6 @@
 /frontend/www/uploads/elections/*
 /frontend/www/uploads/person_identifiers/*
 *~
+
+/common/ui/ext/build/temp/
+/common/ui/ext/build/.sass-cache/
