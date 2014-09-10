@@ -15,7 +15,7 @@ class VoterGroupMembersRegistration extends CComponent
      */
     protected $election;
 
-    protected $state = self::STATE_NOT_STARTED;
+    protected $_state = self::STATE_NOT_STARTED;
 
 
     public function __construct($election)
@@ -31,9 +31,24 @@ class VoterGroupMembersRegistration extends CComponent
         if (!$election)
             throw new CException('Election was not found');
             
-        $this->_election = $election;    
+        $this->election = $election;    
     }
     
+    public function getElection()
+    {
+        return $this->election;
+    }
+
+    public function setState($state)
+    {
+        $this->_state = $state;
+    }
+
+    public function getState()
+    {
+        return $this->_state;
+    }
+
     public function run()
     {
         $this->setState(self::STATE_RUNNING);
