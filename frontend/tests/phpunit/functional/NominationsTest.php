@@ -209,8 +209,7 @@ class NominationsTest extends WebTestCase {
         $this->assertNotVisible('css=div.nomination:nth-of-type(1) .accept-btn');
         
         $this->click('css=div.nomination:nth-of-type(1) .decline-btn');
-        $this->sleep(800);
-        $this->assertElementContainsText('css=div.nomination:nth-of-type(1) .status', 'Refused');
+        $this->waitForElementContainsText('css=div.nomination:nth-of-type(1) .status', 'Refused');
     }
     
     //  testNominationByAdminRevokedByAdminAfterUserAcceptedIt
