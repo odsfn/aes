@@ -17,9 +17,9 @@
  */
 class VoterGroup extends CActiveRecord
 {
-    const TYPE_LOCAL = 0;
+    const TYPE_LOCAL = 1;
     
-    const TYPE_GLOBAL = 1;
+    const TYPE_GLOBAL = 0;
     
     const STATUS_INACTIVE = 0;
     
@@ -38,7 +38,7 @@ class VoterGroup extends CActiveRecord
     public function init()
     {
         $this->status = self::STATUS_ACTIVE;
-        $this->type = self::TYPE_LOCAL;
+        $this->type = self::TYPE_GLOBAL;
     }
 
     public function behaviors()
