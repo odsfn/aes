@@ -1,6 +1,6 @@
 <?php
 /**
- * This is the model class for table "election_group".
+ * This is the model class for table "election_voter_group".
  *
  * The followings are the available columns in table 'election_group':
  * @property integer $id

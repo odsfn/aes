@@ -30,7 +30,7 @@ class NominationsTest extends WebTestCase {
         $this->waitForTextPresent('Steve Jobs');
         $this->click("css=div.user-info:nth-of-type(6) > div.pull-right > span.controls > small");
         $this->sleep(250);
-        $this->assertElementContainsText('css=div.user-info:nth-of-type(6)', 'Invited');
+        $this->waitForElementContainsText('css=div.user-info:nth-of-type(6)', 'Invited');
         
         $this->click("link=Vasiliy Pedak");
         $this->click("link=Log out");
@@ -209,8 +209,7 @@ class NominationsTest extends WebTestCase {
         $this->assertNotVisible('css=div.nomination:nth-of-type(1) .accept-btn');
         
         $this->click('css=div.nomination:nth-of-type(1) .decline-btn');
-        $this->sleep(800);
-        $this->assertElementContainsText('css=div.nomination:nth-of-type(1) .status', 'Refused');
+        $this->waitForElementContainsText('css=div.nomination:nth-of-type(1) .status', 'Refused');
     }
     
     //  testNominationByAdminRevokedByAdminAfterUserAcceptedIt
