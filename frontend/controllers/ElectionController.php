@@ -193,9 +193,12 @@ class ElectionController extends FrontController
         if(!Yii::app()->user->checkAccess('election_administration', array('election' => $model)))
             throw new CHttpException(403, 'You have no rights to perform this action');
         
+        $registration = new VoterGroupMembersRegistration($model);
+        $registration->run();
+        
         $this->renderJson(array(
-            'success'=>false,
-            'message'=>'Operation was not implemented yet'
+            'success'=> true,
+            'message'=>'Operation finished successfully'
         ));
     }
 

@@ -1,7 +1,9 @@
 <?php
-/* 
+/** 
  * VoterGroupMembersRegistration is the Transaction Script which perform 
  * members registration of related election's voters groups as electors
+ * 
+ * @TODO: Perform access control before run
  */
 class VoterGroupMembersRegistration extends CComponent 
 {
