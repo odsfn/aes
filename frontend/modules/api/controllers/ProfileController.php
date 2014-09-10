@@ -105,8 +105,12 @@ class ProfileController extends RestController {
         $filterNames = func_get_args();
         foreach ($filterNames as $filterName){
             foreach ($this->restFilter as $index => $filter) {
-                if($filter['property'] == $filterName)
+                if($index == $filterName 
+                    || ( isset($filter['property']) 
+                            && $filter['property'] == $filterName) 
+                ){
                     unset($this->restFilter[$index]);
+                }
             }
         }
     }
