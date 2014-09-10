@@ -13,9 +13,9 @@ class VoterGroupMembersRegistration extends CComponent
      * Election 
      * @var Election
      */
-    protected $_election;
+    protected $election;
 
-    protected $status = 0;
+    protected $state = self::STATE_NOT_STARTED;
 
 
     public function __construct($election)
@@ -38,7 +38,22 @@ class VoterGroupMembersRegistration extends CComponent
     {
         $this->setState(self::STATE_RUNNING);
         
+        $election_id = $this->getElection()->id; 
         
+        $command = Yii::app()->db->createCommand(
+            "INSERT INTO elector (election_id, user_id, status) "
+                . "SELECT evg.election_id, vgm.user_id, 0 AS status "
+                . "FROM election_voter_group AS evg "
+                . "INNER JOIN voter_group_member AS vgm "
+                    . "ON evg.voter_group_id = vgm.voter_group_id "
+                        . "AND evg.election_id = $election_id "
+                . "WHERE vgm.user_id NOT IN ("
+                    . "SELECT user_id FROM elector WHERE election_id = $election_id"
+                . ")"
+                . "GROUP BY vgm.user_id"
+        );
+        
+        $command->execute();
         
         $this->setState(self::STATE_FINISHED);
     }
