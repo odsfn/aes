@@ -14,7 +14,7 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGrid', {
                 {
                     itemId: 'addButton',
                     text:'Add',
-                    disabled: true,
+                    disabled: false,
                     handler: 'onClickAddButton'
                 }, {
                     itemId: 'removeButton',

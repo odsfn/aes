@@ -12,7 +12,7 @@ Ext.define('Aes.view.usersgrid.UsersGrid', {
     columns: {
         items: [
             {   
-                text: 'ID', dataIndex: 'user_id', flex: 1, filter: 'number',
+                text: 'ID', dataIndex: 'user_id', flex: 1, filter: 'number'
             },
             { 
                 text: 'First Name', dataIndex: 'first_name', flex: 1, 

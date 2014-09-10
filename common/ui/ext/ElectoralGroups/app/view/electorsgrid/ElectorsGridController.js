@@ -7,9 +7,15 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
     {
         var election = this.election,
             usersadd = Ext.create('ElectoralGroups.view.usersadd.UsersAdd', {
+                items: {
+                    xclass: 'Aes.view.usersgrid.OperableUsersGrid',
+                    controller: 'add-to-election',
+                    border: false
+                },
+                
                 viewModel: {
                     data: {
-                        group: election,
+                        election: election,
                         electors: this.electors
                     }
                 },
@@ -42,8 +48,8 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
                     );
                 }, this);
                 
-                this.members.remove(models);
-                this.members.sync({ 
+                this.electors.remove(models);
+                this.electors.sync({ 
                     success: function(){
                         this.view.getStore().reload();
                     },
@@ -55,7 +61,8 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
     
     onClickRegisterButton: function()
     {
-        var grid = this.view,
+        var me = this,
+            grid = this.view,
             mainView = grid.up('app-main');
     
         mainView.mask();
@@ -80,6 +87,7 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
                     message: message,
                     icon: icon
                 });
+                me.electors.reload();
                 grid.getStore().reload();
                 mainView.unmask();
             },

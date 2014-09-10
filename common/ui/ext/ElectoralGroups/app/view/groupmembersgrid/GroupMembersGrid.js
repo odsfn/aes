@@ -9,7 +9,7 @@ Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGrid', {
     columns: {
         items: [
             {   
-                text: 'User Id', dataIndex: 'user_id', flex: 1, filter: 'number',
+                text: 'User Id', dataIndex: 'user_id', flex: 1, filter: 'number'
             },
             { 
                 text: 'First Name', dataIndex: 'first_name', flex: 1, 

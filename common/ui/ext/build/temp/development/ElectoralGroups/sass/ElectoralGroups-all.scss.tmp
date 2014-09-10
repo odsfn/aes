@@ -30,6 +30,7 @@ $include-electoralgroups-view-main-main: true;
 $include-electoralgroups-view-main-maincontroller: true;
 $include-electoralgroups-view-main-mainmodel: true;
 $include-electoralgroups-view-usersadd-usersadd: true;
+$include-electoralgroups-view-usersadd-usersaddtoelectioncontroller: false;
 $include-electoralgroups-view-usersadd-usersaddtogroupcontroller: false;
 $include-ext-abstractmanager: false;
 $include-ext-action: false;

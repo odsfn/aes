@@ -7,7 +7,7 @@ Ext.define('ElectoralGroups.model.VoterGroup', function(VoterGroup) {
             {
                 name: 'type',
                 type: 'string',
-                'default': 'Local',
+                'default': 'Global',
                 convert: function(val, rec) {
                     return rec.getTypeLabel(val);
                 },
@@ -45,7 +45,7 @@ Ext.define('ElectoralGroups.model.VoterGroup', function(VoterGroup) {
         
         statics: {
             types: function() {
-                return ['Local', 'Global'];
+                return ['Global', 'Local'];
             }
         }
     };
