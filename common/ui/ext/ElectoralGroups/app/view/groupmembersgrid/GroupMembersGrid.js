@@ -1,10 +1,12 @@
 // Lists all users in the system, allows to extend it to provide 
 // custom operations
 Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGrid', {
+    requires: [
+        'ElectoralGroups.view.groupmembersgrid.GroupMembersGridController'
+    ],
     extend: 'Aes.view.usersgrid.UsersGrid',
     xtype: 'groupmembersgrid',
     controller: 'groupmembersgrid',
-    
     
     columns: {
         items: [

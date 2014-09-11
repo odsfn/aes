@@ -7,7 +7,6 @@ Ext.define('ElectoralGroups.store.ElectionVoterGroups', {
     pageSize: 25,
     listeners: {
         add: function(store, records) {
-            console.log('ElectionVoterGroup added');
             Ext.each(records, function(rec) {
                 Ext.getStore('VoterGroups')
                         .findRecord('id', rec.get('voter_group_id'))

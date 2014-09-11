@@ -1,6 +1,9 @@
 // Lists all users in the system, provides customizable operation for set of
 // selected users
 Ext.define('Aes.view.usersgrid.OperableUsersGrid', {
+    requires: [
+        'Aes.view.usersgrid.UsersGrid'
+    ],
     extend: 'Ext.panel.Panel',
     xtype: 'aes-operableusersgrid',
     layout: 'fit',

@@ -11,11 +11,13 @@ $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
 
 <div class="row-fluid">
     <div id="voters-groups-cntr" class="span12">
-        
-        <iframe id="ElectoralGroups" src="http://aes.dev/ui/ext/ElectoralGroups/index.html" class="ext-app">
-            Something will be loaded here
-        </iframe>
-        
+        <?php 
+            $src = Yii::app()->getBaseUrl(true) . '/ui/ext/';
+            if (!defined('YII_DEBUG') || YII_DEBUG == false)
+                $src .= 'build/production/';
+            $src .= 'ElectoralGroups/index.html';
+        ?>
+        <iframe id="ElectoralGroups" src="<?= $src ?>" class="ext-app"></iframe>
     </div>
 </div>
 <script type="text/javascript">

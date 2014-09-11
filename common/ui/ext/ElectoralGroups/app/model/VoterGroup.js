@@ -1,7 +1,10 @@
 Ext.define('ElectoralGroups.model.VoterGroup', function(VoterGroup) {
     return {
         extend: 'ElectoralGroups.model.Base',
-        
+        requires: [
+            'ElectoralGroups.model.Base',
+            'ElectoralGroups.store.ElectionVoterGroups'
+        ],
         fields: [
             'name', 
             {

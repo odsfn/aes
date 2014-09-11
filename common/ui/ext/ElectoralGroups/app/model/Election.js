@@ -3,6 +3,8 @@
  */
 Ext.define('ElectoralGroups.model.Election', function(Election) {
     return {
+        requires: ['ElectoralGroups.model.Base'],
+        
         extend: 'ElectoralGroups.model.Base',
         
         fields: [

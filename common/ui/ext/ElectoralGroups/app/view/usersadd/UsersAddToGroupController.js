@@ -1,4 +1,8 @@
 Ext.define('ElectoralGroups.view.usersadd.UsersAddToGroupController', {
+    requires: [
+        'ElectoralGroups.model.VoterGroupMember'
+    ],
+    
     extend: 'Ext.app.ViewController',
 
     alias: 'controller.add-to-group',

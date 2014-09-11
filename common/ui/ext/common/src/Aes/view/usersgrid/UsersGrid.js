@@ -79,7 +79,6 @@ Ext.define('Aes.view.usersgrid.UsersGrid', {
     ],
     
     initComponent: function() {
-        console.log('UsersGrid.initComponent');
         this.callParent(arguments);
         
         this.initStore();

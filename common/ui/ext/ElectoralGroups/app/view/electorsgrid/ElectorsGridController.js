@@ -1,4 +1,7 @@
 Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
+    requires: [
+        'ElectoralGroups.view.usersadd.UsersAddToElectionController'
+    ],
     extend: 'Ext.app.ViewController',
 
     alias: 'controller.electorsgrid',

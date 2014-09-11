@@ -1,5 +1,9 @@
 // Window to select users and add them to selected group
 Ext.define('ElectoralGroups.view.usersadd.UsersAdd', {
+    requires: [
+        'Aes.view.usersgrid.OperableUsersGrid',
+        'ElectoralGroups.view.usersadd.UsersAddToGroupController'
+    ],
     extend: 'Ext.window.Window',
     xtype: 'usersadd',
     title: 'Users adding to the selected group',

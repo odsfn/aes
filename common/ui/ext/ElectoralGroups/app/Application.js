@@ -7,8 +7,12 @@ Ext.define('ElectoralGroups.Application', {
     extend: 'Ext.app.Application',
     
     requires: [
-        'ElectoralGroups.view.main.Main',
-        'ElectoralGroups.model.Election'
+        'ElectoralGroups.model.Election',
+        'Aes.store.Users',
+        'ElectoralGroups.store.Electors',
+        
+        'Ext.data.validator.*',
+        'ElectoralGroups.view.main.Main'
     ],
     
     name: 'ElectoralGroups',
