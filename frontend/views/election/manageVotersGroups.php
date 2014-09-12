@@ -13,18 +13,26 @@ $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
     <div id="voters-groups-cntr" class="span12">
         <?php 
             $src = Yii::app()->getBaseUrl(true) . '/ui/ext/';
-            if (!defined('YII_DEBUG') || YII_DEBUG == false)
+            $baseUrl = '/';
+            
+            if (!defined('YII_DEBUG') || YII_DEBUG == false) {
                 $src .= 'build/production/';
+            }
+            
+            if(defined('TEST_APP_INSTANCE'))
+                $baseUrl = '/index-test.php/';
+            
             $src .= 'ElectoralGroups/index.html';
         ?>
         <iframe id="ElectoralGroups" src="<?= $src ?>" class="ext-app"></iframe>
     </div>
 </div>
 <script type="text/javascript">
-$(function(){
+
     $('iframe#ElectoralGroups').get(0).contentWindow.appConfig = {
         userId: <?= Yii::app()->user->id; ?>,
-        electionId: <?= $model->id ?>
+        electionId: <?= $model->id ?>,
+        baseUrl: "<?= $baseUrl ?>"
     };
-});
+
 </script>

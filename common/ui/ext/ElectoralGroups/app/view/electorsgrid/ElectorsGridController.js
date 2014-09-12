@@ -1,5 +1,6 @@
 Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
     requires: [
+        'Aes.UrlHelper',
         'ElectoralGroups.view.usersadd.UsersAddToElectionController'
     ],
     extend: 'Ext.app.ViewController',
@@ -70,7 +71,7 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
     
         mainView.mask();
         Ext.Ajax.request({
-            url: '/index-test.php/election/registerElectorsFromGroups',
+            url: Aes.UrlHelper.getBaseUrl() + 'election/registerElectorsFromGroups',
             params: {
                 election_id: ElectoralGroups.app.options.electionId
             },

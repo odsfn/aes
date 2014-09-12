@@ -1,4 +1,8 @@
 Ext.define('Aes.model.User', {
+    requires: [
+        'Aes.UrlHelper'
+    ],
+    
     extend: 'Ext.data.Model',
     
     idProperty: 'user_id',
@@ -34,6 +38,6 @@ Ext.define('Aes.model.User', {
     
     proxy: {
         type: 'AesRest',
-        url: '/index-test.php/api/profile'
+        url: Aes.UrlHelper.getBaseUrl() + 'api/profile'
     }
 });

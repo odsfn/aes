@@ -7,7 +7,7 @@ Ext.define('ElectoralGroups.store.VoterGroups', {
     pageSize: 25,
     proxy: {
         type: 'AesRest',
-        url: '/index-test.php/api/voterGroup'
+        url: Aes.UrlHelper.getBaseUrl() + 'api/voterGroup'
     }
 });
 
