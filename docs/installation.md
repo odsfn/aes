@@ -61,57 +61,77 @@ the correct path where AES is deployed
 common/config/local.php: 
 
 <?php
+/*
+ * Local configuration setting for your ( developer's ) PC. 
+ * @author Vasiliy Pedak truvazia@gmail.com
+ */
 return array(
 	'components' => array(
-		'db' => array(
-			'connectionString' => 'mysql:host=localhost;dbname=aes',
-			'username' => 'root',
-			'password' => 'root',
-			'initSQLs' => array('SET time_zone = "Europe/Kiev";'),
-		),
+            // Specify your database here
+            'db' => array(
+                    'connectionString' => 'mysql:host=localhost;dbname=aes',
+                    'username' => 'root',
+                    'password' => 'root',
+                    'initSQLs' => array('SET storage_engine=INNODB; SET time_zone = "Europe/Kiev";'),
+            ),
+
 	    'log'=>array(
 		'routes'=>array(
+                    'error_log' => array(
+                        'class'=>'CFileLogRoute',
+                        'logFile'=>'error.log',
+                        'levels'=>'error, warning',
+                        'filter'=>'CLogFilter',
+                    ),
 		    'info_log' => array(
 			'class'=>'CFileLogRoute',
 			'logFile'=>'application.log',
 //			'levels'=>'info, trace',
+//                        'categories'=>'system.db.*'
 			'levels'=>'info',
 		    ),
 		),
 	    )
-	)
-);
+	),
+    
+    'params' => array(
+            'php.error_reporting' => E_ERROR | E_WARNING | E_PARSE,
+        
+            'yii.handleErrors' => true,
+            'yii.debug' => true,    //switch this option to disable debug mode
+            'yii.traceLevel' => 3,
 
+            'noreplyAddress'=>'vptester@mail.ru',        
+        
+            'YiiMailer'=>array(
+                'Mailer'=>'smtp',
+                'Host'=>'smtp.mail.ru',
+                'Port'=>'2525',
+                'Username'=>'vptester@mail.ru',
+                'Password'=>'vptester_qwerty',
+                'SMTPAuth'=>true,
+            )
+    )
+);
 
 frontend/config/local.php: 
 
 <?php
-/*
- * Local configuration setting for your ( developer's ) PC and for frontend application. 
- * @author Vasiliy Pedak truvazia@gmail.com
+/**
+ * Custom config options for frontent apps
  */
 return array(	    
     'components'=>array(
 	'log'=>array(
 		'routes'=>array(
 		    'web_log' => array(
-//			'levels'=>'error, warning, info, trace',
-			'levels'=>'error, warning, info',
-			'enabled'=>true
+                        'class'=>'CWebLogRoute',
+			'levels'=>'error, warning, info, trace',
+//			'levels'=>'error, warning, info',
+			'enabled'=>false
 		    ),
 		),
 	    )
-    ),
-    
-    'params'=>array(
-	
-	'noreplyAddress'=>'vptester@mail.ru',
-	
-	'YiiMailer'=>array(
-//	    'SMTPDebug'=>2
-//	    'savePath' => 'application.runtime',
-//	    'testMode' => true,
-	)
     )
 );
 

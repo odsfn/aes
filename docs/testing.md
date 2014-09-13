@@ -21,13 +21,16 @@ vasiliy_pdk@vazia-Inspiron-7720:~$ java -jar /var/www/selenium-server-standalo-2
 
 Note, that you should specify correct path to the downloaded selenium-server
 
-# provide frontend/config/local-test.php configurations with settings of your testing database and testing host
+# provide common/config/local-test.php configurations with settings of your testing database and testing host.
+This file will be loaded instead common/comfig/local.php when we accessing testing
+system instance ( through index-test.php )
 
 local-test.php file contents example: 
 
 <?php
 /*
- * Local configuration setting for your ( developer's ) PC and for frontend testing application. 
+ * Local configuration setting for your ( developer's ) PC 
+ * for testing application ( through index-test.php ) 
  * @author Vasiliy Pedak truvazia@gmail.com
  */
 
@@ -44,20 +47,50 @@ return array(
             'connectionString' => 'mysql:host=localhost;dbname=aes_test',
             'username' => 'root',
             'password' => 'root',
-            'initSQLs' => array('SET time_zone = "Europe/Kiev";'),
+            'initSQLs' => array('SET storage_engine=INNODB; SET time_zone = "Europe/Kiev"; SET time_zone = "Europe/Kiev";'),
         ),
         
+        'log'=>array(
+            'routes'=>array(
+                'error_log' => array(
+                    'class'=>'CFileLogRoute',
+                    'logFile'=>'error.log',
+                    'levels'=>'error, warning',
+                    'filter'=>'CLogFilter',
+                ),
+                'info_log' => array(
+                    'class'=>'CFileLogRoute',
+                    'logFile'=>'application.log',
+//                  'levels'=>'info, trace',
+//                  'categories'=>'system.db.*'
+                    'levels'=>'info',
+                ),
+            ),
+        )        
     ),
     
     'params'=>array(
 	
-	'noreplyAddress'=>'vptester@mail.ru',
-	
-	'YiiMailer'=>array(
-//	    'SMTPDebug'=>2
-//	    'savePath' => 'application.runtime',
-//	    'testMode' => true,
-	)
+        'php.error_reporting' => E_ERROR /*| E_WARNING | E_PARSE*/,
+        
+        'yii.handleErrors' => true,
+        'yii.debug' => true,    //switch this option to disable debug mode
+        'yii.traceLevel' => 3,
+
+        'noreplyAddress'=>'vptester@mail.ru',        
+
+        'YiiMailer'=>array(
+            'Mailer'=>'smtp',
+            'Host'=>'smtp.mail.ru',
+            'Port'=>'2525',
+            'Username'=>'vptester@mail.ru',
+            'Password'=>'vptester_qwerty',
+            'SMTPAuth'=>true,
+            
+            'SMTPDebug'=> 2,
+	    'savePath' => 'application.runtime',
+	    'testMode' => true,            
+        )
     )
 );
 
