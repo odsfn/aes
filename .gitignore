@@ -16,7 +16,6 @@
 
 /frontend/config/env.php
 /frontend/config/local.php
-/frontend/config/local-test.php
 
 /console/config/env.php
 

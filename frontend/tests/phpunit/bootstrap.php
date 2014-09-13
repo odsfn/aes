@@ -1,5 +1,7 @@
 <?php
 
+define('TEST_APP_INSTANCE', true);
+
 // change the following paths if necessary
 $yiit=dirname(__FILE__).'/../../../common/lib/vendor/yiisoft/yii/framework/yiit.php';
 
@@ -11,10 +13,9 @@ require('./../../../common/lib/vendor/autoload.php');
 \Yii::createWebApplication(Yiinitializr\Helpers\Initializer::config('frontend', array(
 	__DIR__ .'/../../../common/config/main.php',
 	__DIR__ .'/../../../common/config/env.php',
-	__DIR__ .'/../../../common/config/local.php',
+	__DIR__ .'/../../../common/config/local-test.php',
 	'main',
-	'test',
-	'local-test'
+	'test'
 )));
 
 // Migrate up for the test db

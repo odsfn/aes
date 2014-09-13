@@ -9,6 +9,8 @@
  * @copyright 2013 2amigOS! Consultation Group LLC
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
  */
+define('TEST_APP_INSTANCE', true);
+
 require('./common/lib/vendor/autoload.php');
 
 Yiinitializr\Helpers\Initializer::create('./console', 'console', array(
