@@ -396,4 +396,24 @@ class RestController extends ERestController {
         
         return $criteria;
     }
+    
+    /**
+     * Spesified filter(s) will not be applied
+     * 
+     * @param string $filterName [, $filterName2 , ... ]
+     */
+    protected function flushRestFilter($filterName)
+    {
+        $filterNames = func_get_args();
+        foreach ($filterNames as $filterName){
+            foreach ($this->restFilter as $index => $filter) {
+                if($index == $filterName 
+                    || ( isset($filter['property']) 
+                            && $filter['property'] == $filterName) 
+                ){
+                    unset($this->restFilter[$index]);
+                }
+            }
+        }
+    }
 }
