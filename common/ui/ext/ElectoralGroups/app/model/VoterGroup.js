@@ -6,17 +6,30 @@ Ext.define('ElectoralGroups.model.VoterGroup', function(VoterGroup) {
             'ElectoralGroups.store.ElectionVoterGroups'
         ],
         fields: [
-            'name', 
+            {
+                name: 'name',
+                type: 'string'
+            },
             {
                 name: 'type',
-                type: 'string',
-                'default': 'Global',
-                convert: function(val, rec) {
-                    return rec.getTypeLabel(val);
+                type: 'int'
+            },
+            {
+                name: 'typeLabel',
+//                type: 'string',
+//                'default': 'Local',
+                calculate: function(data) {
+                    return VoterGroup.getTypeLabel(data.type);
+//                    console.log('Calculating "type" property which is "' + data.type 
+//                        + '" for group "' + data.name + '"' );
+//                    return VoterGroup.getTypeLabel(data.type);
                 },
-                serialize: function(val, rec) {
-                    return rec.getTypeId(val);
-                }
+//                serialize: function(val, rec) {
+//                    console.log('Serializing "type" property which is "' + val 
+//                        + '" for group "' + rec.get('name') + '"' );
+//                    return VoterGroup.getTypeId(val);
+//                },
+                persist: false
             },
             {
                 name: 'assigned',
@@ -29,7 +42,22 @@ Ext.define('ElectoralGroups.model.VoterGroup', function(VoterGroup) {
                     return !!assigned;
                 }
             },
-            'status', 'user_id', 'created_ts'
+            {
+                name: 'user_id',
+                type: 'int'
+            },
+            {
+                name: 'election_id',
+                type: 'int'
+            },
+            {
+                name: 'status',
+                type: 'int'
+            }, 
+            {
+                name: 'created_ts',
+                type: 'date'
+            }
         ],
         
         validators: [{
@@ -37,19 +65,19 @@ Ext.define('ElectoralGroups.model.VoterGroup', function(VoterGroup) {
             field: 'name',
             min: 1
         }],
-
-        getTypeLabel: function(id) {
-            return VoterGroup.types()[id];
-        },
-
-        getTypeId: function(label) {
-            return VoterGroup.types().indexOf(label);
-        },
         
         statics: {
             types: function() {
                 return ['Global', 'Local'];
-            }
+            },
+            
+            getTypeLabel: function(id) {
+                return VoterGroup.types()[id];
+            },
+
+            getTypeId: function(label) {
+                return VoterGroup.types().indexOf(label);
+            }            
         }
     };
 });

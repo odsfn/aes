@@ -13,6 +13,9 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
             ptype: 'rowediting',
             clicksToEdit: 2,
             listeners: {
+                edit: function(rowEditing, context) {
+                    console.log('onEdit record\'s "type" property: ' + context.record.get('type'));
+                },
                 cancelEdit: function(rowEditing, context) {
                     // Canceling editing of a locally added, unsaved record: remove it
                     if (context.record.phantom) {
@@ -48,10 +51,18 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
                 }
             },
             { 
-                text: 'Type', dataIndex: 'type', flex: 3, 
+                text: 'Type', dataIndex: 'type', flex: 3,
+                renderer: function(value, metaData, record) {
+                    return record.get('typeLabel');
+                },
                 filter: {
-                    type: 'list'
-                }
+                    type: 'list',
+                    options: [
+                        [0, 'Global'],
+                        [1, 'Local']
+                    ]
+                },
+                editor: false
             },
             {
                 xtype: 'checkcolumn',
@@ -98,18 +109,22 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
     }, {
         dock: 'bottom',
         xtype: 'pagingtoolbar',
-        pageSize: 100,
-        store: Ext.getStore('VoterGroups'),
+        pageSize: 25,
         displayInfo: true
     }],
-    initComponent: function(config) {
+    initComponent: function() {
         this.callParent(arguments);
-        this.setStore(Ext.getStore('VoterGroups'));
+        
+        var store = Ext.getStore('VoterGroups');
+        
+        this.setStore(store);
         this.query('pagingtoolbar')[0].setStore(this.getStore());
         
         var grid = this;
         this.getSelectionModel().on('selectionchange', function(selModel, selections){
             grid.down('#removeButton').setDisabled(selections.length === 0);
         });
+        
+        store.load();
     }
 });

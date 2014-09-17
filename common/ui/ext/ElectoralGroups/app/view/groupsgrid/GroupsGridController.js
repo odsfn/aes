@@ -14,6 +14,8 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGridController', {
         var model = new ElectoralGroups.model.VoterGroup();
         model.set('id', null);
         model.set('user_id', ElectoralGroups.app.options.userId);
+        model.set('election_id', ElectoralGroups.app.options.electionId);
+        model.set('type', ElectoralGroups.model.VoterGroup.getTypeId('Local'));
         model.set('name', '');
         return model;
     },

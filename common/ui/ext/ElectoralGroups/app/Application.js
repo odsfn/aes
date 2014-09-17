@@ -32,13 +32,19 @@ Ext.define('ElectoralGroups.Application', {
     
     launch: function () {
         var voterGroups = this.getStore('VoterGroups');
+        voterGroups.setFilters([{
+            property: 'electionScope',
+            value: {
+                election_id: ElectoralGroups.app.options.electionId
+            }
+        }]);
+        voterGroups.setRemoteFilter(true);
         voterGroups.setSorters([
             {
                 property: 'assigned',
                 direction: 'DESC'
             }
         ]);
-        voterGroups.load();
         
         var voterGroupAssignments = this.getStore('ElectionVoterGroups');
         voterGroupAssignments.setFilters([{
@@ -49,6 +55,7 @@ Ext.define('ElectoralGroups.Application', {
     },
     
     options: {
-        userId: null
+        userId: null,
+        electionId: null
     }
 });
