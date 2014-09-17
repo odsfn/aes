@@ -40,7 +40,10 @@ return array(
                 'authManager'=>array(
                     'class'=>'common.components.AuthManager',
                     'connectionID'=>'db',
-                    'defaultRoles' => array('commentReader', 'commentor', 'authenticated', 'guest')
+                    'defaultRoles' => array(
+                        'commentReader', 'commentor', 'authenticated', 'guest',
+                        'superadmin'
+                    )
                 ),            
             
 		'db'=>array(
@@ -92,6 +95,11 @@ return array(
 		
 		'noreplyAddress' => 'noreply@aes.org',
 	    
+                // superadmin is the user which has full access to the system
+                // here is specified user id
+                'superAdminId' => 1,
+            
+                // mailer config
 		'YiiMailer'=>array(
 //			'Mailer'=>'smtp',
 //			'Host'=>'smtp.mail.ru',
