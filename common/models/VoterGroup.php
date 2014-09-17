@@ -8,12 +8,14 @@
  * @property integer $type
  * @property integer $status
  * @property integer $user_id
+ * @property integer $election_id Related Election if Group is not global
  * @property string $created_ts
  *
  * The followings are the available model relations:
  * @property ElectionVoterGroup[] $electionGroups
  * @property Profile $userProfile
  * @property VoterGroupMember[] $voterGroupMembers
+ * @property Election $election
  */
 class VoterGroup extends CActiveRecord
 {
@@ -89,6 +91,7 @@ class VoterGroup extends CActiveRecord
             'electionGroups' => array(self::HAS_MANY, 'ElectionGroup', 'voter_group_id'),
             'userProfile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'voterGroupMembers' => array(self::HAS_MANY, 'VoterGroupMember', 'voter_group_id'),
+            'election' => array(self::BELONGS_TO, 'Election', 'election_id')
         );
     }
 
