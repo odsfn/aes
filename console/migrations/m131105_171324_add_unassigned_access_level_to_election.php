@@ -1,6 +1,6 @@
 <?php
 
-Yii::import('frontend.models.Election');
+Yii::import('common.models.Election');
 
 class m131105_171324_add_unassigned_access_level_to_election extends EDbMigration
 {

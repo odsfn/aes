@@ -110,6 +110,11 @@ return array(
                 'Username'=>'vptester@mail.ru',
                 'Password'=>'vptester_qwerty',
                 'SMTPAuth'=>true,
+//              Uncomment following strings for development mode, or move them 
+//              to development environment config file
+//              'SMTPDebug'=> 2,
+//              'savePath' => 'application.runtime',
+//              'testMode' => true,
             )
     )
 );

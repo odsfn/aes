@@ -53,6 +53,7 @@
                                         array('label'=>'People', 'url'=>array('/people/index'), 'active' => ( $this->id == 'people' || ( $this->id == 'userPage' && $this->profile->user_id != Yii::app()->user->id ))),
                                         array('divider'=>''),
                                         array('label'=>'About', 'url'=>'#'),
+                                        array('divider'=>''),
                                     ),
                                 )); ?>
 				
@@ -65,6 +66,11 @@
 							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->profileUrl); ?>"><?= Yii::t('frontend', 'Profile'); ?></a></li>
 							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->editIdentityUrl); ?>"><?= Yii::t('frontend', 'Identity'); ?></a></li>
 							<li class="divider"></li>
+                                                        <?php if(Yii::app()->user->checkAccess('superadmin')):?>
+                                                        <li class="nav-header">System Settings</li>
+                                                        <li><a href="<?= Yii::app()->createUrl('admin/voterGroups'); ?>">Manage Voter Groups</a></li>
+                                                        <li class="divider"></li>
+                                                        <?php endif; ?>
 							<li><a href="<?= Yii::app()->createUrl(Yii::app()->getModule('userAccount')->logoutUrl); ?>">Log out</a></li>
 						</ul>
 				    </li>
