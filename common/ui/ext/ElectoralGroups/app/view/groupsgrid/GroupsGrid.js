@@ -13,9 +13,6 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
             ptype: 'rowediting',
             clicksToEdit: 2,
             listeners: {
-                edit: function(rowEditing, context) {
-                    console.log('onEdit record\'s "type" property: ' + context.record.get('type'));
-                },
                 cancelEdit: function(rowEditing, context) {
                     // Canceling editing of a locally added, unsaved record: remove it
                     if (context.record.phantom) {

@@ -1,6 +1,9 @@
 // Lists all users in the system
 Ext.define('Aes.view.usersgrid.UsersGrid', {
     extend: 'Ext.grid.Panel',
+    requires: [
+        'Aes.store.Users'
+    ],
     xtype: 'usersgrid',
     plugins: [
         {
