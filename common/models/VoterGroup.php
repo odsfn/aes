@@ -132,4 +132,32 @@ class VoterGroup extends CActiveRecord
             'criteria'=>$criteria,
         ));
     }
+    
+    /**
+     * Returns new group which is the copy of current. If group was local the 
+     * copy will be global. All members will be copied in new group too.
+     * 
+     * @return VoterGroup 
+     */
+    public function copy()
+    {
+        $attrs = $this->getAttributes(array('name', 'user_id'));
+        $attrs['type'] = self::TYPE_GLOBAL;
+        
+        $new = new VoterGroup;
+        $new->setAttributes($attrs);
+        $new->save();
+        
+        $command = Yii::app()->db->createCommand(
+            "INSERT INTO voter_group_member (voter_group_id, user_id, created_ts) "
+                . "SELECT {$new->id} AS voter_group_id, "
+                    . "user_id, '{$new->created_ts}' AS created_ts "
+                . "FROM voter_group_member "
+                . "WHERE voter_group_id = {$this->id}"
+        );
+        
+        $command->execute();
+        
+        return $new;
+    }
 }
