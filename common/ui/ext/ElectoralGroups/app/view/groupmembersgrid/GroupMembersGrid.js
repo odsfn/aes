@@ -82,6 +82,7 @@ Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGrid', {
             dock: 'top',
             items: [
                 {
+                    itemId: 'addButton',
                     text:'Add',
                     handler: 'onClickAddButton'
                 }, {

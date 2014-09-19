@@ -35,12 +35,33 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGridController', {
     {
         var store = this.view.getStore();
         var selections = this.view.getView().getSelectionModel().getSelection();
+        var globalGroups = [];
         
-        Ext.Msg.confirm('Confirm', 'You are going to remove ' + selections.length + ' records. Are you sure?', function(choice) {
-            if (choice === 'yes') {
-                store.remove(selections);
-            }
+        Ext.each(selections, function(group, index, selectionsItSelf) {
+            if(group.get('typeLabel') == 'Global')
+                globalGroups.push(group);
         }, this);
+        
+        var message = 'You are going to remove ' + selections.length + ' records. Are you sure?';
+        
+        if (globalGroups.length) {
+            message += '<br> Please note, you are also selected ' + globalGroups.length
+                + ' Global groups. Global groups will not be deleted.';
+        
+            Ext.each(globalGroups, function(group) {
+                selections.splice(selections.indexOf(group), 1);
+            });
+        }
+        
+        Ext.Msg.confirm('Confirm', 
+            message, 
+            function(choice) {
+                if (choice === 'yes') {                   
+                    store.remove(selections);
+                }
+            }, 
+            this
+        );
     },
     
     onAssignedChange: function(checkCell, index, checked) 

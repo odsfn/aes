@@ -83,7 +83,10 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
                     {
                         icon: '/ui/ext/resources/fontawesome/edit.png',
                         tooltip: 'Edit this group',
-                        handler: 'onEditClick'
+                        handler: 'onEditClick',
+                        isDisabled: function(view, rowIndex, colIndex, item, record) {
+                            return record.get('typeLabel') == 'Global';
+                        }
                     }
                 ]
             }

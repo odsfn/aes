@@ -68,9 +68,15 @@ Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGridController', {
         this.members.load();
         
         var grid = this.view;
-        this.view.getSelectionModel().on('selectionchange', function(selModel, selections){
-            grid.down('#removeButton').setDisabled(selections.length === 0);
-        });
+        
+        if (this.group.get('typeLabel') == 'Global') {
+            grid.down('#removeButton').setDisabled(true);
+            grid.down('#addButton').setDisabled(true);
+        } else {
+            this.view.getSelectionModel().on('selectionchange', function(selModel, selections){
+                grid.down('#removeButton').setDisabled(selections.length === 0);
+            });
+        }
     }
 });
 
