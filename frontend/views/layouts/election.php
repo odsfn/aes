@@ -31,13 +31,45 @@ $this->widget('bootstrap.widgets.TbMenu', array(
     'type'=>'pills',
     'stacked' => 'true',
     'items' => array(
-        array('label'=> Yii::t('election', 'Election page'), 'url'=> array('/election/view', 'id'=>$this->election->id)),
-        array('label'=> Yii::t('election', 'Provisions'), 'url'=> array('/election/provisions', 'id'=>$this->election->id)),
-        array('label'=> Yii::t('election', 'Candidates'), 'url'=> array('/election/candidates', 'id'=>$this->election->id)),
-        array('label'=> Yii::t('election', 'Electorate'), 'url'=> array('/election/electorate', 'id'=>$this->election->id)),
-        array('label'=> Yii::t('election', 'Admins'), 'url'=> array('/election/admins', 'id'=>$this->election->id)),
-        array('label'=> Yii::t('election', 'Management'), 'url'=> array('/election/management', 'id'=>$this->election->id), 'visible' => $canAdmin = Yii::app()->user->checkAccess('election_administration', array('election' => $this->election))),
-        array('label'=> Yii::t('election', 'Voters Groups'), 'url'=> array('/election/manageVotersGroups', 'id'=>$this->election->id), 'visible' => $canAdmin)
+        array(
+            'label'=> Yii::t('election', 'Election page'), 
+            'url'=> array('/election/view', 'id'=>$this->election->id)
+        ),
+        array(
+            'label'=> Yii::t('election', 'Provisions'), 
+            'url'=> array('/election/provisions', 'id'=>$this->election->id)
+        ),
+        array(
+            'label'=> Yii::t('election', 'Candidates'), 
+            'url'=> array('/election/candidates', 'id'=>$this->election->id)
+        ),
+        array(
+            'label'=> Yii::t('election', 'Electorate'), 
+            'url'=> array('/election/electorate', 'id'=>$this->election->id)
+        ),
+        array(
+            'label'=> Yii::t('election', 'Admins'), 
+            'url'=> array('/election/admins', 'id'=>$this->election->id)
+        ),
+        array(
+            'label'=> Yii::t('election', 'Management'), 
+            'url'=> array('/election/management', 'id'=>$this->election->id), 
+            'visible' => 
+                ( $canAdmin = Yii::app()->user->checkAccess(
+                        'election_administration', 
+                        array('election' => $this->election)
+                ))
+        ),
+        array(
+            'label'=> Yii::t('election', 'Voters Groups'), 
+            'url'=> array(
+                '/election/manageVotersGroups', 'id'=>$this->election->id
+            ), 
+            'visible' => ( 
+                $canAdmin 
+                    && $this->election->status == Election::STATUS_REGISTRATION 
+            )
+        )
     )
 ));
 
