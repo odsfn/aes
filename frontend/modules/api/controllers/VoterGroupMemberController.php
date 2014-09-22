@@ -31,7 +31,8 @@ class VoterGroupMemberController extends RestController {
             ),
             array('allow',
                 'actions'=>array('restCreate', 'restDelete', 'restUpdate'),
-                'users'=>array('@')
+                'users' => array('@'),
+                'expression' => array($this, 'checkAccess')
             ),
             array(
                 'deny',
@@ -41,4 +42,67 @@ class VoterGroupMemberController extends RestController {
         );
     }
 
+    public function checkAccess()
+    {
+        if (Yii::app()->user->checkAccess('superadmin') ) {
+            return true;
+        }
+        
+        if ( in_array($this->action->id, array('restDelete', 'restUpdate')) ) {
+            $id = (int) $_GET['id'];
+            $member = $this->loadOneModel($id);
+            
+            if (!$member) {
+                throw new CException(
+                    'Member with id "' . $id . "' was not found"
+                );
+            }
+            
+            $group = $member->voterGroup;
+            
+            if (!$group) {
+                throw new CException(
+                    'VoterGroup was not found'
+                );
+            }
+            
+            if ( $group->type == VoterGroup::TYPE_LOCAL ) {
+                $params = array('election' => $group->election);
+                return Yii::app()->user->checkAccess('election_administration', $params);
+            }
+            
+            return false;
+        }
+        
+        if ( $this->action->id == 'restCreate' ) {
+            
+            $data = $this->data();
+            
+            $group = VoterGroup::model()->findByPk($data['voter_group_id']);
+            
+            if (!$group) {
+                throw new CException(
+                    'VoterGroup was not found'
+                );
+            }            
+            
+            $type = $group->type;
+                    
+            if ($type == VoterGroup::TYPE_LOCAL) {
+                
+                $election = $group->election;
+                
+                if (!$election) {
+                    throw new CException(
+                        'Election with id "' .$data['election_id'] . '" was not found'
+                    );
+                }
+                
+                $params = array('election' => $election);
+                return Yii::app()->user->checkAccess('election_administration', $params);
+            }
+            
+            return false;
+        }
+    }
 }

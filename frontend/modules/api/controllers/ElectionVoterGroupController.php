@@ -8,8 +8,6 @@ class ElectionVoterGroupController extends RestController {
     
     protected $convertRestFilters = true;
 
-//    public $acceptFilters = array('plain' => 'creator_name,support,creation_date', 'model' => 'title, mandate_id, creator_id');
-
     public function accessRules() {
         // @TODO Write normal accessRules
         return array(
@@ -19,7 +17,8 @@ class ElectionVoterGroupController extends RestController {
             ),
             array('allow',
                 'actions'=>array('restCreate', 'restDelete', 'restUpdate'),
-                'users'=>array('@')
+                'users'=>array('@'),
+                'expression' => array($this, 'checkAccess')
             ),
             array(
                 'deny',
@@ -29,4 +28,21 @@ class ElectionVoterGroupController extends RestController {
         );
     }
 
+    public function checkAccess()
+    {
+        if (isset($_GET['id'])) {
+            $model = $this->loadOneModel($id = (int)$_GET['id']);
+            $election = $model->election;
+        } else {
+            $data = $this->data();
+            $election = Election::model()->findByPk((int)$data['election_id']);
+        }
+        
+        if (!$election) {
+            throw new CException('Related election was not found');
+        }
+        
+        $params = array('election' => $election );
+        return Yii::app()->user->checkAccess('election_administration', $params);
+    }
 }
