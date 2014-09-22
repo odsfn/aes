@@ -13,6 +13,10 @@ class ElectionManageGroupsTest extends WebTestCase
 
     public function testGroupsManagementMenuItemNotShowsForNotAdmins()
     {
+        $election = Election::model()->findByPk(1);
+        $election->status = Election::STATUS_REGISTRATION;
+        $election->save();
+        
         $this->open('election/view/1');
         $this->waitForPageToLoad();
 
