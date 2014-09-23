@@ -93,6 +93,8 @@ return array(
 		'yii.debug' => true,
 		'yii.traceLevel' => 4,
 		
+                'ext_debug' => false,   //all extjs client apps will be loaded in prodaction mode if this set to false
+            
 		'noreplyAddress' => 'noreply@aes.org',
 	    
                 // superadmin is the user which has full access to the system

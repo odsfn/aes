@@ -7,7 +7,7 @@
             $src = Yii::app()->getBaseUrl(true) . '/ui/ext/';
             $baseUrl = '/';
             
-            if (!defined('YII_DEBUG') || YII_DEBUG == false) {
+            if (Yii::app()->params['ext_debug'] == false) {
                 $src .= 'build/production/';
             }
             

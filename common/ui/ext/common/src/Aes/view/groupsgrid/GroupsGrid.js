@@ -1,5 +1,8 @@
 Ext.define('Aes.view.groupsgrid.GroupsGrid', {
     extend: 'Ext.grid.Panel',
+    requires: [
+        'Ext.data.validator.Length'
+    ],
     xtype: 'groupsgrid',
     selModel: Ext.create('Ext.selection.CheckboxModel', {
         checkOnly: true
