@@ -104,11 +104,11 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
         handlerCandRegType();        
         
         var handlerVoterGroupRestriction = function() {
-            if($('#Election_voter_group_restriction').val() == <?= Election::VOTER_GROUP_RESTRICTION_GROUPS_ONLY ?> )
+            if($('#Election_voter_group_restriction').val() == <?= Election::VGR_GROUPS_ONLY ?> )
             {
                 $('#Election_voter_reg_type').val(voterRegAdmin).prop("disabled", true);
                 $('#Election_voter_reg_confirm').val(0).prop("disabled", true);
-            } else if ( $('#Election_voter_group_restriction').val() == <?= Election::VOTER_GROUP_RESTRICTION_GROUPS_ADD ?> ) {
+            } else if ( $('#Election_voter_group_restriction').val() == <?= Election::VGR_GROUPS_ADD ?> ) {
                 $('#Election_voter_reg_type').val(voterRegMyself).prop("disabled", true);
                 $('#Election_voter_reg_confirm').prop("disabled", false);
             } else {

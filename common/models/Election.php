@@ -79,11 +79,12 @@ class Election extends CActiveRecord implements iPostable, iCommentable
     
     const VOTER_REG_CONFIRM_NEED = 1;
     
-    const VOTER_GROUP_RESTRICTION_NO = 0;
+    // Voter Group Restriction
+    const VGR_NO = 0;
     
-    const VOTER_GROUP_RESTRICTION_GROUPS_ONLY = 1;
+    const VGR_GROUPS_ONLY = 1;
     
-    const VOTER_GROUP_RESTRICTION_GROUPS_ADD = 2;
+    const VGR_GROUPS_ADD = 2;
     
     public static $statuses = array(
         Election::STATUS_PUBLISHED => 'Published',
@@ -114,9 +115,9 @@ class Election extends CActiveRecord implements iPostable, iCommentable
     );
 
     public static $voter_group_restrictions = array(
-        self::VOTER_GROUP_RESTRICTION_NO => 'No',
-        self::VOTER_GROUP_RESTRICTION_GROUPS_ONLY => 'From specified groups only',
-        self::VOTER_GROUP_RESTRICTION_GROUPS_ADD => 'From specified groups or adding into them',
+        self::VGR_NO => 'No',
+        self::VGR_GROUPS_ONLY => 'From specified groups only',
+        self::VGR_GROUPS_ADD => 'From specified groups or adding into them',
     );
     
     public $uploaded_file = null;
@@ -348,7 +349,7 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         
         $this->voter_reg_confirm = Election::VOTER_REG_CONFIRM_NOTNEED;
         
-        $this->voter_group_restriction = self::VOTER_GROUP_RESTRICTION_NO;
+        $this->voter_group_restriction = self::VGR_NO;
         
         $this->revotes_count = (isset(Yii::app()->params->revotes_count) ? Yii::app()->params->revotes_count : 1);
 
@@ -487,9 +488,9 @@ class Election extends CActiveRecord implements iPostable, iCommentable
 
     public function getAllowedVoterRegTypes() 
     {
-        if($this->voter_group_restriction == self::VOTER_GROUP_RESTRICTION_GROUPS_ONLY)
+        if($this->voter_group_restriction == self::VGR_GROUPS_ONLY)
             $types = array(self::VOTER_REG_TYPE_ADMIN);
-        else if($this->voter_group_restriction == self::VOTER_GROUP_RESTRICTION_GROUPS_ADD)
+        else if($this->voter_group_restriction == self::VGR_GROUPS_ADD)
             $types = array(self::VOTER_REG_TYPE_SELF);
         else
             $types = array_keys(self::$voter_reg_types);
