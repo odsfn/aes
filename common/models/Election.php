@@ -259,8 +259,14 @@ class Election extends CActiveRecord implements iPostable, iCommentable
             array('revote_time, remove_vote_time, revotes_count', 'numerical', 
                 'integerOnly' => true, 'min' => 0),
             array('voter_group_restriction', 'in', 'range' => array_keys(self::$voter_group_restrictions)),
-            array('voter_reg_type', 'in', 'range' => $this->getAllowedVoterRegTypes()),
-            array('voter_reg_confirm', 'in', 'range' => $this->getAllowedVoterRegConfirmTypes()),
+//            array('voter_reg_type', 'in', 
+//                'range' => $this->getAllowedVoterRegTypes(),
+//                'on' => 'update'
+//            ),
+//            array('voter_reg_confirm', 'in', 
+//                'range' => $this->getAllowedVoterRegConfirmTypes(), 
+//                'on' => 'update'
+//            ),
             array('id, name, status, text_status, have_pic, revotes_count,'
                 . ' remove_vote_time, revote_time', 'safe', 'on' => 'rest'),
         );
@@ -455,6 +461,15 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         return ($timeRemains <= 0);
     }
 
+    public function isElectorsRegistrationOpen()
+    {
+        return ($this->voter_reg_type == self::VOTER_REG_TYPE_SELF 
+            &&  in_array($this->status, 
+                    array(self::STATUS_REGISTRATION, self::STATUS_ELECTION)
+                )
+        );
+    }
+
     public function getLastVote($userId = null)
     {
         return Vote::model()->find(new CDbCriteria(
@@ -488,11 +503,13 @@ class Election extends CActiveRecord implements iPostable, iCommentable
 
     public function getAllowedVoterRegTypes() 
     {
-        if($this->voter_group_restriction == self::VGR_GROUPS_ONLY)
+        if ( !is_null($this->voter_group_restriction) 
+            && $this->voter_group_restriction == self::VGR_GROUPS_ONLY ) {
             $types = array(self::VOTER_REG_TYPE_ADMIN);
-        else if($this->voter_group_restriction == self::VGR_GROUPS_ADD)
+        } else if ( !is_null($this->voter_group_restriction) 
+            && $this->voter_group_restriction == self::VGR_GROUPS_ADD) {
             $types = array(self::VOTER_REG_TYPE_SELF);
-        else
+        } else
             $types = array_keys(self::$voter_reg_types);
         
         return $types;
@@ -500,9 +517,10 @@ class Election extends CActiveRecord implements iPostable, iCommentable
 
     public function getAllowedVoterRegConfirmTypes() 
     {
-        if($this->voter_reg_type == self::VOTER_REG_TYPE_ADMIN)
+        if ( !is_null($this->voter_reg_type) 
+            && $this->voter_reg_type == self::VOTER_REG_TYPE_ADMIN ) {
             $types = array(self::VOTER_REG_CONFIRM_NOTNEED);
-        else
+        } else
             $types = array_keys(self::$voter_reg_confirms);
         
         return $types;

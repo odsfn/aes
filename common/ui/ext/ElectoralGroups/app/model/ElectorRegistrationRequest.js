@@ -1,7 +1,7 @@
 /**
- * Elector
+ * ElectorRegistrationRequest
  */
-Ext.define('ElectoralGroups.model.Elector', function(Elector) {
+Ext.define('ElectoralGroups.model.ElectorRegistrationRequest', function(ElectorRegistrationRequest) {
     return {
         extend: 'ElectoralGroups.model.Base',
         requires: ['ElectoralGroups.model.Base'],
@@ -14,12 +14,16 @@ Ext.define('ElectoralGroups.model.Elector', function(Elector) {
                 name: 'user_id',
                 reference: 'Aes.model.User'
             }, 
-            'status'
+            {
+                name: 'status',
+                type: 'int'
+            }
         ],
         statics: {
-            STATUS_ACTIVE: 0,
-            STATUS_NEED_APPROVE: 1,
-            STATUS_BLOCKED: 2
+            STATUS_AWAITING_ADMIN_DECISION: 0,
+            STATUS_AWAITING_USERS_DECISION: 1,
+            STATUS_REGISTERED: 9,
+            STATUS_DECLINED: 10
         }
     };
 });

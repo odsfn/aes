@@ -61,13 +61,12 @@ $this->widget('bootstrap.widgets.TbMenu', array(
                 ))
         ),
         array(
-            'label'=> Yii::t('election', 'Voters Groups'), 
+            'label'=> Yii::t('election', 'Voters and Groups'), 
             'url'=> array(
                 '/election/manageVotersGroups', 'id'=>$this->election->id
             ), 
             'visible' => ( 
-                $canAdmin 
-                    && $this->election->status == Election::STATUS_REGISTRATION 
+                $canAdmin && $this->election->isElectorsRegistrationOpen()
             )
         )
     )
@@ -78,18 +77,18 @@ $this->widget('bootstrap.widgets.TbMenu', array(
 <div class="row-fluid">
     <div class="span12 actions">
     <?php
-    if (Yii::app()->user->checkAccess('election_askToBecameElector', 
+    if (Yii::app()->user->checkAccess(
+            'election_askToBecameElector', 
             array(
-                'election' => $this->election,
-                'elector_user_id' => Yii::app()->user->id
-            ))
-    ) {
+                'election' => $this->election
+            )
+    )) {
 
         $cs = Yii::app()->clientScript;
         $cs->registerPackage('aes-common')
                 ->registerPackage('loadmask')
                 ->registerScriptFile('/js/libs/aes/models/User.js')
-                ->registerScriptFile('/js/libs/aes/models/Elector.js')
+                ->registerScriptFile('/js/libs/aes/models/ElectorRegistrationRequest.js')
                 ->registerScriptFile('/js/libs/aes/views/ItemView.js')
                 ->registerScriptFile('/js/libs/aes/views/NotificationsView.js');
     ?>
@@ -102,9 +101,9 @@ $this->widget('bootstrap.widgets.TbMenu', array(
                 var onSuccess = function(model) {
                     $('#register-elector').remove();
                     
-                    if(model.checkStatus('Active')) {
+                    if(model.get('status') == ElectorRegistrationRequest.STATUS_REGISTERED) {
                         Aes.Notifications.add('You have been registered as elector.', 'success');
-                    } else if(model.checkStatus('NotConfirmed')) {
+                    } else if(model.get('status') == ElectorRegistrationRequest.STATUS_AWAITING_ADMIN_DECISION) {
                         Aes.Notifications.add('Your registration request was sent. Election manager will consider it as soon as possible.', 'success');
                     }               
                     
@@ -116,12 +115,12 @@ $this->widget('bootstrap.widgets.TbMenu', array(
                     
                     parent.mask();
                     
-                    var elector = new Elector({
+                    var regReq = new ElectorRegistrationRequest({
                         user_id: <?= Yii::app()->user->id ?>,
                         election_id: <?= $this->election->id ?>
                     });
                     
-                    elector.save({}, {
+                    regReq.save({}, {
                         success: function(model) {
                             onSuccess(model);
                         }

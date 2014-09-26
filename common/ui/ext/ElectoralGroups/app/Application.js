@@ -28,6 +28,8 @@ Ext.define('ElectoralGroups.Application', {
     init: function(app) {
         window.appConfig = window.appConfig || {}; 
         app.options = Ext.clone(window.appConfig);
+        app.election = new ElectoralGroups.model.Election();
+        app.election.set(app.options.election);
     },
     
     launch: function () {
@@ -52,10 +54,24 @@ Ext.define('ElectoralGroups.Application', {
             value: this.options.electionId
         }]);
         voterGroupAssignments.setRemoteFilter(true);
+        
+        if(this.election.get('voter_reg_type') != ElectoralGroups.model.Election.VOTER_REG_TYPE_ADMIN
+            && this.election.get('voter_reg_confirm') == ElectoralGroups.model.Election.VOTER_REG_CONFIRM_NEED) 
+        {
+            var tabPanel = Ext.ComponentQuery.query('app-main > tabpanel')[0];
+            tabPanel.add({
+                itemId: 'registration-requests',
+                title: 'Registration Requests',
+                xtype: 'requestsgrid',
+                closable: false
+            });
+        }
     },
     
     options: {
         userId: null,
         electionId: null
-    }
+    },
+    
+    election: null
 });

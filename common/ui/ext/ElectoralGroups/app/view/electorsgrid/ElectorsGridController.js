@@ -111,35 +111,17 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
         var me = this,
             grid = this.view;
         
-        this.election = ElectoralGroups.model.Election.load(
-            ElectoralGroups.app.options.electionId,
-            {
-                success: function() {
-                    this.electors = Ext.create('ElectoralGroups.store.Electors', {
-                        filters: [
-                            { property: 'election_id', value: this.election.get('id') }
-                        ],
-                        remoteFilter: true,
-                        autoSync: false
-                    });
-                    this.electors.load();
-                },
-                scope: this
-            }
-        );        
+        this.election = ElectoralGroups.app.election;
+        this.electors = Ext.create('ElectoralGroups.store.Electors', {
+            filters: [
+                { property: 'election_id', value: this.election.get('id') },
+                { property: 'status', value: ElectoralGroups.model.Elector.STATUS_ACTIVE }
+            ],
+            remoteFilter: true,
+            autoSync: false
+        });
+        this.electors.load();
         
-        grid.getStore().setFilters([
-            {
-                property: 'applyScopes',
-                value: Ext.encode({
-                    elector: {
-                        election_id: this.election.get('id')
-                    }
-                })
-            }
-        ]);
-        grid.getStore().setRemoteFilter(true);
-    
         this.view.getSelectionModel().on('selectionchange', function(selModel, selections){
             grid.down('#removeButton').setDisabled(selections.length === 0);
         });

@@ -839,14 +839,29 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
 
               });
             });
-            
-        $('body').one('elector_registered', function(e, elector) {
-            if(elector.checkStatus('Active')) {
-                Candidates.voteBoxModels.each(function(m) {
-                    m.set('active', true);
+        
+        $('body').one('elector_registered', function(e, request) {
+            if (request.get('status') == ElectorRegistrationRequest.STATUS_REGISTERED) {
+                var elector = new Elector(request.get('elector'));
+                elector.fetch({
+                    success: function(model, response, options) {
+                        if(model.checkStatus('Active')) {
+                            Candidates.voteBoxModels.each(function(m) {
+                                m.set('active', true);
+                            });
+                        }
+                    }
                 });
             }
         });
+        
+//        $('body').one('elector_registered', function(e, elector) {
+//            if(elector.checkStatus('Active')) {
+//                Candidates.voteBoxModels.each(function(m) {
+//                    m.set('active', true);
+//                });
+//            }
+//        });
         
     });
 });

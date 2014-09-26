@@ -1,5 +1,8 @@
 // Lists all electors in current election
 Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGrid', {
+    requires: [
+        'ElectoralGroups.model.Elector'
+    ],
     extend: 'Aes.view.usersgrid.UsersGrid',
     xtype: 'electorsgrid',
     controller: 'electorsgrid',
@@ -35,5 +38,16 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGrid', {
             pageSize: 25,
             displayInfo: true
         }
-    ]
+    ],
+    
+    initStore: function() {
+        this.storeScopes = {
+            elector: {
+                election_id: ElectoralGroups.app.options.electionId,
+                status: ElectoralGroups.model.Elector.STATUS_ACTIVE
+            }
+        };
+        
+        this.callParent();
+    }
 });

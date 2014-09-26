@@ -44,15 +44,36 @@ class ProfileController extends RestController {
         if($scopes = $this->plainFilter['applyScopes']) 
         {
             $scopes = CJSON::decode($scopes);
-            $peopleSearch->applyScopes = $scopes;
             
             if (array_key_exists('elector', $scopes)) {
+                
+                $condition = 'elector.election_id = ' 
+                        . $scopes['elector']['election_id'];
+                
+                if(isset($scopes['elector']['status'])) {
+                    $condition .= ' AND elector.status = ' 
+                            . $scopes['elector']['status'];
+                }
+                
                 $this->nestedModels['elector'] = array(
                     'joinType' => 'INNER JOIN',
-                    'condition' => 
-                        'elector.election_id = ' 
-                            . $scopes['elector']['election_id']
+                    'condition' => $condition
                 );
+                
+                unset($scopes['elector']);
+            }
+            
+            if (array_key_exists($scope = 'withElectorRegistrationRequest', $scopes)) {
+                $condition = 'electorRegistrationRequest.election_id = ' 
+                        . $scopes[$scope]['election_id'] 
+                        . ' AND electorRegistrationRequest.status = ' . $scopes[$scope]['status'];
+                
+                $this->nestedModels['electorRegistrationRequest'] = array(
+                    'joinType' => 'INNER JOIN',
+                    'condition' => $condition
+                );
+                
+                unset($scopes[$scope]);          
             }
             
             if(array_key_exists('inVoterGroup', $scopes)) {
@@ -63,6 +84,8 @@ class ProfileController extends RestController {
                             . $scopes['inVoterGroup']['voter_group_id']
                 );
             }
+            
+            $peopleSearch->applyScopes = $scopes;
         }
         
         $this->flushRestFilter('applyScopes', 'ageFrom', 'ageTo', 'name');

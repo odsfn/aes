@@ -12,18 +12,16 @@
  * The followings are the available model relations:
  * @property Profile $user
  * @property Election $election
+ * @property ElectorRegistrationRequest $registrationRequest
  */
 class Elector extends CActiveRecord
 {
     const STATUS_ACTIVE = 0;
 
-    const STATUS_NEED_APPROVE = 1;
-
     const STATUS_BLOCKED = 2;
 
     public static $statusLabels = array(
         self::STATUS_ACTIVE => 'Active',
-        self::STATUS_NEED_APPROVE => 'Waiting for confirmation',
         self::STATUS_BLOCKED => 'Blocked'
     );
 
@@ -87,6 +85,9 @@ class Elector extends CActiveRecord
         return array(
             'profile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'election' => array(self::BELONGS_TO, 'Election', 'election_id'),
+            'registrationRequest' => array(self::HAS_ONE, 
+                'ElectorRegistrationRequest', 'registration_request_id'
+            )
         );
     }
 
@@ -126,27 +127,8 @@ class Elector extends CActiveRecord
     {
         $result = parent::beforeSave();
         $params = array('election'=>$this->election);
-        //new elector is adding 
-        if ($this->isNewRecord && !Yii::app()->user->checkAccess('election_activateElector', $params)) 
-        {
-            //user wants to became elector
-            if ($this->election->voter_reg_type == Election::VOTER_REG_TYPE_SELF) {
-                if ($this->election->voter_reg_confirm == Election::VOTER_REG_CONFIRM_NEED) {
-                    $this->status = self::STATUS_NEED_APPROVE;
-                } else {
-                    $this->status = self::STATUS_ACTIVE;
-                }
-            } else {
-                throw new Exception('Only electors manager can add new electors in this election');
-            }
-        } 
-        elseif ($this->isStoredDiffers('status') 
-                && $this->status == self::STATUS_ACTIVE 
-                && !Yii::app()->user->checkAccess('election_activateElector', $params)) 
-        {
-            throw new Exception('Only electors manager can activate electors');
-        } 
-        elseif ($this->isStoredDiffers('status') 
+        
+        if ($this->isStoredDiffers('status') 
                 && $this->status == self::STATUS_BLOCKED 
                 && !Yii::app()->user->checkAccess('election_blockElector', $params))
         {
@@ -156,10 +138,6 @@ class Elector extends CActiveRecord
         
         if ($this->isStoredDiffers('user_id') || $this->isStoredDiffers('election_id')) {
             throw new Exception('user_id or election_id can\'t be changed');
-        }
-        
-        if ($this->isStoredDiffers('status') && $this->status == self::STATUS_NEED_APPROVE) {
-            throw new Exception('Electors status cant be returned to STATUS_NEED_APPROVE');
         }
         
         return $result;

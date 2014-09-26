@@ -98,7 +98,8 @@ return array(
                 'profileCustomRelations' => array(
                     'personIdentifier' => array('CHasOneRelation', 'PersonIdentifier', 'profile_id'),
                     'voterGroupMember' => array('CHasOneRelation', 'VoterGroupMember', 'user_id'),
-                    'elector' => array('CHasOneRelation', 'Elector', 'user_id')
+                    'elector' => array('CHasOneRelation', 'Elector', 'user_id'),
+                    'electorRegistrationRequest' => array('CHasOneRelation', 'ElectorRegistrationRequest', 'user_id')
                 )
 	    ),
 	    

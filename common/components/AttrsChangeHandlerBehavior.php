@@ -10,6 +10,8 @@ class AttrsChangeHandlerBehavior extends CActiveRecordBehavior
     public $track;
 
     protected $changingAttrs = array();
+    
+    protected $currentOperation;
 
     /**
      * Checks whather stored attribute value is differs from current
@@ -54,10 +56,20 @@ class AttrsChangeHandlerBehavior extends CActiveRecordBehavior
                 $this->changingAttrs[$attrName] = $this->storedValue($attrName);
             }
         }
+        
+        if ($this->owner->isNewRecord) {
+            $this->currentOperation = 'insert';
+        } else {
+            $this->currentOperation = 'update';
+        }
     }
 
     public function afterSave($event)
     {
+        if ($this->currentOperation == 'insert') {
+            $this->callOwnerHandler('afterInsert');
+        }
+        
         foreach ($this->changingAttrs as $attrName => $oldValue) {
             $this->afterStoredAttrChanged($attrName, $this->owner->$attrName, $oldValue);
         }
@@ -73,11 +85,22 @@ class AttrsChangeHandlerBehavior extends CActiveRecordBehavior
 
         $handlerName = 'afterStoredAttrChanged_' . $attrName;
 
-        if (method_exists($this->owner, $handlerName)) {
-            call_user_func_array(array($this->owner, $handlerName), array($currentValue, $oldValue, $attrName));
-        }
+        $this->callOwnerHandler($handlerName, array($currentValue, $oldValue, $attrName));
     }
 
+    /**
+     * Call handler function placed in owner if this function is exist
+     * 
+     * @param string $handlerName
+     * @param array $params
+     */
+    protected function callOwnerHandler($handlerName, $params = array())
+    {
+        if (method_exists($this->owner, $handlerName)) {
+            call_user_func_array(array($this->owner, $handlerName), $params);
+        }
+    }
+    
     public function onAfterStoredAttrChanged(AttributeChange $event)
     {
         $this->raiseEvent("onAfterStoredAttrChanged", $event);

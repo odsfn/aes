@@ -84,36 +84,6 @@ ElectorateApp.ElectorItemView = Aes.UserItemView.extend({
    }    
 });
 
-ElectorateApp.NotConfirmedElectorItemView = Aes.UserItemView.extend({
-    getControls: function(){
-       return {
-            remove: {
-                text: 'Allow',
-                iconType: 'ok',
-               
-                onBeforeShow: function() {
-                    return ElectorateApp.getOption('canInvite') || false;
-                },
-                       
-                onRun: function() {                   
-                    this._parent.$el.mask();
-                    
-                    this._parent.model.set('status', Elector.getStatusId('Active'));
-                    this._parent.model.save({}, {
-                        success: _.bind(function(model) {
-                            this._parent.model.set('added', true);
-                            ElectorateApp.electorate.add([model]);
-                            ElectorateApp.notConfirmedElectors.remove([model]);
-                            this._parent.$el.unmask();
-                        }, this),
-                        wait: true
-                    });                 
-                }
-            }
-        };
-    }    
-});
-
 ElectorateApp.ElectorateFeedView = ElectorateApp.FeedView.extend({
     itemView: ElectorateApp.ElectorItemView
 });
@@ -132,13 +102,20 @@ var Electorate = FeedCollection.extend({
     }
 });
 
-var NotConfirmedElectorate = Electorate.extend({
+var ElectorRegistrationRequests = FeedCollection.extend({
+    url: UrlManager.createUrlCallback('api/electorRegistrationRequest'),
+    model: ElectorRegistrationRequest,
+    setElectionId: function(electionId) {
+       this.electionId = electionId;
+       this.filters.election_id = electionId;
+    },
     getFilters: function() {
         return {
-            status: Elector.getStatusId('NotConfirmed')
+            status: ElectorRegistrationRequest.STATUS_AWAITING_ADMIN_DECISION
         };
     }
 });
+
 
 App.addInitializer(function(options) {
     
@@ -218,20 +195,30 @@ App.addInitializer(function(options) {
     });
     
     if(options.showConfirmationTab) {
-        this.notConfirmedElectors = new NotConfirmedElectorate();
-        this.notConfirmedElectors.setElectionId(options.electionId);
-        this.notConfirmedElectorsView = new ElectorateApp.ElectorateFeedView({
-            itemView: ElectorateApp.NotConfirmedElectorItemView,
-            collection: this.notConfirmedElectors,
+        this.registrationRequests = new ElectorRegistrationRequests();
+        this.registrationRequests.setElectionId(options.electionId);
+        this.registrationRequestsView = new ElectorateApp.ElectorateFeedView({
+            itemView: Aes.UserItemView,
+            collection: this.registrationRequests,
             filters: filter
         });
     }
     
-    $('body').on('elector_registered', function(e, elector) {
-        if(elector.checkStatus('Active')) {
-            ElectorateApp.electorate.add([elector]);
-        } else if(elector.checkStatus('NotConfirmed') && options.showConfirmationTab) {
-            ElectorateApp.notConfirmedElectors.add([elector]);
+    $('body').on('elector_registered', function(e, request) {
+        
+        if (request.get('status') == ElectorRegistrationRequest.STATUS_REGISTERED) {
+            var elector = new Elector(request.get('elector'));
+            elector.fetch({
+                success: function(model, response, options) {
+                    if(model.checkStatus('Active')) {
+                        ElectorateApp.electorate.add([model]);
+                    }
+                }
+            })
+        } else if(options.showConfirmationTab
+            && request.get('status') == ElectorRegistrationRequest.STATUS_AWAITING_ADMIN_DECISION) 
+        {
+            ElectorateApp.registrationRequests.add([request]);
         }
     });
 });
@@ -248,7 +235,7 @@ App.on('start', function(options) {
     }
     
     if(options.showConfirmationTab) {
-        this.layout.requested.show(this.notConfirmedElectorsView);
+        this.layout.requested.show(this.registrationRequestsView);
         $('#requested-tab-sel').show();
     }
     
@@ -257,7 +244,7 @@ App.on('start', function(options) {
             ElectorateApp.users.fetch();
         
         if(options.showConfirmationTab) {
-            ElectorateApp.notConfirmedElectors.fetch();
+            ElectorateApp.registrationRequests.fetch();
         }
     });
 });

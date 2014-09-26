@@ -20,7 +20,7 @@ class ElectionManageGroupsTest extends WebTestCase
         $this->open('election/view/1');
         $this->waitForPageToLoad();
 
-        $anchorSel = 'link=Voters Groups';
+        $anchorSel = 'link=Voters and Groups';
 
         $this->assertElementNotPresent($anchorSel);
         

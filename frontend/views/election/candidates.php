@@ -16,6 +16,8 @@ $js = array(
     'aes:views/ModalView.js',
     'aes:models/Election.js',
     'aes:models/Candidate.js',
+    'aes:models/Elector.js',
+    'aes:models/ElectorRegistrationRequest.js',
     'modules/Candidates.js',
     'modules/Details.js'
 );

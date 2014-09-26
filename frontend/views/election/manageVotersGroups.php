@@ -32,6 +32,7 @@ $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
     $('iframe#ElectoralGroups').get(0).contentWindow.appConfig = {
         userId: <?= Yii::app()->user->id; ?>,
         electionId: <?= $model->id ?>,
+        election: <?= CJavaScript::encode($model->getAttributes()) ?>,
         baseUrl: "<?= $baseUrl ?>"
     };
 
