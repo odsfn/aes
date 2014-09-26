@@ -66,7 +66,9 @@ $this->widget('bootstrap.widgets.TbMenu', array(
                 '/election/manageVotersGroups', 'id'=>$this->election->id
             ), 
             'visible' => ( 
-                $canAdmin && $this->election->isElectorsRegistrationOpen()
+                $canAdmin && in_array($this->election->status, 
+                    array(Election::STATUS_REGISTRATION, Election::STATUS_ELECTION)
+                )
             )
         )
     )
