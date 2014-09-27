@@ -36,6 +36,7 @@ Yii::import('stateMachine.*');
  * @property Target $target AR from base parent table.
  * @property Candidate[] $candidates Candidates
  * @property Elector[] $electors Electors
+ * @property VoterGroup[] $voterGroups
  */
 class Election extends CActiveRecord implements iPostable, iCommentable
 {
@@ -87,11 +88,11 @@ class Election extends CActiveRecord implements iPostable, iCommentable
     const VGR_GROUPS_ADD = 2;
     
     public static $statuses = array(
-        Election::STATUS_PUBLISHED => 'Published',
-        Election::STATUS_REGISTRATION => 'Registration',
-        Election::STATUS_ELECTION => 'Election',
-        Election::STATUS_FINISHED => 'Finished',
-        Election::STATUS_CANCELED => 'Canceled',
+        self::STATUS_PUBLISHED => 'Published',
+        self::STATUS_REGISTRATION => 'Registration',
+        self::STATUS_ELECTION => 'Election',
+        self::STATUS_FINISHED => 'Finished',
+        self::STATUS_CANCELED => 'Canceled',
     );
 
     public static $cand_reg_types = array(
@@ -133,7 +134,10 @@ class Election extends CActiveRecord implements iPostable, iCommentable
 
     public function getStatusName()
     {
-        return self::$statuses[$this->status];
+        if ($this->status !== null)
+            return self::$statuses[$this->status];
+        else
+            return null;
     }
 
     private $_have_pic = null;
@@ -288,7 +292,13 @@ class Election extends CActiveRecord implements iPostable, iCommentable
                 'with' => 'acceptedVotesCount'
             ),
             'electors' => array(self::HAS_MANY, 'Elector', 'election_id'),
-//            'voterGroups' => array(self::MANY_MANY, 'VoterGroup', 'election_group(election_id, voter_group_id)')
+            'voterGroups' => array(self::MANY_MANY, 'VoterGroup', 
+                'election_voter_group(election_id, voter_group_id)'
+            ),
+            'localVoterGroups' => array(self::MANY_MANY, 'VoterGroup', 
+                'election_voter_group(election_id, voter_group_id)',
+                'condition' => 'type = ' . VoterGroup::TYPE_LOCAL
+            ),
         );
     }
 
@@ -546,6 +556,9 @@ class Election extends CActiveRecord implements iPostable, iCommentable
     
     protected function beforeSave()
     {
+        if($this->voter_group_restriction == self::VGR_GROUPS_ADD)
+            $this->voter_reg_type = self::VOTER_REG_TYPE_SELF;
+        
         if($this->voter_reg_type == self::VOTER_REG_TYPE_ADMIN)
             $this->voter_reg_confirm = self::VOTER_REG_CONFIRM_NOTNEED;
         

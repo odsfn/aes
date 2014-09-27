@@ -21,7 +21,7 @@ Aes.ModalView = Aes.ItemView.extend({
     },
     
     triggers: {
-        'click': 'closeClicked'
+        'click button.close': 'closeClicked'
     },
     
     /**
@@ -46,8 +46,9 @@ Aes.ModalView = Aes.ItemView.extend({
         if(!this._isRendered)
             this.render();
         
-        if(!this._isShown)
+        if(!this._isShown) {
             $('body').append(this.$el);
+        }
         
         this.$el.find('.modal').modal('show');
     },

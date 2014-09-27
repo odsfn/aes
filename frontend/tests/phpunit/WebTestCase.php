@@ -213,6 +213,32 @@ class WebTestCase extends CWebTestCase
             return $resultSel;
         } 
         
+        /**
+         * Prepares selection to use in selecnium assertions. 
+         * Adds "css=" prefix if not present
+         * Replaces {%key%} by values from $params 
+         * @param string $selection css selector
+         * @param array $params
+         */
+        protected function parseSel($selection, $params = array())
+        {
+            if(strpos($selection, 'css=') === FALSE)
+                $selection = 'css=' . $selection;
+            
+            if(count($params)) {
+                $handler = function($matches) use($params) {
+                    return $params[$matches[1]];
+                };
+
+                $selection = preg_replace_callback(
+                    '/{%(.+)%}/', $handler, $selection
+                );
+            }
+            
+            return $selection;
+        }
+
+
         protected function assertElementAttributeEquals($sel, $attr, $value)
         {
             $attrValue = $this->getAttribute($sel, $attr);

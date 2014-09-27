@@ -21,8 +21,6 @@ class ArrayHelper {
      * gets value as argument and returns formatted.
      */
     public static function format($array, $formatters) {
-        if($array[0]['id'] == 13)
-            Yii::log(var_export($array, true), CLogger::LEVEL_INFO);
         
         if(count($formatters) === 0)
             return $array;

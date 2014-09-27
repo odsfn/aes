@@ -35,7 +35,7 @@ return array(
     ),
 
     'import' => array(
-//        'personIdentifier.models.PersonIdentifier',
+        'bootstrap.helpers.TbHtml',
         'userAccount.models.UserAccount',
         'userAccount.models.Profile',
         'ext.galleryManager.models.*',

@@ -15,7 +15,9 @@ class ElectorRegistrationRequestController extends RestController
         'profile' => array(
             'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64, birth_place, birth_day'
         ),
-        'elector'
+        'elector' => array(
+            'select' => '*'
+        )
     );
 
     public function getOutputFormatters()

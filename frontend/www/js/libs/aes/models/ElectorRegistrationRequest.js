@@ -2,7 +2,8 @@ var ElectorRegistrationRequest = Backbone.Model.extend({
     
     defaults: {
         user_id: null,
-        election_id: null
+        election_id: null,
+        data: null
     },
     
     urlRoot: UrlManager.createUrlCallback('api/electorRegistrationRequest'),
@@ -31,7 +32,7 @@ var ElectorRegistrationRequest = Backbone.Model.extend({
             delete json.profile;
         
         if(options && options.success !== undefined)
-            json = _.pick(json, 'id', 'user_id', 'election_id', 'status');
+            json = _.pick(json, 'id', 'user_id', 'election_id', 'data');
 
         return json;
     }

@@ -13,6 +13,9 @@ class ElectionRegistrationTest extends WebTestCase
         'election' => array('Election', 'functional/electionRegistration/election'),
         'elector' => 'Elector',
         'elector_registration_request' => 'ElectorRegistrationRequest',
+        'voter_group' => array('VoterGroup', 'functional/electionRegistration/voter_group'),
+        'voter_group_member' => 'VoterGroupMember',
+        'election_voter_group' => array('ElectionVoterGroup', 'functional/electionRegistration/election_voter_group'),
         'vote' => 'Vote',
         'candidate' => array('Candidate', 'functional/electionRegistration/candidate'),
         'AuthAssignment' => array('AuthAssignment', 'functional/electionRegistration/AuthAssignment'),
@@ -118,7 +121,7 @@ class ElectionRegistrationTest extends WebTestCase
         $this->assertTrue($this->checkRegistrationAvailability());
     }
 
-    public function testRegisterButtonDontShowsForUnauthorized()
+    public function testRegisterButtonDoesnotShowsForUnauthorized()
     {
         $this->open('election/view/1');
         $this->waitForPageToLoad(5000);
@@ -408,6 +411,88 @@ class ElectionRegistrationTest extends WebTestCase
         $this->assertCssCount('css=#electoral-list-tab .items div.checkbox.vote.inactive', 3);
     }    
     
+    public function testRegisterInElectionWithAddingToGroupWithoutConfirmation()
+    {
+        $electionId = 11;
+        
+        $this->login('tester1@mail.ru', 'qwerty');
+        $this->open('election/electorate/' . $electionId);
+        $this->waitForPageToLoad();
+        
+        $this->waitForCssCount('css=#electoral-list-tab .items div.user-info', 0);
+        
+        $this->click('css=#register-elector');
+        $this->sleep(500);
+        $this->assertCssCount('css=div.flash-messages div.alert', 0);
+        
+        // Wait for visible modal
+        $this->waitForPresent($modalSel = 'css=.modal');
+        $this->waitForVisible($modalSel);
+        
+        // With visible local groups to select
+        $election = Election::model()->findByPk($electionId);
+        $availGroups = $election->localVoterGroups;
+        $this->assertGreaterThan(0, $count = count($availGroups));
+        $this->assertEquals(3, $count);
+        
+        $checkboxSel = 'css=div.modal-body > label.checkbox:nth-of-type({%index%}) > input';
+        
+        foreach ($availGroups as $index => $group) {
+            $this->assertElementContainsText('css=.modal-body', $group->name);
+            $this->assertEquals(
+                $group->id, 
+                $this->getAttribute(
+                    $this->parseSel($checkboxSel, array('index' => $index+1)), 
+                    'value'
+                )
+            );
+        }
+        //Check that register button is inactive
+        $this->assertElementAttributeEquals(
+            $regBtn = 'css=.modal-footer > button', 'disabled', 'disabled'
+        );
+        
+        // Select several
+        $this->click($this->parseSel($checkboxSel, array('index' => 1)));
+        $this->click($this->parseSel($checkboxSel, array('index' => 2)));
+        
+        //Check that register button was activated
+        $this->assertElementAttributeEquals(
+            $regBtn, 'disabled', false
+        );
+        
+        // Press submit button
+        $this->click($regBtn);
+        
+        // Wait for modal hide
+        $this->waitForNotPresent($modalSel);
+        
+        // Wait for #register-elector hide
+        $this->waitForNotPresent('css=#register-elector');
+        
+        // Wait for notification present
+        $this->assertCssCount('css=div.flash-messages div.alert', 1);
+        $this->assertElementContainsText('css=div.flash-messages div.alert', 
+            'You have been registered as elector.'
+        );
+        $this->click('css=div.flash-messages div.alert a.close');
+        $this->waitForNotPresent('css=div.flash-messages div.alert');
+        
+        $this->waitForCssCount('css=#dest-tab .items div.user-info', 1);
+        $this->assertElementContainsText('css=#dest-tab .items div.user-info:nth-of-type(1) a', 'Another User');
+        
+        // Look into DB and check that Elector really was added to selected groups
+        $this->assertInstanceOf(VoterGroupMember, VoterGroupMember::model()->findByAttributes(array(
+            'user_id' => 2,
+            'voter_group_id' => $availGroups[0]->id
+        )));
+        $this->assertInstanceOf(VoterGroupMember, VoterGroupMember::model()->findByAttributes(array(
+            'user_id' => 2,
+            'voter_group_id' => $availGroups[1]->id
+        )));
+    }
+
+
     protected function checkRegistrationAvailability()
     {
         return ($this->isVisible('css=#source-tab-sel') && $this->isElementPresent('css=#source-tab div.items'));

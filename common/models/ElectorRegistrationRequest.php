@@ -53,7 +53,11 @@ class ElectorRegistrationRequest extends CActiveRecord
             'attrsChangeHandler' => array(
                 'class' => 'AttrsChangeHandlerBehavior',
                 'track' => array('status')
-            )
+            ),
+            'transformAttributes' => array(
+                'class' => 'TransformAttributesBehavior',
+                'transformations' => array('data')
+            ) 
         );
     }
     
@@ -168,7 +172,10 @@ class ElectorRegistrationRequest extends CActiveRecord
             && $this->status = self::STATUS_REGISTERED) 
         {
             $this->createElector();
-        }        
+        }
+        
+        if($this->election->voter_reg_confirm == Election::VOTER_REG_CONFIRM_NOTNEED)
+            $this->addUserToGroups();
     }
     
     protected function createElector()
@@ -180,6 +187,31 @@ class ElectorRegistrationRequest extends CActiveRecord
         $elector->registration_request_id = $this->id;
         $elector->save();
         return $elector;
+    }
+    
+    protected function addUserToGroups()
+    {
+        if ($this->election->voter_group_restriction != Election::VGR_GROUPS_ADD)
+            return;
+        
+        $dataAttr = $this->getUnserializedAttr('data');
+        if(!isset($dataAttr['groups']))
+            return;
+        
+        $groupIds = $dataAttr['groups'];
+        
+        if(count($groupIds) == 0)
+            return;
+        
+        $groups = $this->election->getRelated(
+            'localVoterGroups', true, array(
+                'condition' => 'localVoterGroups.id IN (' . implode(',', $groupIds) . ')'
+            )
+        );
+        
+        foreach ($groups as $group) {
+            $group->addMember($this->user_id);
+        }
     }
     
     /**

@@ -65,5 +65,14 @@ return array(
         'voter_reg_type' => Election::VOTER_REG_TYPE_SELF,
         'voter_reg_confirm' => Election::VOTER_REG_CONFIRM_NOTNEED, 
         'unassigned_access_level' => 2
+    ),   
+    array(
+        'id' => '11', 'target_id' => 18, 'user_id' => '1','name' => 'Election 11',
+        'status' => Election::STATUS_ELECTION,'mandate' => 'Mandate of Election 11','quote' => '25',
+        'validity' => '1','cand_reg_type' => '1','cand_reg_confirm' => '1',
+        'voter_group_restriction' => Election::VGR_GROUPS_ADD,
+        'voter_reg_type' => Election::VOTER_REG_TYPE_SELF,
+        'voter_reg_confirm' => Election::VOTER_REG_CONFIRM_NOTNEED, 
+        'unassigned_access_level' => 2
     ),    
 );

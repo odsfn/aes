@@ -160,4 +160,19 @@ class VoterGroup extends CActiveRecord
         
         return $new;
     }
+    
+    /**
+     * Adds member to this group
+     * 
+     * @param int $userId
+     * @return VoterGroupMember
+     */
+    public function addMember($userId)
+    {
+        $member = new VoterGroupMember;
+        $member->user_id = $userId;
+        $member->voter_group_id = $this->id;
+        $member->save();
+        return $member;
+    }
 }
