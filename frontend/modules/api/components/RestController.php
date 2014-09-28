@@ -59,7 +59,8 @@ class RestController extends ERestController
                 $plainKeys = AESHelper::explode($this->acceptFilters['plain']);
 
                 foreach ($plainKeys as $key) {
-                    $this->plainFilter[$key] = $this->restFilter[$key];
+                    if(isset($this->restFilter[$key]))
+                        $this->plainFilter[$key] = $this->restFilter[$key];
                 }
             } else {  //copy all to plainFilter
                 foreach ($this->restFilter as $key => $value) {

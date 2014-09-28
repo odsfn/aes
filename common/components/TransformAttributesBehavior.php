@@ -11,8 +11,6 @@
  * Behavior for Yii 1.x CActiveRecord
  * Transform values of attributes before saving to DB and after reading from DB.
  * 
- * Support for PHP 5.3.x was added
- * 
  * @method CActiveRecord getOwner()
  * @version 0.1.1
  */
@@ -37,7 +35,10 @@ class TransformAttributesBehavior extends CActiveRecordBehavior
     {
         // default callback function for save to db
         $this->callbackToDb = function ($model, $attributeName) {
-            return is_string($model->$attributeName) ? $model->$attributeName : CJSON::encode($model->$attributeName);
+            if (empty($model->$attributeName) || is_string($model->$attributeName))
+                return $model->$attributeName;
+            else
+                return CJSON::encode($model->$attributeName);
         };
         // default callback function for read from db
         $this->callbackFromDb = function ($model, $attributeName) {
