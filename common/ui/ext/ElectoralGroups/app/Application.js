@@ -12,7 +12,9 @@ Ext.define('ElectoralGroups.Application', {
         'ElectoralGroups.store.Electors',
         
         'Ext.data.validator.*',
-        'ElectoralGroups.view.main.Main'
+        'ElectoralGroups.view.main.Main',
+        
+        'ElectoralGroups.view.RequestsGrid'
     ],
     
     name: 'ElectoralGroups',

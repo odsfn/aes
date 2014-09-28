@@ -25,7 +25,7 @@ Ext.define('ElectoralGroups.model.Election', function(Election) {
     
             VGR_GROUPS_ONLY: 1,
     
-            VGR_GROUPS_ADD: 2,
+            VGR_GROUPS_ADD: 2
         }
     };
 });

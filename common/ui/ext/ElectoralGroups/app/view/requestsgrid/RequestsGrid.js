@@ -3,6 +3,7 @@
  */
 Ext.define('ElectoralGroups.view.RequestsGrid', {
     requires: [
+        'ElectoralGroups.view.requestsgrid.RequestsGridController'
     ],
     extend: 'Aes.view.usersgrid.UsersGrid',
     xtype: 'requestsgrid',
