@@ -17,6 +17,10 @@ Ext.define('ElectoralGroups.model.ElectorRegistrationRequest', function(ElectorR
             {
                 name: 'status',
                 type: 'int'
+            },
+            {
+                name: 'data',
+                critical: true
             }
         ],
         statics: {
@@ -24,6 +28,14 @@ Ext.define('ElectoralGroups.model.ElectorRegistrationRequest', function(ElectorR
             STATUS_AWAITING_USERS_DECISION: 1,
             STATUS_REGISTERED: 9,
             STATUS_DECLINED: 10
+        },
+        getGroups: function() {
+            var groups = this.get('data').groups || [];
+            Ext.each(groups, function(groupId, index) {
+                groups[index] = parseInt(groupId);
+            });
+            
+            return groups;
         }
     };
 });

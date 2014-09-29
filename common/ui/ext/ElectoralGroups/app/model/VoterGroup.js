@@ -16,19 +16,9 @@ Ext.define('ElectoralGroups.model.VoterGroup', function(VoterGroup) {
             },
             {
                 name: 'typeLabel',
-//                type: 'string',
-//                'default': 'Local',
                 calculate: function(data) {
                     return VoterGroup.getTypeLabel(data.type);
-//                    console.log('Calculating "type" property which is "' + data.type 
-//                        + '" for group "' + data.name + '"' );
-//                    return VoterGroup.getTypeLabel(data.type);
                 },
-//                serialize: function(val, rec) {
-//                    console.log('Serializing "type" property which is "' + val 
-//                        + '" for group "' + rec.get('name') + '"' );
-//                    return VoterGroup.getTypeId(val);
-//                },
                 persist: false
             },
             {
@@ -67,6 +57,9 @@ Ext.define('ElectoralGroups.model.VoterGroup', function(VoterGroup) {
         }],
         
         statics: {
+            TYPE_LOCAL: 1,
+            TYPE_GLOBAL: 0,
+            
             types: function() {
                 return ['Global', 'Local'];
             },
@@ -77,7 +70,7 @@ Ext.define('ElectoralGroups.model.VoterGroup', function(VoterGroup) {
 
             getTypeId: function(label) {
                 return VoterGroup.types().indexOf(label);
-            }            
+            }
         }
     };
 });

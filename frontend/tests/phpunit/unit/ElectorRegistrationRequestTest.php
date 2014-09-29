@@ -8,7 +8,10 @@ class ElectorRegistrationRequestTest extends CDbTestCase
         'elector_registration_request' => array(
             'ElectorRegistrationRequest', 
             'unit/electorRegistrationRequest/elector_registration_request'
-        )
+        ),
+        'voter_group' => array('VoterGroup', 'unit/electorRegistrationRequest/voter_group'),
+        'voter_group_member' => array('VoterGroupMember', 'unit/electorRegistrationRequest/voter_group_member'),
+        'election_voter_group' => array('ElectionVoterGroup', 'unit/electorRegistrationRequest/election_voter_group')
     );
     
     public function testRegistrationRequestedByUserInElectionWithConfirmationNeeded()
@@ -168,6 +171,46 @@ class ElectorRegistrationRequestTest extends CDbTestCase
         $err->save();
         
         $this->assertFalse($err->save());
+    }
+    
+    public function testUserAddsToGroupsAfterConfirmationInElectionWithConfirmationNeeded()
+    {
+        $userId = 2;
+                
+        $err = new ElectorRegistrationRequest();
+        $err->election_id = $electionId = 3;
+        $err->initiator_id = $userId;
+        $err->user_id = $userId;
+        $err->data = array('groups' => array(1,2));
+        $this->assertTrue($err->save());
+        
+        $groupMembers = VoterGroupMember::model()->findAllByAttributes(array(
+            'user_id' => $userId
+        ));
+        
+        $this->assertCount(0, $groupMembers);
+        
+        $err->status = ElectorRegistrationRequest::STATUS_REGISTERED;
+        $this->assertTrue($err->save());
+        
+        $groupMembers = VoterGroupMember::model()->findAllByAttributes(array(
+            'user_id' => $userId
+        ));
+        $this->assertCount(2, $groupMembers);
+        $this->assertInstanceOf(
+            VoterGroupMember, 
+            VoterGroupMember::model()->findByAttributes(array(
+                'user_id' => $userId,
+                'voter_group_id' => 1
+            ))
+        );
+        $this->assertInstanceOf(
+            VoterGroupMember, 
+            VoterGroupMember::model()->findByAttributes(array(
+                'user_id' => $userId,
+                'voter_group_id' => 2
+            ))
+        );
     }
 }
 

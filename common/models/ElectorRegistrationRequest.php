@@ -135,8 +135,10 @@ class ElectorRegistrationRequest extends CActiveRecord
     
     public function afterStoredAttrChanged_status($value, $oldValue, $attrName)
     {
-        if ($value == self::STATUS_REGISTERED)
+        if ($value == self::STATUS_REGISTERED) {
             $this->createElector();
+            $this->addUserToGroups();
+        }
     }
 
     protected function beforeSave()

@@ -14,7 +14,7 @@ Ext.define('ElectoralGroups.Application', {
         'Ext.data.validator.*',
         'ElectoralGroups.view.main.Main',
         
-        'ElectoralGroups.view.RequestsGrid'
+        'ElectoralGroups.view.requestsgrid.Panel'
     ],
     
     name: 'ElectoralGroups',
@@ -64,7 +64,7 @@ Ext.define('ElectoralGroups.Application', {
             tabPanel.add({
                 itemId: 'registration-requests',
                 title: 'Registration Requests',
-                xtype: 'requestsgrid',
+                xtype: 'requestspanel',
                 closable: false
             });
         }

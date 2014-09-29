@@ -1,7 +1,7 @@
 /* 
  * This Grid represents users which has applied requests to became electors
  */
-Ext.define('ElectoralGroups.view.RequestsGrid', {
+Ext.define('ElectoralGroups.view.requestsgrid.RequestsGrid', {
     requires: [
         'ElectoralGroups.view.requestsgrid.RequestsGridController'
     ],

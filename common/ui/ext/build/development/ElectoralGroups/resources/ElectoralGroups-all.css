@@ -8571,6 +8571,51 @@ td.x-frame-mc {
   outline-offset: -1px;
 }
 
+/* line 1, ../../../../ext/packages/ext-theme-base/sass/src/form/field/Checkbox.scss */
+.x-form-cb-wrap {
+  vertical-align: top;
+}
+
+/* line 5, ../../../../ext/packages/ext-theme-base/sass/src/form/field/Checkbox.scss */
+.x-form-cb-wrap-inner {
+  position: relative;
+}
+
+/* line 9, ../../../../ext/packages/ext-theme-base/sass/src/form/field/Checkbox.scss */
+.x-form-cb {
+  position: absolute;
+  left: 0;
+  right: auto;
+  vertical-align: top;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+}
+/* line 17, ../../../../ext/packages/ext-theme-base/sass/src/form/field/Checkbox.scss */
+.x-form-cb::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+/* allow for the component to be positioned after the label */
+/* line 31, ../../../../ext/packages/ext-theme-base/sass/src/form/field/Checkbox.scss */
+.x-form-cb-after {
+  left: auto;
+  right: 0;
+}
+
+/* some browsers like IE 10 need a block element to be able to measure
+the height of a multi-line element */
+/* line 45, ../../../../ext/packages/ext-theme-base/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label {
+  display: inline-block;
+}
+
+/* line 53, ../../../../ext/packages/ext-theme-base/sass/src/form/field/Checkbox.scss */
+.x-form-cb-wrap-inner-no-box-label > .x-form-cb {
+  position: static;
+}
+
 /* line 2, ../../../../ext/packages/ext-theme-base/sass/src/grid/header/DropZone.scss */
 .x-col-move-top,
 .x-col-move-bottom {
@@ -9167,6 +9212,16 @@ div.x-form-text-grow .x-form-textarea {
  * Rules for fields which are rendered to fit inside grid cells.
  * This includes cell and row editor fields and fields in widget columns.
  */
+/* line 7, ../../../../ext/packages/ext-theme-base/sass/src/grid/plugin/Editing.scss */
+.x-grid-editor .x-form-cb-wrap {
+  text-align: center;
+}
+
+/* line 12, ../../../../ext/packages/ext-theme-base/sass/src/grid/plugin/Editing.scss */
+.x-grid-editor .x-form-cb {
+  position: static;
+}
+
 /* line 19, ../../../../ext/packages/ext-theme-base/sass/src/grid/plugin/Editing.scss */
 .x-grid-editor .x-form-display-field {
   margin: 0;
@@ -17770,6 +17825,177 @@ div.x-form-text-grow .x-form-textarea {
   background-color: #0f0f0f;
 }
 
+/**
+ * Creates a visual theme for checkboxes and radio buttons.  Note this mixin only provides
+ * styling for the checkbox/radio button and its {@link #boxLabel}, The {@link #fieldLabel}
+ * and error icon/message are styled by {@link #extjs-label-ui}.
+ *
+ * @param {string} $ui
+ * The name of the UI being created. Can not included spaces or special punctuation
+ * (used in CSS class names).
+ *
+ * @param {number} [$ui-field-height=$form-field-height]
+ * The height of the field body that the checkbox must fit within.  This does not set the
+ * height of the field, only allows the checkbox to be centered inside the field body.
+ * (The height of the field body is determined by {@link #extjs-label-ui}).
+ *
+ * @param {number} [$ui-checkbox-size=$form-checkbox-size]
+ * The size of the checkbox
+ *
+ * @param {string} [$ui-checkbox-background-image=$form-checkbox-background-image]
+ * The background-image of the checkbox
+ *
+ * @param {string} [$ui-radio-background-image=$form-radio-background-image]
+ * The background-image of the radio button
+ *
+ * @param {color} [$ui-label-color=$form-checkbox-label-color]
+ * The color of the checkbox's {@link #boxLabel}
+ *
+ * @param {string} [$ui-label-font-weight=$form-checkbox-label-font-weight]
+ * The font-weight of the checkbox's {@link #boxLabel}
+ *
+ * @param {string} [$ui-label-font-size=$form-checkbox-label-font-size]
+ * The font-size of the checkbox's {@link #boxLabel}
+ *
+ * @param {string} [$ui-label-font-family=$form-checkbox-label-font-family]
+ * The font-family of the checkbox's {@link #boxLabel}
+ *
+ * @param {string} [$ui-label-line-height=$form-checkbox-label-line-height]
+ * The line-height of the checkbox's {@link #boxLabel}
+ *
+ * @param {number} [$ui-label-spacing=$form-checkbox-label-spacing]
+ * The space between the boxLabel and the checkbox.
+ *
+ * @member Ext.form.field.Checkbox
+ */
+/* line 57, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-wrap-default {
+  height: 22px;
+}
+
+/* line 61, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-default {
+  margin-top: 5px;
+}
+
+/* line 67, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-checkbox-default,
+.x-form-radio-default {
+  width: 13px;
+  height: 13px;
+}
+
+/* line 72, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-radio-default {
+  background: url(images/form/radio.gif) no-repeat;
+}
+/* line 75, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-checked .x-form-radio-default {
+  background-position: 0 -13px;
+}
+
+/* line 80, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-checkbox-default {
+  background: url(images/form/checkbox.gif) no-repeat;
+}
+/* line 83, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-checked .x-form-checkbox-default {
+  background-position: 0 -13px;
+}
+
+/* line 88, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-field-default-form-checkbox-focus {
+  background-position: -13px 0;
+}
+/* line 92, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-checked .x-field-default-form-checkbox-focus {
+  background-position: -13px -13px;
+}
+
+/* line 97, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label-default {
+  margin-top: 4px;
+  font: normal tahoma, arial, verdana, sans-serif/14px tahoma, arial, verdana, sans-serif;
+}
+/* line 101, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label-default.x-form-cb-label-before {
+  padding-right: 17px;
+}
+/* line 112, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label-default.x-form-cb-label-after {
+  padding-left: 17px;
+}
+
+/* line 126, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-checkbox-default-cell > .x-grid-cell-inner {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* line 57, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-wrap-toolbar {
+  height: 20px;
+}
+
+/* line 61, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-toolbar {
+  margin-top: 4px;
+}
+
+/* line 67, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-checkbox-toolbar,
+.x-form-radio-toolbar {
+  width: 13px;
+  height: 13px;
+}
+
+/* line 72, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-radio-toolbar {
+  background: url(images/form/radio.gif) no-repeat;
+}
+/* line 75, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-checked .x-form-radio-toolbar {
+  background-position: 0 -13px;
+}
+
+/* line 80, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-checkbox-toolbar {
+  background: url(images/form/checkbox.gif) no-repeat;
+}
+/* line 83, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-checked .x-form-checkbox-toolbar {
+  background-position: 0 -13px;
+}
+
+/* line 88, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-field-toolbar-form-checkbox-focus {
+  background-position: -13px 0;
+}
+/* line 92, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-checked .x-field-toolbar-form-checkbox-focus {
+  background-position: -13px -13px;
+}
+
+/* line 97, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label-toolbar {
+  margin-top: 4px;
+  font: normal tahoma, arial, verdana, sans-serif/13px tahoma, arial, verdana, sans-serif;
+}
+/* line 101, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label-toolbar.x-form-cb-label-before {
+  padding-right: 17px;
+}
+/* line 112, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label-toolbar.x-form-cb-label-after {
+  padding-left: 17px;
+}
+
+/* line 126, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-checkbox-toolbar-cell > .x-grid-cell-inner {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
 /* line 2, ../../../../ext/packages/ext-theme-neutral/sass/src/grid/header/DropZone.scss */
 .x-col-move-top,
 .x-col-move-bottom {
@@ -22460,6 +22686,52 @@ div.x-border-layout-ct {
 }
 
 /**
+ * Creates a visual theme for a CheckboxGroup buttons.  Note this mixin only provides
+ * styling for the CheckboxGroup body and its {@link Ext.form.field.Checkbox#boxLabel}, The {@link #fieldLabel}
+ * and error icon/message are styled by {@link #extjs-label-ui}.
+ *
+ * @param {string} $ui
+ * The name of the UI being created. Can not included spaces or special punctuation
+ * (used in CSS class names).
+ *
+ * @param {number/list} [$ui-body-padding=$form-checkboxgroup-body-padding]
+ * The padding of the CheckboxGroup body element
+ *
+ * @param {color} [$ui-body-invalid-border-color=$form-checkboxgroup-body-invalid-border-color]
+ * The border color of the CheckboxGroup body element when in an invalid state.
+ *
+ * @param {string} [$ui-body-invalid-border-style=$form-checkboxgroup-body-invalid-border-style]
+ * The border style of the CheckboxGroup body element when in an invalid state.
+ *
+ * @param {number} [$ui-body-invalid-border-width=$form-checkboxgroup-body-invalid-border-width]
+ * The border width of the CheckboxGroup body element when in an invalid state.
+ *
+ * @param {string} [$ui-body-invalid-background-image=$form-checkboxgroup-body-invalid-background-image]
+ * The background image of the CheckboxGroup body element when in an invalid state.
+ *
+ * @param {string} [$form-checkboxgroup-body-invalid-background-repeat=$form-field-invalid-background-repeat]
+ * The background-repeat of the CheckboxGroup body element when in an invalid state.
+ *
+ * @param {string} [$ui-body-invalid-background-position=$form-checkboxgroup-body-invalid-background-position]
+ * The background-position of the CheckboxGroup body element when in an invalid state.
+ *
+ * @member Ext.form.CheckboxGroup
+ */
+/* line 44, ../../../../ext/packages/ext-theme-neutral/sass/src/form/CheckboxGroup.scss */
+.x-form-item-body-default.x-form-checkboxgroup-body {
+  padding: 0 4px;
+}
+/* line 47, ../../../../ext/packages/ext-theme-neutral/sass/src/form/CheckboxGroup.scss */
+.x-form-invalid .x-form-item-body-default.x-form-checkboxgroup-body {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #cc3300;
+  background-image: url(images/grid/invalid_line.gif);
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
+
+/**
  * Creates a visual theme for spinner field triggers.  Note this mixin only provides
  * styling for the spinner trigger buttons. The text field portion of the styling must be
  * created using {@link #extjs-text-field-ui}
@@ -23651,6 +23923,70 @@ a.x-monthpicker-item-inner:hover {
   background-position: -34px -10px;
 }
 
+/* line 57, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-wrap-grid-cell {
+  height: 20px;
+}
+
+/* line 61, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-grid-cell {
+  margin-top: 4px;
+}
+
+/* line 67, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-checkbox-grid-cell,
+.x-form-radio-grid-cell {
+  width: 13px;
+  height: 13px;
+}
+
+/* line 72, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-radio-grid-cell {
+  background: url(images/form/radio.gif) no-repeat;
+}
+/* line 75, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-checked .x-form-radio-grid-cell {
+  background-position: 0 -13px;
+}
+
+/* line 80, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-checkbox-grid-cell {
+  background: url(images/form/checkbox.gif) no-repeat;
+}
+/* line 83, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-checked .x-form-checkbox-grid-cell {
+  background-position: 0 -13px;
+}
+
+/* line 88, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-field-grid-cell-form-checkbox-focus {
+  background-position: -13px 0;
+}
+/* line 92, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-checked .x-field-grid-cell-form-checkbox-focus {
+  background-position: -13px -13px;
+}
+
+/* line 97, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label-grid-cell {
+  margin-top: 3px;
+  font: normal tahoma, arial, verdana, sans-serif/14px tahoma, arial, verdana, sans-serif;
+}
+/* line 101, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label-grid-cell.x-form-cb-label-before {
+  padding-right: 17px;
+}
+/* line 112, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-form-cb-label-grid-cell.x-form-cb-label-after {
+  padding-left: 17px;
+}
+
+/* line 126, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Checkbox.scss */
+.x-checkbox-grid-cell-cell > .x-grid-cell-inner {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
 /* line 40, ../../../../ext/packages/ext-theme-neutral/sass/src/form/field/Display.scss */
 .x-form-display-field-grid-cell {
   height: 22px;
@@ -23695,6 +24031,10 @@ a.x-monthpicker-item-inner:hover {
   border-bottom: 1px solid #d0d0d0 !important;
   padding: 4px 0 4px 0;
   background-color: #ebe6e6;
+}
+/* line 50, ../../../../ext/packages/ext-theme-neutral/sass/src/grid/plugin/RowEditing.scss */
+.x-grid-with-col-lines .x-grid-row-editor .x-form-cb {
+  margin-right: 1px;
 }
 
 /* line 187, ../../../../ext/packages/ext-theme-base/sass/etc/mixins/frame.scss */
