@@ -109,7 +109,34 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
     init: function() 
     {
         var me = this,
-            grid = this.view;
+            grid = this.view,
+            loadRelatedElectors = function(users, records, success, eOpts) {
+                console.log('in loadRelatedElectors...');
+                var electorIds = [];
+                
+                Ext.each(records, function(record) {
+                    electorIds.push(record.get('elector').id);
+                });
+                
+                if(electorIds.length === 0) return;
+                
+                console.log('Loading Related Electors');
+                this.view.mask();
+                this.electors.setFilters([
+                    { property: 'election_id', value: this.election.get('id') },
+                    { property: 'status', value: ElectoralGroups.model.Elector.STATUS_ACTIVE },
+                    { property: 'id', operation: 'in', value: electorIds}
+                ]);
+                this.electors.load({
+                    scope: this,
+                    callback: function(records, operation, success) {
+                        if(!success) throw new Error("Failed to loadRelatedElectors");
+                        this.view.unmask();
+                    }
+                });
+            };
+        
+        grid.getStore().on('load', loadRelatedElectors, this);
         
         this.election = ElectoralGroups.app.election;
         this.electors = Ext.create('ElectoralGroups.store.Electors', {
@@ -118,9 +145,9 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
                 { property: 'status', value: ElectoralGroups.model.Elector.STATUS_ACTIVE }
             ],
             remoteFilter: true,
-            autoSync: false
+            autoSync: false,
+            autoLoad: false
         });
-        this.electors.load();
         
         this.view.getSelectionModel().on('selectionchange', function(selModel, selections){
             grid.down('#removeButton').setDisabled(selections.length === 0);
