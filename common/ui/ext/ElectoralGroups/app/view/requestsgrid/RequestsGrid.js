@@ -99,23 +99,27 @@ Ext.define('ElectoralGroups.view.requestsgrid.RequestsGrid', {
     },    
     
     dockedItems: [
-//        {
-//            xtype: 'toolbar',
-//            dock: 'bottom',
-//            items: [
-//                {
-//                    itemId: 'confirmButton',
-//                    text:'Confirm',
-//                    disabled: true,
-//                    handler: 'onClickConfirmButton'
-//                }, {
-//                    itemId: 'declineButton',
-//                    text:'Decline',
-//                    disabled: true,
-//                    handler: 'onClickDeclineButton'
-//                }
-//            ]
-//        },
+        {
+            xtype: 'toolbar',
+            dock: 'bottom',
+            items: [
+                {
+                    xtype: 'box',
+                    html: 'Operations on selected set:'
+                },
+                {
+                    itemId: 'confirmManyBtn',
+                    text:'Confirm',
+                    disabled: true,
+                    handler: 'onClickAcceptMany'
+                }, {
+                    itemId: 'declineManyBtn',
+                    text:'Decline',
+                    disabled: true,
+                    handler: 'onClickDeclineMany'
+                }
+            ]
+        },
         {
             dock: 'bottom',
             xtype: 'pagingtoolbar',
