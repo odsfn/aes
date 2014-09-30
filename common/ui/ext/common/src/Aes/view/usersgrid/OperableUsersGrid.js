@@ -10,9 +10,10 @@ Ext.define('Aes.view.usersgrid.OperableUsersGrid', {
     items: {
         xclass: 'Aes.view.usersgrid.UsersGrid',
         border: false,
-        selModel: Ext.create('Ext.selection.CheckboxModel', {
+        selType: 'checkboxmodel',
+        selModel: {
             checkOnly: true
-        })
+        }
     },
     dockedItems: [
         {

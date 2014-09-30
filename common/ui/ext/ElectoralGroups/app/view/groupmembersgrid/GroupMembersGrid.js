@@ -7,7 +7,10 @@ Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGrid', {
     extend: 'Aes.view.usersgrid.UsersGrid',
     xtype: 'groupmembersgrid',
     controller: 'groupmembersgrid',
-    
+    selType: 'checkboxmodel',
+    selModel: {
+        checkOnly: true
+    },
     columns: {
         items: [
             {   
@@ -73,9 +76,6 @@ Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGrid', {
         ]
     },    
     
-    selModel: Ext.create('Ext.selection.CheckboxModel', {
-        checkOnly: true
-    }),
     dockedItems: [
         {
             xtype: 'toolbar',

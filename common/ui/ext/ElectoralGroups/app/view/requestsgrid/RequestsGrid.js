@@ -8,10 +8,10 @@ Ext.define('ElectoralGroups.view.requestsgrid.RequestsGrid', {
     extend: 'Aes.view.usersgrid.UsersGrid',
     xtype: 'requestsgrid',
     controller: 'requestsgrid',
-    selModel: Ext.create('Ext.selection.CheckboxModel', {
+    selType: 'checkboxmodel',
+    selModel: {
         checkOnly: true
-    }),
-    
+    },
     columns: {
         items: [
             {   
@@ -109,7 +109,7 @@ Ext.define('ElectoralGroups.view.requestsgrid.RequestsGrid', {
                 },
                 {
                     itemId: 'confirmManyBtn',
-                    text:'Confirm',
+                    text:'Accept',
                     disabled: true,
                     handler: 'onClickAcceptMany'
                 }, {

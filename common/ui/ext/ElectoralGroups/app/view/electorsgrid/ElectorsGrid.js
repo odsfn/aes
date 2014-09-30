@@ -6,9 +6,10 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGrid', {
     extend: 'Aes.view.usersgrid.UsersGrid',
     xtype: 'electorsgrid',
     controller: 'electorsgrid',
-    selModel: Ext.create('Ext.selection.CheckboxModel', {
+    selType: 'checkboxmodel',
+    selModel: {
         checkOnly: true
-    }),
+    },
     dockedItems: [
         {
             xtype: 'toolbar',

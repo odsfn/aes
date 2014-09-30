@@ -111,7 +111,6 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
         var me = this,
             grid = this.view,
             loadRelatedElectors = function(users, records, success, eOpts) {
-                console.log('in loadRelatedElectors...');
                 var electorIds = [];
                 
                 Ext.each(records, function(record) {
@@ -120,7 +119,6 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
                 
                 if(electorIds.length === 0) return;
                 
-                console.log('Loading Related Electors');
                 this.view.mask();
                 this.electors.setFilters([
                     { property: 'election_id', value: this.election.get('id') },

@@ -4,9 +4,10 @@ Ext.define('Aes.view.groupsgrid.GroupsGrid', {
         'Ext.data.validator.Length'
     ],
     xtype: 'groupsgrid',
-    selModel: Ext.create('Ext.selection.CheckboxModel', {
+    selType: 'checkboxmodel',
+    selModel: {
         checkOnly: true
-    }),
+    },
     controller: 'groupsgrid',
     plugins: [
         {

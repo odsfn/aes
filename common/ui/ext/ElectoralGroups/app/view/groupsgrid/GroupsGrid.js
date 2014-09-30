@@ -1,9 +1,10 @@
 Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
     extend: 'Ext.grid.Panel',
     xtype: 'groupsgrid',
-    selModel: Ext.create('Ext.selection.CheckboxModel', {
+    selType: 'checkboxmodel',
+    selModel: {
         checkOnly: true
-    }),
+    },
     controller: 'groupsgrid',
     plugins: [
         {
