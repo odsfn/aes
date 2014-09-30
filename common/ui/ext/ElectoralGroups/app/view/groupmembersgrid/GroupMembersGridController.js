@@ -63,11 +63,36 @@ Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGridController', {
             filters: [
                 { property: 'voter_group_id', value: this.group.get('id') }
             ],
-            autoSync: false
-        });
-        this.members.load();
+            remoteFilter: true,
+            autoSync: false,
+            autoLoad: false
+        });        
         
-        var grid = this.view;
+        var grid = this.view,
+            loadRelatedMembers = function(users, records, success, eOpts) {
+                var memberIds = [];
+                
+                Ext.each(records, function(record) {
+                    memberIds.push(record.get('voterGroupMember').id);
+                });
+                
+                if(memberIds.length === 0) return;
+                
+                this.view.mask();
+                this.members.setFilters([
+                    { property: 'voter_group_id', value: this.group.get('id') },
+                    { property: 'id', operation: 'in', value: memberIds}
+                ]);
+                this.members.load({
+                    scope: this,
+                    callback: function(records, operation, success) {
+                        if(!success) throw new Error("Failed to loadRelatedElectors");
+                        this.view.unmask();
+                    }
+                });
+            };
+        
+        grid.getStore().on('load', loadRelatedMembers, this);
         
         if (this.group.get('typeLabel') == 'Global') {
             grid.down('#removeButton').setDisabled(true);
