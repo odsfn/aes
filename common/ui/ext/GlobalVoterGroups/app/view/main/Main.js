@@ -23,7 +23,8 @@ Ext.define('GlobalVoterGroups.view.main.Main', {
         },
         region: 'west',
         flex: 2,
-        split: true
+        split: true,
+        collapsible: true
     },{
         region: 'center',
         xtype: 'tabpanel',
