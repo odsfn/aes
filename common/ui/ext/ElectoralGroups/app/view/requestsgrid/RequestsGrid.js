@@ -84,15 +84,16 @@ Ext.define('ElectoralGroups.view.requestsgrid.RequestsGrid', {
                 items: [
                     {
                         icon: '/ui/ext/resources/fontawesome/check.png',
-                        tooltip: 'Opens tab with users grid for this group',
+                        tooltip: 'Accept',
                         handler: 'onAcceptClick'
                     }, '-', 
                     {
                         icon: '/ui/ext/resources/fontawesome/ban.png',
-                        tooltip: 'Edit this group',
+                        tooltip: 'Decline',
                         handler: 'onDeclineClick'
                     }
-                ]                
+                ],
+                hidden: true
             }
         ]
     },    
