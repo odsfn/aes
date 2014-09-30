@@ -1,6 +1,12 @@
 CACHE MANIFEST
 # 3eb51d38cce6276c0ac5586a7b53d1654887f59e
 index.html
+# e230d5e3f5b81cb98cc33222272257263a9cb0fc
+app.js
+# dc9b86b02c2e2fa93e02fef86b467e37179e958c
+app.json
+# 1df38ed1a8269aeb1c4da794c5fafa508c606d61
+resources/ElectoralGroups-all.css
 
 
 FALLBACK:

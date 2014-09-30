@@ -1,6 +1,12 @@
 CACHE MANIFEST
 # 687983868079b8b7297b0be5cb39ea3d89ade6f8
 index.html
+# d0997e97bf866ecef3f1e3ce52e6bdb81a90ed76
+app.json
+# 813a988e51be32b48993c7ae1029f95ce6d56c28
+app.js
+# b36dbfa16ccb7d40e423028e4dc678a59ff054dd
+resources/GlobalVoterGroups-all.css
 
 
 FALLBACK:

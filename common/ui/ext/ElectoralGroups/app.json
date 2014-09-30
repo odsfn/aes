@@ -155,7 +155,10 @@
          * List of items in the CACHE MANIFEST section
          */
         "cache": [
-            "index.html"
+            "index.html",
+            "app.js",
+            "app.json",
+            "resources/ElectoralGroups-all.css"
         ],
         /**
          * List of items in the NETWORK section

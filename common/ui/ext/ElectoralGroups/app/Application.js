@@ -32,6 +32,10 @@ Ext.define('ElectoralGroups.Application', {
         app.options = Ext.clone(window.appConfig);
         app.election = new ElectoralGroups.model.Election();
         app.election.set(app.options.election);
+        
+        var onInit = window.appConfig.onInit || null;
+        if (onInit && typeof(onInit) === 'function')
+            onInit();
     },
     
     launch: function () {
@@ -68,6 +72,14 @@ Ext.define('ElectoralGroups.Application', {
                 closable: false
             });
         }
+        
+        this.onLaunchExternal();
+    },
+    
+    onLaunchExternal: function() {
+        var onLaunch = window.appConfig.onLaunch || null;
+        if (onLaunch && typeof(onLaunch) === 'function')
+            onLaunch();
     },
     
     options: {

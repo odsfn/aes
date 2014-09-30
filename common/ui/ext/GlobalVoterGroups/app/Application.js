@@ -22,7 +22,13 @@ Ext.define('GlobalVoterGroups.Application', {
     },
     
     launch: function () {
-        // TODO - Launch the application
+        this.onLaunchExternal();
+    },
+    
+    onLaunchExternal: function() {
+        var onLaunch = window.appConfig.onLaunch || null;
+        if (onLaunch && typeof(onLaunch) === 'function')
+            onLaunch();
     },
     
     options: {

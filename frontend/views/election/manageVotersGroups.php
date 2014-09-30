@@ -12,6 +12,8 @@ $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
 <div class="row-fluid">
     <div id="voters-groups-cntr" class="span12">
         <?php 
+            Yii::app()->clientScript->registerPackage('loadmask');
+            
             $src = Yii::app()->getBaseUrl(true) . '/ui/ext/';
             $baseUrl = '/';
             
@@ -28,12 +30,16 @@ $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
     </div>
 </div>
 <script type="text/javascript">
-
+    $('#voters-groups-cntr').mask('Loading...');
+    
     $('iframe#ElectoralGroups').get(0).contentWindow.appConfig = {
         userId: <?= Yii::app()->user->id; ?>,
         electionId: <?= $model->id ?>,
         election: <?= CJavaScript::encode($model->getAttributes()) ?>,
-        baseUrl: "<?= $baseUrl ?>"
+        baseUrl: "<?= $baseUrl ?>",
+        onLaunch: function() {
+            $('#voters-groups-cntr').unmask();
+        }
     };
 
 </script>
