@@ -52,6 +52,13 @@ class RestController extends ERestController
         //decode extjs filters format
         if (is_string($this->restFilter) && isset($_GET['extjs'])) {
             $this->restFilter = CJSON::decode($this->restFilter);
+            
+            //convert operators to accepted format by ERestHelperScopes
+            foreach ($this->restFilter as $index => $filter) {
+                if(isset($filter['operator'])) {
+                    $this->restFilter[$index]['operator'] = $this->convertFilterOperator($filter['operator']);
+                }
+            }
         }
 
         if (ArrayHelper::isAssoc($this->restFilter)) {   //Conversion needed
@@ -488,5 +495,19 @@ class RestController extends ERestController
                 }
             }
         }
+    }
+    
+    protected function convertFilterOperator($operator) 
+    {
+        $conversion = array(
+            '>' => 'gt',
+            '<' => 'lt',
+            '=' => 'eq'
+        );
+        
+        if($convertedOperator = array_search($operator, $conversion))
+            return $convertedOperator;
+        
+        return $operator;
     }
 }

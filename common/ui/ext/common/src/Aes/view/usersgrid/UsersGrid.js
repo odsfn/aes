@@ -67,7 +67,7 @@ Ext.define('Aes.view.usersgrid.UsersGrid', {
                     // @TODO: fix on selection that ( it hides when I try to
                     // select year less than 2000
                     type: 'date',
-                    dateFormat: 'd.m.Y'
+                    dateWriteFormat: "Y-m-d"
                 } 
             }
         ]

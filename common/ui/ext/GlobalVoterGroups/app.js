@@ -3,7 +3,14 @@
  * needed for your application, but these edits will have to be merged by
  * Sencha Cmd when upgrading.
  */
+Ext.grid.filters.filter.Date.prototype.dateWriteFormat = 'Y-m-d';
+
 Ext.application({
+    requires: [
+        "Aes.overrides.picker.Date",
+        "Aes.overrides.grid.filters.filter.Date"
+    ],
+    
     name: 'GlobalVoterGroups',
 
     extend: 'GlobalVoterGroups.Application',
