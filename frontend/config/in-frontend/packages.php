@@ -18,7 +18,9 @@ return array(
         'js' => array(
             'helpers.js',
             'WebUser.js',
-            'i18n.js'
+            'i18n.js',
+            'views/ItemView.js',
+            'views/NotificationsView.js'
         )
     ),
 
