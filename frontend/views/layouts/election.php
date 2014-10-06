@@ -61,7 +61,7 @@ $this->widget('bootstrap.widgets.TbMenu', array(
                 ))
         ),
         array(
-            'label'=> Yii::t('election', 'Voters and Groups'), 
+            'label'=> Yii::t('election', 'Voters and Groups Management'), 
             'url'=> array(
                 '/election/manageVotersGroups', 'id'=>$this->election->id
             ), 

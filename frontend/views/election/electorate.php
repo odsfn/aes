@@ -35,7 +35,6 @@ $canUserManage = (int)(Yii::app()->user->checkAccess('election_manage', array('e
 Yii::app()->clientScript->registerScript('starter',
     "App.start({
         electionId: ". $model->id .",
-        canInvite: $canUserManage ,
         showConfirmationTab: " . (int)($model->voter_reg_type == Election::VOTER_REG_TYPE_SELF 
                 && $model->voter_reg_confirm == Election::VOTER_REG_CONFIRM_NEED)
     ."});"
@@ -47,15 +46,11 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 <script id="collect-layout-tpl" type="text/template">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#dest-tab" data-toggle="tab">Electorate</a></li>
-        <li id="source-tab-sel"><a href="#source-tab" data-toggle="tab">Invite</a></li>
         <li id="requested-tab-sel"><a href="#requested-tab" data-toggle="tab">Registration requested</a></li>
     </ul>
     
     <div class="tab-content">
         <div id="dest-tab" class="tab-pane active"></div>
-        
-        <div id="source-tab" class="tab-pane"></div>
-
         <div id="requested-tab" class="tab-pane"></div>
     </div>
 </script>
