@@ -49,7 +49,7 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
                 }
             },
             { 
-                text: 'Type', dataIndex: 'type', flex: 3,
+                text: 'Type', dataIndex: 'type', flex: 2,
                 renderer: function(value, metaData, record) {
                     return record.get('typeLabel');
                 },
@@ -75,12 +75,13 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
                 xtype: 'actioncolumn',
                 flex: 2,
                 text: 'Actions',
+                iconCls: ' fontawesome-icon',
                 items: [
                     {
                         icon: '/ui/ext/resources/fontawesome/list.png',
                         tooltip: 'Opens tab with users grid for this group',
                         handler: 'onOpenClick'
-                    }, '-', 
+                    },
                     {
                         icon: '/ui/ext/resources/fontawesome/edit.png',
                         tooltip: 'Edit this group',

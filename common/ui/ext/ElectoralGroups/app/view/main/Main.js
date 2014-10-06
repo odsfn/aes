@@ -27,14 +27,14 @@ Ext.define('ElectoralGroups.view.main.Main', {
             title: '{name}'
         },
         region: 'west',
-        flex: 2,
+        flex: 3,
         split: true,
         collapsible: true
     },{
         region: 'center',
         xtype: 'tabpanel',
         title: 'Electors',
-        flex: 4,
+        flex: 5,
         items:[{
             title: 'Registered in Election',
             closable: false,

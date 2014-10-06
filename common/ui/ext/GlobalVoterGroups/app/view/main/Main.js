@@ -22,14 +22,14 @@ Ext.define('GlobalVoterGroups.view.main.Main', {
             title: '{name}'
         },
         region: 'west',
-        flex: 2,
+        flex: 3,
         split: true,
         collapsible: true
     },{
         region: 'center',
         xtype: 'tabpanel',
         title: 'Members in group',
-        flex: 4
+        flex: 5
     }],
 
     initItems: function() {

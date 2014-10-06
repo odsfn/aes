@@ -52,7 +52,7 @@ Ext.define('Aes.view.groupsgrid.GroupsGrid', {
                 }
             },
             { 
-                text: 'Type', dataIndex: 'type', flex: 3,
+                text: 'Type', dataIndex: 'type', flex: 2,
                 renderer: function(value, metaData, record) {
                     return record.get('typeLabel');
                 },
@@ -73,17 +73,18 @@ Ext.define('Aes.view.groupsgrid.GroupsGrid', {
                 xtype: 'actioncolumn',
                 flex: 3,
                 text: 'Actions',
+                iconCls: ' fontawesome-icon',
                 items: [
                     {
                         icon: '/ui/ext/resources/fontawesome/list.png',
                         tooltip: 'Opens tab with users grid for this group',
                         handler: 'onOpenClick'
-                    }, '-', 
+                    },
                     {
                         icon: '/ui/ext/resources/fontawesome/edit.png',
                         tooltip: 'Edit this group',
                         handler: 'onEditClick'
-                    }, '-',
+                    },
                     {
                         icon: '/ui/ext/resources/fontawesome/copy.png',
                         tooltip: 'Make global copy of local group',
