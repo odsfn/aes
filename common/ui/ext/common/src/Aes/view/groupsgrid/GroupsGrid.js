@@ -1,7 +1,8 @@
 Ext.define('Aes.view.groupsgrid.GroupsGrid', {
     extend: 'Ext.grid.Panel',
     requires: [
-        'Ext.data.validator.Length'
+        'Ext.data.validator.Length',
+        'Ext.grid.column.Check'
     ],
     xtype: 'groupsgrid',
     selType: 'checkboxmodel',
@@ -119,10 +120,13 @@ Ext.define('Aes.view.groupsgrid.GroupsGrid', {
         pageSize: 25,
         displayInfo: true
     }],
+
+    _storeName: 'Aes.store.VoterGroups',
+
     initComponent: function() {
         this.callParent(arguments);
         
-        var store = Ext.getStore('Aes.store.VoterGroups');
+        var store = Ext.getStore(this._storeName);
         
         this.setStore(store);
         this.query('pagingtoolbar')[0].setStore(this.getStore());
