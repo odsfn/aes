@@ -52,40 +52,58 @@ class ElectionRegistrationTest extends WebTestCase
     }
 
     public function testCanRegisterAndRemove()
-    {
-        $this->openTestElection();
-
-        $this->assertElementNotPresent('css=#dest-tab div.items .user-info');
-
-        $firstUserSel = 'css=#source-tab div.items .user-info:nth-of-type(1)';
-        $firstUserAddBtnSel = $firstUserSel . ' .controls .icon-plus-sign';
-
-        $this->click('css=a[href="#source-tab"]');
-
-        $this->waitForElementPresent($firstUserSel);
-
-        $this->mouseOver($firstUserSel);
-        $this->assertVisible($firstUserAddBtnSel);
-        $this->click($firstUserAddBtnSel);
-
-        $this->waitForElementNotPresent($firstUserAddBtnSel);
-
-        $this->click('css=a[href="#dest-tab"]');
-
-        $this->assertElementPresent('css=#dest-tab .items .user-info');
-
-        $addedElectorSel = 'css=#dest-tab div.items .user-info:nth-of-type(1)';
-        $addedElectorRemoveBtnSel = $addedElectorSel . ' .controls .icon-minus-sign';
-
-        $this->mouseOver($addedElectorSel);
-        $this->assertVisible($addedElectorRemoveBtnSel);
-        $this->click($addedElectorRemoveBtnSel);
-
-        $this->waitForElementNotPresent($addedElectorSel);
-
-        $this->click('css=a[href="#source-tab"]');
-        $this->mouseOver($firstUserSel);
-        $this->assertVisible($firstUserAddBtnSel);
+    {        
+        $this->openTestElection(false);
+        $this->waitForCssCount('css=#dest-tab .items .user-info', 0);
+        
+        //check adding
+        $this->loginAsAdmin();
+        $this->open('election/manageVotersGroups/1');
+        
+        $this->selectFrame('id=ElectoralGroups');
+        $this->waitForElementPresent('id=members-tabs');
+        $this->sleep(1500);
+        $this->assertCssCount('css=#members-tabs table.x-grid-item', 0);
+        
+        $this->click('id=add-elector-btn');
+        $this->waitForPresent('id=add-electors-window-content', 20000);
+        $this->waitForCssCount('css=#add-electors-window-content table.x-grid-item', 6, 20000);
+        
+        $this->click('css=#add-electors-window-content .x-grid-header-ct .x-column-header-checkbox span');
+        $this->assertCssCount('css=#add-electors-window-content table.x-grid-item-selected', 6);
+        
+        $this->click('css=#add-electors-window-content #add-users-btn');
+        $this->waitForCssCount('css=#add-electors-window-content table.x-grid-item', 0, 10000);
+        $this->click('css=#add-electors-window img.x-tool-close');
+        
+        $this->waitForCssCount('css=#members-tabs table.x-grid-item', 6, 10000);
+        
+        $this->openTestElection(false);
+        $this->waitForCssCount('css=#dest-tab .items .user-info', 6, 10000);
+        
+        //check removing
+        $this->open('election/manageVotersGroups/1');
+        
+        $this->selectFrame('id=ElectoralGroups');
+        $this->waitForElementPresent('id=members-tabs');
+        $this->sleep(1500);
+        $this->assertCssCount('css=#members-tabs table.x-grid-item', 6);
+        
+        $this->click('css=#members-tabs .x-grid-header-ct .x-column-header-checkbox span');
+        $this->assertCssCount('css=#members-tabs table.x-grid-item-selected', 6);
+        
+        $this->click('css=#members-tabs #remove-elector-btn');
+        
+        //confirmation
+        $this->waitForElementPresent('css=.x-message-box');     //dialog opened
+        $this->waitForVisible('css=.x-message-box');
+        $this->click('css=.x-message-box .x-toolbar a.x-btn:nth-of-type(2)');   //confirm
+        
+        $this->waitForCssCount('css=#members-tabs table.x-grid-item', 0, 10000);
+        
+        $this->openTestElection(false);
+        $this->sleep(1500);
+        $this->waitForCssCount('css=#dest-tab .items .user-info', 0);
     }
 
     public function testAdminCantRegisterWithNotRegisterOrElectionStatus()
@@ -495,7 +513,7 @@ class ElectionRegistrationTest extends WebTestCase
 
     protected function checkRegistrationAvailability()
     {
-        return ($this->isVisible('css=#source-tab-sel') && $this->isElementPresent('css=#source-tab div.items'));
+        return ($this->isElementPresent('link=Voters and Groups Management') && $this->isVisible('link=Voters and Groups Management'));
     }
 
     protected function loginAsAdmin()
@@ -524,4 +542,7 @@ class ElectionRegistrationTest extends WebTestCase
                 $this->assertElementNotPresent($sel, 'Register button should not be present on the ' . $page . ' page');
         }
     }
+
+    
+    
 }

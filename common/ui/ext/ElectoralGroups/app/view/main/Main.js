@@ -22,20 +22,23 @@ Ext.define('ElectoralGroups.view.main.Main', {
     },
 
     items: [{
+        id: 'groups-grid',
         xtype: 'groupsgrid',
         bind: {
             title: '{name}'
         },
         region: 'west',
-        flex: 2,
+        flex: 3,
         split: true,
         collapsible: true
     },{
+        id: 'members-tabs',
         region: 'center',
         xtype: 'tabpanel',
         title: 'Electors',
-        flex: 4,
+        flex: 5,
         items:[{
+            id: 'electorate',
             title: 'Registered in Election',
             closable: false,
             xtype: 'electorsgrid'

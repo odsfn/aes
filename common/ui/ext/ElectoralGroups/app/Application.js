@@ -20,7 +20,7 @@ Ext.define('ElectoralGroups.Application', {
     name: 'ElectoralGroups',
 
     stores: [
-        'VoterGroups', 'ElectionVoterGroups'
+        'AssignableVoterGroups', 'ElectionVoterGroups'
     ],
     
     controllers: [
@@ -39,7 +39,7 @@ Ext.define('ElectoralGroups.Application', {
     },
     
     launch: function () {
-        var voterGroups = this.getStore('VoterGroups');
+        var voterGroups = this.getStore('AssignableVoterGroups');
         voterGroups.setFilters([{
             property: 'electionScope',
             value: {

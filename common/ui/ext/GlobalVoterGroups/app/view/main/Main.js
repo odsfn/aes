@@ -17,19 +17,21 @@ Ext.define('GlobalVoterGroups.view.main.Main', {
     },
 
     items: [{
+        id: 'groups-grid',
         xtype: 'groupsgrid',
         bind: {
             title: '{name}'
         },
         region: 'west',
-        flex: 2,
+        flex: 3,
         split: true,
         collapsible: true
     },{
+        id: 'members-tabs',
         region: 'center',
         xtype: 'tabpanel',
         title: 'Members in group',
-        flex: 4
+        flex: 5
     }],
 
     initItems: function() {

@@ -129,7 +129,7 @@ class WebTestCase extends CWebTestCase
             $this->runScript('$("' . $selector . '").trigger("' . $event . '");');
         }
         
-        protected function isElementHasClass($sel, $targetClass) {
+        public function isElementHasClass($sel, $targetClass) {
             
             $class = $this->getAttribute($sel, 'class');
             
@@ -163,6 +163,15 @@ class WebTestCase extends CWebTestCase
             $this->assertFalse($this->isElementHasClass($sel, $targetClass));
         }
 
+        protected function waitForElementHasNoClass($sel, $targetClass, $time = 5000, $interval = 250)
+        {
+            $that = $this;
+            $callback = function() use ($that, $sel, $targetClass) {
+                return !$that->isElementHasClass($sel, $targetClass);
+            };
+            $this->waitFor($callback, $message = 'Timeout', $time, $interval);
+        }
+        
 //      @todo: fix it
 //        protected function waitForElementHasNoClass($sel, $targetClass)
 //        {

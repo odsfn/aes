@@ -1,6 +1,7 @@
 Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGridController', {
     requires: [
-        'ElectoralGroups.view.usersadd.UsersAdd'
+        'Aes.view.usersadd.UsersAdd',
+        'ElectoralGroups.view.usersadd.UsersAddToGroupController'
     ],
     extend: 'Ext.app.ViewController',
 
@@ -9,7 +10,7 @@ Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGridController', {
     onClickAddButton: function () 
     {
         var group = this.group,
-            usersadd = Ext.create('ElectoralGroups.view.usersadd.UsersAdd', {
+            usersadd = Ext.create('Aes.view.usersadd.UsersAdd', {
                 viewModel: {
                     data: {
                         group: group,
@@ -59,7 +60,7 @@ Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGridController', {
     init: function() 
     {
         this.group = this.getView().getViewModel().getData().group;
-        this.members = Ext.create('ElectoralGroups.store.VoterGroupMembers', {
+        this.members = Ext.create('Aes.store.VoterGroupMembers', {
             filters: [
                 { property: 'voter_group_id', value: this.group.get('id') }
             ],

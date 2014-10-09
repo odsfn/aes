@@ -92,9 +92,9 @@ Ext.define('ElectoralGroups.view.requestsgrid.PanelController', function(PanelCo
 
                         ElectoralGroups.app.getStore('ElectionVoterGroups')
                             .each(function(groupAssignment) {
-                                var group = ElectoralGroups.app.getStore('VoterGroups').getById(groupAssignment.get('voter_group_id'));
+                                var group = ElectoralGroups.app.getStore('AssignableVoterGroups').getById(groupAssignment.get('voter_group_id'));
 
-                                if(!group || group.get('type') == ElectoralGroups.model.VoterGroup.TYPE_GLOBAL)
+                                if(!group || group.get('type') == ElectoralGroups.model.AssignableVoterGroup.TYPE_GLOBAL)
                                     return;
 
                                 var groupName = group.get('name'),

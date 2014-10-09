@@ -39,6 +39,8 @@ Aes.NotificationView = Aes.ItemView.extend({
 Aes.NotificationsView = Marionette.CollectionView.extend({
     itemView: Aes.NotificationView,
     
+    topContainerSel: 'div.flash-messages',
+    
     notify: function() {
         
         var config = arguments[0];
@@ -58,14 +60,54 @@ Aes.NotificationsView = Marionette.CollectionView.extend({
     
     initialize: function(options) {
         this.collection = new Backbone.Collection([]);
+        
+        this.collection.on('add remove', function(model, collection, opts) {
+            if (collection.length > 0)
+                $(this.topContainerSel).show();
+            else
+                $(this.topContainerSel).hide();
+        }, this);
     }
 });
 
 Aes.Notifications = (function() {
-    var notificationsView = new Aes.NotificationsView();
+    var notificationsView = new Aes.NotificationsView(),
+        $cntr = 'div.flash-messages > div > div',
+        
+        collectMessagesFromHtml = function() {
+            var messages = [];
+            
+            $cntr.find('div').each(function(index, el) {
+                var type = '',
+                    $el = $(el);
+
+                if ($el.hasClass('alert-success'))
+                    type = 'success';
+                else if ($el.hasClass('alert-info'))
+                    type = 'info';
+                else if ($el.hasClass('alert-error'))
+                    type = 'error';
+
+                //remove close btn
+                $el.find('a.close').remove();
+
+                messages.push({
+                    body: $el.html(),
+                    type: type
+                });
+            });
+            
+            $cntr.html('');
+            
+            return messages;
+        };
     
     $(function() {
-        notificationsView.setElement($('div.flash-messages > div > div'));
+        $cntr = $($cntr);
+        var messages = collectMessagesFromHtml();
+        notificationsView.setElement($cntr);
+        if(messages.length)
+            notificationsView.collection.add(messages);
     });
     
     return {

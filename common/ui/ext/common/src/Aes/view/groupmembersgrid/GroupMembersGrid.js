@@ -1,9 +1,6 @@
 // Lists all users in the system, allows to extend it to provide 
 // custom operations
 Ext.define('Aes.view.groupmembersgrid.GroupMembersGrid', {
-    requires: [
-        'Aes.view.groupmembersgrid.GroupMembersGridController'
-    ],
     extend: 'Aes.view.usersgrid.UsersGrid',
     xtype: 'groupmembersgrid',
     controller: 'groupmembersgrid',
@@ -82,6 +79,7 @@ Ext.define('Aes.view.groupmembersgrid.GroupMembersGrid', {
             dock: 'top',
             items: [
                 {
+                    itemId: 'addButton',
                     text:'Add',
                     handler: 'onClickAddButton'
                 }, {

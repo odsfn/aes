@@ -1,7 +1,8 @@
 Ext.define('Aes.view.groupsgrid.GroupsGrid', {
     extend: 'Ext.grid.Panel',
     requires: [
-        'Ext.data.validator.Length'
+        'Ext.data.validator.Length',
+        'Ext.grid.column.Check'
     ],
     xtype: 'groupsgrid',
     selType: 'checkboxmodel',
@@ -52,7 +53,7 @@ Ext.define('Aes.view.groupsgrid.GroupsGrid', {
                 }
             },
             { 
-                text: 'Type', dataIndex: 'type', flex: 3,
+                text: 'Type', dataIndex: 'type', flex: 2,
                 renderer: function(value, metaData, record) {
                     return record.get('typeLabel');
                 },
@@ -73,17 +74,18 @@ Ext.define('Aes.view.groupsgrid.GroupsGrid', {
                 xtype: 'actioncolumn',
                 flex: 3,
                 text: 'Actions',
+                iconCls: ' fontawesome-icon',
                 items: [
                     {
                         icon: '/ui/ext/resources/fontawesome/list.png',
                         tooltip: 'Opens tab with users grid for this group',
                         handler: 'onOpenClick'
-                    }, '-', 
+                    },
                     {
                         icon: '/ui/ext/resources/fontawesome/edit.png',
                         tooltip: 'Edit this group',
                         handler: 'onEditClick'
-                    }, '-',
+                    },
                     {
                         icon: '/ui/ext/resources/fontawesome/copy.png',
                         tooltip: 'Make global copy of local group',
@@ -100,10 +102,12 @@ Ext.define('Aes.view.groupsgrid.GroupsGrid', {
         xtype: 'toolbar',
         dock: 'top',
         items: [{
+            id: 'create-group-btn',
             text:'Add Group',
             tooltip:'Add a new group',
             handler: 'onClickAddButton'
         }, {
+            id: 'remove-groups-btn',
             itemId: 'removeButton',
             text:'Remove Groups',
             tooltip:'Remove the selected group',
@@ -116,10 +120,13 @@ Ext.define('Aes.view.groupsgrid.GroupsGrid', {
         pageSize: 25,
         displayInfo: true
     }],
+
+    _storeName: 'Aes.store.VoterGroups',
+
     initComponent: function() {
         this.callParent(arguments);
         
-        var store = Ext.getStore('Aes.store.VoterGroups');
+        var store = Ext.getStore(this._storeName);
         
         this.setStore(store);
         this.query('pagingtoolbar')[0].setStore(this.getStore());

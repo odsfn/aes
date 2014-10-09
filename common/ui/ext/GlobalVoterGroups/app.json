@@ -144,6 +144,9 @@
         {
             "path": "bootstrap.css",
             "bootstrap": true
+        },
+        {
+            "path": "../resources/css/aes.css"
         }
     ],
 
@@ -158,7 +161,8 @@
             "index.html",
             "app.json",
             "app.js",
-            "resources/GlobalVoterGroups-all.css"
+            "resources/GlobalVoterGroups-all.css",
+            "resources/css/aes.css"
         ],
         /**
          * List of items in the NETWORK section
@@ -208,7 +212,7 @@
      * override objects for setting build environment specific 
      * settings.
      */
-    "production": {
+    "production": {      
     },
     
     "testing": {

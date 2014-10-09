@@ -8,52 +8,12 @@ App.Layout = Marionette.Layout.extend({
     template: '#collect-layout-tpl',
     regions: {
         destination: '#dest-tab',
-        source: '#source-tab',
         requested: '#requested-tab'
     }
 });
 
-ElectorateApp.UserItemView = Aes.UserItemView.extend({
-    
-    modelEvents: {
-        'change:added': 'render'
-    },
-    
-    getControls: function() {
-        return {
-            invite: {
-                text: 'Add',
-                iconType: 'plus-sign',
-
-                onRun: function() {
-                    this._parent.$el.mask();
-                    
-                    ElectorateApp.electorate.create( 
-                        {
-                            election_id: ElectorateApp.getOption('electionId'),
-                            user_id: this._parent.model.get('user_id')
-                        }, 
-                        {
-                            success: _.bind(function() {
-                                this._parent.model.set('added', true);
-                                this._parent.$el.unmask();
-                            }, this),
-                            wait: true
-                        }
-                    );
-                },
-
-                onBeforeShow: function() {
-                    var result = !this._parent.model.get('added');
-                    return result;
-                }
-            }
-        };
-    }
-});
-
 ElectorateApp.FeedView = Aes.FeedView.extend({
-    itemView: ElectorateApp.UserItemView,
+    itemView: Aes.UserItemView,
     uiAttributes: {
         items: {
             class: '<%= classes %> span8'
@@ -136,7 +96,7 @@ App.addInitializer(function(options) {
         fields: {
                 name: {
                     label: 'Name',
-                    type: 'text',
+                    type: 'text'
                 },
                 birth_place: {
                     label: 'Birth Place'
@@ -179,12 +139,6 @@ App.addInitializer(function(options) {
     };
    
     this.layout = new App.Layout();
-    this.users = new Aes.Users();
-    this.users.filters.applyScopes = '{notElector: {election_id: '+ options.electionId +'}}';
-    this.usersView = new ElectorateApp.FeedView({
-       collection: this.users,
-       filters: filter
-    });
     
     this.electorate = new Electorate();
     this.electorate.setElectionId(options.electionId);
@@ -229,20 +183,12 @@ App.on('start', function(options) {
     
     this.layout.destination.show(this.electorateView);
     
-    if(options.canInvite) {
-        this.layout.source.show(this.usersView);
-        $('#source-tab-sel').show();
-    }
-    
     if(options.showConfirmationTab) {
         this.layout.requested.show(this.registrationRequestsView);
         $('#requested-tab-sel').show();
     }
     
-    this.electorate.fetch().then(function(){
-        if(options.canInvite)
-            ElectorateApp.users.fetch();
-        
+    this.electorate.fetch().then(function(){        
         if(options.showConfirmationTab) {
             ElectorateApp.registrationRequests.fetch();
         }
