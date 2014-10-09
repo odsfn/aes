@@ -4,7 +4,8 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGridController', {
     requires: [
         'Ext.MessageBox',
         'ElectoralGroups.store.VoterGroupMembers',
-        'ElectoralGroups.view.groupmembersgrid.GroupMembersGrid'
+        'Aes.view.groupmembersgrid.GroupMembersGrid',
+        'ElectoralGroups.view.groupmembersgrid.GroupMembersGridController'
     ],
 
     alias: 'controller.groupsgrid',
