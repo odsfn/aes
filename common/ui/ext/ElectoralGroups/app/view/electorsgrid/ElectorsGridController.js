@@ -1,6 +1,7 @@
 Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
     requires: [
         'Aes.UrlHelper',
+        'Aes.view.usersadd.UsersAdd',
         'ElectoralGroups.view.usersadd.UsersAddToElectionController'
     ],
     extend: 'Ext.app.ViewController',
@@ -10,7 +11,7 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
     onClickAddButton: function () 
     {
         var election = this.election,
-            usersadd = Ext.create('ElectoralGroups.view.usersadd.UsersAdd', {
+            usersadd = Ext.create('Aes.view.usersadd.UsersAdd', {
                 items: {
                     id: 'add-electors-window-content',
                     xclass: 'Aes.view.usersgrid.OperableUsersGrid',

@@ -1,6 +1,7 @@
 Ext.define('Aes.view.groupmembersgrid.GroupMembersGridController', {
     requires: [
-        'Aes.view.usersadd.UsersAdd'
+        'Aes.view.usersadd.UsersAdd',
+        'Aes.view.usersadd.UsersAddToGroupController'
     ],
     extend: 'Ext.app.ViewController',
 
