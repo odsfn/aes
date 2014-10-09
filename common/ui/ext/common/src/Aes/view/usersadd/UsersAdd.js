@@ -6,6 +6,8 @@ Ext.define('Aes.view.usersadd.UsersAdd', {
     ],
     extend: 'Ext.window.Window',
     xtype: 'usersadd',
+    
+    id: 'add-electors-window',
     title: 'Users adding to the selected group',
     maximized: true,
     resizable: false,

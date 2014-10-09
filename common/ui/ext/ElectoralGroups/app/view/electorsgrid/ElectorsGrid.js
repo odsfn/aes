@@ -16,16 +16,19 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGrid', {
             dock: 'top',
             items: [
                 {
+                    id: 'add-elector-btn',
                     itemId: 'addButton',
                     text:'Add',
                     disabled: false,
                     handler: 'onClickAddButton'
                 }, {
+                    id: 'remove-elector-btn',
                     itemId: 'removeButton',
                     text:'Remove',
                     disabled: true,
                     handler: 'onClickRemoveButton'
                 }, '-', {
+                    id: 'register-electors-btn',
                     itemId: 'registerButton',
                     text: 'Register electors from groups',
                     disabled: true,

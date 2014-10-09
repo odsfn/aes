@@ -52,8 +52,58 @@ class ElectionRegistrationTest extends WebTestCase
     }
 
     public function testCanRegisterAndRemove()
-    {
-        $this->markTestIncomplete();
+    {        
+        $this->openTestElection(false);
+        $this->waitForCssCount('css=#dest-tab .items .user-info', 0);
+        
+        //check adding
+        $this->loginAsAdmin();
+        $this->open('election/manageVotersGroups/1');
+        
+        $this->selectFrame('id=ElectoralGroups');
+        $this->waitForElementPresent('id=members-tabs');
+        $this->sleep(1500);
+        $this->assertCssCount('css=#members-tabs table.x-grid-item', 0);
+        
+        $this->click('id=add-elector-btn');
+        $this->waitForPresent('id=add-electors-window-content', 20000);
+        $this->waitForCssCount('css=#add-electors-window-content table.x-grid-item', 6, 20000);
+        
+        $this->click('css=#add-electors-window-content .x-grid-header-ct .x-column-header-checkbox span');
+        $this->assertCssCount('css=#add-electors-window-content table.x-grid-item-selected', 6);
+        
+        $this->click('css=#add-electors-window-content #add-users-btn');
+        $this->waitForCssCount('css=#add-electors-window-content table.x-grid-item', 0, 10000);
+        $this->click('css=#add-electors-window img.x-tool-close');
+        
+        $this->waitForCssCount('css=#members-tabs table.x-grid-item', 6, 10000);
+        
+        $this->openTestElection(false);
+        $this->waitForCssCount('css=#dest-tab .items .user-info', 6, 10000);
+        
+        //check removing
+        $this->open('election/manageVotersGroups/1');
+        
+        $this->selectFrame('id=ElectoralGroups');
+        $this->waitForElementPresent('id=members-tabs');
+        $this->sleep(1500);
+        $this->assertCssCount('css=#members-tabs table.x-grid-item', 6);
+        
+        $this->click('css=#members-tabs .x-grid-header-ct .x-column-header-checkbox span');
+        $this->assertCssCount('css=#members-tabs table.x-grid-item-selected', 6);
+        
+        $this->click('css=#members-tabs #remove-elector-btn');
+        
+        //confirmation
+        $this->waitForElementPresent('css=.x-message-box');     //dialog opened
+        $this->waitForVisible('css=.x-message-box');
+        $this->click('css=.x-message-box .x-toolbar a.x-btn:nth-of-type(2)');   //confirm
+        
+        $this->waitForCssCount('css=#members-tabs table.x-grid-item', 0, 10000);
+        
+        $this->openTestElection(false);
+        $this->sleep(1500);
+        $this->waitForCssCount('css=#dest-tab .items .user-info', 0);
     }
 
     public function testAdminCantRegisterWithNotRegisterOrElectionStatus()
@@ -492,4 +542,7 @@ class ElectionRegistrationTest extends WebTestCase
                 $this->assertElementNotPresent($sel, 'Register button should not be present on the ' . $page . ' page');
         }
     }
+
+    
+    
 }

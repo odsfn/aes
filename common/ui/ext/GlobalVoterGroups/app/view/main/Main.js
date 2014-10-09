@@ -17,6 +17,7 @@ Ext.define('GlobalVoterGroups.view.main.Main', {
     },
 
     items: [{
+        id: 'groups-grid',
         xtype: 'groupsgrid',
         bind: {
             title: '{name}'
@@ -26,6 +27,7 @@ Ext.define('GlobalVoterGroups.view.main.Main', {
         split: true,
         collapsible: true
     },{
+        id: 'members-tabs',
         region: 'center',
         xtype: 'tabpanel',
         title: 'Members in group',

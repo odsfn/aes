@@ -98,10 +98,12 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
         xtype: 'toolbar',
         dock: 'top',
         items: [{
+            id: 'create-group-btn',
             text:'Add Group',
             tooltip:'Add a new group',
             handler: 'onClickAddButton'
         }, {
+            id: 'remove-groups-btn',
             itemId: 'removeButton',
             text:'Remove Groups',
             tooltip:'Remove the selected group',

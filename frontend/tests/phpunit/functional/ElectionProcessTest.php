@@ -20,7 +20,7 @@ class ElectionProcessTest extends WebTestCase
     );    
     
     public function testProcess() 
-    {
+    {   
         $this->login("truvazia@gmail.com", "qwerty");
         
         $this->click("link=Elections");
@@ -71,16 +71,27 @@ class ElectionProcessTest extends WebTestCase
         $this->click("css=div.user-info:nth-of-type(1) > div.pull-right > span.controls > small");
         $this->click("css=div.user-info:nth-of-type(2) > div.pull-right > span.controls > small");
         
-        $this->click("link=Electorate");
-        $this->waitForPageToLoad("3000");
-        $this->click("link=Invite");
-        $this->waitForElementPresent("css=div.user-info");
-        $this->click("css=div.user-info:nth-of-type(1) > div.pull-right.right-top-panel > span.controls > small");
-        $this->click("css=div.user-info:nth-of-type(2) > div.pull-right.right-top-panel > span.controls > small");
-        $this->click("css=div.user-info:nth-of-type(3) > div.pull-right.right-top-panel > span.controls > small");
-        $this->click("css=div.user-info:nth-of-type(4) > div.pull-right.right-top-panel > span.controls > small");
-        $this->click("css=div.user-info:nth-of-type(6) > div.pull-right.right-top-panel > span.controls > small");
+        $this->click("link=Voters and Groups Management");
+        $this->waitForPageToLoad();
+        $this->selectFrame('id=ElectoralGroups');
+        $this->waitForElementPresent('id=members-tabs');
+        $this->sleep(1500);
+        $this->assertCssCount('css=#members-tabs table.x-grid-item', 0);
+        
+        $this->click('id=add-elector-btn');
+        $this->waitForPresent('id=add-electors-window-content', 20000);
+        $this->waitForCssCount('css=#add-electors-window-content table.x-grid-item', 6, 20000);
+        
+        $this->click('css=#add-electors-window-content .x-grid-header-ct .x-column-header-checkbox span');
+        $this->assertCssCount('css=#add-electors-window-content table.x-grid-item-selected', 6);
+        
+        $this->click('css=#add-electors-window-content #add-users-btn');
+        $this->waitForCssCount('css=#add-electors-window-content table.x-grid-item', 0, 10000);
+        $this->click('css=#add-electors-window img.x-tool-close');
 
+        $this->open('election/manageVotersGroups/3');
+        $this->waitForPageToLoad();
+        
         $this->click("link=Your page");
         $this->waitForPageToLoad("3000");
         $this->click("link=My nominations");

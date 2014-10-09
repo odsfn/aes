@@ -22,6 +22,7 @@ Ext.define('ElectoralGroups.view.main.Main', {
     },
 
     items: [{
+        id: 'groups-grid',
         xtype: 'groupsgrid',
         bind: {
             title: '{name}'
@@ -31,11 +32,13 @@ Ext.define('ElectoralGroups.view.main.Main', {
         split: true,
         collapsible: true
     },{
+        id: 'members-tabs',
         region: 'center',
         xtype: 'tabpanel',
         title: 'Electors',
         flex: 5,
         items:[{
+            id: 'electorate',
             title: 'Registered in Election',
             closable: false,
             xtype: 'electorsgrid'

@@ -12,6 +12,7 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
         var election = this.election,
             usersadd = Ext.create('ElectoralGroups.view.usersadd.UsersAdd', {
                 items: {
+                    id: 'add-electors-window-content',
                     xclass: 'Aes.view.usersgrid.OperableUsersGrid',
                     controller: 'add-to-election',
                     border: false

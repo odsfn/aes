@@ -22,6 +22,7 @@ Ext.define('Aes.view.usersgrid.OperableUsersGrid', {
             layout: { pack: 'end' },
             items: [
                 {
+                    id: 'add-users-btn',
                     itemId: 'addBtn',
                     scale: 'large',
                     text: '<b>Add</b>',
