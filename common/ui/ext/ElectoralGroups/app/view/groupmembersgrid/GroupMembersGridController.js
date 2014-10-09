@@ -60,7 +60,7 @@ Ext.define('ElectoralGroups.view.groupmembersgrid.GroupMembersGridController', {
     init: function() 
     {
         this.group = this.getView().getViewModel().getData().group;
-        this.members = Ext.create('ElectoralGroups.store.VoterGroupMembers', {
+        this.members = Ext.create('Aes.store.VoterGroupMembers', {
             filters: [
                 { property: 'voter_group_id', value: this.group.get('id') }
             ],

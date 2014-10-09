@@ -153,7 +153,7 @@ Ext.define('ElectoralGroups.view.electorsgrid.ElectorsGridController', {
             grid.down('#removeButton').setDisabled(selections.length === 0);
         });
         
-        var groups = ElectoralGroups.app.getStore('VoterGroups'),
+        var groups = ElectoralGroups.app.getStore('AssignableVoterGroups'),
             hasAssignedGroups = function() {
                 return !!(groups.find('assigned', true) >= 0);
             },

@@ -3,7 +3,7 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGridController', {
 
     requires: [
         'Ext.MessageBox',
-        'ElectoralGroups.store.VoterGroupMembers',
+        'Aes.store.VoterGroupMembers',
         'Aes.view.groupmembersgrid.GroupMembersGrid',
         'ElectoralGroups.view.groupmembersgrid.GroupMembersGridController'
     ],
@@ -12,11 +12,11 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGridController', {
 
     createModel: function() 
     {
-        var model = new ElectoralGroups.model.VoterGroup();
+        var model = new ElectoralGroups.model.AssignableVoterGroup();
         model.set('id', null);
         model.set('user_id', ElectoralGroups.app.options.userId);
         model.set('election_id', ElectoralGroups.app.options.electionId);
-        model.set('type', ElectoralGroups.model.VoterGroup.getTypeId('Local'));
+        model.set('type', ElectoralGroups.model.AssignableVoterGroup.getTypeId('Local'));
         model.set('name', '');
         return model;
     },

@@ -119,7 +119,7 @@ Ext.define('ElectoralGroups.view.groupsgrid.GroupsGrid', {
     initComponent: function() {
         this.callParent(arguments);
         
-        var store = Ext.getStore('VoterGroups');
+        var store = Ext.getStore('AssignableVoterGroups');
         
         this.setStore(store);
         this.query('pagingtoolbar')[0].setStore(this.getStore());

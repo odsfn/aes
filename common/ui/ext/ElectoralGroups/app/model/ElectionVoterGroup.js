@@ -10,7 +10,7 @@ Ext.define('ElectoralGroups.model.ElectionVoterGroup', {
             name: 'voter_group_id',
             type: 'int',
             reference: {
-                parent: 'VoterGroup',
+                parent: 'AssignableVoterGroup',
                 role: 'voterGroup'
             }
         }

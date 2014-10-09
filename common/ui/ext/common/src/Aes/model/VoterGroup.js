@@ -52,6 +52,9 @@ Ext.define('Aes.model.VoterGroup', function(VoterGroup) {
         },
         
         statics: {
+            TYPE_LOCAL: 1,
+            TYPE_GLOBAL: 0,
+            
             types: function() {
                 return ['Global', 'Local'];
             },

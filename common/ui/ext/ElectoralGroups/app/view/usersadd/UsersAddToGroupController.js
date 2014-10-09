@@ -1,6 +1,6 @@
 Ext.define('ElectoralGroups.view.usersadd.UsersAddToGroupController', {
     requires: [
-        'ElectoralGroups.model.VoterGroupMember'
+        'Aes.model.VoterGroupMember'
     ],
     
     extend: 'Ext.app.ViewController',
@@ -24,7 +24,7 @@ Ext.define('ElectoralGroups.view.usersadd.UsersAddToGroupController', {
 
         var groupMembers = [];
         Ext.each(sel.getSelection(), function(user, index) {
-            var newMember = Ext.create('ElectoralGroups.model.VoterGroupMember', {
+            var newMember = Ext.create('Aes.model.VoterGroupMember', {
                 voter_group_id: group.get('id'),
                 user_id: user.get('user_id')
             });
