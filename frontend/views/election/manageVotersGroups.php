@@ -14,17 +14,19 @@ $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
         <?php 
             Yii::app()->clientScript->registerPackage('loadmask');
             
+            $postfix = '';
             $src = Yii::app()->getBaseUrl(true) . '/ui/ext/';
             $baseUrl = '/';
             
             if (Yii::app()->params['ext_debug'] == false) {
                 $src .= 'build/production/';
+                $postfix = '?cache';
             }
             
             if(defined('TEST_APP_INSTANCE'))
                 $baseUrl = '/index-test.php/';
             
-            $src .= 'ElectoralGroups/index.html';
+            $src .= 'ElectoralGroups/index.html' . $postfix;
         ?>
         <iframe id="ElectoralGroups" src="<?= $src ?>" class="ext-app"></iframe>
     </div>
