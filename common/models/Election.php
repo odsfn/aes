@@ -560,6 +560,12 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         return $this->getImage(96);
     }
     
+    /**
+     * This method fixes error which appears when ElectorRegistrationRequest model 
+     * is saved through RestController
+     */
+    public function setImageThmbnl96($value) {}
+
     public function getAttributes($names = true)
     {
         $attrs = parent::getAttributes($names);

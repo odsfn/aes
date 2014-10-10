@@ -281,7 +281,7 @@ class MarionetteWidget extends CWidget {
                 array($this->widgetName => $this->requires)
         );
 
-        Yii::log('Package will be registered by widget "' . $this->widgetName . '". All packages: ' . print_r($this->clientScript->packages, true));
+//        Yii::log('Package will be registered by widget "' . $this->widgetName . '". All packages: ' . print_r($this->clientScript->packages, true));
         
         $this->clientScript->registerPackage($this->widgetName);        
     }
