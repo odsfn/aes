@@ -40,14 +40,6 @@ Yii::import('stateMachine.*');
  */
 class Election extends CActiveRecord implements iPostable, iCommentable
 {
-    const IMAGE_WIDTH = 400;
-
-    const IMAGE_HEIGHT = 400;
-
-    const IMAGE_QUALITY = 95;
-
-    const IMAGE_SAVE_PATH = '/www/uploads/elections/';
-
     const UNASSIGNED_CAN_POST = 2;
 
     const UNASSIGNED_CAN_READ = 1;
@@ -145,7 +137,8 @@ class Election extends CActiveRecord implements iPostable, iCommentable
     public function getHave_pic()
     {
         if ($this->_have_pic === null)
-            $this->_have_pic = (int) is_file($this->creratePicPath());
+            $this->_have_pic = !empty($this->image);
+        
         return $this->_have_pic;
     }
 
@@ -223,6 +216,15 @@ class Election extends CActiveRecord implements iPostable, iCommentable
                 "defaultStateName" => "not_saved",
                 "checkTransitionMap" => true,
                 "stateName" => $this->statusName,
+            ),
+            'uploadingImage' => array(
+                'class' => 'common.components.UploadingImageBehavior',
+                'uploadingImageAttr' => 'uploaded_file',
+                'imagePathAttr' => 'image',
+                'imagesDir' => '/uploads/elections',
+                'useDefault' => false,
+                'thumbnailsToCreate' => array(96),
+                'resize' => array(400, 400)
             )
         );
     }
@@ -263,16 +265,8 @@ class Election extends CActiveRecord implements iPostable, iCommentable
             array('revote_time, remove_vote_time, revotes_count', 'numerical', 
                 'integerOnly' => true, 'min' => 0),
             array('voter_group_restriction', 'in', 'range' => array_keys(self::$voter_group_restrictions)),
-//            array('voter_reg_type', 'in', 
-//                'range' => $this->getAllowedVoterRegTypes(),
-//                'on' => 'update'
-//            ),
-//            array('voter_reg_confirm', 'in', 
-//                'range' => $this->getAllowedVoterRegConfirmTypes(), 
-//                'on' => 'update'
-//            ),
             array('id, name, status, text_status, have_pic, revotes_count,'
-                . ' remove_vote_time, revote_time', 'safe', 'on' => 'rest'),
+                . ' remove_vote_time, revote_time, imageThmbnl96', 'safe', 'on' => 'rest'),
         );
     }
     
@@ -323,7 +317,8 @@ class Election extends CActiveRecord implements iPostable, iCommentable
             'uploaded_file' => 'Image',
             'revotes_count' => 'Revote Count',
             'remove_vote_time' => 'Remove Vote Time (minutes after vote added)',
-            'revote_time' => 'Revote Time (minutes after last vote revoked)'
+            'revote_time' => 'Revote Time (minutes after last vote revoked)',
+            'image' => 'Uploaded image relative path'
         );
     }
 
@@ -394,15 +389,10 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         return true;
     }
 
-    protected function creratePicPath()
-    {
-        return Yii::app()->basePath . '/www/uploads/elections/' . $this->id . '.jpg';
-    }
-
     public function getPicUrl()
     {
         if ($this->have_pic) {
-            return Yii::app()->getBaseUrl(true) . '/uploads/elections/' . $this->id . '.jpg';
+            return Yii::app()->getBaseUrl(true) . '/uploads/elections/' . $this->image;
         }
 
         return false;
@@ -564,6 +554,18 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         
         return parent::beforeSave();
     }
+    
+    public function getImageThmbnl96()
+    {
+        return $this->getImage(96);
+    }
+    
+    public function getAttributes($names = true)
+    {
+        $attrs = parent::getAttributes($names);
+        $attrs['imageThmbnl96'] = $this->getImageThmbnl96();
+        return $attrs;
+    }    
 }
 
 class ElectionFinishedState extends AState

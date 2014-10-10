@@ -33,7 +33,12 @@
         <div class="election-info row-fluid">
 
             <div class="pull-left">
-                <div style="width: 96px; height: 96px; background-color: #000;" class="election-photo"><span></span><img class="elect_th" alt="<?php echo Yii::t('aes','Election'); ?>" <% if (have_pic) { %> src="/uploads/elections/<%= id %>.jpg" <% } %>></div>
+                <div style="width: 96px; height: 96px; background-color: #000;" class="election-photo">
+                    <span></span>
+                    <img class="elect_th" alt="<?php echo Yii::t('aes','Election'); ?>" 
+                        <% if (have_pic) { %> src="<%= imageThmbnl96 %>" <% } %>
+                    >
+                </div>
             </div>
 
             <div class="election_block">

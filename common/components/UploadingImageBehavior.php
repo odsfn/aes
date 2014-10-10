@@ -58,6 +58,16 @@ class UploadingImageBehavior extends CActiveRecordBehavior
     
     public $uploadOnBeforeSave = true;
     
+    /**
+     * Set this attribute to an array in which first item is considered as width
+     * and second as height of the resizing uploaded image. 
+     * 
+     * NOTE: The source image will not be stored. It will be replaced by resized one.
+     * 
+     * @var array
+     */
+    public $resize = null;
+    
     protected $imageUploadingProcessed = false;
 
     public function __construct()
@@ -132,8 +142,16 @@ class UploadingImageBehavior extends CActiveRecordBehavior
             }
         }
 
-        $uploadedFile->saveAs($basePath . $filename);
+        $uploadedFile->saveAs($filepath = $basePath . $filename);
 
+        if(is_array($this->resize)) {
+            $sizes = array_values($this->resize);
+            $width = $sizes[0];
+            $height = !empty($sizes[1]) ? $sizes[1] : $width;
+            
+            $this->resizeImage($filepath, $filepath, $width, $height);
+        }
+        
         $this->owner->{$this->imagePathAttr} = $filename;
 
         if ($this->thumbnailsToCreate && is_array($this->thumbnailsToCreate)) {

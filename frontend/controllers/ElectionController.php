@@ -53,17 +53,6 @@ class ElectionController extends FrontController
             $model->user_id = Yii::app()->user->id;
             $model->status = 0;
 
-            $model->uploaded_file = CUploadedFile::getInstance($model,'uploaded_file');
-            switch ($model->uploaded_file->type) {
-                case 'image/jpeg' :
-                case 'image/png' :
-                case 'image/gif' :
-                    $is_image = true;
-                    break;
-                default:
-                    $is_image = false;
-            }
-
             if ($model->validate()) {
                 $gallery = new Gallery();
                 $gallery->name = true;
@@ -82,12 +71,6 @@ class ElectionController extends FrontController
                 $gallery->save();
                 $model->gallery_id = $gallery->id;
                 if ($model->save()) {
-                    if ($model->uploaded_file && $is_image) {
-                        $image = Yii::app()->image->load($model->uploaded_file->tempName);
-                        $image->resize(Election::IMAGE_WIDTH, Election::IMAGE_HEIGHT)->quality(Election::IMAGE_QUALITY);
-                        $image->save(Yii::app()->basePath . Election::IMAGE_SAVE_PATH.$model->id.'.jpg');
-                    }
-
                     $this->assignRoles($model);
 
                     $transaction->commit();
