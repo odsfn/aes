@@ -25,12 +25,6 @@ class ElectorController extends RestController {
         'first_name', 'last_name', 'photo', 'photo_thmbnl_64', 'birth_place', 'birth_day', 'displayName'
     );
     
-    public function getOutputFormatters() {
-        return array(
-            'profile.birth_day' => array('Formatter', 'toTs')
-        );
-    } 
-    
     public function doRestList() {
         
         $model = $this->getModel();

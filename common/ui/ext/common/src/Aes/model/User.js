@@ -33,7 +33,7 @@ Ext.define('Aes.model.User', {
                 return res;
             }
         }, 
-        { name: 'birth_day', type: 'date', dateFormat: 'timestamp' }
+        { name: 'birth_day', type: 'date', dateFormat: 'Y-m-d' }
     ],
     
     proxy: {

@@ -11,7 +11,7 @@ class Formatter {
         if(preg_match('/^0000.+/', $value))
             return 0;
         
-        $date = new DateTime($value, new DateTimeZone('UTC'));
+        $date = new DateTime($value);
         return (int)$date->getTimestamp();
     }
     

@@ -14,12 +14,6 @@ class ProfileController extends RestController {
         'plain' => 'name,election_id,ageFrom,ageTo,birth_place,gender,applyScopes'
     );
     
-    public function getOutputFormatters() {
-        return array(
-            'birth_day' => array('Formatter', 'toTs')
-        );
-    }    
-    
     public function doRestList() {
         
         $model = $this->getModel();
