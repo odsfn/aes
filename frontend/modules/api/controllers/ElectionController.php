@@ -34,6 +34,20 @@ class ElectionController extends RestController {
         ));
     }
     
+    protected function getResultsCount($criteria)
+    {
+        if($this->plainFilter['voter_id']) {
+            return Yii::app()->db->createCommand('SELECT COUNT(id) FROM vote '
+                    . 'WHERE user_id = ' . $this->plainFilter['voter_id']
+                   )->queryScalar();
+        }
+        
+        return $this->getModel()
+                        ->with($this->nestedRelations)
+                        ->filter($this->restFilter)
+                        ->count($criteria);
+    }    
+    
     public function accessRules() {
         return array(
             array('allow',
