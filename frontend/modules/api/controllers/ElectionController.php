@@ -2,6 +2,8 @@
 
 class ElectionController extends RestController {
 
+    protected $convertRestFilters = true;
+    
     public $nestedModels = array();
     
     public $acceptFilters = array('plain' => 'voter_id', 'model' => 'name,status');
