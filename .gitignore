@@ -28,6 +28,8 @@
 /frontend/www/uploads/elections/*
 /frontend/www/uploads/person_identifiers/*
 /frontend/www/gallery/*
+/frontend/www/uploads/album/*
+
 *~
 
 /common/ui/ext/build/temp/

@@ -1,0 +1,5 @@
+ul.gallery li {
+  float: left;
+  margin: 4px;
+  list-style-type: none;
+}

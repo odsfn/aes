@@ -21,8 +21,12 @@ class SocialController extends FrontController {
     
     protected function initProfile() {
         if(isset($_GET['id'])) {
-            
             $userId = (int)$_GET['id'];
+        } elseif(isset($_GET['profile'])) {
+            $userId = (int)$_GET['profile'];
+        }
+        
+        if($userId) {
             $user = UserAccount::model()->findByPk($userId);
             
             if(!$user) {

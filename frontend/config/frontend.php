@@ -107,7 +107,9 @@ return array(
 		'generatorPaths' => array('bootstrap.gii'),
 	    ),
             
-            'api'
+            'api', 
+            
+            'album'
 	),
     
         'params' => array(
@@ -120,5 +122,11 @@ return array(
             
             'RESTusername' => 'admin@restuser',
             'RESTpassword' => 'admin@Access',
+            
+            'Gallery' => array(
+                'albums_per_page' => 4,
+                'photos_per_page' => 10,
+                'photos_sort' => 't.update DESC'
+            ),
         )
 );
