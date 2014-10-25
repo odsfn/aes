@@ -13,6 +13,8 @@ class AlbumModule extends CWebModule
     
     public $imageRoute = '/album/image/photo';
 
+    public $ajaxImageNavigation = true;
+
     protected $assetsUrl = '';
 
     protected function preinit()
@@ -38,38 +40,33 @@ class AlbumModule extends CWebModule
                         'actions'=>array(),
                     ),
     
-                    '100x100'=>array(
-                        'cacheIn'=>'webroot.uploads.album.thumbs.100x100',
+                    '160x100'=>array(
+                        'cacheIn'=>'webroot.uploads.album.thumbs.160x100',
                         'actions'=>array(
-                          'image_x' => 100,
-                          'image_y' => 100,
-                          'image_ratio_crop' => true,
-                          'image_resize' => true,
-//                          'image_watermark' => '',
-                          'image_increase' => false,
+                            'image_resize' => true,
+                            'image_x' => 160,
+                            'image_y' => 100,
+                            'image_ratio_crop' => true,
+                            'image_increase' => false,
                         ),
                     ),
-    //
-    //                '200x200'=>array(
-    //                    'cacheIn'=>'webroot.uploads.thumbs.200x200',
-    //                    'actions'=>array(
-    //                      'image_x' => 200,
-    //                      'image_y' => 200,
-    //                      'image_ratio_crop' => true,
-    //                      'image_resize' => true,
-    //                      'image_watermark' => 'logo70x45.png',
-    //                      'image_watermark_path' => 'webroot.commons',
-    //                      'image_watermark_x' => -10,
-    //                      'image_watermark_y' => -10,
-    //                      'image_increase' => false,
-    //                    ),
-    //                ),
     
-                    '600x480'=>array(
-                        'cacheIn'=>'webroot.uploads.album.thumbs.600x480',
+                    '360x220'=>array(
+                        'cacheIn'=>'webroot.uploads.album.thumbs.360x220',
                         'actions'=>array(
-                          'image_x' => 600,
-                          'image_y' => 480,
+                            'image_resize' => true,
+                            'image_x' => 360,
+                            'image_y' => 220,
+                            'image_ratio_crop' => true,
+                            'image_increase' => false,
+                        ),
+                    ),
+    
+                    '1150x710'=>array(
+                        'cacheIn'=>'webroot.uploads.album.thumbs.1150x710',
+                        'actions'=>array(
+                          'image_x' => 1150,
+                          'image_y' => 710,
                           'image_ratio_crop' => true,
                           'image_resize' => true,
                           'image_increase' => false,

@@ -388,7 +388,9 @@ class ImageController extends CController
                 if (isset($model->album)) {
                     $model->album->path = $model->path;
                     $model->album->save();
+                    $this->createAlbumThumbnail($model->album->path);
                 }
+                
                 $this->redirect(array($this->getModule()->imageRoute, 'op' => 'view', 'photo_id' => $photo_id, 'profile' => $profile_id));
                 break;
             case 'update':
@@ -455,7 +457,7 @@ class ImageController extends CController
                 if ($page)
                     $model = File::model()->find($criteria);
 
-                if (isset($model->album))
+                if (!empty($album) && isset($model->album))
                     $menu = array(
                         array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'profile' => $profile_id)),
                         array('label' => 'Альбом: ' . $model->album->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->album->id, 'profile' => $profile_id)),
@@ -467,10 +469,11 @@ class ImageController extends CController
                         array('label' => 'Просмотр', 'url' => '#', 'active' => true),
                     );
 
+                $canEdit = false;
                 if ($model->user_id == $user_id)
-                    $content = $this->renderPartial('/_photo_form', array('model' => $model, 'pages' => $pages), true);
-                else
-                    $content = $this->renderPartial('/_photo', array('model' => $model, 'pages' => $pages), true);
+                    $canEdit = true;
+                    
+                $content = $this->renderPartial('/_photo', array('model' => $model, 'pages' => $pages, 'canEdit' => $canEdit), true);
 
                 break;
         }
@@ -500,11 +503,6 @@ class ImageController extends CController
             $this->renderPartial('/_tag_json', array('tags' => $tags));
         }
     }
-
-    public function actionTest()
-    {
-        echo 'Test action completed from ImageController';
-    }
     
     /**
      * Creates thumbnails for currently uploaded images
@@ -512,7 +510,12 @@ class ImageController extends CController
      */
     protected function createThumbnails($file_path)
     {
-        $this->getModule()->getComponent('image')->createPath('100x100', $file_path);
-        $this->getModule()->getComponent('image')->createPath('600x480', $file_path);
+        $this->getModule()->getComponent('image')->createPath('160x100', $file_path);
+        $this->getModule()->getComponent('image')->createPath('1150x710', $file_path);
+    }
+    
+    protected function createAlbumThumbnail($file_path)
+    {
+        $this->getModule()->getComponent('image')->createPath('360x220', $file_path);
     }
 }

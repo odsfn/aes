@@ -138,7 +138,8 @@ class CImage extends CApplicationComponent {
         if(!file_exists($file))
           $file = $webrootPath . $file;
 
-        $targetPath = $this->createPath($presetName, $file, TRUE);
+//        $targetPath = $this->createPath($presetName, $file, TRUE);
+        $targetPath = $this->createPath($presetName, $file, FALSE);
 
         if(strpos($targetPath, $webrootPath) !== FALSE) {
             $targetPath = substr($targetPath, strlen($webrootPath));

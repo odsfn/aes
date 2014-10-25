@@ -124,8 +124,10 @@ return array(
             'RESTpassword' => 'admin@Access',
             
             'Gallery' => array(
-                'albums_per_page' => 4,
-                'photos_per_page' => 10,
+                'albums_per_page' => 3,
+                'albums_per_line' => 3,
+                'photos_per_line' => 6,
+                'photos_per_page' => 12,
                 'photos_sort' => 't.update DESC'
             ),
         )

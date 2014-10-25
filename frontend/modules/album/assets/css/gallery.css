@@ -1,5 +1,13 @@
-ul.gallery li {
-  float: left;
-  margin: 4px;
-  list-style-type: none;
+.without-border {
+    border: none;
+    box-shadow: none;
+}
+
+ul.gallery li.first-in-row {
+    margin-left: 0px !important;
+}
+
+.pagination {
+    margin-top: 0px;
+    border-left: 1px solid #ddd;
 }
