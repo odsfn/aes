@@ -378,6 +378,16 @@ class ImageController extends CController
                 if (!$user_id)
                     throw new CHttpException(403);
 
+                $afterDeleteHandler = function($event) {
+                    $originalPath = $event->sender->path;
+                    $filesPathes = Yii::app()->getModule('album')->getAbsolutePathes($originalPath);
+                    
+                    foreach($filesPathes as $path) {
+                        if(file_exists($path)) unlink($path);
+                    }
+                };
+                $model->attachEventHandler('onAfterDelete', $afterDeleteHandler);
+                
                 if ($model->delete())
                     $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'profile' => $profile_id));
                 break;

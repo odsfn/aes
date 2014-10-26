@@ -28,7 +28,7 @@ $this->widget('album.components.uploadify.MUploadify',array(
   'method'=>'post',
   'fileTypeExts' => '*.jpg;*.jpeg;*.gif;*.png',
   'fileTypeDesc' => 'Файлы изображений',
-  'fileSizeLimit' => '5MB',
+  'fileSizeLimit' => $this->getModule()->imageSizeLimit,
   'uploadButton'=>false,
 
   // Actions

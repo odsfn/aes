@@ -15,6 +15,8 @@ class AlbumModule extends CWebModule
 
     public $ajaxImageNavigation = true;
 
+    public $imageSizeLimit = '5MB';
+
     protected $assetsUrl = '';
 
     protected function preinit()
@@ -101,5 +103,27 @@ class AlbumModule extends CWebModule
     public function getAssetsUrl($path = '')
     {
         return $this->assetsUrl . '/' . $path;
+    }
+    
+    /**
+     * Return absolute pathes for original image and its thumbnails
+     * 
+     * @param string $imagePath Original image relative path. Which is get from File->path
+     * @return array
+     */
+    public function getAbsolutePathes($imagePath)
+    {
+        $result = array();
+        
+        //extract filename from path
+        $parts = explode('/', $imagePath);
+        $fileName = $parts[count($parts) - 1];
+        
+        foreach ($this->getComponent('image')->presets as $name => $params)
+        {            
+            $result[] = Yii::getPathOfAlias($params['cacheIn']) . '/' . $fileName;
+        }
+        
+        return $result;
     }
 }
