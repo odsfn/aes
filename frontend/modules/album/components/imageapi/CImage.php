@@ -160,17 +160,9 @@ class CImage extends CApplicationComponent {
 
         if(!(isset($file_info['filename']) && isset($file_info['extension'])))
           return false;
-
-        $file_name = self::cyrillicToLatin($file_info['filename']);
-        $file_name = str_replace(array(' ', '-'), array('_','_'), $file_name);
-        $file_name = preg_replace('/[^A-Za-z0-9_]/', '', $file_name);
-        $extension = strtolower($file_info['extension']);
-
-        if (file_exists($file_info['dirname'] . '/' . $file_name . '.' . $extension))
-          $file_name = $file_name . '-' . time();
-
-        $file_name = $file_name . '.' . $extension;
-
+        
+        $file_name = self::prepareUniqueFileName($file_name, $file_info['extension']);
+        
         $targetPath = Yii::getPathOfAlias($preset['cacheIn']);
         $targetFile = $targetPath .'/'. $file_name;
         if (!file_exists($targetPath)) mkdir($targetPath, 0777, true); // mkdir recursive
@@ -208,5 +200,20 @@ class CImage extends CApplicationComponent {
         $imageSizes = explode('|', $output[0]);
         return $imageSizes;
     }
+    }
+
+    public static function prepareFileName($fileName, $fileExt)
+    {
+        $file_name = self::cyrillicToLatin($fileName);
+        $file_name = str_replace(array(' ', '-', '.'), array('_','_','_'), $file_name);
+        $file_name = preg_replace('/[^A-Za-z0-9_]/', '', $file_name);
+        $extension = strtolower($fileExt);
+        
+        return $file_name . '.' . $extension;
+    }
+    
+    public static function prepareUniqueFileName($fileName, $fileExt)
+    {
+        return str_replace('.', '_', uniqid('', true)) . '.' . strtolower($fileExt);
     }
 }
