@@ -12,6 +12,19 @@ $(function() {
         $('#image-view .pagination').append('<p>Loading...</p>');
         $('#image-view-container').load(el.attr('href') + ' #image-view');
     });
+    
+    //register ajax handler setAsAlbumCover
+    $('#image-view-container').on('click', '.set-as-album-cover', function(event) {
+        event.preventDefault();
+        var el = $(this);
+        
+        $.ajax({
+            url: el.attr('href'),
+            success: function(html) {
+                $('#image-view-container .set-as-album-cover').replaceWith(html);
+            }
+        });
+    });
 });
 </script>
 <?php endif; ?>
@@ -57,12 +70,18 @@ $(function() {
                             );
 
                             if ($canEdit) {
-                                echo CHtml::link(
-                                    'Назначить обложкой', 
-                                    array($this->getModule()->imageRoute . '/op/album', 'photo_id' => $model->id),
-                                    array('class' => 'btn btn-mini btn-block')
-                                );
-
+                                if ($albumContext 
+                                    && $model->album && !$model->album->isCover($model)
+                                ) {
+                                    echo CHtml::link(
+                                        'Назначить обложкой', 
+                                        array($this->getModule()->imageRoute . '/op/album', 'photo_id' => $model->id),
+                                        array(
+                                            'class' => 'btn btn-mini btn-block set-as-album-cover'
+                                        )
+                                    );
+                                }
+                                
                                 echo CHtml::link(
                                     'Удалить', 
                                     array($this->getModule()->imageRoute . '/op/delete', 'photo_id' => $model->id),

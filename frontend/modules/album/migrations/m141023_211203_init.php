@@ -42,6 +42,8 @@ class m141023_211203_init extends EDbMigration
               KEY `id` (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         ");
+        
+        $this->addForeignKey('fk_file_album', 'file', 'album_id', 'album', 'id', 'SET NULL', 'NO ACTION');
     }
 
     public function down()

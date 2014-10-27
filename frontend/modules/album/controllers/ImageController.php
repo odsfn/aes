@@ -319,7 +319,7 @@ class ImageController extends CController
 
                     $photo->attributes = array(
                         'filename' => basename($file_path),
-                        'album_id' => $album_id,
+                        'album_id' => empty($album_id) ? null : $album_id,
                         'path' => $file_path,
                         'permission' => $permission,
                     );
@@ -401,7 +401,13 @@ class ImageController extends CController
                     $this->createAlbumThumbnail($model->album->path);
                 }
                 
-                $this->redirect(array($this->getModule()->imageRoute, 'op' => 'view', 'photo_id' => $photo_id, 'profile' => $profile_id));
+                if (Yii::app()->getRequest()->isAjaxRequest) {
+                    $this->renderPartial('/_photo_albumCoverMark');
+                    Yii::app()->end();
+                } else {
+                    $this->redirect(array($this->getModule()->imageRoute, 'op' => 'view', 'photo_id' => $photo_id, 'profile' => $profile_id));
+                }
+                
                 break;
             case 'update':
                 if (!$user_id)
@@ -483,7 +489,14 @@ class ImageController extends CController
                 if ($model->user_id == $user_id)
                     $canEdit = true;
                     
-                $content = $this->renderPartial('/_photo', array('model' => $model, 'pages' => $pages, 'canEdit' => $canEdit), true);
+                $content = $this->renderPartial(
+                    '/_photo', 
+                    array(
+                        'model' => $model, 'pages' => $pages, 'canEdit' => $canEdit,
+                        'albumContext' => (bool)$album
+                    ), 
+                    true
+                );
 
                 break;
         }

@@ -128,4 +128,11 @@ class Album extends CActiveRecord
         return CHtml::listData(self::model()->findAll($criteria), 'id', 'name');
     }
 
+    public function isCover(File $image)
+    {
+        if($image->album_id != $this->id)
+            return false;
+        
+        return $this->path === $image->path;
+    }
 }
