@@ -45,7 +45,8 @@ class UserPageController extends SocialController {
     {
         $profileId= $_GET['id'];
         $_GET['id'] = null;
-        $_GET['profile'] = $profileId;
+        
+        $_GET['target_id'] = $this->profile->target_id;
         
         Yii::app()->getModule('album')->albumRoute = '/userPage/photos/' . $profileId;
         Yii::app()->getModule('album')->imageRoute = '/userPage/photos/' . $profileId . '/action/photo';

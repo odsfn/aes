@@ -185,6 +185,34 @@ class ElectionController extends FrontController
         ));
     }
 
+    public function actionPhotos($id)
+    {
+        $model = $this->getModel($id);
+        $this->layout = '//layouts/election';
+        $this->election = $model;
+        
+        $electionId= $this->election->id;
+        
+        $targetId = Election::model()->findByPk($electionId)->target_id;
+        
+        $_GET['id'] = null;
+        $_GET['target_id'] = $targetId;
+        
+        Yii::app()->getModule('album')->albumRoute = '/election/photos/' . $electionId;
+        Yii::app()->getModule('album')->imageRoute = '/election/photos/' . $electionId . '/action/photo';
+        
+        $this->beginClip('album');
+        
+        if(isset($_GET['action']) && $_GET['action'] == 'photo')
+            Yii::app()->runController('album/image/photo');
+        else
+            Yii::app()->runController('album/image/album');
+        
+        $this->endClip();
+        
+        $this->render('photos');
+    }    
+    
     protected function getModel($id) {
         $model = Election::model()->findByPk($id);
         

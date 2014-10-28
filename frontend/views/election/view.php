@@ -1,4 +1,4 @@
-<?php
+<?php /*
 if ($model->galleryBehavior->getGallery() === null) {
     echo '<p>Before add photos to product gallery, you need to save product</p>';
 } else {
@@ -7,9 +7,7 @@ if ($model->galleryBehavior->getGallery() === null) {
         'controllerRoute' => Yii::app()->createUrl('gallery'),
     ));
 }
-?>
-
-
+*/?>
 <?php
 $this->breadcrumbs->add(CHtml::encode($model->name));
 

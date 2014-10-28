@@ -48,6 +48,10 @@ $this->widget('bootstrap.widgets.TbMenu', array(
             'url'=> array('/election/electorate', 'id'=>$this->election->id)
         ),
         array(
+            'label'=> Yii::t('election', 'Photos'), 
+            'url'=> array('/election/photos', 'id'=>$this->election->id)
+        ),
+        array(
             'label'=> Yii::t('election', 'Admins'), 
             'url'=> array('/election/admins', 'id'=>$this->election->id)
         ),
