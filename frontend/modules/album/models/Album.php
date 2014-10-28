@@ -5,6 +5,7 @@
  *
  * The followings are the available columns in table 'album':
  * @property integer $id
+ * @property integer $target_id
  * @property string $name
  * @property string $description
  * @property string $path
@@ -39,8 +40,8 @@ class Album extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name', 'required'),
-            array('id, permission', 'numerical', 'integerOnly' => true),
+            array('name, target_id', 'required'),
+            array('id, permission, target_id', 'numerical', 'integerOnly' => true),
             array('name', 'length', 'max' => 255),
             array('description', 'length', 'max' => 255),
             array('user_id, path, update, permission', 'safe'),
@@ -69,6 +70,7 @@ class Album extends CActiveRecord
     {
         return array(
             'id' => 'ID',
+            'target_id' => 'Target Id',
             'name' => 'Альбом',
             'description' => 'Description',
             'path' => 'Default path',

@@ -7,6 +7,7 @@ class m141023_211203_init extends EDbMigration
     {
         $this->execute("CREATE TABLE `album` (
               `id` int(11) NOT NULL AUTO_INCREMENT,
+              `target_id` int(11) NOT NULL,
               `user_id` int(11) NOT NULL,
               `name` varchar(255) DEFAULT NULL,
               `description` text,
@@ -18,6 +19,7 @@ class m141023_211203_init extends EDbMigration
             
             CREATE TABLE `file` (
               `id` int(11) NOT NULL AUTO_INCREMENT,
+              `target_id` int(11) NOT NULL,
               `user_id` int(11) NOT NULL,
               `album_id` int(11) DEFAULT NULL,
               `filename` varchar(255) DEFAULT NULL,
@@ -44,6 +46,7 @@ class m141023_211203_init extends EDbMigration
         ");
         
         $this->addForeignKey('fk_file_album', 'file', 'album_id', 'album', 'id', 'SET NULL', 'NO ACTION');
+
     }
 
     public function down()

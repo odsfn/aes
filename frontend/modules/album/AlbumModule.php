@@ -1,8 +1,15 @@
 <?php
-
 /**
- * This module provides functionality for photos and videos albums representation
- * and manipulation
+ * This module provides functionality for photos albums representation
+ * and manipulation.
+ * 
+ * @TODO: 
+ * 
+ * Components of this module based on old cold from another developers and project.
+ * It should be refactored.
+ * 
+ * - Split ImageController to AlbumBaseController, ImageController and AlbumController
+ * - ...
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
@@ -125,5 +132,52 @@ class AlbumModule extends CWebModule
         }
         
         return $result;
+    }
+    
+    const GALLERY_PERM_PER_ALL = 0;
+
+    const GALLERY_PERM_PER_REGISTERED = 1;
+
+    const GALLERY_PERM_PER_OWNER = 2;    
+    
+    public function canViewAlbum($album, $userId = null)
+    {
+        if (!$userId)
+            $userId = Yii::app()->user->id;
+        
+        // Доступно только зарегестрированным
+        if ($album->permission == self::GALLERY_PERM_PER_REGISTERED && Yii::app()->user->isGuest)
+            return false;
+        // Доступно только мне
+        if ($album->permission == self::GALLERY_PERM_PER_OWNER && Yii::app()->user->id != $album->user_id)
+            return false;
+        
+        return true;
+    }
+    
+    // @TODO: provide configurable rules to check access items
+    public function canAddPhotoToAlbum($album, $userId = null)
+    {
+        return $this->isOwnAlbum($album, $userId);
+    }
+    
+    public function canDeleteAlbum($album, $userId = null)
+    {
+        return $this->isOwnAlbum($album, $userId);
+    }
+    
+    public function canEditAlbum($album, $userId = null)
+    {
+        return $this->isOwnAlbum($album, $userId);
+    }
+
+    public function isOwnAlbum($album, $userId = null)
+    {
+        return $album->user_id == empty($userId) ? Yii::app()->user->id : $userId;
+    }
+    
+    public function isOwner($userId, $target_id)
+    {
+        return Target::model()->findByPk($target_id)->getRow()->user_id == $userId;
     }
 }

@@ -8,51 +8,45 @@ class ImageController extends CController
 
     const GALLERY_PERM_PER_OWNER = 2;
 
-    public function actionAlbum($op = 'view', $album_id = 0, $profile = 0)
+    public function actionAlbum($op = 'view', $album_id = 0, $target_id = 0)
     {
         $menu = array();
         $content = '';
         $user_id = (!Yii::app()->user->isGuest ? Yii::app()->user->id : 0);
 
-        // Если нет профиля используем текущий
-        $profile_id = $profile ? $profile : $user_id;
-
-        // Текущий профиль
-        if ($user_id == $profile_id)
-            $profile = Profile::model()->findByAttributes(array('user_id' => $user_id));
-        // Запрашиваемй профиль
-        elseif ($profile_id)
-            $profile = Profile::model()->findByAttributes(array('user_id' => $profile_id));
-        else
-            throw new CHttpException(403);
-
         switch ($op) {
             case 'update':
                 $model = Album::model()->findByPk($album_id);
                 if (!$model)
-                    $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'profile' => $profile_id));
+                    $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'target_id' => $target_id));
 
+                // add access check handler method defined as attribute of AlbumModule
+                
                 if ($attributes = Yii::app()->request->getPost('Album')) {
                     $model->setScenario('update');
                     $model->attributes = $attributes;
                     if ($model->save()) {
                         $photos = File::model()->updateAll(array('permission' => $model->permission), 'album_id = :album_id', array(':album_id' => $model->id));
-                        $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'profile' => $profile_id));
+                        $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'target_id' => $target_id));
                     }
                 }
 
                 $menu = array(
-                    array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'profile' => $profile_id)),
-                    array('label' => 'Альбом: ' . $model->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'profile' => $profile_id)),
-                    array('label' => 'Добавить фото', 'url' => array($this->getModule()->albumRoute , 'op' => 'upload', 'album_id' => $model->id, 'profile' => $profile_id), 'visible' => $user_id == $profile_id),
-                    array('label' => 'Редактировать', 'url' => '#', 'active' => true, 'visible' => $user_id == $profile_id),
-                        //array('label'=>'Создать альбом', 'url'=>array($this->getModule()->albumRoute . '/op/create')),
+                    array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id)),
+                    array('label' => 'Альбом: ' . $model->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'target_id' => $target_id)),
+                    array('label' => 'Добавить фото', 
+                        'url' => array(
+                            $this->getModule()->albumRoute , 'op' => 'upload', 'album_id' => $model->id, 'target_id' => $target_id
+                        ), 
+                        'visible' => $this->getModule()->canAddPhotoToAlbum($model)
+                    ),
+                    array('label' => 'Редактировать', 'url' => '#', 'active' => true),
                 );
 
                 $content = $this->renderPartial('/_album_create', array('model' => $model), true);
                 break;
             case 'delete':
-                if (!$user_id)
+                if (!$user_id || !$this->getModule()->canDeleteAlbum($model))
                     throw new CHttpException(403);
 
                 $model = Album::model()->findByPk($album_id);
@@ -67,13 +61,14 @@ class ImageController extends CController
                 if ($attributes = Yii::app()->request->getPost('Album')) {
                     $model->setScenario('create');
                     $model->attributes = $attributes;
+                    $model->target_id = $target_id;
                     if ($model->save()) {
-                        $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'profile' => $profile_id));
+                        $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'target_id' => $target_id));
                     }
                 }
 
                 $menu = array(
-                    array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'profile' => $profile_id)),
+                    array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id)),
                     array('label' => 'Новый альбом', 'url' => '#', 'active' => true),
                 );
 
@@ -95,32 +90,31 @@ class ImageController extends CController
                     // Вывод фото из альбома
                     if ($model) {
 
-                        // Доступно только зарегестрированным
-                        if ($model->permission == self::GALLERY_PERM_PER_REGISTERED && Yii::app()->user->isGuest)
+                        if (!$this->getModule()->canViewAlbum($model)) 
                             throw new CHttpException(403);
 
-                        // Доступно только мне
-                        if ($model->permission == self::GALLERY_PERM_PER_OWNER && Yii::app()->user->id != $profile->user_id)
-                            throw new CHttpException(403);
+                        $photos = File::model()->getRecords(
+                            'album_id = :album_id', 
+                            array(
+                                ':album_id' => $model->id
+                            ), 
+                            $photos_page, 
+                            $Gallery['photos_per_page'], 
+                            $Gallery['photos_sort']
+                        );
 
-                        $photos = File::model()->getRecords('album_id = :album_id AND user_id = :user_id', array(
-                            ':album_id' => $model->id,
-                            ':user_id' => $model->user_id,
-                                ), $photos_page, $Gallery['photos_per_page'], $Gallery['photos_sort']);
-
-                        $nphotos = File::model()->count('album_id = :album_id AND user_id = :user_id', array(
-                            ':user_id' => $model->user_id, ':album_id' => $model->id));
+                        $nphotos = File::model()->count('album_id = :album_id', array(':album_id' => $model->id));
                     } else
                         throw new CHttpException(404);
 
-                    if ($user_id == $profile_id && !$photos)
-                        $this->redirect(array($this->getModule()->albumRoute . '/op/upload/', 'album_id' => $model->id, 'profile' => $profile_id));
+                    if (!$photos && $this->getModule()->isOwner($user_id, $target_id))
+                        $this->redirect(array($this->getModule()->albumRoute . '/op/upload/', 'album_id' => $model->id, 'target_id' => $target_id));
 
                     $menu = array(
-                        array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'profile' => $profile_id)),
+                        array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id)),
                         array('label' => 'Альбом: ' . $model->name, 'url' => '#', 'active' => true),
-                        array('label' => 'Добавить фото', 'url' => array($this->getModule()->albumRoute , 'op' => 'upload', 'album_id' => $model->id, 'profile' => $profile_id), 'visible' => $user_id == $profile_id),
-                        array('label' => 'Редактировать', 'url' => array($this->getModule()->albumRoute , 'op' => 'update', 'album_id' => $model->id, 'profile' => $profile_id), 'visible' => $user_id == $profile_id),
+                        array('label' => 'Добавить фото', 'url' => array($this->getModule()->albumRoute , 'op' => 'upload', 'album_id' => $model->id, 'target_id' => $target_id), 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
+                        array('label' => 'Редактировать', 'url' => array($this->getModule()->albumRoute , 'op' => 'update', 'album_id' => $model->id, 'target_id' => $target_id), 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
                             //array('label'=>'Создать альбом', 'url'=>array($this->getModule()->albumRoute . '/op/create')),
                     );
 
@@ -132,7 +126,7 @@ class ImageController extends CController
                             'photos_page' => $photos_page,
                             'photos_per_page' => $Gallery['photos_per_page'],
                             'nphotos' => $nphotos,
-                            'profile' => $profile,
+                            'target_id' => $target_id,
                                 ), true);
 
                         Yii::app()->clientScript->renderBodyEnd($output);
@@ -145,19 +139,18 @@ class ImageController extends CController
                             'photos' => $photos,
                             'photos_page' => $photos_page,
                             'photos_per_page' => $Gallery['photos_per_page'],
-                            'profile' => $profile,
+                            'target_id' => $target_id,
                                 ), true);
                     }
                 } else {
 
                     //
-                    // Список альбомов пользователя
+                    // Список альбомов цели
                     //
           $params = $condition = array();
-
-                    // Профиль пользователя
-                    $condition[] = 't.user_id = :profile_id';
-                    $params[':profile_id'] = $profile_id;
+                   
+                    $condition[] = 't.target_id = :target_id';
+                    $params[':target_id'] = $target_id;
 
                     // !Доступно только мне
                     $condition[] = 't.id NOT IN (SELECT id FROM `album` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
@@ -184,13 +177,12 @@ class ImageController extends CController
 
 
                     //
-                    // Список Фотографий пользователя
+                    // Список Фотографий
                     //
           $params = $condition = array();
 
-                    // Профиль пользователя
-                    $condition[] = 't.user_id = :profile_id';
-                    $params[':profile_id'] = $profile_id;
+                    $condition[] = 't.target_id = :target_id';
+                    $params[':target_id'] = $target_id;
 
                     // !Доступно только мне
                     $condition[] = 't.id NOT IN (SELECT id FROM `file` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
@@ -216,13 +208,13 @@ class ImageController extends CController
                         'params' => $params
                     ));
 
-                    if ($user_id == $profile_id && !($photos || $albums))
-                        $this->redirect(array($this->getModule()->albumRoute , 'op' => 'upload', 'profile' => $profile_id));
+                    if (!($photos || $albums) && $this->getModule()->isOwner($user_id, $target_id))
+                        $this->redirect(array($this->getModule()->albumRoute , 'op' => 'upload', 'target_id' => $target_id));
 
                     $menu = array(
                         array('label' => 'Все фотографии', 'url' => '#', 'active' => true),
-                        array('label' => 'Добавить фото', 'url' => array($this->getModule()->albumRoute , 'op' => 'upload', 'profile' => $profile_id), 'visible' => $user_id == $profile_id),
-                        array('label' => 'Создать альбом', 'url' => array($this->getModule()->albumRoute , 'op' => 'create', 'profile' => $profile_id), 'visible' => $user_id == $profile_id),
+                        array('label' => 'Добавить фото', 'url' => array($this->getModule()->albumRoute , 'op' => 'upload', 'target_id' => $target_id), 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
+                        array('label' => 'Создать альбом', 'url' => array($this->getModule()->albumRoute , 'op' => 'create', 'target_id' => $target_id), 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
                     );
 
                     // Ajax
@@ -234,7 +226,7 @@ class ImageController extends CController
                                     'nalbums' => $nalbums,
                                     'albums_page' => $albums_page,
                                     'albums_per_page' => $Gallery['albums_per_page'],
-                                    'profile' => $profile,
+                                    'target_id' => $target_id,
                                         ), true);
 
                                 Yii::app()->clientScript->renderBodyEnd($output);
@@ -246,7 +238,7 @@ class ImageController extends CController
                                     'photos' => $photos,
                                     'photos_page' => $photos_page,
                                     'photos_per_page' => $Gallery['photos_per_page'],
-                                    'profile' => $profile,
+                                    'target_id' => $target_id,
                                         ), true);
 
                                 Yii::app()->clientScript->renderBodyEnd($output);
@@ -266,7 +258,7 @@ class ImageController extends CController
                             'photos' => $photos,
                             'photos_page' => $photos_page,
                             'photos_per_page' => $Gallery['photos_per_page'],
-                            'profile' => $profile,
+                            'target_id' => $target_id,
                                 ), true);
                 }
 
@@ -279,13 +271,13 @@ class ImageController extends CController
                 if ($album_id) {
                     $model = Album::model()->findByPk($album_id);
                     if ($model) {
-                        $photo_params['uploader'] = $this->createUrl($this->getModule()->albumRoute . '/op/upload', array('album_id' => $model->id, 'profile' => $profile_id)) . '?DBGSESSID=1';
-                        $photo_params['redirect'] = $this->createUrl($this->getModule()->albumRoute . '/op/view', array('album_id' => $model->id, 'profile' => $profile_id));
+                        $photo_params['uploader'] = $this->createUrl($this->getModule()->albumRoute . '/op/upload', array('album_id' => $model->id, 'target_id' => $target_id)) . '?DBGSESSID=1';
+                        $photo_params['redirect'] = $this->createUrl($this->getModule()->albumRoute . '/op/view', array('album_id' => $model->id, 'target_id' => $target_id));
                         $menu = array(
-                            array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'profile' => $profile_id)),
-                            array('label' => 'Альбом: ' . $model->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'profile' => $profile_id)),
-                            array('label' => 'Добавить фото', 'url' => '#', 'active' => true, 'visible' => $user_id == $profile_id),
-                            array('label' => 'Редактировать', 'url' => array($this->getModule()->albumRoute , 'op' => 'update', 'album_id' => $model->id, 'profile' => $profile_id), 'visible' => $user_id == $profile_id),
+                            array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id)),
+                            array('label' => 'Альбом: ' . $model->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'target_id' => $target_id)),
+                            array('label' => 'Добавить фото', 'url' => '#', 'active' => true, 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
+                            array('label' => 'Редактировать', 'url' => array($this->getModule()->albumRoute , 'op' => 'update', 'album_id' => $model->id, 'target_id' => $target_id), 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
                                 //array('label'=>'Создать альбом', 'url'=>array($this->getModule()->albumRoute . '/op/create')),
                         );
                     } else
@@ -293,11 +285,11 @@ class ImageController extends CController
                 } else {
                     $menu = array(
                         array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute . '/op/view/')),
-                        array('label' => 'Добавить фото', 'url' => '#', 'active' => true, 'visible' => $user_id == $profile_id),
-                        array('label' => 'Создать альбом', 'url' => array($this->getModule()->albumRoute , 'op' => 'create', 'profile' => $profile_id), 'visible' => $user_id == $profile_id),
+                        array('label' => 'Добавить фото', 'url' => '#', 'active' => true, 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
+                        array('label' => 'Создать альбом', 'url' => array($this->getModule()->albumRoute , 'op' => 'create', 'target_id' => $target_id), $this->getModule()->isOwner($user_id, $target_id)),
                     );
                     $photo_params['uploader'] = $this->createUrl($this->getModule()->albumRoute, array('DBGSESSID' => '1', 'op' => 'upload'));
-                    $photo_params['redirect'] = $this->createUrl($this->getModule()->albumRoute, array('profile' => $profile_id, 'op'=> 'view'));
+                    $photo_params['redirect'] = $this->createUrl($this->getModule()->albumRoute, array('target_id' => $target_id, 'op'=> 'view'));
                 }
 
                 $photo = new File();
@@ -319,6 +311,7 @@ class ImageController extends CController
 
                     $photo->attributes = array(
                         'filename' => basename($file_path),
+                        'target_id' => $target_id,
                         'album_id' => empty($album_id) ? null : $album_id,
                         'path' => $file_path,
                         'permission' => $permission,
@@ -335,42 +328,24 @@ class ImageController extends CController
                 break;
         }
 
-        $this->renderPartial('/content', array('content' => $content, 'menu' => $menu, 'profile' => $profile));
+        $this->renderPartial('/content', array('content' => $content, 'menu' => $menu, 'target_id' => $target_id));
     }
 
-    public function actionPhoto($op = 'view', $photo_id = 0, $profile = 0, $page = 0, $album = 0)
+    public function actionPhoto($op = 'view', $photo_id = 0, $target_id = 0, $page = 0, $album = 0)
     {
         $model = '';
         $menu = array();
         $user_id = (!Yii::app()->user->isGuest ? Yii::app()->user->id : 0);
-        $profile_id = $profile;
+        $target_id = $target_id;
         $Gallery = Yii::app()->params['Gallery'];
-
-        // Если нет профиля используем текущий
-        $profile_id = $profile ? $profile : $user_id;
-
-        // Текущий профиль
-        if ($user_id == $profile_id)
-            $profile = Profile::model()->findByAttributes(array('user_id' => $user_id));
-        // Запрашиваемй профиль
-        elseif ($profile_id)
-            $profile = Profile::model()->findByAttributes(array('user_id' => $profile_id));
-        else
-            throw new CHttpException(403);
 
         $model = File::model()->with('album')->findByPk($photo_id);
 
         if (!$model)
             throw new CHttpException(404);
 
-        if ($model->album) {
-            // Доступно только зарегестрированным
-            if ($model->permission == self::GALLERY_PERM_PER_REGISTERED && Yii::app()->user->isGuest)
-                throw new CHttpException(403);
-
-            // Доступно только мне
-            if ($model->permission == self::GALLERY_PERM_PER_OWNER && Yii::app()->user->id != $profile->user_id)
-                throw new CHttpException(403);
+        if (!$this->getModule()->canViewAlbum($model->album)) {
+            throw new CHttpException(403);
         }
 
         switch ($op) {
@@ -389,7 +364,7 @@ class ImageController extends CController
                 $model->attachEventHandler('onAfterDelete', $afterDeleteHandler);
                 
                 if ($model->delete())
-                    $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'profile' => $profile_id));
+                    $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id));
                 break;
             case 'album':
                 if (!$user_id)
@@ -405,7 +380,7 @@ class ImageController extends CController
                     $this->renderPartial('/_photo_albumCoverMark');
                     Yii::app()->end();
                 } else {
-                    $this->redirect(array($this->getModule()->imageRoute, 'op' => 'view', 'photo_id' => $photo_id, 'profile' => $profile_id));
+                    $this->redirect(array($this->getModule()->imageRoute, 'op' => 'view', 'photo_id' => $photo_id, 'target_id' => $target_id));
                 }
                 
                 break;
@@ -414,7 +389,7 @@ class ImageController extends CController
                     throw new CHttpException(403);
 
                 if (!$model)
-                    $this->redirect(array($this->getModule()->imageRoute . '/op/view', 'photo_id' => $photo_id, 'profile' => $profile_id));
+                    $this->redirect(array($this->getModule()->imageRoute . '/op/view', 'photo_id' => $photo_id, 'target_id' => $target_id));
 
                 $tags = Yii::app()->request->getPost('Tags');
                 $album = Yii::app()->request->getPost('Album');
@@ -426,16 +401,16 @@ class ImageController extends CController
                 if ($model->album_id)
                     $model->permission = Album::model()->findByPk($model->album_id)->permission;
                 if ($model->save())
-                    $this->redirect(array($this->getModule()->imageRoute . '/op/view', 'photo_id' => $photo_id, 'profile' => $profile_id));
+                    $this->redirect(array($this->getModule()->imageRoute . '/op/view', 'photo_id' => $photo_id, 'target_id' => $target_id));
                 break;
             case 'view':
                 if (!$model)
                     throw new CHttpException(404);
 
                 $params = $condition = array();
-                // Профиль пользователя
-                $condition[] = 't.user_id = :profile_id';
-                $params[':profile_id'] = $profile_id;
+                
+                $condition[] = 't.target_id = :target_id';
+                $params[':target_id'] = $target_id;
 
                 // !Доступно только мне
                 $condition[] = 't.id NOT IN (SELECT id FROM `file` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
@@ -464,7 +439,7 @@ class ImageController extends CController
                 $pages->params = array(
                     'op' => $op,
                     'photo_id' => $photo_id,
-                    'profile' => $profile_id,
+                    'target_id' => $target_id,
                     'album' => $album
                 );
                 $pages->pageSize = 1;
@@ -475,13 +450,13 @@ class ImageController extends CController
 
                 if (!empty($album) && isset($model->album))
                     $menu = array(
-                        array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'profile' => $profile_id)),
-                        array('label' => 'Альбом: ' . $model->album->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->album->id, 'profile' => $profile_id)),
+                        array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id)),
+                        array('label' => 'Альбом: ' . $model->album->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->album->id, 'target_id' => $target_id)),
                         array('label' => 'Просмотр', 'url' => '#', 'active' => true),
                     );
                 else
                     $menu = array(
-                        array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'profile' => $profile_id)),
+                        array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id)),
                         array('label' => 'Просмотр', 'url' => '#', 'active' => true),
                     );
 
@@ -501,7 +476,7 @@ class ImageController extends CController
                 break;
         }
 
-        $this->renderPartial('/content', array('content' => $content, 'menu' => $menu, 'profile' => $profile));
+        $this->renderPartial('/content', array('content' => $content, 'menu' => $menu, 'target_id' => $target_id));
     }
 
     public function actionTagsJson($tag = '')

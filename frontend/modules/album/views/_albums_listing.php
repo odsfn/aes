@@ -17,7 +17,7 @@
                                 array(
                                     $this->getModule()->albumRoute . '/op/view',
                                     'album_id' => $album->id,
-                                    'profile' => $profile->user_id,
+                                    'target_id' => $target_id,
                                 )
                             );
                         ?>
@@ -44,7 +44,7 @@
                 $this->getModule()->albumRoute,
                 'albums_page' => ++$albums_page,
                 'view' => 'albums',
-                'profile' => $profile->user_id,
+                'target_id' => $target_id,
                     ), array('replace' => '#replace_albums_container'), array('live' => false, 'id' => 'send-link-' . uniqid()));
             ?>
         </div>

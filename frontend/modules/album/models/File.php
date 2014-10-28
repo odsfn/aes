@@ -5,6 +5,7 @@
  *
  * The followings are the available columns in table 'file':
  * @property integer $id
+ * @property integer $target_id
  * @property integer $user_id
  * @property integer $album_id
  * @property string $filename
@@ -41,8 +42,8 @@ class File extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('filename, path', 'required'),
-            array('id, user_id, album_id, permission', 'numerical', 'integerOnly' => true),
+            array('filename, path, target_id', 'required'),
+            array('id, user_id, album_id, permission, target_id', 'numerical', 'integerOnly' => true),
             array('filename', 'length', 'max' => 50),
             array('filename, path', 'length', 'max' => 255),
             array('update, user_id, description, permission', 'safe'),
@@ -71,6 +72,7 @@ class File extends CActiveRecord
     {
         return array(
             'id' => 'ID',
+            'target_id' => 'Target Id',
             'user_id' => 'User',
             'album_id' => 'Album',
             'filename' => 'Filename',

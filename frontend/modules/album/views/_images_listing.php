@@ -10,7 +10,7 @@
                     $requestParams = array(
                         $this->getModule()->imageRoute . '/op/view',
                         'photo_id' => $photo->id,
-                        'profile' => $profile->user_id,
+                        'target_id' => $target_id,
                         'page' => ++$page,
                     );
 
@@ -46,7 +46,7 @@
         $this->getModule()->albumRoute,
         'photos_page' => ++$photos_page,
         'view' => 'photos',
-        'profile' => $profile->user_id,
+        'target_id' => $target_id,
     );
 
     if (isset($album)) {
