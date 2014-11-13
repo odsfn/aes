@@ -171,11 +171,22 @@ class AlbumModule extends CWebModule
         return $this->isOwnAlbum($album, $userId);
     }
 
+    public function canCreateAlbum($target_id, $userId = null)
+    {
+        return $this->isOwner(empty($userId) ? Yii::app()->user->id : $userId, $target_id);
+    }
+    
     public function isOwnAlbum($album, $userId = null)
     {
         return $album->user_id == empty($userId) ? Yii::app()->user->id : $userId;
     }
     
+    /**
+     * Checks is the user owns target 
+     * @param int $userId
+     * @param int $target_id
+     * @return boolean
+     */
     public function isOwner($userId, $target_id)
     {
         return Target::model()->findByPk($target_id)->getRow()->user_id == $userId;

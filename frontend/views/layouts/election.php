@@ -49,7 +49,8 @@ $this->widget('bootstrap.widgets.TbMenu', array(
         ),
         array(
             'label'=> Yii::t('election', 'Photos'), 
-            'url'=> array('/election/photos', 'id'=>$this->election->id)
+            'url'=> array('/election/photos', 'id'=>$this->election->id),
+            'active'=> $this->action->id == 'photos' || $this->id == 'image'
         ),
         array(
             'label'=> Yii::t('election', 'Admins'), 

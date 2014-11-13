@@ -17,10 +17,13 @@ class ImageController extends CController
         switch ($op) {
             case 'update':
                 $model = Album::model()->findByPk($album_id);
+                
                 if (!$model)
                     $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->id, 'target_id' => $target_id));
 
                 // add access check handler method defined as attribute of AlbumModule
+                if (!$user_id || !$this->getModule()->canEditAlbum($model))
+                    throw new CHttpException(403);
                 
                 if ($attributes = Yii::app()->request->getPost('Album')) {
                     $model->setScenario('update');
@@ -54,7 +57,7 @@ class ImageController extends CController
                     $this->redirect(array($this->getModule()->albumRoute . '/op/view'));
                 break;
             case 'create':
-                if (!$user_id)
+                if (!$user_id || !$this->getModule()->canCreateAlbum($target_id, $user_id))
                     throw new CHttpException(403);
 
                 $model = new Album();
@@ -271,6 +274,10 @@ class ImageController extends CController
                 if ($album_id) {
                     $model = Album::model()->findByPk($album_id);
                     if ($model) {
+                        
+                        if(!$this->getModule()->canAddPhotoToAlbum($model, $user_id))
+                            throw new CHttpException(403);
+
                         $photo_params['uploader'] = $this->createUrl($this->getModule()->albumRoute . '/op/upload', array('album_id' => $model->id, 'target_id' => $target_id)) . '?DBGSESSID=1';
                         $photo_params['redirect'] = $this->createUrl($this->getModule()->albumRoute . '/op/view', array('album_id' => $model->id, 'target_id' => $target_id));
                         $menu = array(
@@ -283,6 +290,9 @@ class ImageController extends CController
                     } else
                         throw new CHttpException(500);
                 } else {
+                    if(!$this->getModule()->isOwner($user_id, $target_id))
+                        throw new CHttpException(403);
+                    
                     $menu = array(
                         array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute . '/op/view/')),
                         array('label' => 'Добавить фото', 'url' => '#', 'active' => true, 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
@@ -350,7 +360,7 @@ class ImageController extends CController
 
         switch ($op) {
             case 'delete':
-                if (!$user_id)
+                if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
                     throw new CHttpException(403);
 
                 $afterDeleteHandler = function($event) {
@@ -385,7 +395,7 @@ class ImageController extends CController
                 
                 break;
             case 'update':
-                if (!$user_id)
+                if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
                     throw new CHttpException(403);
 
                 if (!$model)
