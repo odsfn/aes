@@ -1,3 +1,15 @@
+<script type="text/javascript">
+$(function() {
+    $('.thumbnails.gallery > li').hover(
+            function() {
+                $(this).find('.caption-hidable').slideDown(250);
+            },
+            function() {
+                $(this).find('.caption-hidable').slideUp(250);
+            }
+    );
+});
+</script>
 <div id="replace_albums_container">
     <?php if ($albums): ?>
         <ul class="thumbnails gallery">
@@ -8,26 +20,33 @@
                 ?>
                 <li class="span4 <?php if ($isNewRow) echo 'first-in-row'; ?>">
                     <div class="thumbnail">
-                        <?php
-                        echo CHtml::link(
-                                CHtml::tag('img', array(
-                                    'src' => ( 
-                                        $album->path ? $this->getModule()->getComponent('image')->createAbsoluteUrl('360x220', $album->path) : $this->getModule()->getAssetsUrl('img/no_album.png'))
-                                )), 
-                                array(
-                                    $this->getModule()->albumRoute . '/op/view',
-                                    'album_id' => $album->id,
-                                    'target_id' => $target_id,
-                                )
-                            );
-                        ?>
+                        <div>
+                            <?php if($album->description): ?>
+                            <div class="caption-transparent caption-bottom caption-hidable">
+                                <p><?= $album->description ?></p>
+                            </div>
+                            <?php endif; ?>
+                            <?php
+                            echo CHtml::link(
+                                    CHtml::tag('img', array(
+                                        'src' => ( 
+                                            $album->path ? $this->getModule()->getComponent('image')->createAbsoluteUrl('360x220', $album->path) : $this->getModule()->getAssetsUrl('img/no_album.png'))
+                                    )), 
+                                    array(
+                                        $this->getModule()->albumRoute . '/op/view',
+                                        'album_id' => $album->id,
+                                        'target_id' => $target_id,
+                                    )
+                                );
+                            ?>
+                        </div>
                         <div class="caption">
                             <h5>
-                            <?php 
+                            <span class="head-text"><?php 
                             echo CHtml::link($album->name, array($this->getModule()->albumRoute . '/op/view', 'album_id' => $album->id)); 
-                            ?>
+                            ?></span>
+                                <small class="pull-right" title="<?= Yii::t('album', 'Дата обновелния альбома'); ?>"><i class="icon-time"></i>&nbsp;<?php echo Yii::app()->locale->dateFormatter->formatDateTime($album->update, 'short', 'short'); ?></small>
                             </h5>
-                            <p>Обновлен: <?php echo Yii::app()->locale->dateFormatter->formatDateTime($album->update, 'short', 'short'); ?></p>
                         </div>
                     </div>
                 </li>

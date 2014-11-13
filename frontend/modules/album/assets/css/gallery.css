@@ -7,7 +7,44 @@ ul.gallery li.first-in-row {
     margin-left: 0px !important;
 }
 
+ul.gallery.thumbnails li div.thumbnail div {
+    position:relative;
+    overflow:hidden;
+}
+
+ul.gallery.thumbnails li div.thumbnail .caption-transparent {
+    position:absolute;
+    right:0;
+    z-index: 999;
+    
+    background-color: rgb(32, 32, 32);
+    background-color: rgba(32, 32, 32, .3);
+    color: white;
+    padding: 10px;
+}
+
+ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-hidable {
+    display: none;
+}
+
+ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-top {
+    top:0;
+}
+
+ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-bottom {
+    bottom:0;
+}
+
+ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-all {
+    top:0;
+    height: 100%;
+}
+
 .pagination {
     margin-top: 0px;
     border-left: 1px solid #ddd;
+}
+
+.caption h5 small.pull-right {
+    margin-top: 5px;
 }
