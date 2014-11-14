@@ -60,6 +60,8 @@ class AlbumModule extends CWebModule
     
     public $imageRoute = '/album/image/photo';
 
+    public $ajaxUpdateImageRoute = '/album/image/ajaxUpdatePhoto';
+    
     public $ajaxImageNavigation = true;
 
     public $imageSizeLimit = '5MB';

@@ -494,7 +494,7 @@ class ImageController extends CController
                     '/_photo', 
                     array(
                         'model' => $model, 'pages' => $pages, 'canEdit' => $canEdit,
-                        'albumContext' => (bool)$album
+                        'albumContext' => $album
                     ), 
                     true
                 );

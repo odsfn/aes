@@ -10,8 +10,14 @@
                   $this->getModule()->albumRoute . '/op/view',
                   'album_id' => $model->album->id
                  )): '-')?>
+                <?php if ($canEdit): ?>
                 <br>
-                <b>Уровень доступа:</b> <?php echo $model->permissionLabel; ?>
+                <b>Уровень доступа:</b>
+                <?php 
+                    echo $model->permissionLabel;
+                    endif;
+                ?>
+                
             </p>
         </div>
 
@@ -38,8 +44,9 @@
             );
 
             if ($canEdit) {
-                if ($albumContext 
-                    && $model->album && !$model->album->isCover($model)
+                if (/*$albumContext 
+                    && $model->album && $model->album->acceptsCover($model)*/
+                 Album::checkCoverAcceptance($albumContext, $model)
                 ) {
                     echo CHtml::link(
                         'Назначить обложкой', 

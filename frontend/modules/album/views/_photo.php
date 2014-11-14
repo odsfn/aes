@@ -63,7 +63,6 @@ $(function() {
             success: function(response) {
                 console.log('success called');
                 if(response.success) {
-//                    loadPhoto($('#current-photo-href').val());
                     $('#details-container').replaceWith(response.html);
                     
                     hideForm();

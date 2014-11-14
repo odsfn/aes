@@ -6,7 +6,7 @@
 $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'id'=>'photo-form',
     'action' => !empty($action) ? $action : $this->createAbsoluteUrl(
-        '/album/image/ajaxUpdatePhoto', 
+        $this->getModule()->ajaxUpdateImageRoute, 
         array(
             'photo_id' => $model->id, 
             'albumContext' => !empty($albumContext) ? $albumContext : false

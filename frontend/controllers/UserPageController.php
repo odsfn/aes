@@ -50,11 +50,14 @@ class UserPageController extends SocialController {
         
         Yii::app()->getModule('album')->albumRoute = '/userPage/photos/' . $profileId;
         Yii::app()->getModule('album')->imageRoute = '/userPage/photos/' . $profileId . '/action/photo';
+        Yii::app()->getModule('album')->ajaxUpdateImageRoute = '/userPage/photos/' . $profileId . '/action/ajaxUpdatePhoto';
         
         $this->beginClip('album');
         
         if(isset($_GET['action']) && $_GET['action'] == 'photo')
             Yii::app()->runController('album/image/photo');
+        elseif(isset($_GET['action']) && $_GET['action'] == 'ajaxUpdatePhoto')
+            Yii::app()->runController('album/image/ajaxUpdatePhoto');
         else
             Yii::app()->runController('album/image/album');
         

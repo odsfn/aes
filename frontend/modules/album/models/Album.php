@@ -137,4 +137,27 @@ class Album extends CActiveRecord
         
         return $this->path === $image->path;
     }
+    
+    /**
+     * Checks whether $image can be cover of the album
+     * @param File $image Potential new cover
+     * @return boolean
+     */
+    public function acceptsCover(File $image)
+    {
+        if($image->album_id != $this->id)
+            return false;
+        
+        return !$this->isCover($image);
+    }
+    
+    public static function checkCoverAcceptance($albumId, $image)
+    {
+        $album = self::model()->findByPk($albumId);
+        
+        if(!$album)
+            return false;
+        
+        return $album->acceptsCover($image);
+    }
 }

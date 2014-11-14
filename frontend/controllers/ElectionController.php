@@ -200,11 +200,14 @@ class ElectionController extends FrontController
         
         Yii::app()->getModule('album')->albumRoute = '/election/photos/' . $electionId;
         Yii::app()->getModule('album')->imageRoute = '/election/photos/' . $electionId . '/action/photo';
+        Yii::app()->getModule('album')->ajaxUpdateImageRoute = '/election/photos/' . $electionId . '/action/ajaxUpdatePhoto';
         
         $this->beginClip('album');
         
         if(isset($_GET['action']) && $_GET['action'] == 'photo')
             Yii::app()->runController('album/image/photo');
+        elseif(isset($_GET['action']) && $_GET['action'] == 'ajaxUpdatePhoto')
+            Yii::app()->runController('album/image/ajaxUpdatePhoto');
         else
             Yii::app()->runController('album/image/album');
         
