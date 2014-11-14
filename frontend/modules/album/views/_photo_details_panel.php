@@ -44,10 +44,7 @@
             );
 
             if ($canEdit) {
-                if (/*$albumContext 
-                    && $model->album && $model->album->acceptsCover($model)*/
-                 Album::checkCoverAcceptance($albumContext, $model)
-                ) {
+                if (Album::checkCoverAcceptance($albumContext, $model)) {
                     echo CHtml::link(
                         'Назначить обложкой', 
                         array($this->getModule()->imageRoute . '/op/album', 'photo_id' => $model->id),
@@ -67,8 +64,8 @@
 
                 echo CHtml::link(
                     'Удалить', 
-                    array($this->getModule()->imageRoute . '/op/delete', 'photo_id' => $model->id),
-                    array('class' => 'btn btn-danger btn-mini btn-block')
+                    array('/album/image/photoDelete', 'photo_id' => $model->id),
+                    array('class' => 'btn btn-danger btn-mini btn-block photo-delete')
                 );
             }
             ?>

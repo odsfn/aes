@@ -47,6 +47,20 @@ $(function() {
         })
         .on('click', '#form-container button[type="reset"]', function(event) {
             hideForm();
+        })
+        .on('click', '#details-container a.photo-delete', function(event) {
+            event.preventDefault();
+            var el = $(this);
+
+            $.ajax({
+                type: 'POST',
+                url: el.attr('href'),
+                success: function(response) {
+                    if(response.success)
+                        $('#details-container').html(response.html);
+                },
+                dataType: 'json'
+            });
         });
     
     //form ajax submit
@@ -61,7 +75,6 @@ $(function() {
             url: submitUrl,
             data: form.serialize(),
             success: function(response) {
-                console.log('success called');
                 if(response.success) {
                     $('#details-container').replaceWith(response.html);
                     

@@ -352,13 +352,15 @@ class ImageController extends CController
 
         $model = File::model()->with('album')->findByPk($photo_id);
 
-        if (!$model)
-            throw new CHttpException(404);
+        if($op != 'view') {
+            if (!$model)
+                throw new CHttpException(404);
 
-        if (!$this->getModule()->canViewAlbum($model->album)) {
-            throw new CHttpException(403);
+            if (!$this->getModule()->canViewAlbum($model->album)) {
+                throw new CHttpException(403);
+            }
         }
-
+        
         switch ($op) {
             case 'delete':
                 if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
@@ -396,9 +398,6 @@ class ImageController extends CController
                 
                 break;
             case 'view':
-                if (!$model)
-                    throw new CHttpException(404);
-
                 $params = $condition = array();
                 
                 $condition[] = 't.target_id = :target_id';
@@ -415,10 +414,7 @@ class ImageController extends CController
                     $params[':perm1'] = self::GALLERY_PERM_PER_REGISTERED;
                 }
 
-                if (isset($model->album) && $album == $model->album->id) {
-                    $condition[] = 'album_id = :album_id';
-                    $params[':album_id'] = $model->album->id;
-                } elseif($album) {
+                if($album) {
                     $condition[] = 'album_id = :album_id';
                     $params[':album_id'] = $album;
                 }
@@ -433,15 +429,13 @@ class ImageController extends CController
                 $pages->route = $this->getModule()->imageRoute;
                 $pages->params = array(
                     'op' => $op,
-                    'photo_id' => $photo_id,
                     'target_id' => $target_id,
                     'album' => $album
                 );
                 $pages->pageSize = 1;
                 $pages->applyLimit($criteria);
                 
-                if ($page)
-                    $model = File::model()->find($criteria);
+                $model = File::model()->find($criteria);
 
                 if (!empty($album) && isset($model->album))
                     $menu = array(
@@ -522,6 +516,45 @@ class ImageController extends CController
         Yii::app()->end();
     }
     
+    public function actionPhotoDelete($photo_id)
+    {
+        $model = File::model()->findByPk($photo_id);
+
+        if (!$model)
+            throw new CHttpException(404);
+        
+        $target_id = $model->target_id;
+        $user_id = Yii::app()->user->id;
+        
+        if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
+            throw new CHttpException(403);
+
+        $afterDeleteHandler = function($event) {
+            $originalPath = $event->sender->path;
+            $filesPathes = Yii::app()->getModule('album')->getAbsolutePathes($originalPath);
+
+            foreach($filesPathes as $path) {
+                if(file_exists($path)) unlink($path);
+            }
+        };
+        $model->attachEventHandler('onAfterDelete', $afterDeleteHandler);
+
+        if (!$model->delete()) 
+            throw new CException('Photo #'.$photo_id.' deletion failed');
+
+        if (Yii::app()->request->isAjaxRequest) {
+            
+            echo CJSON::encode(array(
+                'success'=>true,
+                'html'=>Yii::t('album', 'Фото было удалено')
+            ));
+            
+            return;
+        }
+        
+        $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id));
+    }
+
     public function actionTagsJson($tag = '')
     {
         if (Yii::app()->getUser()->getIsGuest())
