@@ -8,12 +8,14 @@
  * @property integer $target_id
  * @property integer $user_id
  * @property integer $album_id
+ * @property integer $permission
  * @property string $filename
  * @property string $path
  * @property string $type
  */
 class File extends CActiveRecord
 {
+
     public $tags;
 
     /**
@@ -87,9 +89,13 @@ class File extends CActiveRecord
         parent::beforeSave();
         if ($this->isNewRecord) {
             $this->user_id = Yii::app()->user->id;
+            $this->update = date('Y-m-d H:i:s');
         }
-        $this->update = date('Y-m-d H:i:s');
-        $this->Taggable->setTags($this->tags);
+        
+        $this->inheritAlbumPermissions();
+        
+//        $this->Taggable->setTags($this->tags);
+        
         return true;
     }
 
@@ -103,7 +109,14 @@ class File extends CActiveRecord
         parent::afterDelete();
     }
     
-    /**
+    protected function inheritAlbumPermissions()
+    {
+        if ($this->album && $this->album->permission != $this->permission) {
+            $this->permission = $this->album->permission;
+        }
+    }
+
+        /**
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
@@ -143,6 +156,11 @@ class File extends CActiveRecord
         return $dates;
     }
 
+    public function getPermissionLabel()
+    {
+        return AlbumModule::getPermissionLabel($this->permission);
+    }
+    
     public function getRecords($condition, $params = array(), $page = 1, $limit = 30, $order = '')
     {
 
@@ -156,31 +174,27 @@ class File extends CActiveRecord
         return self::model()->findAll($criteria);
     }
 
-    /* public function getTags(){
-      return array();
-      } */
-
-    public function behaviors()
-    {
-        return array_merge(
-                array(
-                    'Taggable' => array(
-                        'class' => 'album.components.taggableBehavior.EARTaggableBehavior',
-                        'tagTable' => 'tags',
-                        'tagModel' => 'Tags',
-                        'tagBindingTable' => 'file_tag',
-                        'modelTableFk' => 'fid',
-                        'tagTablePk' => 'id',
-                        'tagTableName' => 'name',
-                        'tagTableCount' => 'frequency',
-                        'tagBindingTableTagId' => 'tid',
-                        'cacheID' => 'cache',
-                        'createTagsAutomatically' => true,
-                        'scope' => array(),
-                        'insertValues' => array(),
-                    ),
-                ), parent::behaviors()
-        );
-    }
+//    public function behaviors()
+//    {
+//        return array_merge(
+//                array(
+//                    'Taggable' => array(
+//                        'class' => 'album.components.taggableBehavior.EARTaggableBehavior',
+//                        'tagTable' => 'tags',
+//                        'tagModel' => 'Tags',
+//                        'tagBindingTable' => 'file_tag',
+//                        'modelTableFk' => 'fid',
+//                        'tagTablePk' => 'id',
+//                        'tagTableName' => 'name',
+//                        'tagTableCount' => 'frequency',
+//                        'tagBindingTableTagId' => 'tid',
+//                        'cacheID' => 'cache',
+//                        'createTagsAutomatically' => true,
+//                        'scope' => array(),
+//                        'insertValues' => array(),
+//                    ),
+//                ), parent::behaviors()
+//        );
+//    }
 
 }

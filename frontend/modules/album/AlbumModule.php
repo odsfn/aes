@@ -15,6 +15,46 @@
  */
 class AlbumModule extends CWebModule
 {
+    const GALLERY_PERM_PER_ALL = 0;
+
+    const GALLERY_PERM_PER_REGISTERED = 1;
+
+    const GALLERY_PERM_PER_OWNER = 2; 
+    
+    public static $permissionLabels = array(
+        self::GALLERY_PERM_PER_ALL => 'Всем',
+        self::GALLERY_PERM_PER_REGISTERED => 'Только зарегистрированным пользователям',
+        self::GALLERY_PERM_PER_OWNER => 'Только мне'
+    );
+    
+    public static function albumsAsListData($target_id)
+    {
+        $albums = array(
+            array('id'=>'', 'name'=>'-')
+        );
+        
+        $albums = array_merge(
+            $albums,
+            Album::model()->findAll(
+                'target_id = :targetId', 
+                array(
+                    ':targetId'=> $target_id
+                )
+            )
+        );
+        
+        return CHtml::listData($albums, 'id', 'name');
+    }
+
+        public static function getPermissionLabel($level)
+    {
+        $levels = array_keys(self::$permissionLabels);
+        
+        if(!in_array($level, $levels))
+            throw new CException('Permission level "' . $level . '" does not exist');
+        
+        return Yii::t('album.permissions', self::$permissionLabels[$level]);
+    }
 
     public $albumRoute = '/album/image/album';
     
@@ -132,13 +172,7 @@ class AlbumModule extends CWebModule
         }
         
         return $result;
-    }
-    
-    const GALLERY_PERM_PER_ALL = 0;
-
-    const GALLERY_PERM_PER_REGISTERED = 1;
-
-    const GALLERY_PERM_PER_OWNER = 2;    
+    }   
     
     public function canViewAlbum($album, $userId = null)
     {

@@ -49,10 +49,11 @@ class ImageController extends CController
                 $content = $this->renderPartial('/_album_create', array('model' => $model), true);
                 break;
             case 'delete':
+                $model = Album::model()->findByPk($album_id);
+                
                 if (!$user_id || !$this->getModule()->canDeleteAlbum($model))
                     throw new CHttpException(403);
-
-                $model = Album::model()->findByPk($album_id);
+                
                 if ($model->delete())
                     $this->redirect(array($this->getModule()->albumRoute . '/op/view'));
                 break;
@@ -410,8 +411,23 @@ class ImageController extends CController
                 $model->attributes = $attributes;
                 if ($model->album_id)
                     $model->permission = Album::model()->findByPk($model->album_id)->permission;
-                if ($model->save())
-                    $this->redirect(array($this->getModule()->imageRoute . '/op/view', 'photo_id' => $photo_id, 'target_id' => $target_id));
+                if ($model->save()) {
+                    if (Yii::app()->request->isAjaxRequest) {
+                        echo CJSON::encode(array(
+                            'success' => true
+                        ));
+                        Yii::app()->end();
+                    } else 
+                        $this->redirect(array($this->getModule()->imageRoute . '/op/view', 'photo_id' => $photo_id, 'target_id' => $target_id));
+                } else {
+                    if (Yii::app()->request->isAjaxRequest) {
+                        echo CJSON::encode(array(
+                            'success' => false,
+                            'html' => $this->renderPartial('/_photo_update', array('model' => $model), true)
+                        ));
+                        Yii::app()->end();
+                    }
+                }
                 break;
             case 'view':
                 if (!$model)
@@ -489,6 +505,54 @@ class ImageController extends CController
         $this->renderPartial('/content', array('content' => $content, 'menu' => $menu, 'target_id' => $target_id));
     }
 
+    public function actionAjaxUpdatePhoto($photo_id, $albumContext = false)
+    {
+        $model = File::model()->findByPk($photo_id);
+        $user_id = Yii::app()->user->id;
+        
+        if (!$model)
+            throw new CHttpException(404);
+        
+        $target_id = $model->target_id;
+        
+        if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
+            throw new CHttpException(403);
+
+        $attributes = Yii::app()->request->getPost('File');
+
+        if (isset($attributes['album_id']) 
+            && $attributes['album_id'] == 'NULL' || $attributes['album_id'] == '0' || $attributes['album_id'] == ''
+        ){
+            $attributes['album_id'] = null;
+        }
+        
+        $model->attributes = $attributes;
+        
+        if ($model->save()) {
+            
+            $canEdit = false;
+            if ($model->user_id == $user_id)
+                $canEdit = true;
+            
+            $response = array(
+                'success' => true,
+                'html' => $this->renderPartial('/_photo_details_panel', array(
+                    'model' => $model,
+                    'canEdit' => $canEdit,
+                    'albumContext' => $albumContext
+                ), true)
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'html' => $this->renderPartial('/_photo_update', array('model' => $model), true)
+            );
+        }
+        
+        echo CJSON::encode($response);
+        Yii::app()->end();
+    }
+    
     public function actionTagsJson($tag = '')
     {
         if (Yii::app()->getUser()->getIsGuest())

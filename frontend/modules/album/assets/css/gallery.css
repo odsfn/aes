@@ -50,3 +50,7 @@ ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-all {
 .caption h5 small.pull-right {
     margin-top: 5px;
 }
+
+small.hint-permission {
+    display: none;
+}

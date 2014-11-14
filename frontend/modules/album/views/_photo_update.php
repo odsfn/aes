@@ -1,48 +1,78 @@
-<div class="form">
-
-<?php $form=$this->beginWidget('CActiveForm', array(
-    'id'=>'file-form',
+<div class="row-fluid">
+<?php
+/* @var $this AlbumController */
+/* @var $model Album */
+/* @var $form CActiveForm */
+$form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+    'id'=>'photo-form',
+    'action' => !empty($action) ? $action : $this->createAbsoluteUrl(
+        '/album/image/ajaxUpdatePhoto', 
+        array(
+            'photo_id' => $model->id, 
+            'albumContext' => !empty($albumContext) ? $albumContext : false
+        )
+    ),
     'enableAjaxValidation'=>false,
+    'htmlOptions'=>array(
+        'class'=>'span12',
+    )
 )); ?>
-
-    <p class="note">Fields with <span class="required">*</span> are required.</p>
 
     <?php echo $form->errorSummary($model); ?>
 
-    <div class="row">
-        <?php echo $form->labelEx($model,'user_id'); ?>
-        <?php echo $form->textField($model,'user_id'); ?>
-        <?php echo $form->error($model,'user_id'); ?>
+    <?php echo $form->labelEx($model,'description'); ?>
+    <?php echo $form->textArea($model,'description', array('class' => 'span12')); ?>
+    <?php echo $form->error($model,'description'); ?>
+        
+    <?php echo $form->labelEx($model,'album_id'); ?>
+    <?php
+        echo $form->dropDownList($model,'album_id',
+            AlbumModule::albumsAsListData(!empty($model->target_id) ? $model->target_id : $target_id),
+            array('class' => 'span12')
+        );
+    ?>
+    <?php echo $form->error($model,'album_id'); ?>    
+    
+    <?php echo $form->labelEx($model,'permission'); ?>
+    <?php
+        echo $form->dropDownList($model,'permission',
+            array(
+                'Всем',
+                'Только зарегистрированным пользователям',
+                'Только мне'
+            ),
+            array(
+                'class' => 'span12',
+                'disabled' => !empty($model->album) ? 'disabled' : false
+            )
+        );
+    ?>
+    <?php echo $form->error($model,'permission'); ?>
+    <p class="muted"><small class="hint-permission">
+        <?= Yii::t('album', 'Фотография будет иметь такой же уровень доступа как и у альбома, в котый она перемещается.'); ?>
+    </small></p>
+    <?php 
+        Yii::app()->clientScript->registerScript('albumSwitchHandler', 
+            "var albumSwitchHandler = function() {"
+                . "var albumId = $('select#File_album_id').val();"
+                . "if(albumId !=='NULL' && albumId != '') {"
+                    . "$('select#File_permission').prop('disabled', 'disabled');"
+                    . "$('small.hint-permission').show();"
+                . "} else {"
+                    . "$('select#File_permission').prop('disabled', false);"
+                    . "$('small.hint-permission').hide();"
+                . "}"
+            . "};"
+            . "albumSwitchHandler();"
+            . "$('body').on('change', 'select#File_album_id', function(e) {"
+                . "albumSwitchHandler();"
+            . "})");
+    ?>
+    
+    <div class="row-fluid buttons">
+        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'type'=>'primary', 'label'=>'Сохранить')); ?>
+        <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'reset', 'label'=>'Отменить')); ?>
     </div>
-
-    <div class="row">
-        <?php echo $form->labelEx($model,'album_id'); ?>
-        <?php echo $form->textField($model,'album_id'); ?>
-        <?php echo $form->error($model,'album_id'); ?>
-    </div>
-
-    <div class="row">
-        <?php echo $form->labelEx($model,'filename'); ?>
-        <?php echo $form->textField($model,'filename',array('size'=>60,'maxlength'=>255)); ?>
-        <?php echo $form->error($model,'filename'); ?>
-    </div>
-
-    <div class="row">
-        <?php echo $form->labelEx($model,'path'); ?>
-        <?php echo $form->textField($model,'path',array('size'=>60,'maxlength'=>255)); ?>
-        <?php echo $form->error($model,'path'); ?>
-    </div>
-
-    <div class="row">
-        <?php echo $form->labelEx($model,'update'); ?>
-        <?php echo $form->textField($model,'update'); ?>
-        <?php echo $form->error($model,'update'); ?>
-    </div>
-
-    <div class="row buttons">
-        <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
-    </div>
-
 <?php $this->endWidget(); ?>
 
-</div><!-- form -->
+</div>
