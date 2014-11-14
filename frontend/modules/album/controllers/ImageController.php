@@ -395,40 +395,6 @@ class ImageController extends CController
                 }
                 
                 break;
-            case 'update':
-                if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
-                    throw new CHttpException(403);
-
-                if (!$model)
-                    $this->redirect(array($this->getModule()->imageRoute . '/op/view', 'photo_id' => $photo_id, 'target_id' => $target_id));
-
-                $tags = Yii::app()->request->getPost('Tags');
-                $album = Yii::app()->request->getPost('Album');
-                $attributes = Yii::app()->request->getPost('File');
-
-                $model->album_id = isset($album['id']) ? $album['id'] : 0;
-                $model->tags = $tags;
-                $model->attributes = $attributes;
-                if ($model->album_id)
-                    $model->permission = Album::model()->findByPk($model->album_id)->permission;
-                if ($model->save()) {
-                    if (Yii::app()->request->isAjaxRequest) {
-                        echo CJSON::encode(array(
-                            'success' => true
-                        ));
-                        Yii::app()->end();
-                    } else 
-                        $this->redirect(array($this->getModule()->imageRoute . '/op/view', 'photo_id' => $photo_id, 'target_id' => $target_id));
-                } else {
-                    if (Yii::app()->request->isAjaxRequest) {
-                        echo CJSON::encode(array(
-                            'success' => false,
-                            'html' => $this->renderPartial('/_photo_update', array('model' => $model), true)
-                        ));
-                        Yii::app()->end();
-                    }
-                }
-                break;
             case 'view':
                 if (!$model)
                     throw new CHttpException(404);
@@ -452,6 +418,9 @@ class ImageController extends CController
                 if (isset($model->album) && $album == $model->album->id) {
                     $condition[] = 'album_id = :album_id';
                     $params[':album_id'] = $model->album->id;
+                } elseif($album) {
+                    $condition[] = 'album_id = :album_id';
+                    $params[':album_id'] = $album;
                 }
 
                 $criteria = new CdbCriteria(array(
@@ -477,7 +446,7 @@ class ImageController extends CController
                 if (!empty($album) && isset($model->album))
                     $menu = array(
                         array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id)),
-                        array('label' => 'Альбом: ' . $model->album->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $model->album->id, 'target_id' => $target_id)),
+                        array('label' => 'Альбом: ' . $model->album->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $album, 'target_id' => $target_id)),
                         array('label' => 'Просмотр', 'url' => '#', 'active' => true),
                     );
                 else
