@@ -342,7 +342,7 @@ class ImageController extends CController
         $this->renderPartial('/content', array('content' => $content, 'menu' => $menu, 'target_id' => $target_id));
     }
 
-    public function actionPhoto($op = 'view', $photo_id = 0, $target_id = 0, $page = 0, $album = 0)
+    public function actionPhoto($op = 'view', $photo_id = 0, $target_id = 0, $page = 1, $album = 0)
     {
         $model = '';
         $menu = array();
