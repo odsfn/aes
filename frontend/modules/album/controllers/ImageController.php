@@ -327,8 +327,15 @@ class ImageController extends CController
                         'path' => $file_path,
                         'permission' => $permission,
                     );
-                    if ($photo->save()) {
-                        echo 1;
+                    if ($photo->save()) {                        
+                        echo CJSON::encode(array(
+                            'success' => true,
+                            'html' => $this->renderPartial(
+                                '/_photo_update_compact', 
+                                array('model'=>$photo),
+                                true
+                            )
+                        ));
                         Yii::app()->end();
                     }
                 }
@@ -491,24 +498,44 @@ class ImageController extends CController
         
         $model->attributes = $attributes;
         
+        if($model->isNewRecord)
+            $updated = false;
+        else
+            $updated = true;
+        
         if ($model->save()) {
             
             $canEdit = false;
             if ($model->user_id == $user_id)
                 $canEdit = true;
             
+            $formView = '/_photo_details_panel';
+            
+            if (Yii::app()->request->getParam('form_type') == 'compact')
+                $formView = '/_photo_update_compact';
+            
+            if ($updated)
+                $updated = Yii::app()->locale->dateFormatter->formatDateTime(time(), null, 'short');
+                    
             $response = array(
                 'success' => true,
-                'html' => $this->renderPartial('/_photo_details_panel', array(
+                'html' => $this->renderPartial($formView, array(
                     'model' => $model,
                     'canEdit' => $canEdit,
-                    'albumContext' => $albumContext
+                    'albumContext' => $albumContext,
+                    'updated' => $updated
                 ), true)
             );
         } else {
+            
+            $formView = '/_photo_update';
+            
+            if (Yii::app()->request->getParam('form_type') == 'compact')
+                $formView = '/_photo_update_compact';
+            
             $response = array(
                 'success' => false,
-                'html' => $this->renderPartial('/_photo_update', array('model' => $model), true)
+                'html' => $this->renderPartial($formView, array('model' => $model), true)
             );
         }
         

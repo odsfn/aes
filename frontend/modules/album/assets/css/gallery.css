@@ -54,3 +54,7 @@ ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-all {
 small.hint-permission {
     display: none;
 }
+
+.photo-edit-panel .left-col .buttons, .photo-edit-panel .left-col .marks {
+    margin-top: 5px;
+}
