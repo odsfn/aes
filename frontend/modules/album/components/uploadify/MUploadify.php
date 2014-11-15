@@ -150,7 +150,7 @@ class MUploadify extends CInputWidget{
     function init(){
         Yii::app()->getClientScript()
             ->registerCoreScript('jquery')
-            ->registerScriptFile($this->getBaseUrl().'/swfobject.js',CClientScript::POS_END)
+//            ->registerScriptFile($this->getBaseUrl().'/swfobject.js',CClientScript::POS_END)
             ->registerScriptFile($this->getBaseUrl().'/jquery.uploadify'.($this->min?'.min':'').'.js',CClientScript::POS_END)
             ->registerCssFile($this->getBaseUrl().'/uploadify.css');
 
