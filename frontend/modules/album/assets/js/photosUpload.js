@@ -16,6 +16,7 @@ $(function() {
                 form = $(el.parents('form.photo-edit-form').get(0)),
                 submitUrl = form.attr('action');
 
+            container.mask('Please wait...');
             $.ajax({
                 type: "POST",
                 url: submitUrl,
@@ -24,6 +25,7 @@ $(function() {
                     if(!response || typeof(response) !== 'object' || !response.hasOwnProperty('success'))
                         throw new Error("Saving failed");
                     
+                    container.unmask();
                     container.replaceWith(response.html);
                 },
                 dataType: 'json'
@@ -33,13 +35,15 @@ $(function() {
             event.preventDefault();
             var el = $(this),
                 container = $(el.parents('div.photo-edit-panel').get(0));
-
+                
+            container.mask('Please wait...');
             $.ajax({
                 type: 'POST',
                 url: el.attr('href'),
                 success: function(response) {
                     if(response.success)
                         container.fadeOut(function() {
+                            container.unmask();
                             container.remove();
                         });
                     else

@@ -2,6 +2,13 @@
         ->registerScriptFile($this->getModule()->getAssetsUrl('js/photosUpload.js')); 
 ?>
 
+<script type="text/javascript">
+$(function(){
+    $(document)
+        .unbind('ajaxStart')
+        .unbind('ajaxStop');
+});
+</script>
 <h3>Загрузка фотографий с вашего компьютера</h3>
 
 <p>
