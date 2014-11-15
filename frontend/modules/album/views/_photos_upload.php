@@ -1,5 +1,6 @@
 <?php Yii::app()->clientScript
-        ->registerScriptFile($this->getModule()->getAssetsUrl('js/photosUpload.js')); 
+        ->registerScriptFile($this->getModule()->getAssetsUrl('js/photosUpload.js'))
+        ->registerScriptFile($this->getModule()->getAssetsUrl('js/photoUpdateCompact.js'));
 ?>
 
 <script type="text/javascript">

@@ -91,23 +91,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         <p class="muted"><small class="hint-permission">
             <?= Yii::t('album', 'Фотография будет иметь такой же уровень доступа как и у альбома, в котый она перемещается.'); ?>
         </small></p>
-        <?php 
-            Yii::app()->clientScript->registerScript('albumSwitchHandler', 
-                "var albumSwitchHandler = function() {"
-                    . "var albumId = $('select#File_album_id').val();"
-                    . "if(albumId !=='NULL' && albumId != '') {"
-                        . "$('select#File_permission').prop('disabled', 'disabled');"
-                        . "$('small.hint-permission').show();"
-                    . "} else {"
-                        . "$('select#File_permission').prop('disabled', false);"
-                        . "$('small.hint-permission').hide();"
-                    . "}"
-                . "};"
-                . "albumSwitchHandler();"
-                . "$('body').on('change', 'select#File_album_id', function(e) {"
-                    . "albumSwitchHandler();"
-                . "})");
-        ?>
+        
         </div> 
     </div>
     
