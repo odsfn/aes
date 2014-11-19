@@ -56,8 +56,21 @@ $(function() {
                 type: 'POST',
                 url: el.attr('href'),
                 success: function(response) {
-                    if(response.success)
+                    if(response.success) {
                         $('#details-container').html(response.html);
+                        //fix next link
+                        var nextLink = $('div.pagination .next > a'),
+                            curNextHref = nextLink.attr('href'),
+                            newNextHref;
+                        
+                        var replacer = function(match, p1, offset, string) {
+                            var page = parseInt(p1) - 1;
+                            return '/' + page;
+                        };
+                        
+                        newNextHref = curNextHref.replace(/\/(\d+)\/?$/, replacer);
+                        nextLink.attr('href', newNextHref);
+                    }
                 },
                 dataType: 'json'
             });
