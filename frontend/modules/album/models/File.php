@@ -174,6 +174,12 @@ class File extends CActiveRecord
         return self::model()->findAll($criteria);
     }
 
+    public function getAbsolutePath()
+    {
+        return Yii::getPathOfAlias('webroot') . DIRECTORY_SEPARATOR . $this->path;
+    }
+
+
 //    public function behaviors()
 //    {
 //        return array_merge(

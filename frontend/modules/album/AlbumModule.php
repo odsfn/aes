@@ -125,6 +125,8 @@ class AlbumModule extends CWebModule
                     ),
                 ),
             ),
+            
+            'imagemod' => array('class' => 'CImageModifier')
         );
         
         $this->setComponents($components);

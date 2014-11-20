@@ -28,7 +28,20 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 
             <div class="row-fluid buttons">
                 <div class="span12">
-                    <?php $this->widget('bootstrap.widgets.TbButton', array(
+                    <?php 
+                    echo CHtml::link(
+                        'Повернуть против часовой стрелки', 
+                        array('/album/image/rotateImage', 'photo_id' => $model->id, 'direction' => 'left'),
+                        array('class' => 'rotate')
+                    );
+                    
+                    echo CHtml::link(
+                        'Повернуть по часовой стрелке', 
+                        array('/album/image/rotateImage', 'photo_id' => $model->id, 'direction' => 'right'),
+                        array('class' => 'rotate')
+                    );
+                    
+                    $this->widget('bootstrap.widgets.TbButton', array(
                         'buttonType'=>'submit', 'label'=>'Сохранить изменения',
                         'htmlOptions' => array('class' => 'btn-block btn-mini')
                     )); ?>

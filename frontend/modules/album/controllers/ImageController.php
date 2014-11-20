@@ -582,6 +582,25 @@ class ImageController extends CController
         $this->redirect(array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id));
     }
 
+    public function actionRotateImage($photo_id, $direction)
+    {
+        $model = File::model()->findByPk($photo_id);
+
+        if (!$model)
+            throw new CHttpException(404);
+        
+        $target_id = $model->target_id;
+        $user_id = Yii::app()->user->id;
+        
+        if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
+            throw new CHttpException(403);
+        
+        $this->getModule()->getComponent('image')->rotate($file_path = $model->getAbsolutePath(), $direction);
+        $this->createThumbnails($file_path, true);
+        
+        echo CJSON::encode(array('success'=>true));
+    }
+    
     public function actionTagsJson($tag = '')
     {
         if (Yii::app()->getUser()->getIsGuest())
@@ -609,10 +628,10 @@ class ImageController extends CController
      * Creates thumbnails for currently uploaded images
      * @param string $file_path Path to an image which has been currently uploaded
      */
-    protected function createThumbnails($file_path)
+    protected function createThumbnails($file_path, $overwrite = false)
     {
-        $this->getModule()->getComponent('image')->createPath('160x100', $file_path);
-        $this->getModule()->getComponent('image')->createPath('1150x710', $file_path);
+        $this->getModule()->getComponent('image')->createPath('160x100', $file_path, false, $overwrite);
+        $this->getModule()->getComponent('image')->createPath('1150x710', $file_path, false, $overwrite);
     }
     
     protected function createAlbumThumbnail($file_path)

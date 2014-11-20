@@ -48,7 +48,7 @@ class CImage extends CApplicationComponent {
      * @return the path to the cached derived image (if it does not exist it'll be generated
      *   transparently)
      */
-    public function createPath($presetName, $file, $only_return_path = false) {
+    public function createPath($presetName, $file, $only_return_path = false, $overwrite = false) {
         if(!isset($this->presets[$presetName])) return false;
         if (!file_exists($file)) return false;
 
@@ -59,7 +59,7 @@ class CImage extends CApplicationComponent {
             $targetFile = $targetPath .'/'. $basename;
             if (!file_exists($targetPath)) mkdir($targetPath, 0777, true); // mkdir recursive
 
-            if ($only_return_path || file_exists($targetFile)) {
+            if (!$overwrite && ($only_return_path || file_exists($targetFile))) {
                 return $targetFile;
             } else {
 
@@ -73,9 +73,7 @@ class CImage extends CApplicationComponent {
                     }
                   }
 
-                  Yii::app()->setComponents(array('imagemod' => array('class' => 'CImageModifier')));
-
-                  $handle = Yii::app()->imagemod->load($file);
+                  $handle = Yii::app()->getModule('album')->imagemod->load($file);
 
                   $handle->file_safe_name = false;
                   $handle->file_overwrite = true;
@@ -177,6 +175,32 @@ class CImage extends CApplicationComponent {
       return Yii::app()->getRequest()->getHostInfo().$this->createUrl($presetName, $file, $options);
     }
 
+    public function rotate($path, $direction)
+    {
+        $allowedDirections = array('right', 'left');
+        
+        if (!in_array($direction, $allowedDirections))
+            throw new CException('Image can\'t be rotated - invalid direction "'.$direction.'"');
+        
+        if (!file_exists($path))
+            throw new CException('Image can\'t be rotated - file not found "'.$path.'"');
+        
+        $dir = pathinfo($path, PATHINFO_DIRNAME);
+        
+        $handle = Yii::app()->getModule('album')->imagemod->load($path);
+        $handle->file_overwrite = true;
+        
+        if ($direction == 'right')
+            $handle->image_rotate = 90;
+        else
+            $handle->image_rotate = 270;
+        $handle->process($dir);
+        
+        if (!$handle->processed) {
+            throw new CException('Image can\'t be rotated. Error: ' . $handle->error);
+        }
+    }
+    
     public static function cyrillicToLatin($text, $toLowCase = TRUE, $maxlength = 100){
       $text = implode(array_slice(explode('<br>',wordwrap(trim(strip_tags(html_entity_decode($text))),$maxlength,'<br>',false)),0,1));
       //$text = substr(, 0, $maxlength);
