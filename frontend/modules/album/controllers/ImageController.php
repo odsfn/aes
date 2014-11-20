@@ -8,6 +8,25 @@ class ImageController extends CController
 
     const GALLERY_PERM_PER_OWNER = 2;
 
+    public function init()
+    {
+        parent::init();
+        
+        $request = Yii::app()->request;
+        
+        if ($request->getParam('op') == 'upload'
+            && isset($_POST['SESSION_ID'])) {
+            $session=Yii::app()->getSession();
+            $actualSession = $_POST['SESSION_ID'];
+            
+            if ($session->sessionID != $actualSession) {
+                $session->close();
+                $session->sessionID = $_POST['SESSION_ID'];
+                $session->open();
+            }
+        }
+    }
+
     public function actionAlbum($op = 'view', $album_id = 0, $target_id = 0)
     {
         $menu = array();
