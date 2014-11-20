@@ -1,15 +1,7 @@
-<script type="text/javascript">
-$(function() {
-    $('.thumbnails.gallery > li').hover(
-            function() {
-                $(this).find('.caption-hidable').slideDown(250);
-            },
-            function() {
-                $(this).find('.caption-hidable').slideUp(250);
-            }
-    );
-});
-</script>
+<?php
+Yii::app()->clientScript
+    ->registerScriptFile($this->getModule()->getAssetsUrl('js/captionTransparent.js'));
+?>
 <div id="replace_albums_container">
     <?php if ($albums): ?>
         <ul class="thumbnails gallery">

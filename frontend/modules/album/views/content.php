@@ -1,5 +1,7 @@
 <?php
-Yii::app()->clientScript->registerCssFile($this->getModule()->getAssetsUrl('css/gallery.css'));
+Yii::app()->clientScript
+    ->registerCssFile($this->getModule()->getAssetsUrl('css/gallery.css'))
+    ->registerCssFile($this->getModule()->getAssetsUrl('css/thumbnails.css'));
 ?>
 <div class="row-fluid">
     <div class="photo-gallery span12">

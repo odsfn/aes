@@ -31,6 +31,10 @@
     background-color: #DDD;
 }
 
+#navigation ul.nav-pills {
+    margin-bottom: 0px;
+}
+
 .bootstrap-widget-header.smooth {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;

@@ -145,7 +145,7 @@ class AlbumModule extends CWebModule
         if (parent::beforeControllerAction($controller, $action)) {
             // this method is called before any module controller action is performed
             // you may place customized code here
-            $this->assetsUrl = Yii::app()->assetManager->publish(Yii::getPathOfAlias('album.assets'));
+            $this->getAssetsUrl();
             return true;
         } else
             return false;
@@ -153,6 +153,10 @@ class AlbumModule extends CWebModule
     
     public function getAssetsUrl($path = '')
     {
+        if (!$this->assetsUrl) {
+            $this->assetsUrl = Yii::app()->assetManager->publish(Yii::getPathOfAlias('album.assets'));
+        }
+        
         return $this->assetsUrl . '/' . $path;
     }
     

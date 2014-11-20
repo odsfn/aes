@@ -170,35 +170,42 @@ class ImageController extends CController
                     //
                     // Список альбомов цели
                     //
-          $params = $condition = array();
-                   
-                    $condition[] = 't.target_id = :target_id';
-                    $params[':target_id'] = $target_id;
-
-                    // !Доступно только мне
-                    $condition[] = 't.id NOT IN (SELECT id FROM `album` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
-                    $params[':user_id'] = $user_id;
-                    $params[':perm2'] = self::GALLERY_PERM_PER_OWNER;
-
-                    if (!$user_id) {
-                        // !Доступно только зарегестрированным
-                        $condition[] = 't.id NOT IN (SELECT id FROM `album` f WHERE f.permission = :perm1)';
-                        $params[':perm1'] = self::GALLERY_PERM_PER_REGISTERED;
-                    }
-
+//          $params = $condition = array();
+//                   
+//                    $condition[] = 't.target_id = :target_id';
+//                    $params[':target_id'] = $target_id;
+//
+//                    // !Доступно только мне
+//                    $condition[] = 't.id NOT IN (SELECT id FROM `album` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
+//                    $params[':user_id'] = $user_id;
+//                    $params[':perm2'] = self::GALLERY_PERM_PER_OWNER;
+//
+//                    if (!$user_id) {
+//                        // !Доступно только зарегестрированным
+//                        $condition[] = 't.id NOT IN (SELECT id FROM `album` f WHERE f.permission = :perm1)';
+//                        $params[':perm1'] = self::GALLERY_PERM_PER_REGISTERED;
+//                    }
+                    
                     // Все альбомы
-                    $albums = Album::model()->findAll(array(
-                        'condition' => implode(' AND ', $condition),
-                        'params' => $params,
-                        'limit' => ($albums_page ? $albums_page * $Gallery['albums_per_page'] : $Gallery['albums_per_page']),
-                    ));
+//                    $albums = Album::model()->findAll(array(
+//                        'condition' => implode(' AND ', $condition),
+//                        'params' => $params,
+//                        'limit' => ($albums_page ? $albums_page * $Gallery['albums_per_page'] : $Gallery['albums_per_page']),
+//                    ));
+//
+//                    $nalbums = Album::model()->count(array(
+//                        'condition' => implode(' AND ', $condition),
+//                        'params' => $params
+//                    ));
 
-                    $nalbums = Album::model()->count(array(
-                        'condition' => implode(' AND ', $condition),
-                        'params' => $params
-                    ));
+                    $albumsCriteria = Album::getAvailableAlbumsCriteria($target_id, $user_id);
+                    $albumsCountCriteria = clone $albumsCriteria;
+                    
+                    $albumsCriteria->limit = ($albums_page ? $albums_page * $Gallery['albums_per_page'] : $Gallery['albums_per_page']);
 
-
+                    $albums = Album::model()->findAll($albumsCriteria);
+                    $nalbums = Album::model()->count($albumsCountCriteria);
+                    
                     //
                     // Список Фотографий
                     //

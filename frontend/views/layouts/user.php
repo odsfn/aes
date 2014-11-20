@@ -38,14 +38,15 @@ $this->widget('bootstrap.widgets.TbMenu', array(
         array('label'=> Yii::t('userPage', ($this->self) ? 'My nominations' : 'Nominations'), 'url'=> array('/userPage/nominations', 'id'=>$this->profile->user_id)),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My mandates' : 'Mandates'), 'url'=> array('/userPage/mandates', 'id'=>$this->profile->user_id)),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My petitions' : 'Petitions'), 'url'=> array('/userPage/petitions', 'id'=>$this->profile->user_id)),
-        array(
-            'label'=> Yii::t('userPage', ($this->self) ? 'My photos' : 'Photos'), 
-            'url'=> array('/userPage/photos', 'id'=>$this->profile->user_id),
-            'active'=> $this->id == 'image' || $this->action->id == 'photos'
-            ),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My videos' : 'Videos'), 'url'=> array('/userPage/videos', 'id'=>$this->profile->user_id)),
     )
 ));
+
+$this->widget('album.widgets.TinyPreview', array(
+    'targetId' => $this->profile->target_id,
+    'isModuleSelected' => $this->id == 'image' || $this->action->id == 'photos',
+    'albumRoute' => '/userPage/photos/' . $this->profile->target_id
+)); 
 
 $this->endClip();
 
