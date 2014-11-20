@@ -21,26 +21,33 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                     
         <div class="span3 left-col">
             <div class="row-fluid">
-                <img class="span12" 
-                    src="<?= $this->getModule()->getComponent('image')->createAbsoluteUrl('160x100', $model->path); ?>"
-                >
+                <div class="thumbnail-container">
+                    <div class="caption-transparent caption-bottom">
+                        <p>
+                            <?php 
+                            echo CHtml::link(
+                                '<i class="icon-undo"></i>', 
+                                array('/album/image/rotateImage', 'photo_id' => $model->id, 'direction' => 'left'),
+                                array('class' => 'rotate', 'title' => Yii::t('album.photoUpdate', 'Повернуть против часовой стрелки'))
+                            );
+                            echo '&nbsp;';
+                            echo CHtml::link(
+                                '<i class="icon-repeat"></i>', 
+                                array('/album/image/rotateImage', 'photo_id' => $model->id, 'direction' => 'right'),
+                                array('class' => 'rotate', 'title' => Yii::t('album.photoUpdate', 'Повернуть по часовой стрелке'))
+                            );
+                            ?>
+                        </p>
+                    </div>
+                    <img class="span12" 
+                        src="<?= $this->getModule()->getComponent('image')->createAbsoluteUrl('160x100', $model->path); ?>"
+                    >
+                </div>
             </div>
 
             <div class="row-fluid buttons">
                 <div class="span12">
-                    <?php 
-                    echo CHtml::link(
-                        'Повернуть против часовой стрелки', 
-                        array('/album/image/rotateImage', 'photo_id' => $model->id, 'direction' => 'left'),
-                        array('class' => 'rotate')
-                    );
-                    
-                    echo CHtml::link(
-                        'Повернуть по часовой стрелке', 
-                        array('/album/image/rotateImage', 'photo_id' => $model->id, 'direction' => 'right'),
-                        array('class' => 'rotate')
-                    );
-                    
+                    <?php
                     $this->widget('bootstrap.widgets.TbButton', array(
                         'buttonType'=>'submit', 'label'=>'Сохранить изменения',
                         'htmlOptions' => array('class' => 'btn-block btn-mini')
@@ -61,7 +68,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
             </div>
         </div>
         
-        <div class="span9">
+        <div class="span7 right-col">
             
         <?php if (isset($updated)): ?>
             <div class="alert alert-success">

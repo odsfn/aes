@@ -7,12 +7,14 @@ ul.gallery li.first-in-row {
     margin-left: 0px !important;
 }
 
-ul.gallery.thumbnails li div.thumbnail div {
+ul.gallery.thumbnails li div.thumbnail div,
+div.thumbnail-container {
     position:relative;
     overflow:hidden;
 }
 
-ul.gallery.thumbnails li div.thumbnail .caption-transparent {
+ul.gallery.thumbnails li div.thumbnail .caption-transparent,
+div.thumbnail-container .caption-transparent {
     position:absolute;
     right:0;
     left: 0;
@@ -25,21 +27,44 @@ ul.gallery.thumbnails li div.thumbnail .caption-transparent {
     padding: 10px;
 }
 
-ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-hidable {
+ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-hidable,
+div.thumbnail-container .caption-transparent.caption-hidable {
     display: none;
 }
 
-ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-top {
+ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-top,
+div.thumbnail-container .caption-transparent.caption-top {
     top:0;
 }
 
-ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-bottom {
+ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-bottom,
+div.thumbnail-container .caption-transparent.caption-bottom {
     bottom:0;
 }
 
-ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-all {
+ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-all,
+div.thumbnail-container .caption-transparent.caption-all {
     top:0;
     height: 100%;
+}
+
+div.thumbnail-container .caption-transparent{
+    padding: 5px;
+}
+
+div.thumbnail-container p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 14px;
+}
+
+div.thumbnail-container img {
+    margin: 0 !important;
+    padding: 0;
+}
+
+div.thumbnail-container .caption-transparent a {
+    color: white;
 }
 
 .pagination {
@@ -57,4 +82,8 @@ small.hint-permission {
 
 .photo-edit-panel .left-col .buttons, .photo-edit-panel .left-col .marks {
     margin-top: 5px;
+}
+
+.photo-edit-panel .left-col {
+    width: 165px;
 }
