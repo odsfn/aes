@@ -44,8 +44,10 @@ $this->widget('bootstrap.widgets.TbMenu', array(
 
 $this->widget('album.widgets.TinyPreview', array(
     'targetId' => $this->profile->target_id,
+    'previewsCount' => Yii::app()->params['Gallery']['previewsCount'],
     'isModuleSelected' => $this->id == 'image' || $this->action->id == 'photos',
-    'albumRoute' => '/userPage/photos/' . $this->profile->target_id
+    'albumRoute' => '/userPage/photos/' . $this->profile->target_id,
+    'imageRoute' => '/userPage/photos/' . $this->profile->target_id . '/action/photo'
 )); 
 
 $this->endClip();

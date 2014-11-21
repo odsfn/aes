@@ -170,34 +170,6 @@ class ImageController extends CController
                     //
                     // Список альбомов цели
                     //
-//          $params = $condition = array();
-//                   
-//                    $condition[] = 't.target_id = :target_id';
-//                    $params[':target_id'] = $target_id;
-//
-//                    // !Доступно только мне
-//                    $condition[] = 't.id NOT IN (SELECT id FROM `album` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
-//                    $params[':user_id'] = $user_id;
-//                    $params[':perm2'] = self::GALLERY_PERM_PER_OWNER;
-//
-//                    if (!$user_id) {
-//                        // !Доступно только зарегестрированным
-//                        $condition[] = 't.id NOT IN (SELECT id FROM `album` f WHERE f.permission = :perm1)';
-//                        $params[':perm1'] = self::GALLERY_PERM_PER_REGISTERED;
-//                    }
-                    
-                    // Все альбомы
-//                    $albums = Album::model()->findAll(array(
-//                        'condition' => implode(' AND ', $condition),
-//                        'params' => $params,
-//                        'limit' => ($albums_page ? $albums_page * $Gallery['albums_per_page'] : $Gallery['albums_per_page']),
-//                    ));
-//
-//                    $nalbums = Album::model()->count(array(
-//                        'condition' => implode(' AND ', $condition),
-//                        'params' => $params
-//                    ));
-
                     $albumsCriteria = Album::getAvailableAlbumsCriteria($target_id, $user_id);
                     $albumsCountCriteria = clone $albumsCriteria;
                     
@@ -209,34 +181,16 @@ class ImageController extends CController
                     //
                     // Список Фотографий
                     //
-          $params = $condition = array();
-
-                    $condition[] = 't.target_id = :target_id';
-                    $params[':target_id'] = $target_id;
-
-                    // !Доступно только мне
-                    $condition[] = 't.id NOT IN (SELECT id FROM `file` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
-                    $params[':user_id'] = $user_id;
-                    $params[':perm2'] = self::GALLERY_PERM_PER_OWNER;
-
-                    if (!$user_id) {
-                        // !Доступно только зарегестрированным
-                        $condition[] = 't.id NOT IN (SELECT id FROM `file` f WHERE f.permission = :perm1)';
-                        $params[':perm1'] = self::GALLERY_PERM_PER_REGISTERED;
-                    }
-
+          
+                    $photosCriteria = File::getAvailablePhotosCriteria(false, $target_id, $user_id);
+                    $photosCountCriteria = clone $photosCriteria;
+                    
+                    $photosCriteria->limit = ($photos_page ? $photos_page * $Gallery['photos_per_page'] : $Gallery['photos_per_page']);
+                    $photosCriteria->order = $Gallery['photos_sort'];
+                    
                     // Все фотографии
-                    $photos = File::model()->findAll(array(
-                        'condition' => implode(' AND ', $condition),
-                        'params' => $params,
-                        'limit' => ($photos_page ? $photos_page * $Gallery['photos_per_page'] : $Gallery['photos_per_page']),
-                        'order' => $Gallery['photos_sort'],
-                    ));
-
-                    $nphotos = File::model()->count(array(
-                        'condition' => implode(' AND ', $condition),
-                        'params' => $params
-                    ));
+                    $photos = File::model()->findAll($photosCriteria);
+                    $nphotos = File::model()->count($photosCountCriteria);
 
                     if (!($photos || $albums) && $this->getModule()->isOwner($user_id, $target_id))
                         $this->redirect(array($this->getModule()->albumRoute , 'op' => 'upload', 'target_id' => $target_id));
@@ -458,6 +412,26 @@ class ImageController extends CController
                     'order' => $Gallery['photos_sort'],
                 ));
 
+                // Specified photo, so we have to search it in the navigation set
+                if ($photo_id && !empty($_GET['exact'])) {
+                    $positionCriteria = clone $criteria;
+                    $positionCriteria->select = '*, COUNT(id) as page';
+                    
+                    $compareOp = '<';
+                    if (preg_match('/DESC/i' ,$positionCriteria->order))
+                        $compareOp = '>';
+                    
+                    $positionCriteria->addCondition('id '.$compareOp.'= ' . (int)$photo_id);
+                    
+                    $tableSchema = File::model()->getTableSchema();
+                    $command = File::model()->getCommandBuilder()->createFindCommand($tableSchema, $positionCriteria);
+                    
+                    $result = $command->queryRow();
+                    $page = $result['page'];
+                    
+                    $_GET['page'] = $page;
+                }
+                
                 $pages = new CPagination(File::model()->count($criteria));
                 $pages->route = $this->getModule()->imageRoute;
                 $pages->params = array(

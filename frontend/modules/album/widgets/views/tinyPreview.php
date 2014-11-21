@@ -4,7 +4,7 @@
             <?= Yii::t('userPage', ($this->owner->self) ? 'My photos' : 'Photos'); ?>
         </a>
     </li>
-    <?php if (!$this->isModuleSelected): ?>
+    <?php if (!$this->isModuleSelected && count($previews)): ?>
     <li class="photos-container">
         <ul class="thumbnails gallery">
             <?php 

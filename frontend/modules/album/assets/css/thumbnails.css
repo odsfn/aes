@@ -23,7 +23,7 @@ div.thumbnail-container .caption-transparent {
     
     background-color: rgb(32, 32, 32);
     background-color: rgba(32, 32, 32, .3);
-    color: white;
+    color: white !important;
     padding: 10px;
 }
 
@@ -64,11 +64,13 @@ div.thumbnail-container img {
 }
 
 div.thumbnail-container .caption-transparent, 
+div.thumbnail-container .caption-transparent p,
+div.thumbnail-container .caption-transparent p a,
 ul.thumbnails div.thumbnail > div > div.caption-transparent,
 ul.thumbnails div.thumbnail > div > div.caption-transparent h5,
 ul.thumbnails div.thumbnail > div > div.caption-transparent h5 a,
 ul.thumbnails div.thumbnail > div > div.caption-transparent h5 small {
-    color: white;
+    color: white !important;
 }
 
 ul.album-tiny-preview .photos-container li {

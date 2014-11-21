@@ -14,6 +14,8 @@ class TinyPreview extends CWidget
     public $previewsCount = 2;
 
     public $albumRoute = null;
+    
+    public $imageRoute = null;
 
     public function init()
     {
@@ -22,6 +24,9 @@ class TinyPreview extends CWidget
 
         if (!$this->albumRoute)
             $this->albumRoute = $this->module->albumRoute;
+        
+        if (!$this->imageRoute)
+            $this->imageRoute = $this->module->imageRoute;
         
         $this->module = Yii::app()->getModule('album');
         
@@ -47,8 +52,11 @@ class TinyPreview extends CWidget
         
         $albumsCriteria = Album::getAvailableAlbumsCriteria($this->targetId);
         $albumsCriteria->addCondition('path IS NOT NULL');
+        $albumsCriteria->order = '`update` DESC';
         $albumsCriteria->limit = $this->previewsCount;
         $albums = Album::model()->findAll($albumsCriteria);
+        
+        $albumsCount = count($albums);
         
         foreach ($albums as $album) {
             $imageSrc = $this->module->getComponent('image')->createAbsoluteUrl('360x220', $album->path);
@@ -67,6 +75,39 @@ class TinyPreview extends CWidget
                 'imageUrl' => $itemUrl,
                 'imageSrc' => $imageSrc
             );
+        }
+        
+        if ($albumsCount < $this->previewsCount) {
+            $photosLimit = $this->previewsCount - $albumsCount;
+            $photosCriteria = File::getAvailablePhotosCriteria($withoutAlbums = true, $this->targetId);
+            $photosCriteria->order = '`update` DESC';
+            $photosCriteria->limit = $photosLimit;
+            
+            $photos = File::model()->findAll($photosCriteria);
+            
+            foreach ($photos as $photo) {
+                $imageSrc = $this->module->getComponent('image')->createAbsoluteUrl('360x220', $photo->path);
+                $imageUrl = $this->owner->createUrl($this->imageRoute, array(
+                    'op' => 'view',
+                    'photo_id' => $photo->id,
+                    'target_id' => $this->targetId,
+                    'exact' => true
+                ));
+                $itemUrl = $this->owner->createUrl($this->imageRoute, array(
+                    'op' => 'view',
+                    'target_id' => $this->targetId
+                ));
+
+                $previews[] = (object)array(
+                    'captionHasContent' => true,
+                    'title' => Yii::t('album.messages', 'Без альбома'),
+                    'description' => $photo->description,
+                    'update' => $photo->update,
+                    'itemUrl' => $itemUrl,
+                    'imageUrl' => $imageUrl,
+                    'imageSrc' => $imageSrc
+                );
+            }
         }
         
         return $previews;

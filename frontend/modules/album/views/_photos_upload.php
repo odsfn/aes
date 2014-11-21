@@ -1,4 +1,5 @@
 <?php Yii::app()->clientScript
+        ->registerCssFile($this->getModule()->getAssetsUrl('css/thumbnails.css'))
         ->registerScriptFile($this->getModule()->getAssetsUrl('js/photosUpload.js'))
         ->registerScriptFile($this->getModule()->getAssetsUrl('js/photoUpdateCompact.js'));
 ?>

@@ -128,7 +128,9 @@ return array(
                 'albums_per_line' => 3,
                 'photos_per_line' => 6,
                 'photos_per_page' => 12,
-                'photos_sort' => 't.id DESC'
+                'photos_sort' => 't.id DESC',
+                // count of previews in navigation sidebar
+                'previewsCount' => 2
             ),
         )
 );
