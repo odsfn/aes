@@ -19,15 +19,27 @@ Yii::app()->clientScript
                             </div>
                             <?php endif; ?>
                             <?php
+                            
+                            if ($album->cover)
+                                $imageUrl = array(
+                                    $this->getModule()->imageRoute,
+                                    'op' => 'view',
+                                    'photo_id' => $album->cover->id,
+                                    'album' => $album->id,
+                                    'exact' => true
+                                );
+                            else
+                                $imageUrl = array(
+                                    $this->getModule()->albumRoute . '/op/view',
+                                    'album_id' => $album->id,
+                                    'target_id' => $target_id,
+                                );
+                            
                             echo CHtml::link(
                                     CHtml::tag('img', array(
                                         'src' => $album->getCoverUrl()
                                     )), 
-                                    array(
-                                        $this->getModule()->albumRoute . '/op/view',
-                                        'album_id' => $album->id,
-                                        'target_id' => $target_id,
-                                    )
+                                    $imageUrl
                                 );
                             ?>
                         </div>
