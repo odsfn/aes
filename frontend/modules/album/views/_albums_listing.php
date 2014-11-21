@@ -21,8 +21,7 @@ Yii::app()->clientScript
                             <?php
                             echo CHtml::link(
                                     CHtml::tag('img', array(
-                                        'src' => ( 
-                                            $album->path ? $this->getModule()->getComponent('image')->createAbsoluteUrl('360x220', $album->path) : $this->getModule()->getAssetsUrl('img/no_album.png'))
+                                        'src' => $album->getCoverUrl()
                                     )), 
                                     array(
                                         $this->getModule()->albumRoute . '/op/view',

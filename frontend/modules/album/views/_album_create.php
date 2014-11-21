@@ -13,9 +13,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 
     <div class="span4">
     <?php echo CHtml::tag('img', array(
-        'src'=> (
-            $model->path ? $this->getModule()->getComponent('image')->createAbsoluteUrl('360x220', $model->path) : $this->getModule()->getAssetsUrl('img/no_album.png')
-        ),
+        'src'=> $model->getCoverUrl(),
         'class' => 'img-polaroid span12'
     )); ?>
     </div>

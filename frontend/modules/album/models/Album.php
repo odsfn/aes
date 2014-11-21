@@ -8,8 +8,8 @@
  * @property integer $target_id
  * @property string $name
  * @property string $description
- * @property string $path
  * @property integer $permission
+ * @property File $cover
  */
 class Album extends CActiveRecord
 {
@@ -41,13 +41,14 @@ class Album extends CActiveRecord
         // will receive user inputs.
         return array(
             array('name, target_id', 'required'),
-            array('id, permission, target_id', 'numerical', 'integerOnly' => true),
+            array('id, permission, target_id, cover_id', 'numerical', 'integerOnly' => true),
             array('name', 'length', 'max' => 255),
             array('description', 'length', 'max' => 255),
-            array('user_id, path, update, permission', 'safe'),
+            array('user_id, update, permission', 'safe'),
+            array('cover_id', 'exist', 'className'=>'File', 'attributeName'=>'id'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, user_id, name, description, path, permission', 'safe', 'on' => 'search'),
+            array('id, user_id, name, description, permission', 'safe', 'on' => 'search'),
         );
     }
 
@@ -60,6 +61,7 @@ class Album extends CActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'file' => array(self::HAS_MANY, 'File', array('album_id' => 'id')),
+            'cover'=> array(self::HAS_ONE, 'File', array('id' => 'cover_id'))
         );
     }
 
@@ -73,9 +75,18 @@ class Album extends CActiveRecord
             'target_id' => 'Target Id',
             'name' => 'Альбом',
             'description' => 'Description',
-            'path' => 'Default path',
             'permission' => 'Permission',
         );
+    }
+
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(), array(
+            'attrsChangeHandler' => array(
+                'class' => 'AttrsChangeHandlerBehavior',
+                'track' => array('cover_id')
+            ),
+        ));
     }
 
     protected function beforeSave()
@@ -102,7 +113,6 @@ class Album extends CActiveRecord
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
         $criteria->compare('description', $this->description, true);
-        $criteria->compare('path', $this->path);
         $criteria->compare('permission', $this->permission);
 
         return new CActiveDataProvider($this, array(
@@ -132,10 +142,10 @@ class Album extends CActiveRecord
 
     public function isCover(File $image)
     {
-        if($image->album_id != $this->id)
+        if($image->album_id != $this->id || !$this->cover)
             return false;
         
-        return $this->path === $image->path;
+        return $this->cover->id == $image->id;
     }
     
     /**
@@ -149,6 +159,17 @@ class Album extends CActiveRecord
             return false;
         
         return !$this->isCover($image);
+    }
+    
+    public function getCoverUrl()
+    {
+        $module = Yii::app()->getModule('album');
+        if ($this->cover) 
+            $path = $module->getComponent('image')->createAbsoluteUrl('360x220', $this->cover->path);
+        else
+            $path = $module->getAssetsUrl('img/no_album.png');
+        
+        return $path;
     }
     
     public static function checkCoverAcceptance($albumId, $image)
@@ -186,5 +207,24 @@ class Album extends CActiveRecord
             'condition' => implode(' AND ', $condition),
             'params' => $params
         ));
+    }
+    
+    public function afterStoredAttrChanged_cover_id($currentValue, $oldValue, $attrName)
+    {
+        $this->createThumbnail();
+    }
+    
+    public function afterInsert()
+    {
+        if ($this->cover)
+            $this->createThumbnail();
+    }
+
+    protected function createThumbnail()
+    {
+        if(!$this->cover)
+            return false;
+        
+        Yii::app()->getModule('album')->getComponent('image')->createPath('360x220', $this->cover->path);
     }
 }

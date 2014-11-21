@@ -101,9 +101,8 @@ class File extends CActiveRecord
 
     protected function afterDelete()
     {
-        if ($this->album->path == $this->path) {
-            $this->album->path = null;
-            $this->album->save();
+        if ($this->album && $this->album->isCover($this)) {
+            //@TODO: notify album about cover deletion
         }
         
         parent::afterDelete();

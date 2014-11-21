@@ -371,9 +371,8 @@ class ImageController extends CController
                     throw new CHttpException(403);
 
                 if (isset($model->album)) {
-                    $model->album->path = $model->path;
+                    $model->album->cover_id = $model->id;
                     $model->album->save();
-                    $this->createAlbumThumbnail($model->album->path);
                 }
                 
                 if (Yii::app()->getRequest()->isAjaxRequest) {

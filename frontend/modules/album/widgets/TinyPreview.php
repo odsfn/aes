@@ -53,7 +53,7 @@ class TinyPreview extends CWidget
         $previews = array();
         
         $albumsCriteria = Album::getAvailableAlbumsCriteria($this->targetId);
-        $albumsCriteria->addCondition('path IS NOT NULL');
+        $albumsCriteria->addCondition('cover_id IS NOT NULL');
         $albumsCriteria->order = '`update` DESC';
         $albumsCriteria->limit = $this->previewsCount;
         $albums = Album::model()->findAll($albumsCriteria);
@@ -61,11 +61,17 @@ class TinyPreview extends CWidget
         $albumsCount = count($albums);
         
         foreach ($albums as $album) {
-            $imageSrc = $this->module->getComponent('image')->createAbsoluteUrl('360x220', $album->path);
+            $imageSrc = $album->getCoverUrl();
             $itemUrl = $this->owner->createUrl($this->albumRoute, array(
                 'op' => 'view',
                 'album_id' => $album->id,
                 'target_id' => $this->targetId
+            ));
+            $imageUrl = $this->owner->createUrl($this->imageRoute, array(
+                'op' => 'view',
+                'photo_id' => $album->cover->id,
+                'album' => $album->id,
+                'exact' => true
             ));
             
             $previews[] = (object)array(
@@ -74,7 +80,7 @@ class TinyPreview extends CWidget
                 'description' => $album->description,
                 'update' => $album->update,
                 'itemUrl' => $itemUrl,
-                'imageUrl' => $itemUrl,
+                'imageUrl' => $imageUrl,
                 'imageSrc' => $imageSrc
             );
         }
