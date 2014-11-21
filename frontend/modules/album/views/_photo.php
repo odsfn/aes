@@ -5,6 +5,64 @@ if ($this->getModule()->ajaxImageNavigation) : ?>
 <script type="text/javascript">
 $(function() {
     
+    var PhotoMoving = function() {
+        var space = $('#photo-space').val(),
+            currentItemSpace = function() { 
+                var val;
+                
+                if ($('#File_album_id').length == 0)
+                    val = 'removed';
+                else
+                    val = $('#File_album_id').val() || 'without_album';
+                
+                return val; 
+            },
+            startNextUrl = $('div.pagination .next > a').attr('href'),
+            isNextUrlChanged = false;
+        
+        //fixes next button after current photo was removed
+        var fixNextLink = function() {
+            var nextLink = $('div.pagination .next > a'),
+                curNextHref = nextLink.attr('href'),
+                newNextHref;
+
+            var replacer = function(match, p1, offset, string) {
+                var page = parseInt(p1) - 1;
+                return '/' + page;
+            };
+
+            newNextHref = curNextHref.replace(/\/(\d+)\/?$/, replacer);
+            nextLink.attr('href', newNextHref);
+        }
+        
+        this.check = function() {
+            
+            if (space == 'all') {
+                if (currentItemSpace() == 'removed')
+                    fixNextLink();
+                
+                return;
+            }
+            
+            if (space == currentItemSpace()) {
+                if (isNextUrlChanged) {
+                    $('div.pagination .next > a').attr('href', startNextUrl);
+                    isNextUrlChanged = false;
+                } else
+                    return;
+            } else {
+                if (isNextUrlChanged)
+                    return;
+                else {
+                    fixNextLink();
+                    isNextUrlChanged = true;
+                }   
+            }
+        }
+    };
+    
+    var currentPhotoMoving = new PhotoMoving();    
+    
     function supports_history_api() {
         return !!(window.history && history.replaceState);
     }
@@ -22,6 +80,7 @@ $(function() {
         $('#image-view .pagination').append('<p>Loading...</p>');
         $('#image-view-container').load(href + ' #image-view', function(respText, textStatus, xhr) {
             updateHistory();
+            currentPhotoMoving = new PhotoMoving();
         });
     };
     
@@ -72,18 +131,7 @@ $(function() {
                 success: function(response) {
                     if(response.success) {
                         $('#details-container').html(response.html);
-                        //fix next link
-                        var nextLink = $('div.pagination .next > a'),
-                            curNextHref = nextLink.attr('href'),
-                            newNextHref;
-                        
-                        var replacer = function(match, p1, offset, string) {
-                            var page = parseInt(p1) - 1;
-                            return '/' + page;
-                        };
-                        
-                        newNextHref = curNextHref.replace(/\/(\d+)\/?$/, replacer);
-                        nextLink.attr('href', newNextHref);
+                        currentPhotoMoving.check();
                     }
                 },
                 dataType: 'json'
@@ -104,8 +152,8 @@ $(function() {
             success: function(response) {
                 if(response.success) {
                     $('#details-container').replaceWith(response.html);
-                    
                     hideForm();
+                    currentPhotoMoving.check();
                 } else
                     $('#form-container').html(response.html);
             },
@@ -117,6 +165,16 @@ $(function() {
 });
 </script>
 <?php endif; ?>
+<input type="hidden" id="photo-space" 
+   value="<?php 
+            if($albumContext) 
+                echo $albumContext;
+            elseif($without_album)
+                echo 'without_album';
+            else
+                echo 'all';
+        ?>" 
+>
 <div id="image-view-container">
     <div id="image-view" class="row-fluid">
         <ul class="thumbnails">
