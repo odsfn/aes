@@ -227,4 +227,10 @@ class Album extends CActiveRecord
         
         Yii::app()->getModule('album')->getComponent('image')->createPath('360x220', $this->cover->path);
     }
+    
+    public function photosUpdated()
+    {
+        $this->update = date('Y-m-d H:i:s');
+        $this->save();
+    }
 }

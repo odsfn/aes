@@ -215,10 +215,10 @@ class File extends CActiveRecord
         return $criteria;
     }
 
-//    public function behaviors()
-//    {
-//        return array_merge(
-//                array(
+    public function behaviors()
+    {
+        return array_merge(
+                array(
 //                    'Taggable' => array(
 //                        'class' => 'album.components.taggableBehavior.EARTaggableBehavior',
 //                        'tagTable' => 'tags',
@@ -234,8 +234,23 @@ class File extends CActiveRecord
 //                        'scope' => array(),
 //                        'insertValues' => array(),
 //                    ),
-//                ), parent::behaviors()
-//        );
-//    }
+                    'attrsChangeHandler' => array(
+                        'class' => 'AttrsChangeHandlerBehavior',
+                        'track' => array('album_id')
+                    ),
+                ), parent::behaviors()
+        );
+    }
 
+    public function afterStoredAttrChanged_album_id($currentValue, $oldValue, $attrName)
+    {
+        if ($this->album)
+            $this->album->photosUpdated();
+    }
+    
+    public function afterInsert()
+    {
+        if ($this->album)
+            $this->album->photosUpdated();
+    }
 }

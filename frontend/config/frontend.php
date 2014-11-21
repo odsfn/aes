@@ -129,6 +129,7 @@ return array(
                 'photos_per_line' => 6,
                 'photos_per_page' => 12,
                 'photos_sort' => 't.id DESC',
+                'albums_sort' => 't.update DESC',
                 // count of previews in navigation sidebar
                 'previewsCount' => 2
             ),

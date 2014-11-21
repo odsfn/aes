@@ -174,7 +174,8 @@ class ImageController extends CController
                     $albumsCountCriteria = clone $albumsCriteria;
                     
                     $albumsCriteria->limit = ($albums_page ? $albums_page * $Gallery['albums_per_page'] : $Gallery['albums_per_page']);
-
+                    $albumsCriteria->order = $Gallery['albums_sort'];
+                    
                     $albums = Album::model()->findAll($albumsCriteria);
                     $nalbums = Album::model()->count($albumsCountCriteria);
                     
