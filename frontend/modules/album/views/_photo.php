@@ -6,13 +6,13 @@ if ($this->getModule()->ajaxImageNavigation) : ?>
 $(function() {
     
     function supports_history_api() {
-        return !!(window.history && history.pushState);
+        return !!(window.history && history.replaceState);
     }
     
     function updateHistory() {
         var exactHref = $('#current-photo-href').val();
         if (supports_history_api()) {
-            window.history.pushState({photo: exactHref}, $(document).find("title").text(), exactHref);
+            window.history.replaceState({photo: exactHref}, $(document).find("title").text(), exactHref);
         }
     }
     
