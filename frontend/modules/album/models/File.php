@@ -178,7 +178,7 @@ class File extends CActiveRecord
         return Yii::getPathOfAlias('webroot') . DIRECTORY_SEPARATOR . $this->path;
     }
 
-    public static function getAvailablePhotosCriteria($withoutAlbums = false, $target_id, $user_id = null)
+    public static function getAvailablePhotosCriteria($withoutAlbums = false, $target_id, $user_id = null, $album = null)
     {
         if (!$user_id)
             $user_id = (!Yii::app()->user->isGuest ? Yii::app()->user->id : 0);
@@ -197,6 +197,11 @@ class File extends CActiveRecord
             // !Доступно только зарегестрированным
             $condition[] = 't.id NOT IN (SELECT id FROM `file` f WHERE f.permission = :perm1)';
             $params[':perm1'] = AlbumModule::GALLERY_PERM_PER_REGISTERED;
+        }
+        
+        if(!$withoutAlbums && $album) {
+            $condition[] = 'album_id = :album_id';
+            $params[':album_id'] = $album;
         }
         
         $criteria = new CDbCriteria(array(

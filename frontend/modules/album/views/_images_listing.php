@@ -18,6 +18,10 @@
                         $requestParams['album'] = $album->id;
                     }
 
+                    if (isset($without_album) && $without_album) {
+                        $requestParams['without_album'] = true;
+                    }
+                    
                     echo CHtml::link(
                         CHtml::tag('img', array(
                             'src' => (
@@ -53,6 +57,10 @@
         $requestParams['album_id'] = $album->id;
     }
 
+    if (isset($without_album) && $without_album) {
+        $requestParams['without_album'] = true;
+    }
+    
     echo CHtml::ajaxlink(
         'Показать больше записей', 
         $requestParams, 

@@ -181,8 +181,12 @@ class ImageController extends CController
                     //
                     // Список Фотографий
                     //
-          
-                    $photosCriteria = File::getAvailablePhotosCriteria(false, $target_id, $user_id);
+                    
+                    $withoutAlbum = false;
+                    if ($_GET['without_album'])
+                        $withoutAlbum = true;
+                    
+                    $photosCriteria = File::getAvailablePhotosCriteria($withoutAlbum, $target_id, $user_id);
                     $photosCountCriteria = clone $photosCriteria;
                     
                     $photosCriteria->limit = ($photos_page ? $photos_page * $Gallery['photos_per_page'] : $Gallery['photos_per_page']);
@@ -223,6 +227,7 @@ class ImageController extends CController
                                     'photos_page' => $photos_page,
                                     'photos_per_page' => $Gallery['photos_per_page'],
                                     'target_id' => $target_id,
+                                    'without_album'=>$withoutAlbum
                                         ), true);
 
                                 Yii::app()->clientScript->renderBodyEnd($output);
@@ -243,6 +248,7 @@ class ImageController extends CController
                             'photos_page' => $photos_page,
                             'photos_per_page' => $Gallery['photos_per_page'],
                             'target_id' => $target_id,
+                            'without_album'=>$withoutAlbum
                                 ), true);
                 }
 
@@ -384,32 +390,11 @@ class ImageController extends CController
                 
                 break;
             case 'view':
-                $params = $condition = array();
                 
-                $condition[] = 't.target_id = :target_id';
-                $params[':target_id'] = $target_id;
-
-                // !Доступно только мне
-                $condition[] = 't.id NOT IN (SELECT id FROM `file` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
-                $params[':user_id'] = $user_id;
-                $params[':perm2'] = self::GALLERY_PERM_PER_OWNER;
-
-                if (!$user_id) {
-                    // !Доступно только зарегестрированным
-                    $condition[] = 't.id NOT IN (SELECT id FROM `file` f WHERE f.permission = :perm1)';
-                    $params[':perm1'] = self::GALLERY_PERM_PER_REGISTERED;
-                }
-
-                if($album) {
-                    $condition[] = 'album_id = :album_id';
-                    $params[':album_id'] = $album;
-                }
-
-                $criteria = new CdbCriteria(array(
-                    'condition' => implode(' AND ', $condition),
-                    'params' => $params,
-                    'order' => $Gallery['photos_sort'],
-                ));
+                $withoutAlbum = Yii::app()->request->getParam('without_album', false);
+                
+                $criteria = File::getAvailablePhotosCriteria($withoutAlbum, $target_id, $user_id, $album);
+                $criteria->order = $Gallery['photos_sort'];
 
                 // Specified photo, so we have to search it in the navigation set
                 if ($photo_id && !empty($_GET['exact'])) {
@@ -433,11 +418,16 @@ class ImageController extends CController
                 
                 $pages = new CPagination(File::model()->count($criteria));
                 $pages->route = $this->getModule()->imageRoute;
-                $pages->params = array(
+                $pagerParams = array(
                     'op' => $op,
                     'target_id' => $target_id,
                     'album' => $album
                 );
+                
+                if ($withoutAlbum)
+                    $pagerParams['without_album'] = $withoutAlbum;
+                
+                $pages->params = $pagerParams;
                 $pages->pageSize = 1;
                 $pages->applyLimit($criteria);
                 
@@ -463,7 +453,7 @@ class ImageController extends CController
                     '/_photo', 
                     array(
                         'model' => $model, 'pages' => $pages, 'canEdit' => $canEdit,
-                        'albumContext' => $album
+                        'albumContext' => $album, 'without_album' => $withoutAlbum
                     ), 
                     true
                 );

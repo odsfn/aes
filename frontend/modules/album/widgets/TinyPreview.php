@@ -99,11 +99,13 @@ class TinyPreview extends CWidget
                     'op' => 'view',
                     'photo_id' => $photo->id,
                     'target_id' => $this->targetId,
-                    'exact' => true
+                    'exact' => true,
+                    'without_album' => true
                 ));
-                $itemUrl = $this->owner->createUrl($this->imageRoute, array(
+                $itemUrl = $this->owner->createUrl($this->albumRoute, array(
                     'op' => 'view',
-                    'target_id' => $this->targetId
+                    'target_id' => $this->targetId,
+                    'without_album' => true
                 ));
 
                 $previews[] = (object)array(
