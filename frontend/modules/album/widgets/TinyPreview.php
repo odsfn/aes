@@ -13,6 +13,8 @@ class TinyPreview extends CWidget
     
     public $previewsCount = 2;
 
+    public $titleText = 'Photos';
+    
     public $albumRoute = null;
     
     public $imageRoute = null;

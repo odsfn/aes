@@ -1,3 +1,7 @@
+#navigation div.actions {
+    margin-top: 15px;
+}
+
 #navigation div.actions > div {
     margin-bottom: 10px;
 }

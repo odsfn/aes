@@ -48,11 +48,6 @@ $this->widget('bootstrap.widgets.TbMenu', array(
             'url'=> array('/election/electorate', 'id'=>$this->election->id)
         ),
         array(
-            'label'=> Yii::t('election', 'Photos'), 
-            'url'=> array('/election/photos', 'id'=>$this->election->id),
-            'active'=> $this->action->id == 'photos' || $this->id == 'image'
-        ),
-        array(
             'label'=> Yii::t('election', 'Admins'), 
             'url'=> array('/election/admins', 'id'=>$this->election->id)
         ),
@@ -78,6 +73,15 @@ $this->widget('bootstrap.widgets.TbMenu', array(
         )
     )
 ));
+
+$this->widget('album.widgets.TinyPreview', array(
+    'targetId' => $this->election->target_id,
+    'previewsCount' => Yii::app()->params['Gallery']['previewsCount'],
+    'titleText' => Yii::t('election', 'Photos'),
+    'isModuleSelected' => $this->id == 'image' || $this->action->id == 'photos',
+    'albumRoute' => '/election/photos/' . $this->election->id,
+    'imageRoute' => '/election/photos/' . $this->election->id . '/action/photo'
+)); 
 
 ?>
 
