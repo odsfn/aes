@@ -4,11 +4,25 @@ Yii::app()->clientScript->registerCss('photoEdit', '#form-container {display: no
 if ($this->getModule()->ajaxImageNavigation) : ?>
 <script type="text/javascript">
 $(function() {
+    
+    function supports_history_api() {
+        return !!(window.history && history.pushState);
+    }
+    
+    function updateHistory() {
+        var exactHref = $('#current-photo-href').val();
+        if (supports_history_api()) {
+            window.history.pushState({photo: exactHref}, $(document).find("title").text(), exactHref);
+        }
+    }
+    
     var loadPhoto = function(href) {
         href += '?_dc=' + (new Date()).getTime();
         $('#image-view .pagination li').addClass('disabled');
         $('#image-view .pagination').append('<p>Loading...</p>');
-        $('#image-view-container').load(href + ' #image-view');
+        $('#image-view-container').load(href + ' #image-view', function(respText, textStatus, xhr) {
+            updateHistory();
+        });
     };
     
     //make ajax navigation
@@ -98,6 +112,8 @@ $(function() {
             dataType: 'json'
         });
     });
+    
+    updateHistory();
 });
 </script>
 <?php endif; ?>

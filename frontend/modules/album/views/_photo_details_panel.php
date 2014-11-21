@@ -22,7 +22,19 @@
         </div>
 
         <div id="form-container">
-            <input id="current-photo-href" type="hidden" value="<?= Yii::app()->request->url; ?>"/>
+            <input id="current-photo-href" type="hidden" 
+                value="<?php 
+                    $params = array(
+                        'op'=>'view',
+                        'photo_id'=>$model->id,
+                        'exact'=>true
+                    );
+                    
+                    if ($albumContext)
+                        $params['album'] = $albumContext;
+                    
+                    echo $this->createUrl($this->getModule()->imageRoute, $params); 
+                    ?>"/>
             <?php 
                 if($canEdit) {
                     $this->renderPartial('/_photo_update', array(
