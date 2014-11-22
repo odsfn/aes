@@ -37,6 +37,9 @@ $(function() {
         
         this.check = function() {
             
+            if (!startNextUrl)  //pagination was not found
+                return;
+            
             if (space == 'all') {
                 if (currentItemSpace() == 'removed')
                     fixNextLink();
