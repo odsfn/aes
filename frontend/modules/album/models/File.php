@@ -18,6 +18,8 @@ class File extends CActiveRecord
 
     public $tags;
 
+    protected $coverShouldBeUpdated = false;
+
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -99,10 +101,26 @@ class File extends CActiveRecord
         return true;
     }
 
+    protected function beforeDelete()
+    {
+        $result = parent::beforeDelete();
+        
+        if (!$result)
+            return false;
+            
+        if ($this->album && $this->album->isCover($this)) {
+            $this->coverShouldBeUpdated = true;
+        }
+        
+        return $result;
+    }
+
+
     protected function afterDelete()
     {
-        if ($this->album && $this->album->isCover($this)) {
-            //@TODO: notify album about cover deletion
+        if ($this->coverShouldBeUpdated) {
+            //Notify album about cover deletion
+            $this->album->updateCover();
         }
         
         parent::afterDelete();

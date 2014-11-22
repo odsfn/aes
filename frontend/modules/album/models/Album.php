@@ -9,6 +9,7 @@
  * @property string $name
  * @property string $description
  * @property integer $permission
+ * @property File[] $files
  * @property File $cover
  */
 class Album extends CActiveRecord
@@ -60,7 +61,7 @@ class Album extends CActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'file' => array(self::HAS_MANY, 'File', array('album_id' => 'id')),
+            'files' => array(self::HAS_MANY, 'File', array('album_id' => 'id')),
             'cover'=> array(self::HAS_ONE, 'File', array('id' => 'cover_id'))
         );
     }
@@ -231,6 +232,29 @@ class Album extends CActiveRecord
     public function photosUpdated()
     {
         $this->update = date('Y-m-d H:i:s');
+        $this->updateCover(false);
         $this->save();
+    }
+    
+    /**
+     * Automatically sets cover if it is not specified. Cover will be the last 
+     * image in the album
+     */
+    public function updateCover($save = true)
+    {
+        if ($this->getRelated('cover', true))
+            return;
+        
+        $result = $this->files(array(
+            'order' => 'id DESC',
+            'limit' => 1
+        ));
+        
+        if (count($result)) {
+            $this->cover_id = $result[0]->id;
+        }
+        
+        if ($save)
+            $this->save();
     }
 }
