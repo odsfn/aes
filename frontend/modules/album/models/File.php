@@ -9,6 +9,8 @@
  * @property integer $user_id
  * @property integer $album_id
  * @property integer $permission
+ * @property string $created Created date
+ * @property string $update Updated date
  * @property string $filename
  * @property string $path
  * @property string $type
@@ -91,7 +93,6 @@ class File extends CActiveRecord
         parent::beforeSave();
         if ($this->isNewRecord) {
             $this->user_id = Yii::app()->user->id;
-            $this->update = date('Y-m-d H:i:s');
         }
         
         $this->inheritAlbumPermissions();
@@ -256,6 +257,13 @@ class File extends CActiveRecord
                         'class' => 'AttrsChangeHandlerBehavior',
                         'track' => array('album_id')
                     ),
+                    'UpdateDateBehavior' => array(
+                        'class' => 'UpdateDateBehavior',
+                        'fields' => array(
+                            'create'=> array('created'),
+                            'update'=> array('update')
+                        )
+                    )
                 ), parent::behaviors()
         );
     }

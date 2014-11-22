@@ -9,6 +9,8 @@
  * @property string $name
  * @property string $description
  * @property integer $permission
+ * @property string $created Created date
+ * @property string $update Updated date
  * @property File[] $files
  * @property File $cover
  */
@@ -87,6 +89,13 @@ class Album extends CActiveRecord
                 'class' => 'AttrsChangeHandlerBehavior',
                 'track' => array('cover_id')
             ),
+            'UpdateDateBehavior' => array(
+                'class' => 'UpdateDateBehavior',
+                'fields' => array(
+                    'create'=> array('created'),
+                    'update'=> array('update')
+                )
+            )
         ));
     }
 
@@ -96,7 +105,7 @@ class Album extends CActiveRecord
         if ($this->isNewRecord) {
             $this->user_id = Yii::app()->user->id;
         }
-        $this->update = date('Y-m-d H:i:s');
+
         return true;
     }
 
@@ -231,7 +240,6 @@ class Album extends CActiveRecord
     
     public function photosUpdated()
     {
-        $this->update = date('Y-m-d H:i:s');
         $this->updateCover(false);
         $this->save();
     }
