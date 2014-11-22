@@ -138,7 +138,6 @@ class ImageController extends CController
                         array('label' => 'Альбом: ' . $model->name, 'url' => '#', 'active' => true),
                         array('label' => 'Добавить фото', 'url' => array($this->getModule()->albumRoute , 'op' => 'upload', 'album_id' => $model->id, 'target_id' => $target_id), 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
                         array('label' => 'Редактировать', 'url' => array($this->getModule()->albumRoute , 'op' => 'update', 'album_id' => $model->id, 'target_id' => $target_id), 'visible' => $this->getModule()->isOwner($user_id, $target_id)),
-                            //array('label'=>'Создать альбом', 'url'=>array($this->getModule()->albumRoute . '/op/create')),
                     );
 
                     // Ajax
@@ -440,12 +439,17 @@ class ImageController extends CController
                         array('label' => 'Альбом: ' . $model->album->name, 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'album_id' => $album, 'target_id' => $target_id)),
                         array('label' => 'Просмотр', 'url' => '#', 'active' => true),
                     );
-                else
+                else {
                     $menu = array(
                         array('label' => 'Все фотографии', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id)),
-                        array('label' => 'Просмотр', 'url' => '#', 'active' => true),
                     );
-
+                    
+                    if ($withoutAlbum)
+                        $menu[] = array('label' => 'Без альбома', 'url' => array($this->getModule()->albumRoute , 'op' => 'view', 'target_id' => $target_id, 'without_album' => true));
+                    
+                    $menu[] = array('label' => 'Просмотр', 'url' => '#', 'active' => true);
+                }
+                
                 $canEdit = false;
                 if ($model->user_id == $user_id)
                     $canEdit = true;
