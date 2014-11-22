@@ -54,22 +54,8 @@ class ElectionController extends FrontController
             $model->status = 0;
 
             if ($model->validate()) {
-                $gallery = new Gallery();
-                $gallery->name = true;
-                $gallery->description = true;
-                $gallery->versions = array(
-                    'small' => array(
-                        'resize' => array(200, null),
-                    ),
-                    'medium' => array(
-                        'resize' => array(800, null),
-                    )
-                );
-
                 $transaction = Yii::app()->db->beginTransaction();
 
-                $gallery->save();
-                $model->gallery_id = $gallery->id;
                 if ($model->save()) {
                     $this->assignRoles($model);
 

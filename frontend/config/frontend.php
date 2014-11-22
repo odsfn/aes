@@ -30,16 +30,12 @@ return array(
 	'behaviors' => array(),
 
 	// controllers mappings
-	'controllerMap' => array(
-        'gallery'=>'ext.galleryManager.GalleryController',
-    ),
+//	'controllerMap' => array(),
 
     'import' => array(
         'bootstrap.helpers.TbHtml',
         'userAccount.models.UserAccount',
         'userAccount.models.Profile',
-        'ext.galleryManager.models.*',
-        'ext.galleryManager.*',
     ),
     
 	// application components
