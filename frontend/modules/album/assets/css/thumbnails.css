@@ -24,11 +24,16 @@ div.thumbnail-container .caption-transparent {
     background-color: rgb(32, 32, 32);
     background-color: rgba(32, 32, 32, .3);
     color: white !important;
-    padding: 10px;
+    padding: 5px;
+    
+    overflow:hidden;
+    max-height: 100%;
+    
+    font-size: 13px;
 }
 
-ul.gallery.thumbnails li div.thumbnail .caption-transparent.caption-hidable,
-div.thumbnail-container .caption-transparent.caption-hidable {
+ul.gallery.thumbnails li div.thumbnail .caption-hidable,
+div.thumbnail-container .caption-hidable {
     display: none;
 }
 
@@ -71,6 +76,17 @@ ul.thumbnails div.thumbnail > div > div.caption-transparent h5,
 ul.thumbnails div.thumbnail > div > div.caption-transparent h5 a,
 ul.thumbnails div.thumbnail > div > div.caption-transparent h5 small {
     color: white !important;
+}
+
+div.thumbnail-container .caption-transparent h5,
+ul.thumbnails div.thumbnail > div > div.caption-transparent h5{
+    max-height: 40px;
+    overflow: hidden;
+}
+
+ul.thumbnails.gallery .caption {
+    height: 55px;
+    padding: 0 9px;
 }
 
 ul.album-tiny-preview .photos-container li {

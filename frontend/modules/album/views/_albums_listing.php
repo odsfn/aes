@@ -14,8 +14,15 @@ Yii::app()->clientScript
                     <div class="thumbnail">
                         <div>
                             <?php if($album->description): ?>
-                            <div class="caption-transparent caption-bottom caption-hidable">
-                                <p><?= $album->description ?></p>
+                            <div class="caption-transparent caption-bottom">
+                                <h5>
+                                    <span class="head-text" title="<?= Yii::t('album.messages', 'Наименование альбома'); ?>"><?php 
+                                    echo CHtml::link($album->name, array($this->getModule()->albumRoute . '/op/view', 'album_id' => $album->id)); 
+                                    ?></span>
+                                    <small class="pull-right" title="<?= Yii::t('album', 'Дата обновелния альбома'); ?>"><i class="icon-time"></i>
+                                        <?php echo Yii::app()->locale->dateFormatter->formatDateTime($album->update, 'short', 'short'); ?></small>
+                                </h5>
+                                <p class="caption-hidable"><?= $album->description ?></p>
                             </div>
                             <?php endif; ?>
                             <?php
@@ -42,14 +49,6 @@ Yii::app()->clientScript
                                     $imageUrl
                                 );
                             ?>
-                        </div>
-                        <div class="caption">
-                            <h5>
-                            <span class="head-text"><?php 
-                            echo CHtml::link($album->name, array($this->getModule()->albumRoute . '/op/view', 'album_id' => $album->id)); 
-                            ?></span>
-                                <small class="pull-right" title="<?= Yii::t('album', 'Дата обновелния альбома'); ?>"><i class="icon-time"></i>&nbsp;<?php echo Yii::app()->locale->dateFormatter->formatDateTime($album->update, 'short', 'short'); ?></small>
-                            </h5>
                         </div>
                     </div>
                 </li>
