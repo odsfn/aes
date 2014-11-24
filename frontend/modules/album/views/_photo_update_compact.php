@@ -40,7 +40,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                         </p>
                     </div>
                     <img class="span12" 
-                        src="<?= $this->getModule()->getComponent('image')->createAbsoluteUrl('160x100', $model->path); ?>"
+                         src="<?= $this->getModule()->getComponent('image')->createAbsoluteUrl('160x100', $model->path); ?>?_dc=<?= time(); ?>"
                     >
                 </div>
             </div>
