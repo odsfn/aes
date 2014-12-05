@@ -38,8 +38,18 @@ $this->widget('bootstrap.widgets.TbMenu', array(
         array('label'=> Yii::t('userPage', ($this->self) ? 'My nominations' : 'Nominations'), 'url'=> array('/userPage/nominations', 'id'=>$this->profile->user_id)),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My mandates' : 'Mandates'), 'url'=> array('/userPage/mandates', 'id'=>$this->profile->user_id)),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My petitions' : 'Petitions'), 'url'=> array('/userPage/petitions', 'id'=>$this->profile->user_id)),
-        array('label'=> Yii::t('userPage', ($this->self) ? 'My videos' : 'Videos'), 'url'=> array('/userPage/videos', 'id'=>$this->profile->user_id)),
+//        array('label'=> Yii::t('userPage', ($this->self) ? 'My videos' : 'Videos'), 'url'=> array('/userPage/videos', 'id'=>$this->profile->user_id)),
     )
+));
+
+
+$this->widget('album.widgets.TinyPreview', array(
+    'type' => 'video',
+    'targetId' => $this->profile->target_id,
+    'previewsCount' => Yii::app()->params['Gallery']['previewsCount'],
+    'titleText' => Yii::t('userPage', ($this->self) ? 'My videos' : 'Videos'),
+    'isModuleSelected' => $this->action->id == 'videos',
+    'rootRoute' => '/userPage/videos/'.$this->profile->user_id,
 ));
 
 $this->widget('album.widgets.TinyPreview', array(

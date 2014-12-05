@@ -202,6 +202,24 @@ class ElectionController extends FrontController
         $this->render('photos');
     }    
     
+    public function actionVideos()
+    {   
+        $electionId= $_GET['id'];
+        $this->election = $election = $this->getModel($electionId);
+        $this->layout = '//layouts/election';
+        
+        Yii::app()->getModule('album')->rootRoute = '/election/videos/' . $electionId;
+        
+        $widgetOut = $this->widget('album.widgets.Gallery', array(
+            'type' => 'video',
+            'target_id' => $election->target_id,
+        ), true);
+        
+        $this->render('videos', array(
+            'galleryWidgetOutput' => $widgetOut
+        ));
+    }    
+    
     protected function getModel($id) {
         $model = Election::model()->findByPk($id);
         

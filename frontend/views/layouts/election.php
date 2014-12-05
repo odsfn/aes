@@ -70,8 +70,17 @@ $this->widget('bootstrap.widgets.TbMenu', array(
                     array(Election::STATUS_REGISTRATION, Election::STATUS_ELECTION)
                 )
             )
-        )
+        ),
     )
+));
+
+$this->widget('album.widgets.TinyPreview', array(
+    'type' => 'video',
+    'targetId' => $this->election->target_id,
+    'previewsCount' => Yii::app()->params['Gallery']['previewsCount'],
+    'titleText' => Yii::t('election', 'Videos'),
+    'isModuleSelected' => $this->action->id == 'videos',
+    'rootRoute' => '/election/videos/' .$this->election->id,
 ));
 
 $this->widget('album.widgets.TinyPreview', array(
