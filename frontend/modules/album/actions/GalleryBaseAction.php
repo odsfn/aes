@@ -64,7 +64,7 @@ abstract class GalleryBaseAction extends CAction
         $this->getController()->redirect($url, $terminate, $statusCode);
     }
     
-    protected function render($view, $data, $return)
+    protected function render($view, $data, $return = false)
     {
         $result = $this->getController()->render($view, $data, $return);
         
@@ -72,7 +72,7 @@ abstract class GalleryBaseAction extends CAction
             return $result;
     }
 
-    protected function renderPartial($view, $params, $return)
+    protected function renderPartial($view, $params, $return = false)
     {
         $result = $this->getController()->renderPartial($view, $params, $return);
         
