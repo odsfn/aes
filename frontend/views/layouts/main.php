@@ -21,7 +21,8 @@
                 ->registerPackage('aes-common');
         
         //resolve datepicker conflict
-        Yii::app()->clientScript->registerScriptFile('/js/libs/bootstrap-datepicker.js', CClientScript::POS_END);
+        Yii::app()->clientScript
+            ->registerScriptFile('/js/libs/bootstrap-datepicker.js', CClientScript::POS_END);
         ?>
 	<!--<script src="<?php echo Yii::app()->getBaseUrl(true); ?>/js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>-->
 </head>
