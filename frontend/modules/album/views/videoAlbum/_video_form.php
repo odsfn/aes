@@ -1,3 +1,11 @@
+<script type="text/javascript">
+    $(function(){
+        $('#photo-form').submit(function(e){
+            $('#photo-form button[type="submit"]').attr('disabled', 'disabled');
+            $('body').css('cursor', 'wait');
+        });
+    });
+</script>
 <div class="row-fluid">
 <?php
 /* @var $this AlbumController */
