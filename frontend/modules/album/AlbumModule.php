@@ -27,7 +27,7 @@ class AlbumModule extends CWebModule
         self::GALLERY_PERM_PER_OWNER => 'Только мне'
     );
     
-    public static function albumsAsListData($target_id)
+    public static function albumsAsListData($target_id, $albumType = 'Album')
     {
         $albums = array(
             array('id'=>'', 'name'=>'-')
@@ -35,7 +35,7 @@ class AlbumModule extends CWebModule
         
         $albums = array_merge(
             $albums,
-            Album::model()->findAll(
+            $albumType::model()->findAll(
                 'target_id = :targetId', 
                 array(
                     ':targetId'=> $target_id
@@ -46,7 +46,7 @@ class AlbumModule extends CWebModule
         return CHtml::listData($albums, 'id', 'name');
     }
 
-        public static function getPermissionLabel($level)
+    public static function getPermissionLabel($level)
     {
         $levels = array_keys(self::$permissionLabels);
         
@@ -62,8 +62,10 @@ class AlbumModule extends CWebModule
 
     public $ajaxUpdateImageRoute = '/album/image/ajaxUpdatePhoto';
     
-    public $ajaxImageNavigation = true;
+    public $rootRoute = '';
 
+    public $ajaxImageNavigation = true;
+    
     public $imageSizeLimit = '5MB';
 
     protected $assetsUrl = '';

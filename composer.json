@@ -33,7 +33,8 @@
     "require": {
         "yiisoft/yii":"1.1.13",
 	"vasiliy-pdk/YiiBooster": "dev-master",
-        "vasiliy-pdk/YiiStateMachine": "dev-master"
+        "vasiliy-pdk/YiiStateMachine": "dev-master",
+        "grom/tube-link": "dev-master"
     },
     "autoload": {
         "psr-0": {

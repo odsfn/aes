@@ -139,7 +139,7 @@ class Album extends CActiveRecord
         $criteria->limit = ($page ? $page * $limit : $limit);
         //$criteria->offset = $page * $limit;
         $criteria->order = '`update` DESC';
-        return self::model()->findAll($criteria);
+        return $this->model()->findAll($criteria);
     }
 
     public function getAlbums($Album)
@@ -184,7 +184,7 @@ class Album extends CActiveRecord
     
     public static function checkCoverAcceptance($albumId, $image)
     {
-        $album = self::model()->findByPk($albumId);
+        $album = static::model()->findByPk($albumId);
         
         if(!$album)
             return false;
@@ -192,7 +192,7 @@ class Album extends CActiveRecord
         return $album->acceptsCover($image);
     }
     
-    public static function getAvailableAlbumsCriteria($target_id, $user_id = null)
+    public static function getAvailableAlbumsCriteria($target_id, $user_id = null, $tableName = null)
     {
         if (!$user_id)
             $user_id = (!Yii::app()->user->isGuest ? Yii::app()->user->id : 0);
@@ -202,14 +202,17 @@ class Album extends CActiveRecord
         $condition[] = 't.target_id = :target_id';
         $params[':target_id'] = $target_id;
 
+        if (!$tableName)
+            $tableName = self::model()->tableName();
+        
         // !Доступно только мне
-        $condition[] = 't.id NOT IN (SELECT id FROM `album` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
+        $condition[] = 't.id NOT IN (SELECT id FROM `' . $tableName . '` f WHERE f.user_id <> 0 AND f.user_id <> :user_id AND f.permission = :perm2)';
         $params[':user_id'] = $user_id;
         $params[':perm2'] = AlbumModule::GALLERY_PERM_PER_OWNER;
 
         if (!$user_id) {
             // !Доступно только зарегестрированным
-            $condition[] = 't.id NOT IN (SELECT id FROM `album` f WHERE f.permission = :perm1)';
+            $condition[] = 't.id NOT IN (SELECT id FROM `' . $tableName . '` f WHERE f.permission = :perm1)';
             $params[':perm1'] = AlbumModule::GALLERY_PERM_PER_REGISTERED;
         }
         

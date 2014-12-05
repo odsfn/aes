@@ -1,10 +1,61 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "3eb26c6d1d3315b6687bead7ea4aaef4",
+    "hash": "d162c862a7402752ecda6a6cb9fc96fb",
     "packages": [
+        {
+            "name": "grom/tube-link",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/GromNaN/TubeLink.git",
+                "reference": "a1d9bdd0c92b043d297b95e8069a5b30ceaded9a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/GromNaN/TubeLink/zipball/a1d9bdd0c92b043d297b95e8069a5b30ceaded9a",
+                "reference": "a1d9bdd0c92b043d297b95e8069a5b30ceaded9a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "TubeLink": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jérôme TAMARELLE",
+                    "email": "jerome@tamarelle.net"
+                }
+            ],
+            "description": "Extract video/music information from any URL and render HTML",
+            "keywords": [
+                "dailymotion",
+                "parser",
+                "spotify",
+                "url",
+                "video",
+                "vimeo",
+                "youtube"
+            ],
+            "time": "2014-09-08 14:34:13"
+        },
         {
             "name": "vasiliy-pdk/YiiBooster",
             "version": "dev-master",
@@ -78,21 +129,15 @@
             "homepage": "https://github.com/yiisoft/yii"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "vasiliy-pdk/yiibooster": 20,
-        "vasiliy-pdk/yiistatemachine": 20
+        "vasiliy-pdk/yiistatemachine": 20,
+        "grom/tube-link": 20
     },
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "prefer-stable": false,
+    "platform": [],
+    "platform-dev": []
 }

@@ -2,8 +2,8 @@
 /*
  * @author Vasiliy Pedak truvazia@gmail.com
  */
-class UserPageController extends SocialController {
-
+class UserPageController extends SocialController 
+{
     /**
      * Authenticated user's page
      */
@@ -64,5 +64,44 @@ class UserPageController extends SocialController {
         $this->endClip();
         
         $this->render('photos');
+    }
+    
+    public function actionVideos()
+    {
+        
+//        $profileId= $_GET['id'];
+//        $_GET['id'] = null;
+//        
+//        $_GET['target_id'] = $this->profile->target_id;
+//        
+//        Yii::app()->getModule('album')->albumRoute = '/userPage/videos/' . $profileId;
+//        Yii::app()->getModule('album')->itemRoute = '/userPage/videos/' . $profileId . '/action/item';
+//        Yii::app()->getModule('album')->ajaxUpdateItemRoute = '/userPage/videos/' . $profileId . '/action/ajaxUpdateItem';
+//        
+//        Yii::app()->getModule('album')->routeActionPrefix = '/action/';
+//        
+//        $this->beginClip('album');
+//        
+//        if(isset($_GET['action']) && $_GET['action'] == 'item')
+//            Yii::app()->runController('album/videoAlbum/item');
+//        elseif(isset($_GET['action']) && $_GET['action'] == 'ajaxUpdateItem')
+//            Yii::app()->runController('album/videoAlbum/ajaxUpdateItem');
+//        else
+//            Yii::app()->runController('album/videoAlbum');
+//        
+//        $this->endClip();
+//        
+//        $this->render('videos');
+        
+        $profileId= $_GET['id'];
+        Yii::app()->getModule('album')->rootRoute = '/userPage/videos/' . $profileId;
+        
+        $widgetOut = $this->widget('album.widgets.Gallery', array(
+            'target_id' => $this->profile->target_id,
+        ), true);
+        
+        $this->render('videos', array(
+            'galleryWidgetOutput' => $widgetOut
+        ));
     }
 }
