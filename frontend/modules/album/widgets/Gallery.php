@@ -38,7 +38,7 @@ class Gallery extends CWidget
         return $path;
     }
 
-    public function renderPartial($view, $params, $return)
+    public function renderPartial($view, $params, $return = false)
     {
         $result = $this->render($view, $params, $return);
         
