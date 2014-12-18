@@ -10,6 +10,6 @@ $(function(){
 </script>
 <?php
 Yii::app()->clientScript->registerPackage('loadmask');
-$this->breadcrumbs->add('Photos', 'userPage/photos/' . $profile->user_id);
+$this->breadcrumbs->add('Videos', 'userPage/videos/' . $profile->user_id);
 
 echo $galleryWidgetOutput;
