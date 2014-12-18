@@ -46,10 +46,10 @@ class ViewAlbum extends GalleryBaseAction
             $this->ownerViewsEmptyList();
 
         $menu = array(
-            array('label' => 'Все видеозаписи', 'url' => array($this->getModule()->rootRoute)),
+            array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute)),
             array('label' => 'Альбом: ' . $model->name, 'url' => '#', 'active' => true),
             array(
-                'label' => 'Добавить видеозапись', 'url' => array(
+                'label' => 'Добавить ' . $this->singularLabel, 'url' => array(
                     $this->getModule()->rootRoute , 
                     'action' => 'CreateGalleryItem', 'album_id' => $model->id
                 ), 

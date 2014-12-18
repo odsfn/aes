@@ -49,9 +49,9 @@ class ViewAll extends GalleryBaseAction
             $this->ownerViewsEmptyList();
 
         $menu = array(
-            array('label' => Yii::t('album.messages', 'Все видеозаписи'), 'url' => '#', 'active' => true),
+            array('label' => Yii::t('album.messages', 'Все ' . $this->pluralLabel), 'url' => '#', 'active' => true),
             array(
-                'label' => Yii::t('album.messages', 'Добавить видео'), 'url' => array(
+                'label' => Yii::t('album.messages', 'Добавить ' . $this->singularLabel), 'url' => array(
                     $this->getModule()->rootRoute , 
                     'action' => 'CreateGalleryItem',
                 ), 
@@ -90,15 +90,6 @@ class ViewAll extends GalleryBaseAction
                     ), true);
                     break;
             }
-            
-            
-//            $output = $this->getController()->renderPartial($this->viewDefaultAjax, array(
-//                'albums' => $albums,
-//                'nalbums' => $nalbums,
-//                'albums_page' => $albums_page,
-//                'albums_per_page' => $Gallery['albums_per_page'],
-//                'target_id' => $this->target_id,
-//            ), true);
 
             Yii::app()->clientScript->renderBodyEnd($output);
 

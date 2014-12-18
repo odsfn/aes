@@ -20,7 +20,7 @@ class CreateAlbum extends GalleryBaseAction
         }
 
         $menu = array(
-            array('label' => Yii::t('album.messages', 'Все видеозаписи'), 'url' => array( $this->getModule()->rootRoute )),
+            array('label' => Yii::t('album.messages', 'Все ' . $this->pluralLabel), 'url' => array( $this->getModule()->rootRoute )),
             array('label' => Yii::t('album.messages', 'Новый альбом'), 'url' => '#', 'active' => true),
         );
 

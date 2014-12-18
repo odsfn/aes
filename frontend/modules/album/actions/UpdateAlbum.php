@@ -33,7 +33,7 @@ class UpdateAlbum extends GalleryBaseAction
         }
 
         $menu = array(
-            array('label' => 'Все фотографии', 'url' => array($this->getModule()->rootRoute)),
+            array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute)),
             array(
                 'label' => 'Альбом: ' . $model->name, 
                 'url' => array(
@@ -43,7 +43,7 @@ class UpdateAlbum extends GalleryBaseAction
                 )
             ),
             array(
-                'label' => 'Добавить видеозапись', 
+                'label' => 'Добавить ' . $this->singularLabel, 
                 'url' => array(
                     $this->getModule()->rootRoute , 
                     'action' => 'CreateGalleryItem', 

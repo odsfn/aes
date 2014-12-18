@@ -2,7 +2,7 @@
 <h3><?= Yii::t('album', 'Описание альбома'); ?></h3>
 <p><?= $model->description; ?></p> 
 <?php endif; ?>
-<h3>Видеозаписи <small>В альбоме <?php echo $nphotos; ?> записей</small></h3>
+<h3><?php echo $this->getAction()->pluralLabel; ?> <small>В альбоме <?php echo $nphotos; ?> записей</small></h3>
 <?php $this->renderPartial('_items_listing', array_merge(
         compact(
             'photos', 'target_id', 'nphotos',

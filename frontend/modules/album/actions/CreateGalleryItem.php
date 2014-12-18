@@ -22,7 +22,7 @@ class CreateGalleryItem extends GalleryBaseAction
                     throw new CHttpException(403);
 
                 $menu = array(
-                    array('label' => 'Все видеозаписи', 'url' => array($this->getModule()->rootRoute )),
+                    array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute )),
                     array(
                         'label' => 'Альбом: ' . $parentAlbum->name, 
                         'url' => array(
@@ -32,7 +32,7 @@ class CreateGalleryItem extends GalleryBaseAction
                         )
                     ),
                     array(
-                        'label' => 'Добавить видеозапись', 'url' => '#', 
+                        'label' => 'Добавить ' . $this->singularLabel, 'url' => '#', 
                         'active' => true, 
                         'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
                     ),
@@ -54,11 +54,11 @@ class CreateGalleryItem extends GalleryBaseAction
 
             $menu = array(
                 array(
-                    'label' => 'Все видеозаписи', 
+                    'label' => 'Все ' . $this->pluralLabel, 
                     'url' => array($this->getModule()->rootRoute)
                 ),
                 array(
-                    'label' => 'Добавить видеозапись', 'url' => '#', 'active' => true, 
+                    'label' => 'Добавить ' . $this->singularLabel, 'url' => '#', 'active' => true, 
                     'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
                 ),
                 array(
@@ -89,7 +89,7 @@ class CreateGalleryItem extends GalleryBaseAction
             $item->attributes = $attrs;
             
             if ($item->save()) {                        
-                Yii::app()->user->setFlash('success', 'Видеозапись создана успешно');
+                Yii::app()->user->setFlash('success', 'Запись создана успешно');
                 $url = array(
                     $this->getModule()->rootRoute,
                 );

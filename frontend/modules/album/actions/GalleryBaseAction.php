@@ -38,6 +38,10 @@ abstract class GalleryBaseAction extends CAction
 
     public $albumItemType = 'File';
 
+    public $pluralLabel = 'Записи';
+    
+    public $singularLabel = 'Запись';
+    
     public function __construct($controller, $id, $target_id = null)
     {
         $requestedTarget = Yii::app()->request->getParam('target_id', FALSE);
@@ -53,7 +57,7 @@ abstract class GalleryBaseAction extends CAction
         
         parent::__construct($controller, $id);
     }
-    
+
     protected function getModule()
     {
         return Yii::app()->getModule('album');

@@ -36,7 +36,7 @@
                 <?php endforeach; ?>
         </ul>
         <?php else: 
-            echo Yii::t('album.messages', 'Видеозаписи отсутствуют');
+            echo Yii::t('album.messages', $this->getAction()->pluralLabel . ' отсутствуют');
         endif; ?>
 
     <br clear="all">

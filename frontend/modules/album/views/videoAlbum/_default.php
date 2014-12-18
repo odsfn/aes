@@ -8,7 +8,7 @@
 )); ?>
 
 <hr>
-<h3>Видео записи
+<h3><?php echo Yii::t('album.messages', $this->getAction()->pluralLabel); ?>
     <small class="pull-right"><ul class="nav nav-pills">
         <li class="<?php if (!$without_album) echo 'active'; ?>">
             <a href="<?= $this->createUrl($this->getModule()->rootRoute); ?>">Все</a>

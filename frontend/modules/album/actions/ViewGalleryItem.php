@@ -61,7 +61,7 @@ class ViewGalleryItem extends GalleryBaseAction
 
         if (!empty($album) && isset($model->album))
             $menu = array(
-                array('label' => 'Все видеозаписи', 'url' => array($this->getModule()->rootRoute)),
+                array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute)),
                 array(
                     'label' => 'Альбом: ' . $model->album->name, 
                     'url' => array(
@@ -74,7 +74,7 @@ class ViewGalleryItem extends GalleryBaseAction
             );
         else {
             $menu = array(
-                array('label' => 'Все видеозаписи', 'url' => array($this->getModule()->rootRoute)),
+                array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute)),
             );
 
             if ($withoutAlbum)

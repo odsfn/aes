@@ -79,9 +79,13 @@ class Gallery extends CWidget
         if ($this->type == 'video') {
             $action->albumType = 'VideoAlbum';
             $action->albumItemType = 'Video';
+            $action->pluralLabel = 'Видеозаписи';
+            $action->singularLabel = 'Видеозапись';
         } else {
             $action->albumType = 'Album';
             $action->albumItemType = 'File';
+            $action->pluralLabel = 'Фотографии';
+            $action->singularLabel = 'Фото';
         }
         
         $this->_action = $action;
