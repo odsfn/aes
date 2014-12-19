@@ -12,4 +12,4 @@ $(function(){
 Yii::app()->clientScript->registerPackage('loadmask');
 $this->breadcrumbs->add('Photos', 'election/photos/' . $this->election->id);
 
-$this->renderClip('album');
+echo $galleryWidgetOutput;

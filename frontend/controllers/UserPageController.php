@@ -39,28 +39,18 @@ class UserPageController extends SocialController
         $this->render('petitions', array(
             'usersMandates' => $usersMandates
         ));
-    }    
-    
+    }
+
     public function actionPhotos()
-    {
+    {   
         $profileId= $_GET['id'];
-        $_GET['id'] = null;
-        
-        $_GET['target_id'] = $this->profile->target_id;
-        
-        Yii::app()->getModule('album')->albumRoute = '/userPage/photos/' . $profileId;
-        Yii::app()->getModule('album')->imageRoute = '/userPage/photos/' . $profileId . '/action/photo';
-        Yii::app()->getModule('album')->ajaxUpdateImageRoute = '/userPage/photos/' . $profileId . '/action/ajaxUpdatePhoto';
+        Yii::app()->getModule('album')->rootRoute = '/userPage/photos/' . $profileId;
         
         $this->beginClip('album');
-        
-        if(isset($_GET['action']) && $_GET['action'] == 'photo')
-            Yii::app()->runController('album/image/photo');
-        elseif(isset($_GET['action']) && $_GET['action'] == 'ajaxUpdatePhoto')
-            Yii::app()->runController('album/image/ajaxUpdatePhoto');
-        else
-            Yii::app()->runController('album/image/album');
-        
+        echo $this->widget('album.widgets.Gallery', array(
+            'type' => 'image',
+            'target_id' => $this->profile->target_id,
+        ), true);
         $this->endClip();
         
         $this->render('photos');

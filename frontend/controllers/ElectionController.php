@@ -173,33 +173,20 @@ class ElectionController extends FrontController
 
     public function actionPhotos($id)
     {
-        $model = $this->getModel($id);
+        $electionId= $_GET['id'];
+        $this->election = $election = $this->getModel($electionId);
         $this->layout = '//layouts/election';
-        $this->election = $model;
         
-        $electionId= $this->election->id;
+        Yii::app()->getModule('album')->rootRoute = '/election/photos/' . $electionId;
         
-        $targetId = Election::model()->findByPk($electionId)->target_id;
+        $widgetOut = $this->widget('album.widgets.Gallery', array(
+            'type' => 'image',
+            'target_id' => $election->target_id,
+        ), true);
         
-        $_GET['id'] = null;
-        $_GET['target_id'] = $targetId;
-        
-        Yii::app()->getModule('album')->albumRoute = '/election/photos/' . $electionId;
-        Yii::app()->getModule('album')->imageRoute = '/election/photos/' . $electionId . '/action/photo';
-        Yii::app()->getModule('album')->ajaxUpdateImageRoute = '/election/photos/' . $electionId . '/action/ajaxUpdatePhoto';
-        
-        $this->beginClip('album');
-        
-        if(isset($_GET['action']) && $_GET['action'] == 'photo')
-            Yii::app()->runController('album/image/photo');
-        elseif(isset($_GET['action']) && $_GET['action'] == 'ajaxUpdatePhoto')
-            Yii::app()->runController('album/image/ajaxUpdatePhoto');
-        else
-            Yii::app()->runController('album/image/album');
-        
-        $this->endClip();
-        
-        $this->render('photos');
+        $this->render('photos', array(
+            'galleryWidgetOutput' => $widgetOut
+        ));
     }    
     
     public function actionVideos()
