@@ -38,7 +38,6 @@ $this->widget('bootstrap.widgets.TbMenu', array(
         array('label'=> Yii::t('userPage', ($this->self) ? 'My nominations' : 'Nominations'), 'url'=> array('/userPage/nominations', 'id'=>$this->profile->user_id)),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My mandates' : 'Mandates'), 'url'=> array('/userPage/mandates', 'id'=>$this->profile->user_id)),
         array('label'=> Yii::t('userPage', ($this->self) ? 'My petitions' : 'Petitions'), 'url'=> array('/userPage/petitions', 'id'=>$this->profile->user_id)),
-//        array('label'=> Yii::t('userPage', ($this->self) ? 'My videos' : 'Videos'), 'url'=> array('/userPage/videos', 'id'=>$this->profile->user_id)),
     )
 ));
 
@@ -56,9 +55,8 @@ $this->widget('album.widgets.TinyPreview', array(
     'targetId' => $this->profile->target_id,
     'previewsCount' => Yii::app()->params['Gallery']['previewsCount'],
     'titleText' => Yii::t('userPage', ($this->owner->self) ? 'My photos' : 'Photos'),
-    'isModuleSelected' => $this->id == 'image' || $this->action->id == 'photos',
-    'albumRoute' => '/userPage/photos/' . $this->profile->user_id,
-    'imageRoute' => '/userPage/photos/' . $this->profile->user_id . '/action/photo'
+    'isModuleSelected' => $this->action->id == 'photos',
+    'rootRoute' => '/userPage/photos/'.$this->profile->user_id,
 )); 
 
 $this->endClip();

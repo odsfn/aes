@@ -29,10 +29,11 @@ class TinyPreview extends CWidget
     
     public function init()
     {
+        $this->albumRoute = $this->rootRoute;
+        
         if ($this->type == 'video') {
             $this->albumType = 'VideoAlbum';
             $this->galleryItemType = 'Video';
-            $this->albumRoute = $this->rootRoute;
         } else {
             $this->albumType = 'Album';
             $this->galleryItemType = 'File';
@@ -40,12 +41,6 @@ class TinyPreview extends CWidget
         
         if (!$this->targetId)
             throw new CException('TinyPreview cant\'t be initialized. You should specify targetId');
-
-        if (!$this->albumRoute)
-            $this->albumRoute = $this->module->albumRoute;
-        
-        if (!$this->imageRoute)
-            $this->imageRoute = $this->module->imageRoute;
         
         $this->module = Yii::app()->getModule('album');
         
@@ -82,34 +77,17 @@ class TinyPreview extends CWidget
         foreach ($albums as $album) {
             $imageSrc = $album->getCoverUrl();
             
-            if ($this->type == 'video') {
-                
-                $itemUrl = $this->owner->createUrl($this->rootRoute, array(
-                    'action' => 'ViewAlbum',
-                    'album_id' => $album->id
-                ));
-                $imageUrl = $this->owner->createUrl($this->rootRoute, array(
-                    'action' => 'ViewGalleryItem',
-                    'photo_id' => $album->cover->id,
-                    'album' => $album->id,
-                    'exact' => true
-                ));
-                
-            } else {
+            $itemUrl = $this->owner->createUrl($this->rootRoute, array(
+                'action' => 'ViewAlbum',
+                'album_id' => $album->id
+            ));
             
-                $itemUrl = $this->owner->createUrl($this->albumRoute, array(
-                    'op' => 'view',
-                    'album_id' => $album->id,
-                    'target_id' => $this->targetId
-                ));
-                $imageUrl = $this->owner->createUrl($this->imageRoute, array(
-                    'op' => 'view',
-                    'photo_id' => $album->cover->id,
-                    'album' => $album->id,
-                    'exact' => true
-                ));
-
-            }
+            $imageUrl = $this->owner->createUrl($this->rootRoute, array(
+                'action' => 'ViewGalleryItem',
+                'photo_id' => $album->cover->id,
+                'album' => $album->id,
+                'exact' => true
+            ));
             
             $previews[] = (object)array(
                 'captionHasContent' => $album->name || $album->description,
@@ -133,35 +111,17 @@ class TinyPreview extends CWidget
             foreach ($photos as $photo) {
                 $imageSrc = $this->module->getComponent('image')->createAbsoluteUrl('360x220', $photo->path);
                 
-                if ($this->type == 'video') {
-                    
-                    $imageUrl = $this->owner->createUrl($this->rootRoute, array(
-                        'action' => 'ViewGalleryItem',
-                        'photo_id' => $photo->id,
-                        'exact' => true,
-                        'without_album' => true
-                    ));
-                    $itemUrl = $this->owner->createUrl($this->rootRoute, array(
-                        'action' => 'ViewAll',
-                        'without_album' => true
-                    ));                    
-                    
-                } else {
-                    
-                    $imageUrl = $this->owner->createUrl($this->imageRoute, array(
-                        'op' => 'view',
-                        'photo_id' => $photo->id,
-                        'target_id' => $this->targetId,
-                        'exact' => true,
-                        'without_album' => true
-                    ));
-                    $itemUrl = $this->owner->createUrl($this->albumRoute, array(
-                        'op' => 'view',
-                        'target_id' => $this->targetId,
-                        'without_album' => true
-                    ));
-                    
-                }
+                $imageUrl = $this->owner->createUrl($this->rootRoute, array(
+                    'action' => 'ViewGalleryItem',
+                    'photo_id' => $photo->id,
+                    'exact' => true,
+                    'without_album' => true
+                ));
+                
+                $itemUrl = $this->owner->createUrl($this->rootRoute, array(
+                    'action' => 'ViewAll',
+                    'without_album' => true
+                ));                    
 
                 $previews[] = (object)array(
                     'captionHasContent' => true,

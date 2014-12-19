@@ -1,15 +1,7 @@
 <?php
 /**
- * This module provides functionality for photos albums representation
+ * This module provides functionality for photo and video albums representation
  * and manipulation.
- * 
- * @TODO: 
- * 
- * Components of this module based on old cold from another developers and project.
- * It should be refactored.
- * 
- * - Split ImageController to AlbumBaseController, ImageController and AlbumController
- * - ...
  * 
  * @author Vasiliy Pedak <truvazia@gmail.com>
  */
@@ -55,12 +47,6 @@ class AlbumModule extends CWebModule
         
         return Yii::t('album.permissions', self::$permissionLabels[$level]);
     }
-
-    public $albumRoute = '/album/image/album';
-    
-    public $imageRoute = '/album/image/photo';
-
-    public $ajaxUpdateImageRoute = '/album/image/ajaxUpdatePhoto';
     
     public $rootRoute = '';
 
@@ -75,6 +61,7 @@ class AlbumModule extends CWebModule
         $this->setImport(array(
             'album.models.*',
             'album.components.iGalleryItem',
+            'album.components.iDownloadable',
             'album.components.taggableBehavior.*',
             'album.components.imageapi.*',
             'album.components.imagemodifier.CImageModifier',
@@ -85,7 +72,7 @@ class AlbumModule extends CWebModule
             'image'=>array(
                 'class'=>'album.components.imageapi.CImage',
                 'allowedImageExtensions' => array("*.jpg", "*.jpeg", "*.gif", "*.png"),
-                // 'thumbs' - контроллер
+                // thumbnails settings
                 // http://www.verot.net/php_class_upload_samples.htm
                 'presets'=>array(
     

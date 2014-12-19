@@ -132,5 +132,10 @@ class Video extends File implements iGalleryItem
             'path' => str_replace(Yii::getPathOfAlias('webroot') . DIRECTORY_SEPARATOR, '', $filePath)
         ));
     }
+    
+    public function canBeDownloaded()
+    {
+        return false;
+    }
 }
 

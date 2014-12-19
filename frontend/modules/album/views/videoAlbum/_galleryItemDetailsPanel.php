@@ -61,6 +61,13 @@
         <p>
             <?php 
 
+            if($model->canBeDownloaded())
+                echo CHtml::link(
+                    'Скачать', 
+                    $model->downloadUrl,
+                    array('class' => 'btn btn-link btn-block')
+                );
+            
             if ($canEdit) {
                 
                 $albumType = $this->getAction()->albumType;

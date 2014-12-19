@@ -87,9 +87,8 @@ $this->widget('album.widgets.TinyPreview', array(
     'targetId' => $this->election->target_id,
     'previewsCount' => Yii::app()->params['Gallery']['previewsCount'],
     'titleText' => Yii::t('election', 'Photos'),
-    'isModuleSelected' => $this->id == 'image' || $this->action->id == 'photos',
-    'albumRoute' => '/election/photos/' . $this->election->id,
-    'imageRoute' => '/election/photos/' . $this->election->id . '/action/photo'
+    'isModuleSelected' => $this->action->id == 'photos',
+    'rootRoute' => '/election/photos/' .$this->election->id,
 )); 
 
 ?>

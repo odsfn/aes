@@ -15,7 +15,7 @@
  * @property string $path
  * @property string $type
  */
-class File extends CActiveRecord implements iGalleryItem
+class File extends CActiveRecord implements iGalleryItem, iDownloadable
 {
 
     public $tags;
@@ -297,5 +297,17 @@ class File extends CActiveRecord implements iGalleryItem
     {
         if ($this->album)
             $this->album->photosUpdated();
+    }
+    
+    public function canBeDownloaded()
+    {
+        return true;
+    }
+    
+    public function getDownloadUrl()
+    {
+        return Yii::app()->getModule('album')
+                ->getComponent('image')
+                ->createAbsoluteUrl('original', $this->path);
     }
 }
