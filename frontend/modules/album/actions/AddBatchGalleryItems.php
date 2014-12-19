@@ -75,7 +75,7 @@ class AddBatchGalleryItems extends GalleryBaseAction
                 echo CJSON::encode(array(
                     'success' => true,
                     'html' => $this->renderPartial(
-                        'album.views.videoAlbum._image_update_compact', 
+                        'album.views.base._image_update_compact', 
                         array('model'=>$photo),
                         true
                     )
@@ -85,7 +85,7 @@ class AddBatchGalleryItems extends GalleryBaseAction
         }
 
         $photo_params['photo'] = $photo;        
-        return $this->renderPartial('album.views.videoAlbum._images_upload', $photo_params, true);
+        return $this->renderPartial('album.views.base._images_upload', $photo_params, true);
     }
     
     protected function getMenu()

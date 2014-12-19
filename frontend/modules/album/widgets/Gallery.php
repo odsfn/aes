@@ -35,7 +35,7 @@ class Gallery extends CWidget
 
     public function getViewPath($checkTheme = false)
     {
-        $path = Yii::getPathOfAlias('album.views.videoAlbum');
+        $path = Yii::getPathOfAlias('album.views.base');
         return $path;
     }
 

@@ -32,7 +32,7 @@ abstract class GalleryBaseAction extends CAction
 
     public $viewAlbumAjax = '_album_ajax';
 
-    public $viewAlbum = '/_album';
+    public $viewAlbum = '_album';
 
     public $albumType = 'Album';
 
