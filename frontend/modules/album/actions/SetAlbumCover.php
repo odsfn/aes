@@ -4,10 +4,10 @@ class SetAlbumCover extends GalleryBaseAction
 {
     public function run()
     {
-        $albumItemType = $this->albumItemType;
+        $galleryItemType = $this->albumItemType;
         $item_id = Yii::app()->request->getParam('photo_id');
         
-        $model = $albumItemType::model()->with('album')->findByPk($item_id);
+        $model = $galleryItemType::model()->with('album')->findByPk($item_id);
         
         if (!$this->user_id)
             throw new CHttpException(403);

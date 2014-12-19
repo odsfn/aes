@@ -19,7 +19,8 @@ class Gallery extends CWidget
             'CreateGalleryItem'=>'album.actions.CreateGalleryItem',
             'UpdateGalleryItem'=>'album.actions.UpdateGalleryItem',
             'DeleteGalleryItem'=>'album.actions.DeleteGalleryItem',
-            'ViewGalleryItem'=>'album.actions.ViewGalleryItem'
+            'ViewGalleryItem'=>'album.actions.ViewGalleryItem',
+            'AddBatchGalleryItems'=>'album.actions.AddBatchGalleryItems'
         );
     }
     
@@ -86,6 +87,7 @@ class Gallery extends CWidget
             $action->albumItemType = 'File';
             $action->pluralLabel = 'Фотографии';
             $action->singularLabel = 'Фото';
+            $action->batchAddEnabled = true;
         }
         
         $this->_action = $action;

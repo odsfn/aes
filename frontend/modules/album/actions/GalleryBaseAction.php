@@ -42,6 +42,8 @@ abstract class GalleryBaseAction extends CAction
     
     public $singularLabel = 'Запись';
     
+    public $batchAddEnabled = false;
+    
     public function __construct($controller, $id, $target_id = null)
     {
         $requestedTarget = Yii::app()->request->getParam('target_id', FALSE);
@@ -60,7 +62,9 @@ abstract class GalleryBaseAction extends CAction
 
     public function run()
     {
-        $result = $this->proccess();
+        $galleryItemType = $this->albumItemType;
+        $albumType = $this->albumType;
+        $result = $this->proccess($albumType, $galleryItemType);
         
         if(is_string($result)) {
             $result = array('content' => $result);
@@ -71,7 +75,7 @@ abstract class GalleryBaseAction extends CAction
         $this->renderPartial($this->viewContent, $result);
     }
     
-    protected function proccess()
+    protected function proccess($albumType, $galleryItemType)
     {
         return '';
     }
@@ -112,9 +116,16 @@ abstract class GalleryBaseAction extends CAction
             $commonItems['addAlbum']
         );
         
-        if(get_class($this) == 'ViewAll')
-            $menu[0]['active'] = true;
-        
+        $className = get_class($this);
+        switch($className) {
+            case 'ViewAll':
+                $menu[0]['active'] = true;
+                break;
+            case 'AddBatchGalleryItems':
+            case 'CreateGalleryItem':
+                $menu[1]['active'] = true;
+                break;
+        }
         return $menu;
     }
     
@@ -136,7 +147,7 @@ abstract class GalleryBaseAction extends CAction
             'addItem' => array(
                 'label' => Yii::t('album.messages', 'Добавить ' . $this->singularLabel), 'url' => array(
                     $this->getModule()->rootRoute , 
-                    'action' => 'CreateGalleryItem',
+                    'action' => ($this->batchAddEnabled)? 'AddBatchGalleryItems' : 'CreateGalleryItem',
                 ), 
                 'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
             ),

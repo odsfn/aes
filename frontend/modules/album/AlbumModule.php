@@ -236,4 +236,19 @@ class AlbumModule extends CWebModule
     {
         return Target::model()->findByPk($target_id)->getRow()->user_id == $userId;
     }
+    
+    /**
+     * Creates thumbnails for currently uploaded images
+     * @param string $file_path Path to an image which has been currently uploaded
+     */
+    public function createThumbnails($file_path, $overwrite = false)
+    {
+        $this->getComponent('image')->createPath('160x100', $file_path, false, $overwrite);
+        $this->getComponent('image')->createPath('1150x710', $file_path, false, $overwrite);
+    }
+    
+    public function createAlbumThumbnail($file_path)
+    {
+        $this->getComponent('image')->createPath('360x220', $file_path);
+    }
 }

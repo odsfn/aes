@@ -2,13 +2,10 @@
 
 class ViewGalleryItem extends GalleryBaseAction
 {
-   
     protected $album;
     
-    protected function proccess()
+    protected function proccess($albumType, $galleryItemType)
     {
-        $galleryItemType = $this->albumItemType;
-        $albumType = $this->albumType;
         $user_id = $this->user_id;
         $target_id = $this->target_id;
         $Gallery = Yii::app()->params['Gallery'];

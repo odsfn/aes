@@ -2,15 +2,13 @@
 
 class CreateAlbum extends GalleryBaseAction
 {    
-    public function proccess()
+    public function proccess($albumType, $galleryItemType)
     {
         if (!$this->user_id || !$this->getModule()->canCreateAlbum($this->target_id, $this->user_id))
             throw new CHttpException(403);
-
-        $albumClass = $this->albumType;
         
-        $model = new $albumClass;
-        if ($attributes = Yii::app()->request->getPost($albumClass)) {
+        $model = new $albumType;
+        if ($attributes = Yii::app()->request->getPost($albumType)) {
             $model->setScenario('create');
             $model->attributes = $attributes;
             $model->target_id = $this->target_id;

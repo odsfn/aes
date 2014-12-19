@@ -4,7 +4,7 @@ class CreateGalleryItem extends GalleryBaseAction
 {    
     protected $album;
     
-    protected function proccess()
+    protected function proccess($albumType, $galleryItemType)
     {
         if (!$this->user_id)
             throw new CHttpException(403);
@@ -12,9 +12,6 @@ class CreateGalleryItem extends GalleryBaseAction
         $album_params = array();
         
         $album_id = Yii::app()->request->getParam('album_id');
-        
-        $albumType = $this->albumType;
-        $albumItemType = $this->albumItemType;
         
         if ($album_id) {
             $parentAlbum = $albumType::model()->findByPk($album_id);
@@ -30,12 +27,12 @@ class CreateGalleryItem extends GalleryBaseAction
                 throw new CHttpException(403);
         }
 
-        $item = new $albumItemType();
+        $item = new $galleryItemType();
         
         if(!$item->album_id && $album_id)
             $item->album_id = $album_id;
         
-        if ($attrs = Yii::app()->request->getPost($albumItemType)) {
+        if ($attrs = Yii::app()->request->getPost($galleryItemType)) {
             
             $attrs = array_merge($attrs, array(
                 'target_id' => $this->target_id

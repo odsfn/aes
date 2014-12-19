@@ -44,10 +44,15 @@ class UpdateGalleryItem extends GalleryBaseAction
             
             if ($updated)
                 $updated = Yii::app()->locale->dateFormatter->formatDateTime(time(), null, 'short');
-                    
+            
+            $formView = $this->viewGalleryItemDetailsPanel;
+            
+            if (Yii::app()->request->getParam('form_type') == 'compact')
+                $formView = '_image_update_compact';
+            
             $response = array(
                 'success' => true,
-                'html' => $this->renderPartial($this->viewGalleryItemDetailsPanel, array(
+                'html' => $this->renderPartial($formView, array(
                     'model' => $model,
                     'canEdit' => $canEdit,
                     'albumContext' => $albumContext,
@@ -56,9 +61,14 @@ class UpdateGalleryItem extends GalleryBaseAction
             );
         } else {
             
+            $formView = $this->viewUpdateGalleryItem;
+            
+            if (Yii::app()->request->getParam('form_type') == 'compact')
+                $formView = '_image_update_compact';
+            
             $response = array(
                 'success' => false,
-                'html' => $this->renderPartial($this->viewUpdateGalleryItem, array('model' => $model), true)
+                'html' => $this->renderPartial($formView, array('model' => $model), true)
             );
         }
         

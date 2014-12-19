@@ -4,11 +4,8 @@ class UpdateAlbum extends GalleryBaseAction
 {    
     protected $album;
     
-    protected function proccess()
-    {
-        $albumType = $this->albumType;
-        $albumItemType = $this->albumItemType;
-        
+    protected function proccess($albumType, $galleryItemType)
+    {        
         $album_id = Yii::app()->request->getParam('album_id', 0);
         
         $model = $albumType::model()->findByPk($album_id);
@@ -26,7 +23,7 @@ class UpdateAlbum extends GalleryBaseAction
             $model->setScenario('update');
             $model->attributes = $attributes;
             if ($model->save()) {
-                $items = $albumItemType::model()->updateAll(
+                $items = $galleryItemType::model()->updateAll(
                     array('permission' => $model->permission), 
                     'album_id = :album_id', 
                     array(':album_id' => $model->id)

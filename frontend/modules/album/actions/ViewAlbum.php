@@ -9,11 +9,8 @@ class ViewAlbum extends GalleryBaseAction
     
     protected $album;
 
-    protected function proccess()
-    {
-        $albumItemType = $this->albumItemType;
-        $albumType = $this->albumType;
-        
+    protected function proccess($albumType, $galleryItemType)
+    {        
         $album_id = Yii::app()->request->getParam('album_id', 0);
         
         $albums = $items = array();
@@ -32,7 +29,7 @@ class ViewAlbum extends GalleryBaseAction
 
             $this->album = $model;
             
-            $items = $albumItemType::model()->getRecords(
+            $items = $galleryItemType::model()->getRecords(
                 'album_id = :album_id', 
                 array(
                     ':album_id' => $model->id
@@ -42,7 +39,7 @@ class ViewAlbum extends GalleryBaseAction
                 $Gallery['photos_sort']
             );
 
-            $nphotos = $albumItemType::model()->count('album_id = :album_id', array(':album_id' => $model->id));
+            $nphotos = $galleryItemType::model()->count('album_id = :album_id', array(':album_id' => $model->id));
         } else
             throw new CHttpException(404);
 

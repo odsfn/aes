@@ -7,7 +7,7 @@ class ViewAll extends GalleryBaseAction
         
     }
 
-    protected function proccess()
+    protected function proccess($albumType, $galleryItemType)
     {
         $albums_page = Yii::app()->getRequest()->getParam('albums_page', 1);
         $items_page = Yii::app()->getRequest()->getParam('photos_page', 1);
@@ -15,17 +15,15 @@ class ViewAll extends GalleryBaseAction
         //
         // Список альбомов цели
         //
-        $albumClass = $this->albumType;
-        $albumItemClass = $this->albumItemType; 
         
-        $albumsCriteria = $albumClass::getAvailableAlbumsCriteria($this->target_id, $this->user_id);
+        $albumsCriteria = $albumType::getAvailableAlbumsCriteria($this->target_id, $this->user_id);
         $albumsCountCriteria = clone $albumsCriteria;
 
         $albumsCriteria->limit = ($albums_page ? $albums_page * $Gallery['albums_per_page'] : $Gallery['albums_per_page']);
         $albumsCriteria->order = $Gallery['photos_sort'];
 
-        $albums = $albumClass::model()->findAll($albumsCriteria);
-        $nalbums = $albumClass::model()->count($albumsCountCriteria);
+        $albums = $albumType::model()->findAll($albumsCriteria);
+        $nalbums = $albumType::model()->count($albumsCountCriteria);
 
         //
         // Список элементов альбома
@@ -35,15 +33,15 @@ class ViewAll extends GalleryBaseAction
         if ($_GET['without_album'])
             $withoutAlbum = true;
 
-        $itemsCriteria = $albumItemClass::getAvailablePhotosCriteria($withoutAlbum, $this->target_id, $this->user_id);
+        $itemsCriteria = $galleryItemType::getAvailablePhotosCriteria($withoutAlbum, $this->target_id, $this->user_id);
         $itemsCountCriteria = clone $itemsCriteria;
 
         $itemsCriteria->limit = ($items_page ? $items_page * $Gallery['photos_per_page'] : $Gallery['photos_per_page']);
         $itemsCriteria->order = $Gallery['photos_sort'];
 
         // Все фотографии
-        $items = $albumItemClass::model()->findAll($itemsCriteria);
-        $items_count = $albumItemClass::model()->count($itemsCountCriteria);
+        $items = $galleryItemType::model()->findAll($itemsCriteria);
+        $items_count = $galleryItemType::model()->count($itemsCountCriteria);
 
         if (!($items || $albums) && $this->getModule()->isOwner($this->user_id, $this->target_id))
             $this->ownerViewsEmptyList();
