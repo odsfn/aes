@@ -92,9 +92,9 @@ class Video extends File implements iGalleryItem
         parent::afterInsert();
     }
 
-    public static function getAvailablePhotosCriteria($withoutAlbums = false, $target_id, $user_id = null, $album = null, $tableName = null)
+    public static function getAvailableCriteria($withoutAlbums = false, $target_id, $user_id = null, $album = null, $tableName = null)
     {
-        return parent::getAvailablePhotosCriteria($withoutAlbums, $target_id,
+        return parent::getAvailableCriteria($withoutAlbums, $target_id,
             $user_id, $album, self::model()->tableName()
         );
     }

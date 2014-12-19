@@ -18,7 +18,7 @@ class ViewGalleryItem extends GalleryBaseAction
         
         $withoutAlbum = Yii::app()->request->getParam('without_album', false);
                 
-        $criteria = $galleryItemType::getAvailablePhotosCriteria($withoutAlbum, $target_id, $user_id, $album);
+        $criteria = $galleryItemType::getAvailableCriteria($withoutAlbum, $target_id, $user_id, $album);
         $criteria->order = $Gallery['photos_sort'];
 
         // Specified photo, so we have to search it in the navigation set

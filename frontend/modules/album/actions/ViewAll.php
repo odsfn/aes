@@ -33,7 +33,7 @@ class ViewAll extends GalleryBaseAction
         if ($_GET['without_album'])
             $withoutAlbum = true;
 
-        $itemsCriteria = $galleryItemType::getAvailablePhotosCriteria($withoutAlbum, $this->target_id, $this->user_id);
+        $itemsCriteria = $galleryItemType::getAvailableCriteria($withoutAlbum, $this->target_id, $this->user_id);
         $itemsCountCriteria = clone $itemsCriteria;
 
         $itemsCriteria->limit = ($items_page ? $items_page * $Gallery['photos_per_page'] : $Gallery['photos_per_page']);

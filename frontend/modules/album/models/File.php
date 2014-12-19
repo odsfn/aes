@@ -213,7 +213,7 @@ class File extends CActiveRecord implements iGalleryItem, iDownloadable
         return $url;
     }
     
-    public static function getAvailablePhotosCriteria($withoutAlbums = false, $target_id, $user_id = null, $album = null, $tableName = null)
+    public static function getAvailableCriteria($withoutAlbums = false, $target_id, $user_id = null, $album = null, $tableName = null)
     {
         if (!$user_id)
             $user_id = (!Yii::app()->user->isGuest ? Yii::app()->user->id : 0);

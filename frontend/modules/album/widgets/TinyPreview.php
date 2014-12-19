@@ -102,7 +102,7 @@ class TinyPreview extends CWidget
         
         if ($albumsCount < $this->previewsCount) {
             $photosLimit = $this->previewsCount - $albumsCount;
-            $photosCriteria = $galleryItemType::getAvailablePhotosCriteria($withoutAlbums = true, $this->targetId);
+            $photosCriteria = $galleryItemType::getAvailableCriteria($withoutAlbums = true, $this->targetId);
             $photosCriteria->order = '`update` DESC';
             $photosCriteria->limit = $photosLimit;
             
