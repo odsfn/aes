@@ -1,8 +1,10 @@
 <?php
 
 class CreateGalleryItem extends GalleryBaseAction
-{
-    public function run()
+{    
+    protected $album;
+    
+    protected function proccess()
     {
         if (!$this->user_id)
             throw new CHttpException(403);
@@ -17,59 +19,15 @@ class CreateGalleryItem extends GalleryBaseAction
         if ($album_id) {
             $parentAlbum = $albumType::model()->findByPk($album_id);
             if ($parentAlbum) {
-
                 if(!$this->getModule()->canAddPhotoToAlbum($parentAlbum, $this->user_id))
                     throw new CHttpException(403);
 
-                $menu = array(
-                    array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute )),
-                    array(
-                        'label' => 'Альбом: ' . $parentAlbum->name, 
-                        'url' => array(
-                            $this->getModule()->rootRoute , 
-                            'action' => 'ViewAlbum', 
-                            'album_id' => $parentAlbum->id
-                        )
-                    ),
-                    array(
-                        'label' => 'Добавить ' . $this->singularLabel, 'url' => '#', 
-                        'active' => true, 
-                        'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
-                    ),
-                    array(
-                        'label' => 'Редактировать', 
-                        'url' => array(
-                            $this->getModule()->rootRoute , 
-                            'action' => 'UpdateGalleryItem', 
-                            'album_id' => $parentAlbum->id
-                        ), 
-                        'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
-                    )
-                );
+                $this->album = $parentAlbum;
             } else
                 throw new CHttpException(500);
         } else {
             if(!$this->getModule()->isOwner($this->user_id, $this->target_id))
                 throw new CHttpException(403);
-
-            $menu = array(
-                array(
-                    'label' => 'Все ' . $this->pluralLabel, 
-                    'url' => array($this->getModule()->rootRoute)
-                ),
-                array(
-                    'label' => 'Добавить ' . $this->singularLabel, 'url' => '#', 'active' => true, 
-                    'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
-                ),
-                array(
-                    'label' => 'Создать альбом', 
-                    'url' => array(
-                        $this->getModule()->rootRoute , 
-                        'action' => 'CreateAlbum'
-                    ), 
-                    'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
-                ),
-            );
         }
 
         $item = new $albumItemType();
@@ -101,9 +59,11 @@ class CreateGalleryItem extends GalleryBaseAction
                 
                 $this->redirect($url);
             }
+        } else {
+            $item->target_id = $this->target_id;
         }
         
-        $content = $this->renderPartial(
+        return $this->renderPartial(
             $this->viewCreateGalleryItem, 
             array(
                 'model' => $item,
@@ -111,8 +71,47 @@ class CreateGalleryItem extends GalleryBaseAction
             ), 
             true
         );
-
-        $this->renderPartial($this->viewContent, array('content' => $content, 'menu' => $menu));
+    }
+    
+    protected function getMenu()
+    {
+        $menuItems = $this->getCommonMenuItems();
+        
+        $addItem = $menuItems['addItem'];
+        $addItem['active'] = true;
+        
+        $menu = array(
+            $menuItems['viewAll'],
+            $addItem,
+            $menuItems['addAlbum']
+        );
+        
+        if($this->album) {
+            array_splice($menu, 2, 1, array(
+                array(
+                    'label' => 'Редактировать', 
+                    'url' => array(
+                        $this->getModule()->rootRoute , 
+                        'action' => 'UpdateGalleryItem', 
+                        'album_id' => $this->album->id
+                    ), 
+                    'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
+                )
+            ));
+            
+            array_splice($menu, 1, 0, array(
+                array(
+                    'label' => 'Альбом: ' . $this->album->name, 
+                    'url' => array(
+                        $this->getModule()->rootRoute , 
+                        'action' => 'ViewAlbum', 
+                        'album_id' => $this->album->id
+                    )
+                )
+            ));
+        }
+        
+        return $menu;
     }
 }
 

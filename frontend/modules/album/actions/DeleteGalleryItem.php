@@ -35,7 +35,7 @@ class DeleteGalleryItem extends GalleryBaseAction
             
             echo CJSON::encode(array(
                 'success'=>true,
-                'html'=>Yii::t('album', 'Элемент был удален успешно')
+                'html'=>Yii::t('album.messages', 'Элемент был удален успешно')
             ));
             
             Yii::app()->end();

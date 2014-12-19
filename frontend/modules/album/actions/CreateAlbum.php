@@ -1,8 +1,8 @@
 <?php
 
 class CreateAlbum extends GalleryBaseAction
-{
-    public function run()
+{    
+    public function proccess()
     {
         if (!$this->user_id || !$this->getModule()->canCreateAlbum($this->target_id, $this->user_id))
             throw new CHttpException(403);
@@ -19,14 +19,20 @@ class CreateAlbum extends GalleryBaseAction
             }
         }
 
-        $menu = array(
-            array('label' => Yii::t('album.messages', 'Все ' . $this->pluralLabel), 'url' => array( $this->getModule()->rootRoute )),
-            array('label' => Yii::t('album.messages', 'Новый альбом'), 'url' => '#', 'active' => true),
-        );
+        return $this->getController()->renderPartial($this->viewCreateAlbum, array('model' => $model), true);
+    }
 
-        $content = $this->getController()->renderPartial($this->viewCreateAlbum, array('model' => $model), true);
-               
-        $this->getController()->renderPartial($this->viewContent, array('content' => $content, 'menu' => $menu, 'target_id' => $this->target_id));
+    protected function getMenu()
+    {
+        $menuItems = $this->getCommonMenuItems();
+        return array(
+            $menuItems['viewAll'],
+            array(
+                'label' => Yii::t('album.messages', 'Новый альбом'), 
+                'url' => '#', 
+                'active' => true
+            ),
+        );
     }
 }
 

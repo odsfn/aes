@@ -7,7 +7,7 @@ class ViewAll extends GalleryBaseAction
         
     }
 
-    public function run()
+    protected function proccess()
     {
         $albums_page = Yii::app()->getRequest()->getParam('albums_page', 1);
         $items_page = Yii::app()->getRequest()->getParam('photos_page', 1);
@@ -48,24 +48,6 @@ class ViewAll extends GalleryBaseAction
         if (!($items || $albums) && $this->getModule()->isOwner($this->user_id, $this->target_id))
             $this->ownerViewsEmptyList();
 
-        $menu = array(
-            array('label' => Yii::t('album.messages', 'Все ' . $this->pluralLabel), 'url' => '#', 'active' => true),
-            array(
-                'label' => Yii::t('album.messages', 'Добавить ' . $this->singularLabel), 'url' => array(
-                    $this->getModule()->rootRoute , 
-                    'action' => 'CreateGalleryItem',
-                ), 
-                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
-            ),
-            array(
-                'label' => Yii::t('album.messages', 'Создать альбом'), 'url' => array(
-                    $this->getModule()->rootRoute,
-                    'action' => 'CreateAlbum'
-                ), 
-                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
-            ),
-        );
-
         // Ajax
         if (Yii::app()->getRequest()->isAjaxRequest) {
 
@@ -97,8 +79,8 @@ class ViewAll extends GalleryBaseAction
             
             Yii::app()->end();
             
-        } else
-            $content = $this->getController()->render($this->viewDefault, array(
+        } else {
+            return $this->getController()->render($this->viewDefault, array(
                 // Album
                 'albums' => $albums,
                 'nalbums' => $nalbums,
@@ -111,9 +93,8 @@ class ViewAll extends GalleryBaseAction
                 'photos_per_page' => $Gallery['photos_per_page'],
                 'target_id' => $this->target_id,
                 'without_album'=>$withoutAlbum
-            ), true);
-        
-        $this->getController()->render($this->viewContent, array('content' => $content, 'menu' => $menu, 'target_id' => $this->target_id));
+            ), true); 
+        }
     }
 }
 

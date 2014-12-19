@@ -7,7 +7,9 @@ class ViewAlbum extends GalleryBaseAction
         
     }
     
-    public function run()
+    protected $album;
+
+    protected function proccess()
     {
         $albumItemType = $this->albumItemType;
         $albumType = $this->albumType;
@@ -28,6 +30,8 @@ class ViewAlbum extends GalleryBaseAction
             if (!$this->getModule()->canViewAlbum($model)) 
                 throw new CHttpException(403);
 
+            $this->album = $model;
+            
             $items = $albumItemType::model()->getRecords(
                 'album_id = :album_id', 
                 array(
@@ -45,26 +49,6 @@ class ViewAlbum extends GalleryBaseAction
         if (!$items && $this->getModule()->isOwner($this->user_id, $this->target_id))
             $this->ownerViewsEmptyList();
 
-        $menu = array(
-            array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute)),
-            array('label' => 'Альбом: ' . $model->name, 'url' => '#', 'active' => true),
-            array(
-                'label' => 'Добавить ' . $this->singularLabel, 'url' => array(
-                    $this->getModule()->rootRoute , 
-                    'action' => 'CreateGalleryItem', 'album_id' => $model->id
-                ), 
-                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
-            ),
-            array(
-                'label' => 'Редактировать', 'url' => array(
-                    $this->getModule()->rootRoute , 
-                    'action' => 'UpdateAlbum', 
-                    'album_id' => $model->id
-                ), 
-                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
-            ),
-        );
-
         // Ajax
         if (Yii::app()->getRequest()->isAjaxRequest) {
             $output = $this->renderPartial($this->viewAlbumAjax, array(
@@ -80,7 +64,7 @@ class ViewAlbum extends GalleryBaseAction
             echo $output;
             Yii::app()->end();
         } else {
-            $content = $this->renderPartial($this->viewAlbum, array(
+            return $this->renderPartial($this->viewAlbum, array(
                 'model' => $model,
                 'nphotos' => $nphotos,
                 'photos' => $items,
@@ -89,8 +73,28 @@ class ViewAlbum extends GalleryBaseAction
                 'target_id' => $this->target_id,
             ), true);
         }
-        
-        $this->renderPartial($this->viewContent, array('content' => $content, 'menu' => $menu, 'target_id' => $this->target_id));
+    }
+    
+    protected function getMenu()
+    {
+        $items = $this->getCommonMenuItems();
+        $addItem = $items['addItem'];
+        $addItem['url']['album_id'] = $this->album->id;
+        $menu = array(
+            $items['viewAll'],
+            array('label' => 'Альбом: ' . $this->album->name, 'url' => '#', 'active' => true),
+            $addItem,
+            array(
+                'label' => Yii::t('album.messages','Редактировать'), 
+                'url' => array(
+                    $this->getModule()->rootRoute , 
+                    'action' => 'UpdateAlbum', 
+                    'album_id' => $this->album->id
+                ), 
+                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
+            ),
+        );
+        return $menu;
     }
 }
 

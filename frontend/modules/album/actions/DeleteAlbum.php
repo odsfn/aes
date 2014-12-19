@@ -13,7 +13,7 @@ class DeleteAlbum extends GalleryBaseAction
             throw new CHttpException(403);
 
         if ($model->delete()) {
-            Yii::app()->user->setFlash('success', 'Альбом удален успешно');
+            Yii::app()->user->setFlash('success', Yii::t('album.messages','Альбом удален успешно'));
             $this->redirect(array($this->getModule()->rootRoute));
         }
     }

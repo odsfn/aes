@@ -58,6 +58,24 @@ abstract class GalleryBaseAction extends CAction
         parent::__construct($controller, $id);
     }
 
+    public function run()
+    {
+        $result = $this->proccess();
+        
+        if(is_string($result)) {
+            $result = array('content' => $result);
+        }
+        
+        $result['target_id'] = $this->target_id;
+        $result['menu'] = $this->getMenu();
+        $this->renderPartial($this->viewContent, $result);
+    }
+    
+    protected function proccess()
+    {
+        return '';
+    }
+
     protected function getModule()
     {
         return Yii::app()->getModule('album');
@@ -76,11 +94,71 @@ abstract class GalleryBaseAction extends CAction
             return $result;
     }
 
-    protected function renderPartial($view, $params, $return = false)
+    protected function renderPartial($view, $params = array(), $return = false)
     {
         $result = $this->getController()->renderPartial($view, $params, $return);
         
         if ($return)
             return $result;
-    }    
+    }   
+    
+    protected function getMenu()
+    {
+        $commonItems = $this->getCommonMenuItems();
+        
+        $menu = array(
+            $commonItems['viewAll'],
+            $commonItems['addItem'],
+            $commonItems['addAlbum']
+        );
+        
+        if(get_class($this) == 'ViewAll')
+            $menu[0]['active'] = true;
+        
+        return $menu;
+    }
+    
+    protected function getCommonMenuItems()
+    {
+        $items = array(
+            'viewAll' => array(
+                'label' => Yii::t('album.messages', 'Все ' . $this->pluralLabel), 
+                'url' => array($this->getModule()->rootRoute)
+            ),
+            'viewAllWithoutAlbum' => array(
+                'label' => Yii::t('album.messages', 'Без альбома'), 
+                'url' => array(
+                    $this->getModule()->rootRoute , 
+                    'action' => 'ViewAll', 
+                    'without_album' => true
+                )
+            ),
+            'addItem' => array(
+                'label' => Yii::t('album.messages', 'Добавить ' . $this->singularLabel), 'url' => array(
+                    $this->getModule()->rootRoute , 
+                    'action' => 'CreateGalleryItem',
+                ), 
+                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
+            ),
+            'addAlbum' => array(
+                'label' => Yii::t('album.messages', 'Создать альбом'), 'url' => array(
+                    $this->getModule()->rootRoute,
+                    'action' => 'CreateAlbum'
+                ), 
+                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
+            ),
+            'viewing' => array(
+                'label' => Yii::t('album.messages', 'Просмотр'), 
+                'url' => '#', 
+                'active' => true
+            ),
+            'editing' => array(
+                'label' => Yii::t('album.messages', 'Редактировать'), 
+                'url' => '#', 
+                'active' => true
+            )
+        );
+        
+        return $items;
+    }
 }

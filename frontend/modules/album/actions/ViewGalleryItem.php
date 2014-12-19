@@ -2,12 +2,13 @@
 
 class ViewGalleryItem extends GalleryBaseAction
 {
-    public function run()
+   
+    protected $album;
+    
+    protected function proccess()
     {
         $galleryItemType = $this->albumItemType;
         $albumType = $this->albumType;
-        
-        $menu = array();
         $user_id = $this->user_id;
         $target_id = $this->target_id;
         $Gallery = Yii::app()->params['Gallery'];
@@ -60,41 +61,13 @@ class ViewGalleryItem extends GalleryBaseAction
         $model = $galleryItemType::model()->find($criteria);
 
         if (!empty($album) && isset($model->album))
-            $menu = array(
-                array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute)),
-                array(
-                    'label' => 'Альбом: ' . $model->album->name, 
-                    'url' => array(
-                        $this->getModule()->rootRoute , 
-                        'action' => 'ViewAlbum', 
-                        'album_id' => $album
-                    )
-                ),
-                array('label' => 'Просмотр', 'url' => '#', 'active' => true),
-            );
-        else {
-            $menu = array(
-                array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute)),
-            );
-
-            if ($withoutAlbum)
-                $menu[] = array(
-                    'label' => 'Без альбома', 
-                    'url' => array(
-                        $this->getModule()->rootRoute , 
-                        'action' => 'ViewAll', 
-                        'without_album' => true
-                    )
-                );
-
-            $menu[] = array('label' => 'Просмотр', 'url' => '#', 'active' => true);
-        }
+            $this->album = $model->album;
 
         $canEdit = false;
         if ($model->user_id == $user_id)
             $canEdit = true;
 
-        $content = $this->renderPartial(
+        return $this->renderPartial(
             $this->viewGalleryItem, 
             array(
                 'model' => $model, 'pages' => $pages, 'canEdit' => $canEdit,
@@ -103,8 +76,32 @@ class ViewGalleryItem extends GalleryBaseAction
             ), 
             true
         );
-
-        $this->renderPartial($this->viewContent, array('content' => $content, 'menu' => $menu));
+    }
+    
+    protected function getMenu()
+    {
+        $items = $this->getCommonMenuItems();
+        $menu = array(
+            $items['viewAll'],
+            $items['viewing']
+        );
+        
+        if($this->album) {
+            array_splice($menu, 1, 0, array(
+                array(
+                    'label' => 'Альбом: ' . $this->album->name, 
+                    'url' => array(
+                        $this->getModule()->rootRoute , 
+                        'action' => 'ViewAlbum', 
+                        'album_id' => $this->album->id
+                    )
+                )
+            ));
+        } elseif(Yii::app()->request->getParam('without_album', false)) {
+            array_splice($menu, 1, 0, array($items['viewAllWithoutAlbum']));
+        }
+        
+        return $menu;
     }
 }
 

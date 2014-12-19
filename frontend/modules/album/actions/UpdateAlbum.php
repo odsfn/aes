@@ -1,8 +1,10 @@
 <?php
 
 class UpdateAlbum extends GalleryBaseAction
-{
-    public function run()
+{    
+    protected $album;
+    
+    protected function proccess()
     {
         $albumType = $this->albumType;
         $albumItemType = $this->albumItemType;
@@ -14,6 +16,8 @@ class UpdateAlbum extends GalleryBaseAction
         if (!$model)
             throw new CHttpException(404);
 
+        $this->album = $model;
+        
         // add access check handler method defined as attribute of AlbumModule
         if (!$this->user_id || !$this->getModule()->canEditAlbum($model))
             throw new CHttpException(403);
@@ -32,30 +36,28 @@ class UpdateAlbum extends GalleryBaseAction
             }
         }
 
+        return $this->renderPartial($this->viewCreateAlbum, array('model' => $model), true);
+    }
+    
+    protected function getMenu()
+    {
+        $items = $this->getCommonMenuItems();
+        $addItem = $items['addItem'];
+        $addItem['url']['album_id'] = $this->album->id;
         $menu = array(
-            array('label' => 'Все ' . $this->pluralLabel, 'url' => array($this->getModule()->rootRoute)),
+            $items['viewAll'],
             array(
-                'label' => 'Альбом: ' . $model->name, 
+                'label' => 'Альбом: ' . $this->album->name, 
                 'url' => array(
                     $this->getModule()->rootRoute, 
                     'action' => 'ViewAlbum', 
-                    'album_id' => $model->id
+                    'album_id' => $this->album->id
                 )
             ),
-            array(
-                'label' => 'Добавить ' . $this->singularLabel, 
-                'url' => array(
-                    $this->getModule()->rootRoute , 
-                    'action' => 'CreateGalleryItem', 
-                    'album_id' => $model->id
-                ), 
-                'visible' => $this->getModule()->canAddPhotoToAlbum($model)
-            ),
-            array('label' => 'Редактировать', 'url' => '#', 'active' => true),
+            $addItem,
+            $items['editing']
         );
-
-        $content = $this->renderPartial($this->viewCreateAlbum, array('model' => $model), true);
         
-        $this->renderPartial($this->viewContent, array('content' => $content, 'menu' => $menu, 'target_id' => $this->target_id));
+        return $menu;
     }
 }
