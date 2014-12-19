@@ -11,7 +11,7 @@ class ViewAll extends GalleryBaseAction
     {
         $albums_page = Yii::app()->getRequest()->getParam('albums_page', 1);
         $items_page = Yii::app()->getRequest()->getParam('gitems_page', 1);
-        $Gallery = Yii::app()->params['Gallery'];
+        $listingParams = $this->getModule()->getListingParams();
         //
         // Список альбомов цели
         //
@@ -19,8 +19,8 @@ class ViewAll extends GalleryBaseAction
         $albumsCriteria = $albumType::getAvailableAlbumsCriteria($this->target_id, $this->user_id);
         $albumsCountCriteria = clone $albumsCriteria;
 
-        $albumsCriteria->limit = ($albums_page ? $albums_page * $Gallery['albums_per_page'] : $Gallery['albums_per_page']);
-        $albumsCriteria->order = $Gallery['gitems_sort'];
+        $albumsCriteria->limit = ($albums_page ? $albums_page * $listingParams['albums_per_page'] : $listingParams['albums_per_page']);
+        $albumsCriteria->order = $listingParams['gitems_sort'];
 
         $albums = $albumType::model()->findAll($albumsCriteria);
         $nalbums = $albumType::model()->count($albumsCountCriteria);
@@ -36,8 +36,8 @@ class ViewAll extends GalleryBaseAction
         $itemsCriteria = $galleryItemType::getAvailableCriteria($withoutAlbum, $this->target_id, $this->user_id);
         $itemsCountCriteria = clone $itemsCriteria;
 
-        $itemsCriteria->limit = ($items_page ? $items_page * $Gallery['gitems_per_page'] : $Gallery['gitems_per_page']);
-        $itemsCriteria->order = $Gallery['gitems_sort'];
+        $itemsCriteria->limit = ($items_page ? $items_page * $listingParams['gitems_per_page'] : $listingParams['gitems_per_page']);
+        $itemsCriteria->order = $listingParams['gitems_sort'];
 
         // Все фотографии
         $items = $galleryItemType::model()->findAll($itemsCriteria);
@@ -55,7 +55,7 @@ class ViewAll extends GalleryBaseAction
                         'albums' => $albums,
                         'nalbums' => $nalbums,
                         'albums_page' => $albums_page,
-                        'albums_per_page' => $Gallery['albums_per_page'],
+                        'albums_per_page' => $listingParams['albums_per_page'],
                         'target_id' => $this->target_id,
                     ), true);
                     break;
@@ -64,7 +64,7 @@ class ViewAll extends GalleryBaseAction
                         'ngitems' => $items_count,
                         'gitems' => $items,
                         'gitems_page' => $items_page,
-                        'gitems_per_page' => $Gallery['gitems_per_page'],
+                        'gitems_per_page' => $listingParams['gitems_per_page'],
                         'target_id' => $this->target_id,
                         'without_album'=>$withoutAlbum
                     ), true);
@@ -83,12 +83,12 @@ class ViewAll extends GalleryBaseAction
                 'albums' => $albums,
                 'nalbums' => $nalbums,
                 'albums_page' => $albums_page,
-                'albums_per_page' => $Gallery['albums_per_page'],
+                'albums_per_page' => $listingParams['albums_per_page'],
                 // Item
                 'ngitems' => $items_count,
                 'gitems' => $items,
                 'gitems_page' => $items_page,
-                'gitems_per_page' => $Gallery['gitems_per_page'],
+                'gitems_per_page' => $listingParams['gitems_per_page'],
                 'target_id' => $this->target_id,
                 'without_album'=>$withoutAlbum
             ), true); 

@@ -11,7 +11,7 @@ class TinyPreview extends CWidget
 
     public $targetId = null;
     
-    public $previewsCount = 2;
+    public $previewsCount;
 
     public $titleText = 'Photos';
     
@@ -43,6 +43,8 @@ class TinyPreview extends CWidget
             throw new CException('TinyPreview cant\'t be initialized. You should specify targetId');
         
         $this->module = Yii::app()->getModule('album');
+        
+        $this->previewsCount = $this->module->previewsCount;
         
         Yii::app()->clientScript
             ->registerCssFile($this->module->getAssetsUrl('css/thumbnails.css'))

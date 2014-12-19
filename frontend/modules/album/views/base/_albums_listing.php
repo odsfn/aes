@@ -6,7 +6,7 @@ Yii::app()->clientScript
     <?php if ($albums): ?>
         <ul class="thumbnails gallery">
             <?php
-            $albums_per_line = Yii::app()->params['Gallery']['albums_per_line'];
+            $albums_per_line = Yii::app()->getModule('album')->albums_per_line;
             foreach ($albums as $index => $album):
                 $isNewRow = !($index % $albums_per_line);     //considering that each page is new line
                 ?>

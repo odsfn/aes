@@ -45,7 +45,6 @@ $this->widget('bootstrap.widgets.TbMenu', array(
 $this->widget('album.widgets.TinyPreview', array(
     'type' => 'video',
     'targetId' => $this->profile->target_id,
-    'previewsCount' => Yii::app()->params['Gallery']['previewsCount'],
     'titleText' => Yii::t('userPage', ($this->self) ? 'My videos' : 'Videos'),
     'isModuleSelected' => $this->action->id == 'videos',
     'rootRoute' => '/userPage/videos/'.$this->profile->user_id,
@@ -53,7 +52,6 @@ $this->widget('album.widgets.TinyPreview', array(
 
 $this->widget('album.widgets.TinyPreview', array(
     'targetId' => $this->profile->target_id,
-    'previewsCount' => Yii::app()->params['Gallery']['previewsCount'],
     'titleText' => Yii::t('userPage', ($this->owner->self) ? 'My photos' : 'Photos'),
     'isModuleSelected' => $this->action->id == 'photos',
     'rootRoute' => '/userPage/photos/'.$this->profile->user_id,

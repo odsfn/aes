@@ -13,6 +13,22 @@ class AlbumModule extends CWebModule
 
     const GALLERY_PERM_PER_OWNER = 2; 
     
+    public $rootRoute = '';
+
+    public $ajaxImageNavigation = true;
+    
+    public $imageSizeLimit = '5MB';
+
+    protected $assetsUrl = '';    
+    
+    public $albums_per_page = 6;
+    public $albums_per_line = 3;
+    public $gitems_per_line = 6;
+    public $gitems_per_page = 24;
+    public $gitems_sort = 't.id DESC';
+    public $albums_sort = 't.update DESC';
+    public $previewsCount = 2; // count of previews in navigation sidebar
+    
     public static $permissionLabels = array(
         self::GALLERY_PERM_PER_ALL => 'Всем',
         self::GALLERY_PERM_PER_REGISTERED => 'Только зарегистрированным пользователям',
@@ -47,14 +63,6 @@ class AlbumModule extends CWebModule
         
         return Yii::t('album.permissions', self::$permissionLabels[$level]);
     }
-    
-    public $rootRoute = '';
-
-    public $ajaxImageNavigation = true;
-    
-    public $imageSizeLimit = '5MB';
-
-    protected $assetsUrl = '';
 
     protected function preinit()
     {   
@@ -140,6 +148,26 @@ class AlbumModule extends CWebModule
         } else
             return false;
     }
+    
+    public function getListingParams()
+    {
+        $params = array();
+        $attrs = array(
+            'albums_per_page',
+            'albums_per_line',
+            'gitems_per_line',
+            'gitems_per_page',
+            'gitems_sort',
+            'albums_sort',
+            'previewsCount'
+        );
+        
+        foreach ($attrs as $attrName) {
+            $params[$attrName] = $this->$attrName;
+        }
+        
+        return $params;
+    }    
     
     public function getAssetsUrl($path = '')
     {

@@ -105,7 +105,16 @@ return array(
             
             'api', 
             
-            'album'
+            'album' => array(
+                'albums_per_page' => 3,
+                'albums_per_line' => 3,
+                'gitems_per_line' => 6,
+                'gitems_per_page' => 12,
+                'gitems_sort' => 't.id DESC',
+                'albums_sort' => 't.update DESC',
+                // count of previews in navigation sidebar
+                'previewsCount' => 2
+            )
 	),
     
         'params' => array(
@@ -119,15 +128,5 @@ return array(
             'RESTusername' => 'admin@restuser',
             'RESTpassword' => 'admin@Access',
             
-            'Gallery' => array(
-                'albums_per_page' => 3,
-                'albums_per_line' => 3,
-                'gitems_per_line' => 6,
-                'gitems_per_page' => 12,
-                'gitems_sort' => 't.id DESC',
-                'albums_sort' => 't.update DESC',
-                // count of previews in navigation sidebar
-                'previewsCount' => 2
-            ),
         )
 );

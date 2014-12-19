@@ -17,8 +17,6 @@ class ViewAlbum extends GalleryBaseAction
         $nalbums = $ngitems = 0;
         $items_page = Yii::app()->getRequest()->getParam('gitems_page', 1);
 
-        $Gallery = Yii::app()->params['Gallery'];
-
         $model = $albumType::model()->findByPk($album_id);
 
         // Вывод содержимого альбома
@@ -35,8 +33,8 @@ class ViewAlbum extends GalleryBaseAction
                     ':album_id' => $model->id
                 ), 
                 $items_page, 
-                $Gallery['gitems_per_page'], 
-                $Gallery['gitems_sort']
+                $this->getModule()->gitems_per_page, 
+                $this->getModule()->gitems_sort
             );
 
             $ngitems = $galleryItemType::model()->count('album_id = :album_id', array(':album_id' => $model->id));
@@ -52,7 +50,7 @@ class ViewAlbum extends GalleryBaseAction
                 'model' => $model,
                 'gitems' => $items,
                 'gitems_page' => $items_page,
-                'gitems_per_page' => $Gallery['gitems_per_page'],
+                'gitems_per_page' => $this->getModule()->gitems_per_page,
                 'ngitems' => $ngitems,
                 'target_id' => $this->target_id,
             ), true);
@@ -66,7 +64,7 @@ class ViewAlbum extends GalleryBaseAction
                 'ngitems' => $ngitems,
                 'gitems' => $items,
                 'gitems_page' => $items_page,
-                'gitems_per_page' => $Gallery['gitems_per_page'],
+                'gitems_per_page' => $this->getModule()->gitems_per_page,
                 'target_id' => $this->target_id,
             ), true);
         }

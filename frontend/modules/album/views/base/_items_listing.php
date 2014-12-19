@@ -3,7 +3,7 @@
         <ul class="thumbnails gallery">
             <?php
             foreach ($gitems as $page => $gitem):
-                $firstInRow = !($page % Yii::app()->params['Gallery']['gitems_per_line']);
+                $firstInRow = !($page % Yii::app()->getModule('album')->gitems_per_line);
                 ?>
                 <li class="span2 <?php echo $firstInRow ? 'first-in-row' : ''; ?>">
                     <?php
