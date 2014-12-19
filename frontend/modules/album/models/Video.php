@@ -1,7 +1,7 @@
 <?php
 use TubeLink\Exception\ServiceNotFoundException;
 
-class Video extends File
+class Video extends File implements iGalleryItem
 {
     /**
      * Returns the static model of the specified AR class.

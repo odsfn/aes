@@ -15,7 +15,7 @@
  * @property string $path
  * @property string $type
  */
-class File extends CActiveRecord
+class File extends CActiveRecord implements iGalleryItem
 {
 
     public $tags;
@@ -155,6 +155,12 @@ class File extends CActiveRecord
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
         ));
+    }
+
+    public function show()
+    {
+        $url = Yii::app()->getModule('album')->getComponent('image')->createAbsoluteUrl('1150x710', $this->path);
+        return CHtml::image($url);
     }
 
     static function dateRange($first, $step = '-1 day', $limit = '-10 day')

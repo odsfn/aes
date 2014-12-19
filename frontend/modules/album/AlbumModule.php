@@ -74,6 +74,7 @@ class AlbumModule extends CWebModule
     {   
         $this->setImport(array(
             'album.models.*',
+            'album.components.iGalleryItem',
             'album.components.taggableBehavior.*',
             'album.components.imageapi.*',
             'album.components.imagemodifier.CImageModifier',
