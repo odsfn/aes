@@ -26,7 +26,7 @@ class AddBatchGalleryItems extends GalleryBaseAction
             $model = $albumType::model()->findByPk($album_id);
             if ($model) {
                 $this->album = $model;
-                if(!$this->getModule()->canAddPhotoToAlbum($model, $user_id))
+                if(!$this->getModule()->canAddItemToAlbum($model, $user_id))
                     throw new CHttpException(403);
 
                 $uploaderParams = array_merge($uploaderParams, 

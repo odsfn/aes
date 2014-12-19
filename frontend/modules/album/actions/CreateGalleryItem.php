@@ -16,7 +16,7 @@ class CreateGalleryItem extends GalleryBaseAction
         if ($album_id) {
             $parentAlbum = $albumType::model()->findByPk($album_id);
             if ($parentAlbum) {
-                if(!$this->getModule()->canAddPhotoToAlbum($parentAlbum, $this->user_id))
+                if(!$this->getModule()->canAddItemToAlbum($parentAlbum, $this->user_id))
                     throw new CHttpException(403);
 
                 $this->album = $parentAlbum;

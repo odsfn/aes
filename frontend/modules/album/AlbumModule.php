@@ -188,7 +188,7 @@ class AlbumModule extends CWebModule
     }
     
     // @TODO: provide configurable rules to check access items
-    public function canAddPhotoToAlbum($album, $userId = null)
+    public function canAddItemToAlbum($album, $userId = null)
     {
         return $this->isOwnAlbum($album, $userId);
     }

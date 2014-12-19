@@ -29,7 +29,7 @@ class DeleteGalleryItem extends GalleryBaseAction
         $model->attachEventHandler('onAfterDelete', $afterDeleteHandler);
 
         if (!$model->delete()) 
-            throw new CException('Photo #'.$item_id.' deletion failed');
+            throw new CException('Item #'.$item_id.' deletion failed');
 
         if (Yii::app()->request->isAjaxRequest) {
             

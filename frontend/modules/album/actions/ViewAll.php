@@ -84,7 +84,7 @@ class ViewAll extends GalleryBaseAction
                 'nalbums' => $nalbums,
                 'albums_page' => $albums_page,
                 'albums_per_page' => $Gallery['albums_per_page'],
-                // Photo
+                // Item
                 'nphotos' => $items_count,
                 'photos' => $items,
                 'photos_page' => $items_page,
