@@ -241,7 +241,7 @@ class Album extends CActiveRecord
         Yii::app()->getModule('album')->getComponent('image')->createPath('360x220', $this->cover->path);
     }
     
-    public function photosUpdated()
+    public function gitemsUpdated()
     {
         $this->updateCover(false);
         $this->save();

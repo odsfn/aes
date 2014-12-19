@@ -10,7 +10,7 @@ class ViewAll extends GalleryBaseAction
     protected function proccess($albumType, $galleryItemType)
     {
         $albums_page = Yii::app()->getRequest()->getParam('albums_page', 1);
-        $items_page = Yii::app()->getRequest()->getParam('photos_page', 1);
+        $items_page = Yii::app()->getRequest()->getParam('gitems_page', 1);
         $Gallery = Yii::app()->params['Gallery'];
         //
         // Список альбомов цели
@@ -20,7 +20,7 @@ class ViewAll extends GalleryBaseAction
         $albumsCountCriteria = clone $albumsCriteria;
 
         $albumsCriteria->limit = ($albums_page ? $albums_page * $Gallery['albums_per_page'] : $Gallery['albums_per_page']);
-        $albumsCriteria->order = $Gallery['photos_sort'];
+        $albumsCriteria->order = $Gallery['gitems_sort'];
 
         $albums = $albumType::model()->findAll($albumsCriteria);
         $nalbums = $albumType::model()->count($albumsCountCriteria);
@@ -36,8 +36,8 @@ class ViewAll extends GalleryBaseAction
         $itemsCriteria = $galleryItemType::getAvailableCriteria($withoutAlbum, $this->target_id, $this->user_id);
         $itemsCountCriteria = clone $itemsCriteria;
 
-        $itemsCriteria->limit = ($items_page ? $items_page * $Gallery['photos_per_page'] : $Gallery['photos_per_page']);
-        $itemsCriteria->order = $Gallery['photos_sort'];
+        $itemsCriteria->limit = ($items_page ? $items_page * $Gallery['gitems_per_page'] : $Gallery['gitems_per_page']);
+        $itemsCriteria->order = $Gallery['gitems_sort'];
 
         // Все фотографии
         $items = $galleryItemType::model()->findAll($itemsCriteria);
@@ -59,12 +59,12 @@ class ViewAll extends GalleryBaseAction
                         'target_id' => $this->target_id,
                     ), true);
                     break;
-                case 'photos':
+                case 'gitems':
                     $output = $this->renderPartial($this->viewDefaultItemsAjax, array(
-                        'nphotos' => $items_count,
-                        'photos' => $items,
-                        'photos_page' => $items_page,
-                        'photos_per_page' => $Gallery['photos_per_page'],
+                        'ngitems' => $items_count,
+                        'gitems' => $items,
+                        'gitems_page' => $items_page,
+                        'gitems_per_page' => $Gallery['gitems_per_page'],
                         'target_id' => $this->target_id,
                         'without_album'=>$withoutAlbum
                     ), true);
@@ -85,10 +85,10 @@ class ViewAll extends GalleryBaseAction
                 'albums_page' => $albums_page,
                 'albums_per_page' => $Gallery['albums_per_page'],
                 // Item
-                'nphotos' => $items_count,
-                'photos' => $items,
-                'photos_page' => $items_page,
-                'photos_per_page' => $Gallery['photos_per_page'],
+                'ngitems' => $items_count,
+                'gitems' => $items,
+                'gitems_page' => $items_page,
+                'gitems_per_page' => $Gallery['gitems_per_page'],
                 'target_id' => $this->target_id,
                 'without_album'=>$withoutAlbum
             ), true); 

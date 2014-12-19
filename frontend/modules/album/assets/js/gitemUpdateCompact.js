@@ -17,7 +17,7 @@ $(function() {
 
     $('body').on('change', 'select#File_album_id', function(e) {
         var el = $(this),
-            container = $(el.parents('div.photo-edit-panel').get(0));
+            container = $(el.parents('div.gitem-edit-panel').get(0));
             
         albumSwitchHandler(container);
     });

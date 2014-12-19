@@ -31,7 +31,7 @@ Yii::app()->clientScript
                                 $imageUrl = array(
                                     $this->getModule()->rootRoute,
                                     'action' => 'ViewGalleryItem',
-                                    'photo_id' => $album->cover->id,
+                                    'gitem_id' => $album->cover->id,
                                     'album' => $album->id,
                                     'exact' => true
                                 );

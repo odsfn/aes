@@ -3,24 +3,24 @@
  * Form which will be showed for images on the Batch Upload Page 
  */
 ?>
-<div class="row-fluid photo-edit-panel">
+<div class="row-fluid gitem-edit-panel">
 <?php
 /* @var $this AlbumController */
 /* @var $model Album */
 /* @var $form CActiveForm */
 $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-    'id'=>'photo-form-' . $model->id,
+    'id'=>'gitem-form-' . $model->id,
     'action' => !empty($action) ? $action : $this->getController()->createAbsoluteUrl(
         $this->getModule()->rootRoute, 
         array(
             'action' => 'UpdateGalleryItem',
-            'photo_id' => $model->id,
+            'gitem_id' => $model->id,
             'form_type' => 'compact'
         )
     ),
     'enableAjaxValidation'=>false,
     'htmlOptions'=>array(
-        'class'=>'span12 well photo-edit-form',
+        'class'=>'span12 well gitem-edit-form',
     )
 )); ?>
     <div class="row-fluid">
@@ -33,14 +33,14 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                             <?php 
                             echo CHtml::link(
                                 '<i class="icon-undo"></i>', 
-                                array('/album/image/rotateImage', 'photo_id' => $model->id, 'direction' => 'left'),
-                                array('class' => 'rotate', 'title' => Yii::t('album.photoUpdate', 'Повернуть против часовой стрелки'))
+                                array('/album/image/rotateImage', 'gitem_id' => $model->id, 'direction' => 'left'),
+                                array('class' => 'rotate', 'title' => Yii::t('album.gitemUpdate', 'Повернуть против часовой стрелки'))
                             );
                             echo '&nbsp;';
                             echo CHtml::link(
                                 '<i class="icon-repeat"></i>', 
-                                array('/album/image/rotateImage', 'photo_id' => $model->id, 'direction' => 'right'),
-                                array('class' => 'rotate', 'title' => Yii::t('album.photoUpdate', 'Повернуть по часовой стрелке'))
+                                array('/album/image/rotateImage', 'gitem_id' => $model->id, 'direction' => 'right'),
+                                array('class' => 'rotate', 'title' => Yii::t('album.gitemUpdate', 'Повернуть по часовой стрелке'))
                             );
                             ?>
                         </p>
@@ -61,8 +61,8 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                     <?php 
                         echo CHtml::link(
                             'Удалить', 
-                            array($this->getModule()->rootRoute, 'action' => 'DeleteGalleryItem', 'photo_id' => $model->id),
-                            array('class' => 'btn btn-danger btn-mini btn-block photo-delete')
+                            array($this->getModule()->rootRoute, 'action' => 'DeleteGalleryItem', 'gitem_id' => $model->id),
+                            array('class' => 'btn btn-danger btn-mini btn-block gitem-delete')
                         );
                     ?>
                 </div>

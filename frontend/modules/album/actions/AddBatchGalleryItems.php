@@ -15,7 +15,7 @@ class AddBatchGalleryItems extends GalleryBaseAction
         if (!$user_id)
             throw new CHttpException(403);
 
-        $album_params = $photo_params = array();
+        $album_params = $gitem_params = array();
         $album_id = Yii::app()->request->getParam('album_id', 0);
         
         $uploaderParams = array(
@@ -42,15 +42,15 @@ class AddBatchGalleryItems extends GalleryBaseAction
                 throw new CHttpException(403);
         }
 
-        $photo_params['uploader'] = $this->getController()->createUrl(
+        $gitem_params['uploader'] = $this->getController()->createUrl(
             $this->getModule()->rootRoute, 
             $uploaderParams
         );
         
-        $photo = new $galleryItemType();
+        $gitem = new $galleryItemType();
         if ($file_name = Yii::app()->request->getPost('Filename')) {
-            $photo->setScenario('upload');
-            $file_temp_path = CUploadedFile::getInstance($photo, 'filename')->tempName;
+            $gitem->setScenario('upload');
+            $file_temp_path = CUploadedFile::getInstance($gitem, 'filename')->tempName;
             $file_path = $this->getModule()->getComponent('image')->createImage($file_temp_path, $file_name);
 
             $this->getModule()->createThumbnails($file_path);
@@ -64,19 +64,19 @@ class AddBatchGalleryItems extends GalleryBaseAction
 
             $file_path = str_replace(Yii::getPathOfAlias('webroot') . DIRECTORY_SEPARATOR, '', $file_path);
 
-            $photo->attributes = array(
+            $gitem->attributes = array(
                 'filename' => basename($file_path),
                 'target_id' => $this->target_id,
                 'album_id' => empty($album_id) ? null : $album_id,
                 'path' => $file_path,
                 'permission' => $permission,
             );
-            if ($photo->save()) {                        
+            if ($gitem->save()) {                        
                 echo CJSON::encode(array(
                     'success' => true,
                     'html' => $this->renderPartial(
                         'album.views.base._image_update_compact', 
-                        array('model'=>$photo),
+                        array('model'=>$gitem),
                         true
                     )
                 ));
@@ -84,8 +84,8 @@ class AddBatchGalleryItems extends GalleryBaseAction
             }
         }
 
-        $photo_params['photo'] = $photo;        
-        return $this->renderPartial('album.views.base._images_upload', $photo_params, true);
+        $gitem_params['gitem'] = $gitem;        
+        return $this->renderPartial('album.views.base._images_upload', $gitem_params, true);
     }
     
     protected function getMenu()

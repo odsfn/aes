@@ -4,9 +4,9 @@
  */
 class ImageController extends CController
 {
-    public function actionRotateImage($photo_id, $direction)
+    public function actionRotateImage($gitem_id, $direction)
     {
-        $model = File::model()->findByPk($photo_id);
+        $model = File::model()->findByPk($gitem_id);
 
         if (!$model)
             throw new CHttpException(404);

@@ -122,9 +122,9 @@ return array(
             'Gallery' => array(
                 'albums_per_page' => 3,
                 'albums_per_line' => 3,
-                'photos_per_line' => 6,
-                'photos_per_page' => 12,
-                'photos_sort' => 't.id DESC',
+                'gitems_per_line' => 6,
+                'gitems_per_page' => 12,
+                'gitems_sort' => 't.id DESC',
                 'albums_sort' => 't.update DESC',
                 // count of previews in navigation sidebar
                 'previewsCount' => 2

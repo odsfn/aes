@@ -1,16 +1,16 @@
-<div id="replace_photos_container">
-    <?php if ($photos): ?>
+<div id="replace_gitems_container">
+    <?php if ($gitems): ?>
         <ul class="thumbnails gallery">
             <?php
-            foreach ($photos as $page => $photo):
-                $firstInRow = !($page % Yii::app()->params['Gallery']['photos_per_line']);
+            foreach ($gitems as $page => $gitem):
+                $firstInRow = !($page % Yii::app()->params['Gallery']['gitems_per_line']);
                 ?>
                 <li class="span2 <?php echo $firstInRow ? 'first-in-row' : ''; ?>">
                     <?php
                     $requestParams = array(
                         $this->getModule()->rootRoute,
                         'action' => 'ViewGalleryItem',
-                        'photo_id' => $photo->id,
+                        'gitem_id' => $gitem->id,
                         'page' => ++$page,
                     );
 
@@ -24,7 +24,7 @@
                     
                     echo CHtml::link(
                         CHtml::tag('img', array(
-                            'src' => $photo->getPreviewUrl()
+                            'src' => $gitem->getPreviewUrl()
                         )), 
                         $requestParams, 
                         array(
@@ -41,14 +41,14 @@
 
     <br clear="all">
 
-<?php if ($nphotos > $photos_page * $photos_per_page): ?>
+<?php if ($ngitems > $gitems_page * $gitems_per_page): ?>
     <div align="center">
     <?php
     $requestParams = array(
         $this->getModule()->rootRoute,
         'acion' => 'ViewAll',
-        'photos_page' => ++$photos_page,
-        'view' => 'photos',
+        'gitems_page' => ++$gitems_page,
+        'view' => 'gitems',
         'target_id' => $target_id,
     );
 
@@ -64,7 +64,7 @@
     echo CHtml::ajaxlink(
         'Показать больше записей', 
         $requestParams, 
-        array('replace' => '#replace_photos_container'), 
+        array('replace' => '#replace_gitems_container'), 
         array('live' => false, 'id' => 'send-link-' . uniqid())
     );
     ?>

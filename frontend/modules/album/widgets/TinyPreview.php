@@ -1,7 +1,7 @@
 <?php
 
 /* 
- * Renders small album and photo previews. May be used in navigation panel
+ * Renders small album and gitem previews. May be used in navigation panel
  */
 class TinyPreview extends CWidget
 {
@@ -84,7 +84,7 @@ class TinyPreview extends CWidget
             
             $imageUrl = $this->owner->createUrl($this->rootRoute, array(
                 'action' => 'ViewGalleryItem',
-                'photo_id' => $album->cover->id,
+                'gitem_id' => $album->cover->id,
                 'album' => $album->id,
                 'exact' => true
             ));
@@ -101,19 +101,19 @@ class TinyPreview extends CWidget
         }
         
         if ($albumsCount < $this->previewsCount) {
-            $photosLimit = $this->previewsCount - $albumsCount;
-            $photosCriteria = $galleryItemType::getAvailableCriteria($withoutAlbums = true, $this->targetId);
-            $photosCriteria->order = '`update` DESC';
-            $photosCriteria->limit = $photosLimit;
+            $gitemsLimit = $this->previewsCount - $albumsCount;
+            $gitemsCriteria = $galleryItemType::getAvailableCriteria($withoutAlbums = true, $this->targetId);
+            $gitemsCriteria->order = '`update` DESC';
+            $gitemsCriteria->limit = $gitemsLimit;
             
-            $photos = $galleryItemType::model()->findAll($photosCriteria);
+            $gitems = $galleryItemType::model()->findAll($gitemsCriteria);
             
-            foreach ($photos as $photo) {
-                $imageSrc = $this->module->getComponent('image')->createAbsoluteUrl('360x220', $photo->path);
+            foreach ($gitems as $gitem) {
+                $imageSrc = $this->module->getComponent('image')->createAbsoluteUrl('360x220', $gitem->path);
                 
                 $imageUrl = $this->owner->createUrl($this->rootRoute, array(
                     'action' => 'ViewGalleryItem',
-                    'photo_id' => $photo->id,
+                    'gitem_id' => $gitem->id,
                     'exact' => true,
                     'without_album' => true
                 ));
@@ -126,8 +126,8 @@ class TinyPreview extends CWidget
                 $previews[] = (object)array(
                     'captionHasContent' => true,
                     'title' => Yii::t('album.messages', 'Без альбома'),
-                    'description' => $photo->description,
-                    'update' => $photo->update,
+                    'description' => $gitem->description,
+                    'update' => $gitem->update,
                     'itemUrl' => $itemUrl,
                     'imageUrl' => $imageUrl,
                     'imageSrc' => $imageSrc

@@ -4,16 +4,16 @@ function handleUploaded(file, data, response) {
     if(!response && respData.success)
         throw new Error("Upload failed");
     
-    $('#uploaded-photos-container').append(respData.html);
+    $('#uploaded-gitems-container').append(respData.html);
 }
 
 $(function() {
-    $('#uploaded-photos-container')
-        .on('click', '.photo-edit-panel button[type="submit"]', function(event) {
+    $('#uploaded-gitems-container')
+        .on('click', '.gitem-edit-panel button[type="submit"]', function(event) {
             event.preventDefault();
             var el = $(this),
-                container = $(el.parents('div.photo-edit-panel').get(0)),
-                form = $(el.parents('form.photo-edit-form').get(0)),
+                container = $(el.parents('div.gitem-edit-panel').get(0)),
+                form = $(el.parents('form.gitem-edit-form').get(0)),
                 submitUrl = form.attr('action');
 
             container.mask('Please wait...');
@@ -31,10 +31,10 @@ $(function() {
                 dataType: 'json'
             });
         })
-        .on('click', '.photo-edit-panel a.photo-delete', function(event) {
+        .on('click', '.gitem-edit-panel a.gitem-delete', function(event) {
             event.preventDefault();
             var el = $(this),
-                container = $(el.parents('div.photo-edit-panel').get(0));
+                container = $(el.parents('div.gitem-edit-panel').get(0));
                 
             container.mask('Please wait...');
             $.ajax({
@@ -52,11 +52,11 @@ $(function() {
                 dataType: 'json'
             });
         })
-        .on('click', '.photo-edit-panel .rotate', function(event) {
+        .on('click', '.gitem-edit-panel .rotate', function(event) {
             event.preventDefault();
             var el = $(this),
                 direction = el.data('direction'),
-                container = $(el.parents('div.photo-edit-panel').get(0));
+                container = $(el.parents('div.gitem-edit-panel').get(0));
             
             container.mask('Please wait...');
             $.ajax({

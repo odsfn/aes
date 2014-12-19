@@ -14,8 +14,8 @@ class ViewAlbum extends GalleryBaseAction
         $album_id = Yii::app()->request->getParam('album_id', 0);
         
         $albums = $items = array();
-        $nalbums = $nphotos = 0;
-        $items_page = Yii::app()->getRequest()->getParam('photos_page', 1);
+        $nalbums = $ngitems = 0;
+        $items_page = Yii::app()->getRequest()->getParam('gitems_page', 1);
 
         $Gallery = Yii::app()->params['Gallery'];
 
@@ -35,11 +35,11 @@ class ViewAlbum extends GalleryBaseAction
                     ':album_id' => $model->id
                 ), 
                 $items_page, 
-                $Gallery['photos_per_page'], 
-                $Gallery['photos_sort']
+                $Gallery['gitems_per_page'], 
+                $Gallery['gitems_sort']
             );
 
-            $nphotos = $galleryItemType::model()->count('album_id = :album_id', array(':album_id' => $model->id));
+            $ngitems = $galleryItemType::model()->count('album_id = :album_id', array(':album_id' => $model->id));
         } else
             throw new CHttpException(404);
 
@@ -50,10 +50,10 @@ class ViewAlbum extends GalleryBaseAction
         if (Yii::app()->getRequest()->isAjaxRequest) {
             $output = $this->renderPartial($this->viewAlbumAjax, array(
                 'model' => $model,
-                'photos' => $items,
-                'photos_page' => $items_page,
-                'photos_per_page' => $Gallery['photos_per_page'],
-                'nphotos' => $nphotos,
+                'gitems' => $items,
+                'gitems_page' => $items_page,
+                'gitems_per_page' => $Gallery['gitems_per_page'],
+                'ngitems' => $ngitems,
                 'target_id' => $this->target_id,
             ), true);
 
@@ -63,10 +63,10 @@ class ViewAlbum extends GalleryBaseAction
         } else {
             return $this->renderPartial($this->viewAlbum, array(
                 'model' => $model,
-                'nphotos' => $nphotos,
-                'photos' => $items,
-                'photos_page' => $items_page,
-                'photos_per_page' => $Gallery['photos_per_page'],
+                'ngitems' => $ngitems,
+                'gitems' => $items,
+                'gitems_page' => $items_page,
+                'gitems_per_page' => $Gallery['gitems_per_page'],
                 'target_id' => $this->target_id,
             ), true);
         }

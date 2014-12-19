@@ -6,7 +6,7 @@ if ($this->getModule()->ajaxImageNavigation) : ?>
 $(function() {
     var galleryItemType = '<?= $this->getAction()->albumItemType; ?>';
     var GalleryItemMoving = function() {
-        var space = $('#photo-space').val(),
+        var space = $('#gitem-space').val(),
             currentItemSpace = function() { 
                 var val;
                 
@@ -20,7 +20,7 @@ $(function() {
             startNextUrl = $('div.pagination .next > a').attr('href'),
             isNextUrlChanged = false;
         
-        //fixes next button after current photo was removed
+        //fixes next button after current gitem was removed
         var fixNextLink = function() {
             var nextLink = $('div.pagination .next > a'),
                 curNextHref = nextLink.attr('href'),
@@ -71,9 +71,9 @@ $(function() {
     }
     
     function updateHistory() {
-        var exactHref = $('#current-photo-href').val();
+        var exactHref = $('#current-gitem-href').val();
         if (supports_history_api()) {
-            window.history.replaceState({photo: exactHref}, $(document).find("title").text(), exactHref);
+            window.history.replaceState({gitem: exactHref}, $(document).find("title").text(), exactHref);
         }
     }
     
@@ -112,11 +112,11 @@ $(function() {
     
     var hideForm = function() {
         $('#form-container').hide();
-        $('#details,#edit-photo').show();
+        $('#details,#edit-gitem').show();
     }
     
     $('#image-view-container')
-        .on('click', '#edit-photo', function(event) {
+        .on('click', '#edit-gitem', function(event) {
             $(this).hide();
             $('#details').hide();
             $('#form-container').show();
@@ -124,7 +124,7 @@ $(function() {
         .on('click', '#form-container button[type="reset"]', function(event) {
             hideForm();
         })
-        .on('click', '#details-container a.photo-delete', function(event) {
+        .on('click', '#details-container a.gitem-delete', function(event) {
             event.preventDefault();
             var el = $(this);
 
@@ -145,7 +145,7 @@ $(function() {
     $('#image-view-container').on('click', '#form-container button[type="submit"]', function(event) {
         event.preventDefault();
         var el = $(this),
-            form = $(el.parents('form#photo-form')[0]),
+            form = $(el.parents('form#gitem-form')[0]),
             submitUrl = form.attr('action');
         
         $.ajax({
@@ -168,7 +168,7 @@ $(function() {
 });
 </script>
 <?php endif; ?>
-<input type="hidden" id="photo-space" 
+<input type="hidden" id="gitem-space" 
    value="<?php 
             if($albumContext) 
                 echo $albumContext;

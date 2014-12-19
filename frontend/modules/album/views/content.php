@@ -4,7 +4,7 @@ Yii::app()->clientScript
     ->registerCssFile($this->getModule()->getAssetsUrl('css/thumbnails.css'));
 ?>
 <div class="row-fluid">
-    <div class="photo-gallery span12">
+    <div class="gitem-gallery span12">
 
         <?php
         $this->widget('bootstrap.widgets.TbMenu', array(

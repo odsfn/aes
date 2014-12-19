@@ -5,7 +5,7 @@
         </a>
     </li>
     <?php if (!$this->isModuleSelected && count($previews)): ?>
-    <li class="photos-container">
+    <li class="gitems-container">
         <ul class="thumbnails gallery">
             <?php 
             foreach ($previews as $preview) {

@@ -5,8 +5,8 @@
 
 Yii::app()->clientScript
     ->registerCssFile($this->getModule()->getAssetsUrl('css/thumbnails.css'))
-    ->registerScriptFile($this->getModule()->getAssetsUrl('js/photosUpload.js'))
-    ->registerScriptFile($this->getModule()->getAssetsUrl('js/photoUpdateCompact.js'));
+    ->registerScriptFile($this->getModule()->getAssetsUrl('js/gitemsUpload.js'))
+    ->registerScriptFile($this->getModule()->getAssetsUrl('js/gitemUpdateCompact.js'));
 ?>
 
 <script type="text/javascript">
@@ -30,14 +30,14 @@ $(function(){
 </p>
 
 <div class="row-fluid">
-    <div id="uploaded-photos-container" class="span8"></div>
+    <div id="uploaded-gitems-container" class="span8"></div>
     
     <div id="uploading-queue-container" class="span4">
     <?php
     $this->widget('album.components.uploadify.MUploadify',array(
 
         // AR
-        'model'=>$photo,
+        'model'=>$gitem,
         'attribute'=>'filename',
 
         // CHTML

@@ -5,7 +5,7 @@ class DeleteGalleryItem extends GalleryBaseAction
     public function run()
     {
         $galleryItemType = $this->albumItemType;
-        $item_id = Yii::app()->request->getParam('photo_id');
+        $item_id = Yii::app()->request->getParam('gitem_id');
         
         $model = $galleryItemType::model()->findByPk($item_id);
 

@@ -7,11 +7,11 @@ small.hint-permission {
     display: none;
 }
 
-.photo-edit-panel .left-col .buttons, .photo-edit-panel .left-col .marks {
+.gitem-edit-panel .left-col .buttons, .gitem-edit-panel .left-col .marks {
     margin-top: 5px;
 }
 
-.photo-edit-panel .left-col {
+.gitem-edit-panel .left-col {
     width: 165px;
 }
 

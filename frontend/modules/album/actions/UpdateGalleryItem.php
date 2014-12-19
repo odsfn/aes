@@ -6,10 +6,10 @@ class UpdateGalleryItem extends GalleryBaseAction
     {
         $galleryItemType = $this->albumItemType;
         
-        $photo_id = Yii::app()->request->getParam('photo_id');
+        $gitem_id = Yii::app()->request->getParam('gitem_id');
         $albumContext = Yii::app()->request->getParam('albumContext', false);
         
-        $model = $galleryItemType::model()->findByPk($photo_id);
+        $model = $galleryItemType::model()->findByPk($gitem_id);
         $user_id = $this->user_id;
         $target_id = $this->target_id;
         

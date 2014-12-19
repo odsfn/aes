@@ -5,7 +5,7 @@ class SetAlbumCover extends GalleryBaseAction
     public function run()
     {
         $galleryItemType = $this->albumItemType;
-        $item_id = Yii::app()->request->getParam('photo_id');
+        $item_id = Yii::app()->request->getParam('gitem_id');
         
         $model = $galleryItemType::model()->with('album')->findByPk($item_id);
         
@@ -24,7 +24,7 @@ class SetAlbumCover extends GalleryBaseAction
             $this->redirect(array(
                 $this->getModule()->rootRoute, 
                 'action' => 'ViewGalleryItem', 
-                'photo_id' => $item_id,
+                'gitem_id' => $item_id,
                 'albumContext' => $model->album_id
             ));
         }

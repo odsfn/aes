@@ -23,11 +23,11 @@
         </div>
 
         <div id="form-container">
-            <input id="current-photo-href" type="hidden" 
+            <input id="current-gitem-href" type="hidden" 
                 value="<?php 
                     $params = array(
                         'action'=>'ViewGalleryItem',
-                        'photo_id'=>$model->id,
+                        'gitem_id'=>$model->id,
                         'exact'=>true
                     );
                     
@@ -45,7 +45,7 @@
                             $this->getModule()->rootRoute, 
                             array(
                                 'action' => 'UpdateGalleryItem',
-                                'photo_id' => $model->id, 
+                                'gitem_id' => $model->id, 
                                 'albumContext' => !empty($albumContext) ? $albumContext : false
                             )
                         ),
@@ -78,7 +78,7 @@
                         array(
                             $this->getModule()->rootRoute, 
                             'action' => 'SetAlbumCover',
-                            'photo_id' => $model->id
+                            'gitem_id' => $model->id
                         ),
                         array(
                             'class' => 'btn btn-mini btn-block set-as-album-cover'
@@ -89,7 +89,7 @@
                 echo CHtml::button(
                     Yii::t('album', 'Редактировать'), 
                     array(
-                        'id' => 'edit-photo',
+                        'id' => 'edit-gitem',
                         'class' => 'btn btn-mini btn-block'
                     )
                 );
@@ -99,9 +99,9 @@
                     array(
                         $this->getModule()->rootRoute,
                         'action' => 'DeleteGalleryItem',
-                        'photo_id' => $model->id
+                        'gitem_id' => $model->id
                     ),
-                    array('class' => 'btn btn-danger btn-mini btn-block photo-delete')
+                    array('class' => 'btn btn-danger btn-mini btn-block gitem-delete')
                 );
             }
             ?>

@@ -10,7 +10,7 @@ class ViewGalleryItem extends GalleryBaseAction
         $target_id = $this->target_id;
         $Gallery = Yii::app()->params['Gallery'];
 
-        $item_id = Yii::app()->request->getParam('photo_id', 0);
+        $item_id = Yii::app()->request->getParam('gitem_id', 0);
         $album = Yii::app()->request->getParam('album', 0);
         $page = Yii::app()->request->getParam('page', 1);
         
@@ -19,7 +19,7 @@ class ViewGalleryItem extends GalleryBaseAction
         $withoutAlbum = Yii::app()->request->getParam('without_album', false);
                 
         $criteria = $galleryItemType::getAvailableCriteria($withoutAlbum, $target_id, $user_id, $album);
-        $criteria->order = $Gallery['photos_sort'];
+        $criteria->order = $Gallery['gitems_sort'];
 
         // Specified photo, so we have to search it in the navigation set
         if ($item_id && !empty($_GET['exact'])) {

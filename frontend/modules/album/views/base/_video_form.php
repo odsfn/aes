@@ -1,7 +1,7 @@
 <script type="text/javascript">
     $(function(){
-        $('#photo-form').submit(function(e){
-            $('#photo-form button[type="submit"]').attr('disabled', 'disabled');
+        $('#gitem-form').submit(function(e){
+            $('#gitem-form button[type="submit"]').attr('disabled', 'disabled');
             $('body').css('cursor', 'wait');
         });
     });
@@ -12,7 +12,7 @@
 /* @var $model Album */
 /* @var $form CActiveForm */
 $formOptions = array(
-    'id'=>'photo-form',
+    'id'=>'gitem-form',
     'enableAjaxValidation'=>false,
     'htmlOptions'=>array(
         'class'=>'span12',
@@ -45,7 +45,10 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', $formOptions); ?>
         <?php echo $form->labelEx($model,'album_id'); ?>
         <?php
             echo $form->dropDownList($model,'album_id',
-                AlbumModule::albumsAsListData(!empty($model->target_id) ? $model->target_id : $target_id, 'VideoAlbum'),
+                AlbumModule::albumsAsListData(
+                    !empty($model->target_id) ? $model->target_id : $target_id, 
+                    ($model instanceof Video) ? 'VideoAlbum' : 'Album'
+                ),
                 array('class' => 'span12')
             );
         ?>
@@ -98,7 +101,7 @@ $form=$this->beginWidget('bootstrap.widgets.TbActiveForm', $formOptions); ?>
                 $this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'reset', 'label'=>'Отменить'));
             } elseif($model->id) {
                 echo CHtml::link(
-                    'Удалить', array($this->getModule()->rootRoute, 'action' => 'DeleteGalleryItem', 'photo_id' => $model->id),
+                    'Удалить', array($this->getModule()->rootRoute, 'action' => 'DeleteGalleryItem', 'gitem_id' => $model->id),
                     array('class' => 'btn btn-danger')
                 );
             } ?>

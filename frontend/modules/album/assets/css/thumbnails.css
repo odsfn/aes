@@ -89,11 +89,11 @@ ul.thumbnails.gallery .caption {
     padding: 0 9px;
 }
 
-ul.album-tiny-preview .photos-container li {
+ul.album-tiny-preview .gitems-container li {
     margin: 0;
 }
 
-ul.album-tiny-preview .photos-container li .thumbnail {
+ul.album-tiny-preview .gitems-container li .thumbnail {
     border: none;
     box-shadow: none;
 }

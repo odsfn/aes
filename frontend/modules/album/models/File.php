@@ -290,13 +290,13 @@ class File extends CActiveRecord implements iGalleryItem, iDownloadable
     public function afterStoredAttrChanged_album_id($currentValue, $oldValue, $attrName)
     {
         if ($this->album)
-            $this->album->photosUpdated();
+            $this->album->gitemsUpdated();
     }
     
     public function afterInsert()
     {
         if ($this->album)
-            $this->album->photosUpdated();
+            $this->album->gitemsUpdated();
     }
     
     public function canBeDownloaded()
