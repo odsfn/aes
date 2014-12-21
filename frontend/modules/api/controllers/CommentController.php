@@ -128,19 +128,28 @@ class CommentController extends RestController {
             $target = $target->findByPk($data['target_id']);
         }
         
-        if(! $target instanceof iCommentable )
-            throw new Exception ('Comment target ( object which is being commented ) should be an instance of iCommentable');
+        if(! $target instanceof iCommentable ) {
+            $canUnassignedComment = true;
+            $canUnassignedRead = true;
+        } else {
+            $canUnassignedComment = $target->canUnassignedComment();
+            $canUnassignedRead = $target->canUnassignedRead();
+        }
         
         $params[lcfirst($this->targetType)] = $target;
         $params['target'] = $target;
         
         $disabledRoles = array();
         
-        if(!$target->canUnassignedComment())
+        if(!$canUnassignedComment)
             $disabledRoles[] = 'commentor';
         
-        if(!$target->canUnassignedRead())
+        if(!$canUnassignedRead)
             $disabledRoles[] = 'commentReader';
+        
+        if(!method_exists($target, 'checkUserInRole')) {
+            $disabledRoles[] = 'commentModerator';
+        }
         
         $params['disabledRoles'] = $disabledRoles;
         

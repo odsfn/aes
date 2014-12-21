@@ -19,7 +19,7 @@ class AlbumModule extends CWebModule
     
     public $imageSizeLimit = '5MB';
 
-    protected $assetsUrl = '';    
+    public $viewAfterGalleryItemDetails = '_afterGalleryItemDetails';
     
     public $albums_per_page = 6;
     public $albums_per_line = 3;
@@ -28,6 +28,8 @@ class AlbumModule extends CWebModule
     public $gitems_sort = 't.id DESC';
     public $albums_sort = 't.update DESC';
     public $previewsCount = 2; // count of previews in navigation sidebar
+    
+    protected $assetsUrl = '';
     
     public static $permissionLabels = array(
         self::GALLERY_PERM_PER_ALL => 'Всем',

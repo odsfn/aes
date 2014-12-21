@@ -113,7 +113,9 @@ return array(
                 'gitems_sort' => 't.id DESC',
                 'albums_sort' => 't.update DESC',
                 // count of previews in navigation sidebar
-                'previewsCount' => 2
+                'previewsCount' => 2,
+                
+                'viewAfterGalleryItemDetails' => 'frontend.views.album._afterGalleryItemDetails'
             )
 	),
     

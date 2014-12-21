@@ -92,6 +92,14 @@ class Comment extends CActiveRecord
             'target' => array(self::BELONGS_TO, $this->getCommentableEntity(), 'target_id'),
             'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'rates' => array(self::HAS_MANY, $this->commentableEntity . 'CommentRate', 'target_id'),
+            'positiveRatesCount' => array(
+                self::STAT, $this->commentableEntity . 'CommentRate', 'target_id',
+                'condition' => 'score = 1'
+            ),
+            'negativeRatesCount' => array(
+                self::STAT, $this->commentableEntity . 'CommentRate', 'target_id',
+                'condition' => 'score = -1'
+            )
         );
     }
 

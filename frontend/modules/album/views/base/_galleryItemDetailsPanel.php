@@ -20,6 +20,12 @@
                 ?>
                 
             </p>
+            <?php 
+                $this->renderPartial(
+                    $this->getModule()->viewAfterGalleryItemDetails,
+                    array('model'=>$model)
+                );
+            ?>
         </div>
 
         <div id="form-container">
