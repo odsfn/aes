@@ -11,10 +11,7 @@ class ImageController extends CController
         if (!$model)
             throw new CHttpException(404);
         
-        $target_id = $model->target_id;
-        $user_id = Yii::app()->user->id;
-        
-        if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
+        if (!Yii::app()->user->checkAccess('album_editGItem', array('item' => $model)))
             throw new CHttpException(403);
         
         $this->getModule()->getComponent('image')->rotate($file_path = $model->getAbsolutePath(), $direction);

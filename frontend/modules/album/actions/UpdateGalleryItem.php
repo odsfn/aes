@@ -11,14 +11,11 @@ class UpdateGalleryItem extends GalleryBaseAction
         
         $model = $galleryItemType::model()->findByPk($gitem_id);
         $user_id = $this->user_id;
-        $target_id = $this->target_id;
         
         if (!$model)
             throw new CHttpException(404);
         
-        $target_id = $model->target_id;
-        
-        if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
+        if (!Yii::app()->user->checkAccess('album_editGItem', array('item' => $model)))
             throw new CHttpException(403);
 
         $attributes = Yii::app()->request->getPost($galleryItemType);

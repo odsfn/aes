@@ -23,7 +23,7 @@ class CreateGalleryItem extends GalleryBaseAction
             } else
                 throw new CHttpException(500);
         } else {
-            if(!$this->getModule()->isOwner($this->user_id, $this->target_id))
+            if(!Yii::app()->user->checkAccess('album_createGItem', array('targetId' => $this->target_id)))
                 throw new CHttpException(403);
         }
 
@@ -92,7 +92,7 @@ class CreateGalleryItem extends GalleryBaseAction
                         'action' => 'UpdateGalleryItem', 
                         'album_id' => $this->album->id
                     ), 
-                    'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
+                    'visible' => $this->getModule()->canEditAlbum($this->album)
                 )
             ));
             

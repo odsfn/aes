@@ -42,8 +42,9 @@ class UserPageController extends SocialController
     }
 
     public function actionPhotos()
-    {   
+    {           
         $profileId= $_GET['id'];
+        
         Yii::app()->getModule('album')->rootRoute = '/userPage/photos/' . $profileId;
         
         $this->beginClip('album');
@@ -59,6 +60,7 @@ class UserPageController extends SocialController
     public function actionVideos()
     {   
         $profileId= $_GET['id'];
+        
         Yii::app()->getModule('album')->rootRoute = '/userPage/videos/' . $profileId;
         
         $widgetOut = $this->widget('album.widgets.Gallery', array(

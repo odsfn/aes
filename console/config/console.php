@@ -13,6 +13,12 @@ defined('APP_CONFIG_NAME') or define('APP_CONFIG_NAME', 'console');
 
 return array(
 	'basePath' => realPath(__DIR__ . '/..'),
+        'aliases' => array(
+            'frontend' => realPath(__DIR__ . '/../frontend')
+        ),
+        'import' => array(  // Migration dependencies should be listed here
+            'frontend.modules.album.AlbumModule',
+        ),
 	'commandMap' => array(
 	    'migrate' => array(
 		// alias of the path where you extracted the zip file

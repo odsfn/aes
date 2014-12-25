@@ -43,7 +43,7 @@ class ViewAll extends GalleryBaseAction
         $items = $galleryItemType::model()->findAll($itemsCriteria);
         $items_count = $galleryItemType::model()->count($itemsCountCriteria);
 
-        if (!($items || $albums) && $this->getModule()->isOwner($this->user_id, $this->target_id))
+        if (!($items || $albums) && Yii::app()->user->checkAccess('album_createGItem', array('targetId' => $this->target_id)))
             $this->ownerViewsEmptyList();
 
         // Ajax

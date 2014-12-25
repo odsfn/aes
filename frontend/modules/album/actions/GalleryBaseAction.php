@@ -149,14 +149,14 @@ abstract class GalleryBaseAction extends CAction
                     $this->getModule()->rootRoute , 
                     'action' => ($this->batchAddEnabled)? 'AddBatchGalleryItems' : 'CreateGalleryItem',
                 ), 
-                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
+                'visible' => Yii::app()->user->checkAccess('album_createGItem', array('targetId' => $this->target_id))
             ),
             'addAlbum' => array(
                 'label' => Yii::t('album.messages', 'Создать альбом'), 'url' => array(
                     $this->getModule()->rootRoute,
                     'action' => 'CreateAlbum'
                 ), 
-                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
+                'visible' => Yii::app()->user->checkAccess('album_createGItem', array('targetId' => $this->target_id))
             ),
             'viewing' => array(
                 'label' => Yii::t('album.messages', 'Просмотр'), 

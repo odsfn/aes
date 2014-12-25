@@ -6,7 +6,7 @@ class CreateAlbum extends GalleryBaseAction
     {
         if (!$this->user_id || !$this->getModule()->canCreateAlbum($this->target_id, $this->user_id))
             throw new CHttpException(403);
-        
+                
         $model = new $albumType;
         if ($attributes = Yii::app()->request->getPost($albumType)) {
             $model->setScenario('create');

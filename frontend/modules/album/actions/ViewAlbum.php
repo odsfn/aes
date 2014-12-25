@@ -41,7 +41,7 @@ class ViewAlbum extends GalleryBaseAction
         } else
             throw new CHttpException(404);
 
-        if (!$items && $this->getModule()->isOwner($this->user_id, $this->target_id))
+        if (!$items && Yii::app()->user->checkAccess('album_editGItem', array('item' => $model)))
             $this->ownerViewsEmptyList();
 
         // Ajax
@@ -86,7 +86,7 @@ class ViewAlbum extends GalleryBaseAction
                     'action' => 'UpdateAlbum', 
                     'album_id' => $this->album->id
                 ), 
-                'visible' => $this->getModule()->isOwner($this->user_id, $this->target_id)
+                'visible' => Yii::app()->user->checkAccess('album_editGItem', array('item' => $this->album))
             ),
         );
         return $menu;

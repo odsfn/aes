@@ -177,6 +177,11 @@ class ElectionController extends FrontController
         $this->election = $election = $this->getModel($electionId);
         $this->layout = '//layouts/election';
         
+        Yii::app()->authManager->defaultRoles = array_merge(
+            Yii::app()->authManager->defaultRoles,
+            array('election_galleryManagement')
+        );
+        
         Yii::app()->getModule('album')->rootRoute = '/election/photos/' . $electionId;
         
         $widgetOut = $this->widget('album.widgets.Gallery', array(
@@ -194,6 +199,11 @@ class ElectionController extends FrontController
         $electionId= $_GET['id'];
         $this->election = $election = $this->getModel($electionId);
         $this->layout = '//layouts/election';
+        
+        Yii::app()->authManager->defaultRoles = array_merge(
+            Yii::app()->authManager->defaultRoles,
+            array('election_galleryManagement')
+        );
         
         Yii::app()->getModule('album')->rootRoute = '/election/videos/' . $electionId;
         

@@ -61,7 +61,7 @@ class ViewGalleryItem extends GalleryBaseAction
             $this->album = $model->album;
 
         $canEdit = false;
-        if ($model->user_id == $user_id)
+        if (Yii::app()->user->checkAccess('album_editGItem', array('item' => $model)))
             $canEdit = true;
 
         return $this->renderPartial(

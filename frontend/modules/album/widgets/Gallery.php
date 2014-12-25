@@ -92,7 +92,11 @@ class Gallery extends CWidget
         
         $this->_action = $action;
         
-        $action->run();
+        try {
+            $action->run();
+        } catch (CHttpException $e) {
+            throw $e;
+        }
     }
 }
 

@@ -13,9 +13,8 @@ class DeleteGalleryItem extends GalleryBaseAction
             throw new CHttpException(404);
         
         $target_id = $model->target_id;
-        $user_id = Yii::app()->user->id;
         
-        if (!$user_id || !$this->getModule()->isOwner($user_id, $target_id))
+        if (!Yii::app()->user->checkAccess('album_deleteGItem', array('item' => $model)))
             throw new CHttpException(403);
 
         $afterDeleteHandler = function($event) {

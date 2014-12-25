@@ -135,9 +135,7 @@ class AlbumModule extends CWebModule
 
     public function init()
     {
-        // this method is called when the module is being created
-        // you may place code here to customize the module or the application
-        // import the module-level models and components
+        $this->registerDefaultRoles();
     }
 
     public function beforeControllerAction($controller, $action)
@@ -204,54 +202,28 @@ class AlbumModule extends CWebModule
     
     public function canViewAlbum($album, $userId = null)
     {
-        if (!$userId)
-            $userId = Yii::app()->user->id;
-        
-        // Доступно только зарегестрированным
-        if ($album->permission == self::GALLERY_PERM_PER_REGISTERED && Yii::app()->user->isGuest)
-            return false;
-        // Доступно только мне
-        if ($album->permission == self::GALLERY_PERM_PER_OWNER && Yii::app()->user->id != $album->user_id)
-            return false;
-        
-        return true;
+        return Yii::app()->user->checkAccess('album_viewGItem', array('item' => $album));
     }
     
     // @TODO: provide configurable rules to check access items
     public function canAddItemToAlbum($album, $userId = null)
     {
-        return $this->isOwnAlbum($album, $userId);
+        return Yii::app()->user->checkAccess('album_createGItem', array('item' => $album));
     }
     
     public function canDeleteAlbum($album, $userId = null)
     {
-        return $this->isOwnAlbum($album, $userId);
+        return Yii::app()->user->checkAccess('album_deleteGItem', array('item' => $album));
     }
     
     public function canEditAlbum($album, $userId = null)
     {
-        return $this->isOwnAlbum($album, $userId);
+        return Yii::app()->user->checkAccess('album_editGItem', array('item' => $album));
     }
 
     public function canCreateAlbum($target_id, $userId = null)
     {
-        return $this->isOwner(empty($userId) ? Yii::app()->user->id : $userId, $target_id);
-    }
-    
-    public function isOwnAlbum($album, $userId = null)
-    {
-        return $album->user_id == empty($userId) ? Yii::app()->user->id : $userId;
-    }
-    
-    /**
-     * Checks is the user owns target 
-     * @param int $userId
-     * @param int $target_id
-     * @return boolean
-     */
-    public function isOwner($userId, $target_id)
-    {
-        return Target::model()->findByPk($target_id)->getRow()->user_id == $userId;
+        return Yii::app()->user->checkAccess('album_createGItem', array('targetId' => $target_id));
     }
     
     /**
@@ -267,5 +239,13 @@ class AlbumModule extends CWebModule
     public function createAlbumThumbnail($file_path)
     {
         $this->getComponent('image')->createPath('360x220', $file_path);
+    }
+    
+    protected function registerDefaultRoles()
+    {
+        Yii::app()->authManager->defaultRoles = array_merge(
+            Yii::app()->authManager->defaultRoles,
+            array('album_notAuthenticated', 'album_authenticated')
+        );
     }
 }
