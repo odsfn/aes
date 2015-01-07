@@ -203,17 +203,10 @@ App.module('Candidates.Details', function(Details, App, Backbone, Marionette, $,
             this.votes.filters.with_profile = true;
             this.votes.filters.candidate_id = candidate.get('id');
             this.votes.setElectionId(candidate.get('election_id'));
+            
             //Add current user's votes for this candidate
-
-//            @todo: refactor FeedCollection rename *filter* to *filters* and then
-//            you can use this statement
-//            var usersVotes = Candidates.votes.where({
-//                candidate_id: candidate.get('id')
-//            });
-            var usersVotes = [];
-            Candidates.votes.each(function(m, i) {
-                if (m.get('candidate_id') == candidate.get('id'))
-                    usersVotes.push(m);
+            var usersVotes = Candidates.votes.where({
+                candidate_id: candidate.get('id')
             });
 
             this.layout.votes.show(this.votesFeedView);
