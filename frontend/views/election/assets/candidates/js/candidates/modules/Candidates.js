@@ -120,7 +120,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
     });
     
     var ElectoralCandView = Candidates.ElectoralCandView = Marionette.ItemView.extend({
-        className: 'user-info',
+        className: 'user-info row-fluid',
         template: '#electoral-list-item-tpl',
         
         modelEvents: {
@@ -649,6 +649,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             
             this.on('change:status', function(m, val, opts) {
                 if(m.isDeclined() || m.isRevoked()) {
+                    this.trigger('vote:declined', m);
                     this.setAcceptedVotesCount(this._acceptedVotesCount - 1);
                 }
             });
@@ -775,6 +776,19 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             if(election.checkStatus('Election') || election.checkStatus('Finished')) {
                 this.electoralList = new ElectoralList({
                     collection: this.approvedCands
+                });
+
+                this.approvedCands.listenTo(Candidates.votes, 'vote:passed vote:declined', function(vote){
+                    var candidate = this.findWhere({id: vote.get('candidate_id')});
+                    var acceptedVotesCount = candidate.get('acceptedVotesCount');
+                    
+                    if( vote.isDeclined() || vote.isRevoked() ) {
+                        acceptedVotesCount--;
+                    } else {
+                        acceptedVotesCount++;
+                    }
+                    
+                    candidate.set('acceptedVotesCount', acceptedVotesCount);
                 });
 
                 this.layout.electoralList.show(Candidates.electoralList);

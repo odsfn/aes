@@ -71,6 +71,14 @@
     display: block;
 }
 
+.user-info.row-fluid {
+    width: auto;
+}
+
+.user-info.row-fluid .body {
+    padding-top: 0;
+}
+
 .user-info .pull-left {
     margin-right: 15px;
 }

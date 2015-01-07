@@ -44,6 +44,14 @@ class CandidateController extends RestController {
         if(!empty($this->plainFilter['status']))
             $criteria->mergeWith(Candidate::getCriteriaWithStatusOnly($this->plainFilter['status']));
         
+        if( in_array(
+                $election->status, 
+                array(Election::STATUS_ELECTION, Election::STATUS_FINISHED)
+            ) 
+        ) {
+            $criteria->mergeWith(array('with'=>'acceptedVotesCount'));
+        }
+        
         $results = $this->getModel()
                 ->with($this->nestedRelations)
                 ->limit($this->restLimit)

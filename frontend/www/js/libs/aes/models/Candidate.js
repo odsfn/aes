@@ -15,7 +15,11 @@ var Candidate = Backbone.Model.extend({
         attrs.status_changed_ts = parseInt(attrs.status_changed_ts) * 1000;
         attrs.profile.birth_day = parseInt(attrs.profile.birth_day) * 1000;
         attrs.profile.user_id = parseInt(attrs.profile.user_id);
-
+        
+        if(attrs.acceptedVotesCount != undefined || attrs.acceptedVotesCount != '') {
+            attrs.acceptedVotesCount = parseInt(attrs.acceptedVotesCount);
+        }
+        
         return attrs;
     },
 

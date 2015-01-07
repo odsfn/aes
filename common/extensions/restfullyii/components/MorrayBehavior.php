@@ -104,7 +104,7 @@ class MorrayBehavior extends CBehavior
                   }
 
                   // if sub rel is an array, there are multiple relations being returned
-                  if (is_array($rel)) {
+                  elseif (is_array($rel)) {
 
                       // do a foreach on each sub rel
                       foreach ($rel as $sub_rel) {
@@ -118,6 +118,11 @@ class MorrayBehavior extends CBehavior
                               $arr[$rel_id][] = $this->loop($sub_rel, $opts, $arr);
                           }
                       }
+                  }
+                  
+                  //if relation is scalar value from statistical relation query
+                  else {
+                      $arr[$rel_id] = $rel;
                   }
               }
           }

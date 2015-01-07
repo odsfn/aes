@@ -109,6 +109,7 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 </script>
 
 <script id="electoral-list-item-tpl" type="text/template">
+    <div class="span12">
         <div class="pull-left">
             <div style="width: 96px; height: 96px; background-color: #000;" class="img-wrapper-tocenter users-photo">
                 <span></span>
@@ -118,15 +119,20 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
 
         <div class="pull-right vote-cntr"></div>                   
 
-        <div class="body">
+        <div class="body span8">
             <a href="details/<%= id %>" class="route"><%= profile.displayName %></a> <b>№<%= electoral_list_pos %></b> <br>
 
             <div><b>Birth Day: </b><%= i18n.date(profile.birth_day, 'full') %></div>
 
             <div><b>Birth Place: </b><%= profile.birth_place %></div>
 
-            <div><b>Status: </b> <%= t(statusText) %></div>                                
+            <div><b>Status: </b> <%= t(statusText) %></div>    
+            
+            <% if(statusText === 'Registered') { %>
+            <div><b>Accepted votes count: </b> <%= acceptedVotesCount %></div>
+            <% } %>
         </div>
+    </div>
 </script>
 
 <script id="cand-list-item-tpl" type="text/template">
