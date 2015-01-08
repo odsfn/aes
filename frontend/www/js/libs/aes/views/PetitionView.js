@@ -69,7 +69,14 @@ var PetitionView = Aes.ItemView.extend({
                 targetId: this.model.get('id'),
                 targetType: 'Petition',
 
-                canRateChecker: Marionette.getOption(this, 'canRateChecker')
+                canRateChecker: Marionette.getOption(this, 'canRateChecker'),
+                
+                autoFetch: false,
+                initData: {
+                    positiveRatesCount: this.model.get('positiveRatesCount'),
+                    negativeRatesCount: this.model.get('negativeRatesCount'),
+                    models: this.model.get('rates')
+                }
             });
         },
         

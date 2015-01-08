@@ -8,7 +8,8 @@ class PetitionController extends RestController {
         ),
         'creator' => array(
             'select' => 'creator.user_id, creator.first_name, creator.last_name'
-        )
+        ),
+        'rates', 'positiveRatesCount', 'negativeRatesCount'
     );
     
     protected $convertRestFilters = true;
