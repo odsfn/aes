@@ -20,10 +20,19 @@ class PostController extends RestController {
             'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64'
         ),
         
-        'rates', 'positiveRatesCount', 'negativeRatesCount',
+        'comments.rates' => array(
+           'alias' => 'comment_rate',
+           'on' => "comment_rate.user_id = :currentUserId"
+        ), 
         
-        'comments.rates', 'comments.positiveRatesCount',
+        'comments.positiveRatesCount',
         'comments.negativeRatesCount',
+        
+        'rates' => array(
+            'alias' => 'post_rate',
+            'on' => 'post_rate.user_id = :currentUserId'
+        ),
+        'positiveRatesCount', 'negativeRatesCount',
     );
         
     public $virtualAttrs = array(
