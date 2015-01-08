@@ -18,7 +18,9 @@ class NominationController extends CandidateController
         
         'election' => array(
             'select' => 'name, status'
-        )
+        ),
+        
+        'rates', 'positiveRatesCount', 'negativeRatesCount',
     );
     
     public $virtualAttrs = array(

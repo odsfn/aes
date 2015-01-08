@@ -8,7 +8,8 @@ class MandateController extends RestController {
         ),
         'election' => array(
             'select' => 'name'
-        )
+        ),
+        'rates', 'positiveRatesCount', 'negativeRatesCount',
     );
     
     public $acceptFilters = array('plain' => 'owner_name,user_id', 'model' => 'name,status, election_id');

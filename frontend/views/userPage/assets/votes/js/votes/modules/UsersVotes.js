@@ -112,9 +112,22 @@ App.module('UsersVotes', function(UsersVotes, App, Backbone, Marionette, $, _) {
         onRender: function() {            
             if(!this._rates)
             {
+                var votes = this.model.get('votes'),
+                    vote = _.find(votes, 
+                        _.bind(function(v){ 
+                            return v.id == this.model.get('vote_id'); 
+                        }, this)
+                    );
+                
                 this._rates = RatesWidget.create({
                     targetId: this.model.get('vote_id'),
-                    targetType: 'Vote'
+                    targetType: 'Vote',
+                    autoFetch: false,
+                    initData: {
+                        positiveRatesCount: vote.positiveRatesCount,
+                        negativeRatesCount: vote.negativeRatesCount,
+                        models: vote.rates
+                    }
                 });
             }
             

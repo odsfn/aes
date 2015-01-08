@@ -23,7 +23,11 @@ class CommentController extends RestController {
             'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64'
         ),
         
-        'rates' => array('alias' => 'post_rate')
+        'rates',
+        
+        'positiveRatesCount',
+        
+        'negativeRatesCount',
         
     );
         
@@ -82,7 +86,7 @@ class CommentController extends RestController {
             $criteria
                 ->limit($this->restLimit)
                 ->offset($this->restOffset)
-                ->findAll(array('order' => 'created_ts DESC')),
+                ->findAll(array('order' => 't.created_ts DESC')),
             (int)$totalCount
         );
     }

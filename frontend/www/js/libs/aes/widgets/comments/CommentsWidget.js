@@ -77,26 +77,33 @@ var CommentsWidget = (function(){
     
     var Comments = FeedCollection.extend({
         
-       comparator: function(model) {
-           return model.get('created_ts');
-       },        
+        comparator: function(model) {
+            return model.get('created_ts');
+        },        
         
-       model: function(attrs, options) {
-           return new Comment(attrs, _.extend(options, {
-               commentRates: options.collection.createCommentRates()
-           }));
-       },
+        model: function(attrs, options) {
+            return new Comment(attrs, _.extend(options, {
+                commentRates: options.collection.createCommentRates(
+                    attrs.positiveRatesCount, attrs.negativeRatesCount
+                )
+            }));
+        },
                
-       createCommentRates: function() {
+        createCommentRates: function(likes, dislikes) {
+            
+            likes = likes || 0;
+            dislikes = dislikes || 0;
             
             var commentRates = new Rates([], {
-                url: this.commentRatesUrl
+                url: this.commentRatesUrl,
+                likes: likes,
+                dislikes: dislikes
             });
             
             return commentRates;
-       },
+        },
                
-       initialize: function(models, options) {
+        initialize: function(models, options) {
             FeedCollection.prototype.initialize.apply(this, arguments);
             
             this.url = options.url;
@@ -107,7 +114,7 @@ var CommentsWidget = (function(){
             this.filters = {
                 target_id: this.targetId
             };
-       }
+        }
     });    
     
     /**
@@ -431,12 +438,12 @@ var CommentsWidget = (function(){
             
             if(config.autoFetch && config.initData.models.length == 0)            
                 commentsView.once('show', function() {
-                   this.collection.fetch({
-                       success: function() {
+                    this.collection.fetch({
+                        success: function() {
                             commentsView.render();
-                       },
-                       silent: true
-                   });
+                        },
+                        silent: true
+                    });
                 });
                 
             if(config.title) {

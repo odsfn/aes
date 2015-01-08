@@ -52,6 +52,47 @@ class Rate extends CActiveRecord
     }
 
     /**
+     * Returns relations which should be used by rate's target
+     * 
+     * @param string $rateClass
+     * @return array
+     */
+    public static function targetRelations($rateClass) {
+        $rateClass .= 'Rate';
+        return array(
+            'rates' => array(self::HAS_MANY, $rateClass,
+                'target_id',
+                'on' => 
+                    'rates.user_id = ' . ( !empty(Yii::app()->user->id) ? Yii::app()->user->id : '0' )
+            ),
+            'positiveRatesCount' => array(
+                self::STAT, $rateClass, 'target_id',
+                'condition' => 'score = 1'
+            ),
+            'negativeRatesCount' => array(
+                self::STAT, $rateClass, 'target_id',
+                'condition' => 'score = -1'
+            )
+        );
+    }
+
+    /**
+     * Helper function to extend targets' $relations with rates counts and current user's rate
+     * 
+     * @param array $relations
+     * @param string|CActiveRecord $targetClass 
+     */
+    public static function applyRelations(&$relations, $targetClass) {
+        if(is_object($targetClass) && $targetClass instanceof CActiveRecord ) {
+            $targetClass = get_class($targetClass);
+        } elseif (!is_string($targetClass)) {
+            throw new CException('Unexpected $targetClass. Specify class name by string or pass instance of CActiveRecord');
+        }
+        
+        $relations = array_merge($relations, self::targetRelations($targetClass));
+    }
+
+    /**
      * @return string the associated database table name
      */
     public function tableName()

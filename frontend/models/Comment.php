@@ -91,7 +91,11 @@ class Comment extends CActiveRecord
         return array(
             'target' => array(self::BELONGS_TO, $this->getCommentableEntity(), 'target_id'),
             'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
-            'rates' => array(self::HAS_MANY, $this->commentableEntity . 'CommentRate', 'target_id'),
+            'rates' => array(self::HAS_MANY, $this->commentableEntity . 'CommentRate',
+                'target_id', 'alias' => 'comment_rate',
+                'on' => 
+                    'comment_rate.user_id = ' . ( !empty(Yii::app()->user->id) ? Yii::app()->user->id : '0' )
+            ),
             'positiveRatesCount' => array(
                 self::STAT, $this->commentableEntity . 'CommentRate', 'target_id',
                 'condition' => 'score = 1'
@@ -99,6 +103,11 @@ class Comment extends CActiveRecord
             'negativeRatesCount' => array(
                 self::STAT, $this->commentableEntity . 'CommentRate', 'target_id',
                 'condition' => 'score = -1'
+            ),
+            'currentUserRate' => array(
+                self::HAS_ONE, $this->commentableEntity . 'CommentRate', 'target_id', 
+                'on' => 
+                    'currentUserRate.user_id = ' . ( !empty(Yii::app()->user->id) ? Yii::app()->user->id : '0' ) 
             )
         );
     }

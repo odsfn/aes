@@ -74,13 +74,16 @@ class Post extends CActiveRecord
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
+        $relations = array(
             'replyTo' => array(self::BELONGS_TO, 'Post', 'reply_to'),
             'comments' => array(self::HAS_MANY, 'Post', 'reply_to'),
             'user' => array(self::BELONGS_TO, 'Profile', 'user_id'),
-            'rates' => array(self::HAS_MANY, 'PostRate', 'target_id'),
             'target' => array(self::BELONGS_TO, 'Target', 'target_id'),
         );
+        
+        Rate::applyRelations($relations, $this);
+        
+        return $relations;
     }
 
     /**

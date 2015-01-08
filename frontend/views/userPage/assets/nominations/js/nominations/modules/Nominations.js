@@ -92,8 +92,14 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
             if(!this._rates)
             {
                 this._rates = RatesWidget.create({
+                    autoFetch: false,
                     targetId: this.model.get('id'),
-                    targetType: 'Candidate'
+                    targetType: 'Candidate',
+                    initData: {
+                        positiveRatesCount: this.model.get('positiveRatesCount'),
+                        negativeRatesCount: this.model.get('negativeRatesCount'),
+                        models: this.model.get('rates') || []
+                    }
                 });
             }
             

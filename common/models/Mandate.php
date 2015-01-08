@@ -67,10 +67,14 @@ class Mandate extends CActiveRecord implements iCommentable
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
+        $relations = array(
             'candidate' => array(self::BELONGS_TO, 'Candidate', 'candidate_id'),
             'election' => array(self::BELONGS_TO, 'Election', 'election_id'),
         );
+        
+        Rate::applyRelations($relations, $this);
+        
+        return $relations;
     }
 
     /**

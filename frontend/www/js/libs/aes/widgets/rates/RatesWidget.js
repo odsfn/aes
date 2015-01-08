@@ -34,6 +34,10 @@ var Rates = Aes.FilterableCollection.extend({
 
     model: Rate,
 
+    _likesCount: 0,
+    
+    _dislikesCount: 0,
+
     initialize: function(models, options) {
         Aes.FilterableCollection.prototype.initialize.apply(this, arguments);
 
@@ -42,23 +46,103 @@ var Rates = Aes.FilterableCollection.extend({
         this.url = options.url;
         this.target_id = options.target_id;
         this.filters.target_id = this.target_id;
+        
+        var likesCount = options.likes || options.positiveRatesCount || 0, 
+            dislikesCount = options.dislikes || options.negativeRatesCount || 0;
+         
+        this._likesCount = parseInt(likesCount);
+        this._dislikesCount = parseInt(dislikesCount);
+    },
+
+    parse: function(response, options) {
+
+        var 
+            fetchedModels = Backbone.Collection.prototype.parse.apply(this, arguments);
+        
+        if(_.has(response, 'data') && _.has(response.data, 'positiveRatesCount'))
+            this.setLikesCount(parseInt(response.data.positiveRatesCount));
+        else if(_.has(options, 'negativeRatesCount'))
+            this.setDislikesCount(parseInt(options.negativeRatesCount));
+        
+        return fetchedModels;
     },
 
     getLikes: function() {
-        return this.where({score: 1}).length;
+        return this._likesCount;
     },
 
     getDislikes: function() {
-        return this.where({score: -1}).length;
+        return this._dislikesCount;
     },
 
-    addRate: function(user_id, score) {
-        return this.create({
+    setLikesCount: function(val) {
+        var lastValue = this._likesCount;
+        this._likesCount = parseInt(val);
+        this.trigger('likesCountChanged', val, lastValue);
+    },
+    
+    setDislikesCount: function(val) {
+        var lastValue = this._dislikesCount;
+        this._dislikesCount = parseInt(val);
+        this.trigger('dislikesCountChanged', val, lastValue);
+    },
+
+    addRate: function(user_id, score, success) {
+        
+        var options = {};
+        
+        if(success && typeof(success) === 'function') {
+            options.success = success;
+        }
+        
+        var newRate = this.create({
            target_id: this.target_id,
            user_id: user_id,
            score: score
-        });
-    },        
+        }, options);
+        
+        return newRate;
+    },
+
+    rate: function(score, userId) {
+
+        var 
+            lastRate = this.getRate(userId),
+            lastRateScore = null,
+            onRateRemoved = _.bind(function(model) {
+                        if(model.get('score') == 1) {
+                            this._likesCount--;
+                        } else {
+                            this._dislikesCount--;
+                        }
+                        
+                        this.trigger('rate:removed', model);
+            }, this);
+            
+        if(lastRate) {
+            lastRateScore = lastRate.get('score');
+
+            if(score == lastRateScore) {
+                lastRate.destroy({
+                    success: onRateRemoved
+                });
+                return;
+            }
+            
+            this.remove(lastRate);
+            onRateRemoved(lastRate);
+        }
+        
+        this.addRate(userId, score, _.bind(function(model, response) {
+            if(score == 1) {
+                this._likesCount++;
+            } else {
+                this._dislikesCount++;
+            }
+            
+            this.trigger('rate:added', model);
+        }, this));
+    },
 
     getRate: function(user_id) {
         return this.findWhere({user_id: user_id});
@@ -159,23 +243,7 @@ var RatesWidget = (function(){
                 score = -1;
             }
 
-            var 
-                lastRate = this.ratesCollection.getRate(WebUser.getId()),
-                lastRateScore = null;
-
-              if(lastRate) {
-                  lastRateScore = lastRate.get('score');
-                  
-                  if(score == lastRateScore) {
-                      lastRate.destroy();
-                      return;
-                  }
-                  
-                  this.ratesCollection.remove(lastRate);
-              }
-
-              this.ratesCollection.addRate(WebUser.getId(), score);
-
+            this.ratesCollection.rate(score, WebUser.getId());
         },
 
         onActivate: function() {
@@ -203,12 +271,12 @@ var RatesWidget = (function(){
     
             this.ratesCollection = options.ratesCollection;
             
-            this.listenTo(this.ratesCollection, 'add', _.bind(function(rate, collection){
+            this.listenTo(this.ratesCollection, 'rate:added', _.bind(function(rate, collection){
                 this.markRate(rate.get('score'));
                 this.render();
             }, this));
 
-            this.listenTo(this.ratesCollection, 'remove', _.bind(function(rate, collection){
+            this.listenTo(this.ratesCollection, 'rate:removed', _.bind(function(rate, collection){
                 this.unmarkRate(rate.get('score'));
                 this.render();
             }, this));     
@@ -295,12 +363,16 @@ var RatesWidget = (function(){
         },
         
         _initRatesCollection: function(config) {
-            var ratesCol = new Rates([], {
+            var opts = {
                 target_id: config.targetId,
                 url: config.urls.rates
-            });
+            };
+            
+            opts = _.extend(opts, _.pick(config.initData, 'positiveRatesCount', 'negativeRatesCount'));
+            
+            var ratesCol = new Rates([], opts);
 
-            if(config.initData.models.length > 0)   //setting up init data rows if any provided
+            if(config.initData.models && config.initData.models.length > 0)   //setting up init data rows if any provided
                 ratesCol.reset(config.initData.models, {parse: true, totalCount: config.initData.totalCount});
 
             return ratesCol;
@@ -338,11 +410,11 @@ var RatesWidget = (function(){
             
             if(config.autoFetch && config.initData.models.length == 0)            
                 view.once('show', function() {
-                   view.ratesCollection.fetch({
+                    view.ratesCollection.fetch({
                        success: function() {
                            view.render();
                        }
-                   });
+                    });
                 });          
                
             return view;

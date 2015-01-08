@@ -79,12 +79,16 @@ class Vote extends CActiveRecord implements iCommentable
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
+        $relations = array(
             'profile' => array(self::BELONGS_TO, 'Profile', 'user_id'),
             'candidate' => array(self::BELONGS_TO, 'Candidate', 'candidate_id'),
             'elector' => array(self::BELONGS_TO, 'Elector', 'user_id'),
             'election' => array(self::BELONGS_TO, 'Election', 'election_id')
         );
+        
+        Rate::applyRelations($relations, $this);
+        
+        return $relations;
     }
 
     /**

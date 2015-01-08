@@ -26,7 +26,10 @@ class ElectionController extends RestController {
                 'on'       => 'votes.election_id = t.id AND votes.user_id = :voterId',
                 'order'    => 'votes.date DESC',
                 'params' => array(':voterId' => $filterValue),
-            )
+            ),
+            
+            'candidates.votes.rates', 'candidates.votes.positiveRatesCount',
+            'candidates.votes.negativeRatesCount',
             
         );
         

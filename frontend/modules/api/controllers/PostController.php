@@ -20,9 +20,10 @@ class PostController extends RestController {
             'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64'
         ),
         
-        'rates' => array('alias' => 'post_rate'),
+        'rates', 'positiveRatesCount', 'negativeRatesCount',
         
-        'comments.rates'
+        'comments.rates', 'comments.positiveRatesCount',
+        'comments.negativeRatesCount',
     );
         
     public $virtualAttrs = array(

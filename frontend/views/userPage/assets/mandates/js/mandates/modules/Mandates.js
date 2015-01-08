@@ -41,7 +41,13 @@ App.module('Mandates', function(Mandates, App, Backbone, Marionette, $, _) {
             {
                 this._rates = RatesWidget.create({
                     targetId: this.model.get('id'),
-                    targetType: 'Mandate'
+                    targetType: 'Mandate',
+                    autoFetch: false,
+                    initData: {
+                        positiveRatesCount: this.model.get('positiveRatesCount'),
+                        negativeRatesCount: this.model.get('negativeRatesCount'),
+                        models: this.model.get('rates')
+                    }
                 });
             }
             

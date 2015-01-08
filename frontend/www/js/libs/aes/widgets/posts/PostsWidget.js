@@ -26,7 +26,9 @@ PostsWidget.Post = Backbone.Model.extend({
 
         this.rates = new Rates([], {
             target_id: this.get('id'),
-            url: UrlManager.createUrl('api/Post_rate')
+            url: UrlManager.createUrl('api/Post_rate'),
+            positiveRatesCount: this.get('positiveRatesCount'),
+            negativeRatesCount: this.get('negativeRatesCount')
         });
 
         if(ratesModels) {
