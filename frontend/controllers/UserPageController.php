@@ -13,16 +13,19 @@ class UserPageController extends SocialController
     
     public function actionNominations() {
         
-        $canControl = ($this->profile->user_id == Yii::app()->user->id);
+        $canControl = $this->canControlComments();
         
         $this->render('nominations', array('canControl' => (int)$canControl, 'userId' => $this->profile->user_id));
     }
     
     public function actionVotes() {
-        $this->render('votes', array('canControl' => (int)$canControl, 'userId' => $this->profile->user_id));
+        $this->canControlComments();
+        
+        $this->render('votes', array('userId' => $this->profile->user_id));
     }
     
     public function actionMandates() {
+        $this->canControlComments();
         $this->render('mandates');
     }
     
@@ -42,7 +45,8 @@ class UserPageController extends SocialController
     }
 
     public function actionPhotos()
-    {           
+    {   
+        $this->canControlComments();
         $profileId= $_GET['id'];
         
         Yii::app()->getModule('album')->rootRoute = '/userPage/photos/' . $profileId;
@@ -59,6 +63,7 @@ class UserPageController extends SocialController
     
     public function actionVideos()
     {   
+        $this->canControlComments();
         $profileId= $_GET['id'];
         
         Yii::app()->getModule('album')->rootRoute = '/userPage/videos/' . $profileId;
@@ -71,5 +76,18 @@ class UserPageController extends SocialController
         $this->render('videos', array(
             'galleryWidgetOutput' => $widgetOut
         ));
+    }
+    
+    protected function canControlComments() 
+    {
+        if ($this->profile->user_id == Yii::app()->user->id) {
+            Yii::app()->clientScript->registerScript('rolesForCommentsMarionetteWidget', "
+                WebUser.addRoles(['commentsAdmin']);
+            ", CClientScript::POS_HEAD);
+            
+            return true;
+        }
+        
+        return false;
     }
 }

@@ -27,8 +27,6 @@ $this->widget('application.widgets.ClientApp', array(
     )
 ));
 
-//$this->createWidget('CommentsMarionetteWidget')->register();
-
 Yii::app()->clientScript->registerScript('starter',
     "App.start({
         userId: ". $userId ."
