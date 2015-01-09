@@ -136,6 +136,10 @@ var FeedCollection = Aes.FeedCollection = Aes.FilterableCollection.extend({
         this.trigger('totalCountChanged', value, lastValue);
     },
     
+    allLoaded: function() {
+        return this.totalCount === this.models.length;
+    },
+    
     initialize: function(models, options) {
 
         if (options) {

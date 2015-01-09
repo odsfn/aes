@@ -36,6 +36,13 @@ var MoreView = Aes.ItemView.extend({
             this.render();
             this.delegateEvents();
             
+            if(this.base.collection.allLoaded && this.base.collection.allLoaded()) {
+                console.log('All loaded');
+                this.$el.hide();
+            } else {
+                this.$el.show();
+            }
+            
             if(this.base._isShown) {
                 this._appendToBase();
             }
@@ -96,6 +103,6 @@ var MoreView = Aes.ItemView.extend({
     }
 }, {
     getTpl: function() {
-        return '<div class="row-fluid get-more"><div class="span12"><a><%= t(view.moreMsg) %></a><span><img src="/img/loader-circle-16.gif" class="loader" />Loading...</span></div></div>';
+        return '<div class="get-more"><div class="span12"><a><%= t(view.moreMsg) %></a><span><img src="/img/loader-circle-16.gif" class="loader" />Loading...</span></div></div>';
     }
 });
