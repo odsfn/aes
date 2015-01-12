@@ -105,6 +105,8 @@ $this->createWidget('application.widgets.UsersPhoto')->registerCss();
     
     <div class="span11">
         <div>
+            <div><h4><%= name %></h4></div>
+            <div><b>Mandate owner: </b> <%= candidate.profile.displayName %></div>
             <div class="election-name"><b>Election name: </b><%= election.name %></div>
             <div class="date-time">
                 <b>Validity from</b>&nbsp;
