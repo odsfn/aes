@@ -245,7 +245,7 @@ class ElectorRegistrationRequest extends CActiveRecord
         if($elector)
             return false;
 
-        $registration = self::model()->findAllByAttributes(array(
+        $registration = self::model()->findByAttributes(array(
             'user_id' => $userId,
             'election_id' => $electionId
         ));

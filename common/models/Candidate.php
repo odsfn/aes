@@ -50,7 +50,12 @@ class Candidate extends CActiveRecord implements iCommentable
     }
 
     public function behaviors() {
-        return array('AttrsChangeHandlerBehavior');
+        return array(
+            'attrsChangeHandlerBehavior' => array(
+                'class' => 'AttrsChangeHandlerBehavior',
+                'track' => array('status')
+            )
+        );
     }
 
     /**
@@ -128,8 +133,8 @@ class Candidate extends CActiveRecord implements iCommentable
         ));
     }
 
-    protected function beforeSave() {
-
+    protected function beforeSave() 
+    {
         $this->appointer_id  = Yii::app()->user->id;
         if ($this->isNewRecord 
             && $this->election->cand_reg_type == Election::CAND_REG_TYPE_SELF 
@@ -162,12 +167,24 @@ class Candidate extends CActiveRecord implements iCommentable
         return parent::beforeSave();
     }
 
-    protected function afterSave() {
-
+    protected function afterSave() 
+    {
+        parent::afterSave();
+        
         if(isset($this->transaction))
             $this->transaction->commit();
+    }
+    
+    public function afterInsert()
+    {
+        if ($this->status == self::STATUS_REGISTERED)
+            $this->registerAsElector();
+    }
 
-        return parent::afterSave();
+    public function afterStoredAttrChanged_status($currentValue, $oldValue, $attrName)
+    {
+        if($currentValue == self::STATUS_REGISTERED)
+            $this->registerAsElector();
     }
 
     public function criteriaWithStatusOnly($status) {
@@ -215,6 +232,50 @@ class Candidate extends CActiveRecord implements iCommentable
         if($votes && count($votes) > 0)
             return true;
 
+        return false;
+    }
+    
+    /**
+     * Checks condition of Election registration options and registers candidate
+     * as elector too.
+     * 
+     * Registretion does not start if elections' electors should be in electors
+     * groups
+     * 
+     * @return Elector If registerd, FALSE otherwise
+     */
+    protected function registerAsElector()
+    {
+        if(
+            in_array($this->election->status, array(
+                Election::STATUS_REGISTRATION, Election::STATUS_ELECTION
+            )) && $this->election->voter_group_restriction == Election::VGR_NO
+        ){
+            $elector = Elector::model()->findByAttributes(array(
+                'user_id' => $this->user_id,
+                'election_id' => $this->election_id
+            ));
+
+            if($elector)
+                return false;
+            
+            $registration = ElectorRegistrationRequest::model()->findByAttributes(array(
+                'user_id' => $this->user_id,
+                'election_id' => $this->election_id
+            ));
+
+            if($registration)
+                return false;
+            
+            $elector = new Elector();
+            $elector->election_id = $this->election_id;
+            $elector->user_id = $this->user_id;
+            
+            if($elector->save())
+                return $elector;
+            
+        }
+        
         return false;
     }
 }
