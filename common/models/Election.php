@@ -558,6 +558,38 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         $attrs['imageThmbnl96'] = $this->getImageThmbnl96();
         return $attrs;
     }    
+    
+    public function autoElectorRegistrationAvailable($userId = null)
+    {
+        if(!$userId)
+            $userId = Yii::app()->user->id;
+        
+        if(
+            in_array($this->status, array(
+                Election::STATUS_REGISTRATION, Election::STATUS_ELECTION
+            )) && $this->voter_group_restriction == Election::VGR_NO
+        ){
+            $elector = Elector::model()->findByAttributes(array(
+                'user_id' => $userId,
+                'election_id' => $this->id
+            ));
+
+            if($elector)
+                return false;
+            
+            $registration = ElectorRegistrationRequest::model()->findByAttributes(array(
+                'user_id' => $userId,
+                'election_id' => $this->id
+            ));
+
+            if($registration)
+                return false;
+            
+            return true;
+        }
+        
+        return false;
+    }
 }
 
 class ElectionFinishedState extends AState

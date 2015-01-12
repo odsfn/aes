@@ -24,14 +24,17 @@ class ElectionAutomaticElectorRegistrationOnCandidateRegistrationTest extends We
         $this->waitForPresent($regBtnSel = 'css=button#register-candidate');
         $this->assertVisible($regBtnSel);
         
-//        $this->waitForPresent($regElectorBtnSel = 'css=button#register-elector');
-//        $this->assertVisible($regElectorBtnSel);
+        $election = Election::model()->findByPk($electionId);
+        
+        if($election->voter_reg_type == Election::VOTER_REG_TYPE_SELF) {
+            $this->waitForPresent($regElectorBtnSel = 'css=button#register-elector');
+            $this->assertVisible($regElectorBtnSel);
+        }
         
         $this->click($regBtnSel);
-        $this->waitForTextPresent('You have been registered as candidate');
-//        $this->waitForTextPresent('You have been registered as candidate and elector');
         
-//        $this->waitForElementNotPresent($regElectorBtnSel);
+        $this->waitForTextPresent('You have been registered as candidate and elector');
+        $this->waitForElementNotPresent($regElectorBtnSel);
 
         $this->open('election/electorate/' . $electionId);
         $this->waitForPageToLoad();

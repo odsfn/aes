@@ -102,7 +102,7 @@ class ElectionCandidateRegistrationTest extends WebTestCase
         
         $this->assertCssCount('css=div.flash-messages div.alert', 1);
         $this->assertElementContainsText('css=div.flash-messages div.alert', 
-            'You have been registered as candidate.'
+            'You have been registered as candidate and elector'
         );
         $this->click('css=div.flash-messages div.alert a.close');
         $this->waitForNotPresent('css=div.flash-messages div.alert');

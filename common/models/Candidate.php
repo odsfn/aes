@@ -246,34 +246,14 @@ class Candidate extends CActiveRecord implements iCommentable
      */
     protected function registerAsElector()
     {
-        if(
-            in_array($this->election->status, array(
-                Election::STATUS_REGISTRATION, Election::STATUS_ELECTION
-            )) && $this->election->voter_group_restriction == Election::VGR_NO
-        ){
-            $elector = Elector::model()->findByAttributes(array(
-                'user_id' => $this->user_id,
-                'election_id' => $this->election_id
-            ));
-
-            if($elector)
-                return false;
-            
-            $registration = ElectorRegistrationRequest::model()->findByAttributes(array(
-                'user_id' => $this->user_id,
-                'election_id' => $this->election_id
-            ));
-
-            if($registration)
-                return false;
-            
+        if($this->election->autoElectorRegistrationAvailable($this->user_id))
+        {    
             $elector = new Elector();
             $elector->election_id = $this->election_id;
             $elector->user_id = $this->user_id;
             
             if($elector->save())
-                return $elector;
-            
+                return $elector;   
         }
         
         return false;
