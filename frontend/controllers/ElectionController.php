@@ -41,7 +41,7 @@ class ElectionController extends FrontController
         $this->layout = '//layouts/election';
         $this->election = $model;
         
-        if( preg_match('~election/index~',  Yii::app()->request->urlReferrer) 
+        if( preg_match('~election/?(index|$)~',  Yii::app()->request->urlReferrer) 
             && $model->status == Election::STATUS_ELECTION 
         ) {
             $this->redirect(array('candidates', 'id'=>$model->id));

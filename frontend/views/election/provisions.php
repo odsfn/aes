@@ -75,6 +75,23 @@ $this->breadcrumbs->add($model->name, '/election/view/' . $model->id);
             )
         )); ?>                
 
+        <h5 data-toggle="#revote-options"><?= Yii::t('election.provisions', 'Revote options'); ?>
+            <?php if($canManage): ?>
+            &nbsp;<small><a href="<?= Yii::app()->createUrl('/election/management/', array('id'=> $this->election->id, '#'=>'revote-options')); ?>"><?= Yii::t('election.provisions', 'Change'); ?></a></small>
+            <?php endif; ?>
+        </h5>
+        
+        <?php $this->widget('bootstrap.widgets.TbDetailView', array(
+            'htmlOptions' => array(
+                'id' => 'revote-options'
+            ),
+            'type'  => 'condensed',
+            'data'  => $model,
+            'attributes'=>array(
+                'revotes_count', 'remove_vote_time', 'revote_time'
+            )
+        )); ?>        
+        
     </div>
 </div>
 
