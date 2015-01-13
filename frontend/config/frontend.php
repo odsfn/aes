@@ -62,7 +62,7 @@ return array(
 		),
 	    
 		'errorHandler' => array(
-			'errorAction' => 'site/error',
+                    'errorAction' => 'site/error',
 		),
             
                 'clientScript' => array(
