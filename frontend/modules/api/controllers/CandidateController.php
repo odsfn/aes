@@ -66,7 +66,7 @@ class CandidateController extends RestController {
             ->count($criteria)
         );
     }
-    
+
     public function accessRules() {
 	return array(
             array('allow',
@@ -81,7 +81,16 @@ class CandidateController extends RestController {
 	);
     }
     
-    public function checkAccess() {
+    public function _filters()
+    {
+        return array(
+            'checkExists + restCreate',
+            'accessControl'
+        );
+    }
+    
+    public function checkAccess() 
+    {
         
         Yii::app()->authManager->defaultRoles = array_merge(Yii::app()->authManager->defaultRoles, array('election_updateCandidateOwnStatus'));
         
@@ -123,5 +132,55 @@ class CandidateController extends RestController {
             return true;
         
         return false;
+    }
+    
+    public function filterCheckExists($filterChain)
+    {
+        $data = $this->data();
+        
+        $candidate = Candidate::model()
+            ->with($this->nestedModels)
+            ->findByAttributes(array(
+                'user_id' => (int)$data['user_id'],
+                'election_id' => (int)$data['election_id']
+            ));
+        
+        if($candidate) {
+            
+            if($candidate->user_id == Yii::app()->user->id) {
+                switch ($candidate->status) {
+                    case Candidate::STATUS_REGISTERED:
+                        $message = 'You has been already registered as candidate';
+                        break;
+                    case Candidate::STATUS_INVITED:
+                        $message = 'Election administrator has already invited you '
+                            . 'to became candidate. Please confirm your intention at '
+                            . '<a href="' 
+                                . Yii::app()->createAbsoluteUrl('userPage/nominations', 
+                                    array('id'=>Yii::app()->user->id)
+                                  ) 
+                            . '">nominations</a> page.';
+                        break;
+                    default:
+                        $message = 'You have already applied to became candidate';
+                }
+            } else {
+                $message = 'Candidate has been already created';
+            }
+            
+            $this->renderJson(array(
+                'success'=>false,
+                'status'=>'exists',
+                'message'=>Yii::t('aes', $message),
+                'data' => array(
+                    'totalCount' => 1,
+                    'models'=>$this->allToArray(array($candidate))
+                )
+            ));
+            
+            return true;
+        }
+        
+        $filterChain->run();
     }
 }

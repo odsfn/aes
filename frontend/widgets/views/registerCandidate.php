@@ -9,11 +9,13 @@
             echo "autoElectorRegistration = true;";
         ?>
         var parent = $('#register-candidate').parent();
-        var onSuccess = function(model) {
+        var onSuccess = function(model, response, options) {
             $('#register-candidate').remove();
             var message = '';
             
-            if(model.checkStatus('Registered')) {
+            if(response.status && response.status == 'exists') {
+                Aes.Notifications.add(response.message, 'warning');
+            } else if(model.checkStatus('Registered')) {
                 message = 'You have been registered as candidate.';
                 
                 if(autoElectorRegistration) {
@@ -43,8 +45,8 @@
             });
 
             candidate.save({}, {
-                success: function(model) {
-                    onSuccess(model);
+                success: function(model, response, options) {
+                    onSuccess(model, response, options);
                 }
             });
         });
