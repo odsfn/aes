@@ -85,7 +85,6 @@ class CandidateController extends RestController {
     {
         return array(
             'checkExists + restCreate',
-            'accessControl'
         );
     }
     
@@ -150,11 +149,11 @@ class CandidateController extends RestController {
             if($candidate->user_id == Yii::app()->user->id) {
                 switch ($candidate->status) {
                     case Candidate::STATUS_REGISTERED:
-                        $message = 'You has been already registered as candidate';
+                        $message = 'You have been already registered as candidate';
                         break;
                     case Candidate::STATUS_INVITED:
                         $message = 'Election administrator has already invited you '
-                            . 'to became candidate. Please confirm your intention at '
+                            . 'to become candidate. Please confirm your intention at '
                             . '<a href="' 
                                 . Yii::app()->createAbsoluteUrl('userPage/nominations', 
                                     array('id'=>Yii::app()->user->id)
@@ -162,14 +161,14 @@ class CandidateController extends RestController {
                             . '">nominations</a> page.';
                         break;
                     default:
-                        $message = 'You have already applied to became candidate';
+                        $message = 'You have already applied to become candidate';
                 }
             } else {
                 $message = 'Candidate has been already created';
             }
             
             $this->renderJson(array(
-                'success'=>false,
+                'success'=>true,
                 'status'=>'exists',
                 'message'=>Yii::t('aes', $message),
                 'data' => array(

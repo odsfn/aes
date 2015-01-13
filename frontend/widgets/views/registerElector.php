@@ -17,16 +17,23 @@
 <script type="text/javascript">
     $(function() {
         var parent = $('#register-elector').parent();
-        var onSuccess = function(model) {
+        var onSuccess = function(model, response) {
                 $('#register-elector').remove();
 
-                if(model.get('status') == ElectorRegistrationRequest.STATUS_REGISTERED) {
-                    Aes.Notifications.add('You have been registered as elector.', 'success');
-                } else if(model.get('status') == ElectorRegistrationRequest.STATUS_AWAITING_ADMIN_DECISION) {
-                    Aes.Notifications.add('Your registration request was sent. Election manager will consider it as soon as possible.', 'success');
-                }               
+                if(response.status && response.status == 'exists_elector') {
+                    Aes.Notifications.add(response.message, 'warning');
+                } else {
+                    if(response.status && response.status == 'exists') {
+                        Aes.Notifications.add(response.message, 'warning');
+                    } else if(model.get('status') == ElectorRegistrationRequest.STATUS_REGISTERED) {
+                        Aes.Notifications.add('You have been registered as elector.', 'success');
+                    } else if(model.get('status') == ElectorRegistrationRequest.STATUS_AWAITING_ADMIN_DECISION) {
+                        Aes.Notifications.add('Your registration request was sent. Election manager will consider it as soon as possible.', 'success');
+                    }               
 
-                $('body').trigger('elector_registered', [model]);
+                    $('body').trigger('elector_registered', [model]);
+                }
+                
                 parent.unmask();
             },
             registerClickHandler = function(){
@@ -39,8 +46,8 @@
                 });
 
                 regReq.save({}, {
-                    success: function(model) {
-                        onSuccess(model);
+                    success: function(model, response) {
+                        onSuccess(model, response);
                     }
                 });
             },
@@ -99,8 +106,8 @@
                                     });
 
                                     regReq.save({}, {
-                                        success: function(model) {
-                                            onSuccess(model);
+                                        success: function(model, response) {
+                                            onSuccess(model, response);
                                             me.triggerMethod('closeClicked');
                                         }
                                     });

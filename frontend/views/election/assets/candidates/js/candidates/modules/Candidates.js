@@ -868,15 +868,6 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
                 });
             }
         });
-        
-//        $('body').one('elector_registered', function(e, elector) {
-//            if(elector.checkStatus('Active')) {
-//                Candidates.voteBoxModels.each(function(m) {
-//                    m.set('active', true);
-//                });
-//            }
-//        });
-        
     });
 });
 

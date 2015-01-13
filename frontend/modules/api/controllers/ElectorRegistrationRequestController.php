@@ -75,4 +75,70 @@ class ElectorRegistrationRequestController extends RestController
         return false;
     }
 
+    public function _filters()
+    {
+        return array(
+            'checkExists + restCreate',
+        );
+    }
+    
+    public function filterCheckExists($filterChain)
+    {
+        $data = $this->data();
+        
+        $request = ElectorRegistrationRequest::model()
+            ->with($this->nestedModels)
+            ->findByAttributes(array(
+                'user_id' => (int)$data['user_id'],
+                'election_id' => (int)$data['election_id']
+            ));
+        
+        if($request) {
+            
+            if($request->user_id == Yii::app()->user->id) {
+                switch ($request->status) {
+                    case ElectorRegistrationRequest::STATUS_REGISTERED:
+                        $message = 'You have been already registered as elector';
+                        break;
+                    default:
+                        $message = 'You have already requested permission to become elector. '
+                            . 'Election administrator will consider it soon.';
+                        break;
+                }
+            } else {
+                $message = 'Elector registration request has been already created';
+            }
+            
+            $this->renderJson(array(
+                'success'=>true,
+                'status'=>'exists',
+                'message'=>Yii::t('aes', $message),
+                'data' => array(
+                    'totalCount' => 1,
+                    'models'=>$this->allToArray(array($request))
+                )
+            ));
+            
+            return true;
+        } else {
+            $elector = Elector::model()->find(
+                'user_id = :userId AND election_id = :electionId', 
+                array(
+                    ':userId' => $data['user_id'], 
+                    ':electionId' => $data['election_id']
+                )
+            );
+            
+            if($elector) {
+                $this->renderJson(array(
+                    'success'=>true,
+                    'status'=>'exists_elector',
+                    'message'=>Yii::t('aes', 'You have been already registered as elector')
+                ));
+                return true;
+            }
+        }
+        
+        $filterChain->run();
+    }
 }
