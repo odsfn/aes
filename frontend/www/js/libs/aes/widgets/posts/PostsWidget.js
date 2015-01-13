@@ -18,11 +18,13 @@ PostsWidget.Post = Backbone.Model.extend({
         content: '',
         likes: null,
         dislikes: null,
-        comments: []
     },
 
     initialize: function() {
         var ratesModels = this.get('rates') || [];
+
+        if(!this.get('comments'))
+            this.set('comments', new Array());
 
         this.rates = new Rates([], {
             target_id: this.get('id'),
