@@ -78,7 +78,8 @@ class ElectionAdminController extends RestController {
             'Records Retrieved Successfully',
             $results,
             $this->getModel()
-                    ->with($this->nestedRelations)
+                ->with($this->nestedRelations)
+                ->criteriaWithRole('election_administration')
             ->count($criteria)
         );
     }
