@@ -8,10 +8,12 @@ class ElectionController extends RestController {
     
     public $acceptFilters = array('plain' => 'voter_id', 'model' => 'name,status');
 
+    public $outFormatters = array(
+        'candidates.votes.date' => array('Formatter', 'toTs')
+    );
+
     public function getOutputFormatters() {
-        return array(
-            'candidates.votes.date' => array('Formatter', 'toTs')
-        );
+        return $this->outFormatters;
     }
     
     public function onPlainFilter_voter_id($filterName, $filterValue, $criteria) {
@@ -31,11 +33,23 @@ class ElectionController extends RestController {
             'candidates.votes.rates', 'candidates.votes.positiveRatesCount',
             'candidates.votes.negativeRatesCount',
             
+            'candidates.votes.comments', 'candidates.votes.commentsCount', 
+            'candidates.votes.comments.user' => array(
+                'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64'
+            ),
+            'candidates.votes.comments.rates', 'candidates.votes.comments.positiveRatesCount', 
+            'candidates.votes.comments.negativeRatesCount'
         );
         
         $criteria->mergeWith(array(
             'join' => 'INNER JOIN vote ON vote.election_id = t.id AND vote.user_id = :voterId',
             'params' => array(':voterId' => $filterValue)
+        ));
+        
+        $this->outFormatters = array_merge($this->outFormatters, array(
+            'candidates.votes.comments.created_ts' => array('Formatter', 'toTs'),
+            'candidates.votes.comments.last_update_ts' => array('Formatter', 'toTs'),
+            'candidates.votes.comments.rates.created_ts' => array('Formatter', 'toTs')            
         ));
     }
     

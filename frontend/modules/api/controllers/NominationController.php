@@ -21,6 +21,12 @@ class NominationController extends CandidateController
         ),
         
         'rates', 'positiveRatesCount', 'negativeRatesCount',
+        
+        'comments', 'commentsCount', 
+        'comments.user' => array(
+            'select' => 'user_id, first_name, last_name, photo, photo_thmbnl_64'
+        ),
+        'comments.rates', 'comments.positiveRatesCount', 'comments.negativeRatesCount'
     );
     
     public $virtualAttrs = array(
@@ -30,7 +36,11 @@ class NominationController extends CandidateController
     public function getOutputFormatters() {
         return array(
             'profile.birth_day' => array('Formatter', 'toTs'),
-            'status_changed_ts' => array('Formatter', 'toTs')
+            'status_changed_ts' => array('Formatter', 'toTs'),
+            'rates.created_ts' => array('Formatter', 'toTs'),
+            'comments.created_ts' => array('Formatter', 'toTs'),
+            'comments.last_update_ts' => array('Formatter', 'toTs'),
+            'comments.rates.created_ts' => array('Formatter', 'toTs')
         );
     }    
     

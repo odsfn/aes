@@ -87,6 +87,7 @@ class Vote extends CActiveRecord implements iCommentable
         );
         
         Rate::applyRelations($relations, $this);
+        Comment::applyRelations($relations, $this);
         
         return $relations;
     }

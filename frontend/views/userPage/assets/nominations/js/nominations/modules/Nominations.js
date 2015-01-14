@@ -108,10 +108,21 @@ App.module('Nominations', function(Nominations, App, Backbone, Marionette, $, _)
             
             if(!this._comments)
             {
-                this._comments = CommentsWidget.create({
+                var commentOptions = {
                     targetId: this.model.get('id'),
                     targetType: 'Candidate'
-                });
+                };
+                
+                commentOptions.autoFetch = false;
+                var comments = this.model.get('comments');
+                if(comments && comments.length > 0) {
+                    commentOptions.initData = {
+                        totalCount: this.model.get('commentsCount'),
+                        models: this.model.get('comments')
+                    };
+                }
+                
+                this._comments = CommentsWidget.create(commentOptions);
             }
             
             this.ui.comments.prepend(this._comments.render().$el);

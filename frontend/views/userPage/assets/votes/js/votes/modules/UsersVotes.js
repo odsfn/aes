@@ -110,15 +110,18 @@ App.module('UsersVotes', function(UsersVotes, App, Backbone, Marionette, $, _) {
         },        
         
         onRender: function() {            
-            if(!this._rates)
-            {
+            
+            if(!this._rates || !this._comments) {
                 var votes = this.model.get('votes'),
-                    vote = _.find(votes, 
-                        _.bind(function(v){ 
-                            return v.id == this.model.get('vote_id'); 
-                        }, this)
-                    );
-                
+                vote = _.find(votes, 
+                    _.bind(function(v){ 
+                        return v.id == this.model.get('vote_id'); 
+                    }, this)
+                );
+            }
+            
+            if(!this._rates)
+            {   
                 this._rates = RatesWidget.create({
                     targetId: this.model.get('vote_id'),
                     targetType: 'Vote',
@@ -135,11 +138,22 @@ App.module('UsersVotes', function(UsersVotes, App, Backbone, Marionette, $, _) {
             this._rates.delegateEvents();
             
             if(!this._comments)
-            {
-                this._comments = CommentsWidget.create({
+            {                
+                var commentOptions = {
                     targetId: this.model.get('vote_id'),
                     targetType: 'Vote'
-                });
+                };
+                
+                commentOptions.autoFetch = false;
+                var comments = vote.comments;
+                if(comments && comments.length > 0) {
+                    commentOptions.initData = {
+                        totalCount: vote.commentsCount,
+                        models: comments
+                    };
+                }
+                
+                this._comments = CommentsWidget.create(commentOptions);                
             }
             
             this.ui.comments.prepend(this._comments.render().$el);
