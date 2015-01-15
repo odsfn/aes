@@ -88,7 +88,7 @@ class VoteTest extends CDbTestCase
         $vote->status = Vote::STATUS_REVOKED;
         $this->assertFalse($vote->save());
     }
-    
+        
     public function testPassVoteFailsBecauseOfTimeout()
     {
         $vote = new Vote;

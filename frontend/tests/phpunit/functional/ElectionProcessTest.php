@@ -535,7 +535,8 @@ class ElectionProcessTest extends WebTestCase
         $this->assertElementHasNoClass($voteBox, 'inactive');
         //try to vote again
         $this->click($voteBox);
-        $this->assertAlert('Action is unavailable because of timeout');
+        $this->assertElementPresent($errorBox = 'css=div.flash-messages div.alert-error');
+        $this->assertElementContainsText($errorBox, 'Action is unavailable because of timeout');
         //check all candidates are inactive for voting
         $this->waitForCssCount($voteBox . '.inactive', 3);
     }
@@ -568,7 +569,8 @@ class ElectionProcessTest extends WebTestCase
         
         $this->sleep(7000);
         $this->click($voteBox);
-        $this->assertAlert('Action is unavailable because of timeout');
+        $this->assertElementPresent($errorBox = 'css=div.flash-messages div.alert-error');
+        $this->assertElementContainsText($errorBox, 'Action is unavailable because of timeout');
         //check all candidates are inactive for voting
         $this->waitForCssCount($voteBox . '.inactive', 3);
     }    

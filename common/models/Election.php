@@ -428,6 +428,9 @@ class Election extends CActiveRecord implements iPostable, iCommentable
         if (!$lastVote)
             return false;
 
+        if($lastVote->status != Vote::STATUS_PASSED)
+            return false;
+        
         $lastVoteDate = new DateTime($lastVote->date);
         $timeRemains = $lastVoteDate->getTimestamp() + $this->remove_vote_time * 60 - time();
 

@@ -56,7 +56,7 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             }
             
             var fail = function() {
-                alert('Action is unavailable because of timeout');
+                Aes.Notifications.add('Action is unavailable because of timeout', 'error');
                 Candidates.votes.trigger('refresh:availability');
             };
             
@@ -451,9 +451,6 @@ App.module('Candidates', function(Candidates, App, Backbone, Marionette, $, _) {
             }, this));
             
             this.listenTo(Candidates.votes, 'sync refresh:availability', this.updateAttrs);
-//            this.listenTo(Candidates.votes, 'refresh:availability', function() {
-//                this.updateAttrs();
-//            });
             
             this.updateAttrs();
         }

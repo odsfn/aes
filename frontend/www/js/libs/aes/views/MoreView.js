@@ -37,7 +37,6 @@ var MoreView = Aes.ItemView.extend({
             this.delegateEvents();
             
             if(this.base.collection.allLoaded && this.base.collection.allLoaded()) {
-                console.log('All loaded');
                 this.$el.hide();
             } else {
                 this.$el.show();
