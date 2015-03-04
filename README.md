@@ -129,15 +129,6 @@ Bellow the directory structure used:
    |-------libs
 ```
 
+Copyright © 2015 Open Digital Society Foundation
 
-## Extensions
-
-The following extensions are part of YIInitializr-basic template:
-
- * Yiistrap [https://github.com/yii-twbs/yiistrap](https://github.com/yii-twbs/yiistrap)
- * Yiiwheels [https://github.com/2amigos/yiiwheels](https://github.com/2amigos/yiiwheels)
- * Yiinitializr [https://github.com/2amigos/yiinitializr](https://github.com/2amigos/yiinitializr)
-
-> [![2amigOS!](http://www.gravatar.com/avatar/55363394d72945ff7ed312556ec041e0.png)](http://www.2amigos.us)    
-<i>web development has never been so fun</i>  
-[www.2amigos.us](http://www.2amigos.us) 
+Distributed under the GNU GPL v2.0
